@@ -26,7 +26,13 @@ https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/index.html
    steering wheel, AWD, Mark Levinson audio, third row, panoramic roof, towing, …).
    Tap once for **must-have**, twice for **nice-to-have**.
    - Shows every trim that meets **all must-haves**, ranked by how many nice-to-haves
-     it also satisfies, with starting price and lease payment.
+     it also satisfies, with starting price plus **lease and finance** payments.
+   - **Partial-match tiers:** when the client picks too many wants for any one trim,
+     it still surfaces the closest options bucketed into **90%+ / 80–89% / 70–79%**
+     matches, each with a match-percentage badge (e.g. "86% match · 6/7").
+   - **Lease vs finance:** lease is the exact advertised offer; finance is estimated
+     live from an editable APR/term you set to today's Lexus Financial Services rate
+     (lease is shown first — we prefer lease).
    - **Upsell on every match (▲):** the next trim up in the same model, the price/payment
      delta, and exactly what the client *also* gains.
    - **One-feature-away (near-miss):** trims missing a single must-have, with the
@@ -44,8 +50,12 @@ https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/index.html
    the guide when a client wants to know everything about a vehicle.
    **📄 Print spec sheet** exports the full trim-by-trim comparison.
 
-3. **Feature finder** — client wants one specific thing? Search it and see every model
-   and trim that delivers it, plus the **cheapest way in** ("available from $X on …").
+   Each variant also shows the applicable **warranty coverage** (comprehensive,
+   powertrain, corrosion, roadside, plus hybrid/EV battery terms by powertrain).
+
+3. **Feature finder** — **select multiple features at once** and find every model and
+   trim that delivers them (toggle **match ALL** vs **match ANY**), with the **cheapest
+   way in** for each model ("available from $X on …").
 
 ## Run it
 

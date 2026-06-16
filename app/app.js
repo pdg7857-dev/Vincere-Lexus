@@ -18,6 +18,8 @@ const state = {
   browseVariant: 0,
   browseSpecFilter: "",
   print: { client: "", rep: "" },
+  pay: { apr: DATA.meta.finance.defaultApr, term: DATA.meta.finance.defaultTermMonths, down: DATA.meta.finance.defaultDown },
+  finder: { sel: [], mode: "all", q: "" },
 };
 let lastMatch = null;   // cache of last computed recommendations for the print sheet
 
@@ -44,6 +46,34 @@ function trimPrice(trim) {
   return any || {};
 }
 function startPrice(trim) { const p = trimPrice(trim); return p.start != null ? p.start : Infinity; }
+
+// monthly finance payment, amortized from the trim start price at the consultant's APR/term
+function financeMonthly(trim) {
+  const P = startPrice(trim) - (state.pay.down || 0);
+  if (!isFinite(P) || P <= 0) return null;
+  const n = state.pay.term, r = (state.pay.apr / 100) / 12;
+  return r === 0 ? P / n : (P * r) / (1 - Math.pow(1 + r, -n));
+}
+// lease (advertised) + finance (estimated) lines for a trim
+function payHTML(trim) {
+  const p = trimPrice(trim);
+  const lease = p.payment
+    ? `<div class="pay lease"><b>Lease ${money(p.payment)}/mo</b> · ${p.rate}% · ${p.term} mo · ${(p.km / 1000)}k km/yr</div>`
+    : `<div class="pay lease muted">Lease — n/a</div>`;
+  const fm = financeMonthly(trim);
+  const fin = fm
+    ? `<div class="pay fin">Finance ~${money(fm)}/mo · ${state.pay.apr}% · ${state.pay.term} mo</div>`
+    : "";
+  return lease + fin;
+}
+// warranty rows applicable to a variant's powertrain class
+function warrantyFor(variant) {
+  const W = DATA.meta.warranty, pc = variant.ptClass;
+  let rows = [...W.core];
+  if (pc !== "ev") rows = rows.concat(W.combustion);
+  if (W[pc]) rows = rows.concat(W[pc]);
+  return rows;
+}
 
 // flat list of {model, variant, trim} respecting filters (model/category/budget)
 function filteredTrims() {
@@ -216,11 +246,14 @@ function wantTags(model, trim, musts, nices) {
   return `<div class="tags">${tags.join("")}</div>`;
 }
 
+function pctClass(p) { return p >= 90 ? "p90" : p >= 80 ? "p80" : p >= 70 ? "p70" : "plow"; }
+
 function cardHTML(entry, musts, nices, opts = {}) {
   const { model, variant, trim } = entry;
   const p = trimPrice(trim);
-  const lease = p.payment ? `${money(p.payment)}/mo · ${p.rate}% · ${p.term}mo` : "";
   const ribbon = opts.ribbon ? `<span class="ribbon">${opts.ribbon}</span>` : "";
+  const badge = (opts.pct != null)
+    ? `<span class="mpct ${pctClass(opts.pct)}" title="${opts.satN} of ${opts.totN} selected features">${opts.pct}% match · ${opts.satN}/${opts.totN}</span>` : "";
   let why = "";
   if (opts.missWant) {
     const fix = cheapestAdding(model, variant, trim, opts.missWant);
@@ -232,9 +265,9 @@ function cardHTML(entry, musts, nices, opts = {}) {
       ${photoHTML(variant, 320, "card-photo")}
       <div class="card-main">
         <div class="card-top">
-          <div><div class="card-title">${model.name} <span class="variant">${variant.name} · ${trim.name}</span></div>
-            <div class="card-sub">${model.subtitle} · ${variant.powertrain}${trim.attrs.drivetrain ? " · " + trim.attrs.drivetrain : ""}${trim.attrs.seats ? " · " + trim.attrs.seats + " seats" : ""}</div></div>
-          <div class="price"><div class="amt">${money(p.start)}</div><div class="lease">${lease}</div></div>
+          <div><div class="card-title">${model.name} <span class="variant">${variant.name} · ${trim.name}</span> ${badge}</div>
+            <div class="card-sub">${model.subtitle} · ${variant.ptClass.toUpperCase()}${trim.attrs.drivetrain ? " · " + trim.attrs.drivetrain : ""}${trim.attrs.seats ? " · " + trim.attrs.seats + " seats" : ""}</div></div>
+          <div class="price"><div class="amt">${money(p.start)}</div>${payHTML(trim)}</div>
         </div>
         ${wantTags(model, trim, musts, nices)}
         ${why}
@@ -258,48 +291,66 @@ function renderMatch() {
     return;
   }
 
+  const sel = musts.concat(nices), totN = sel.length;
   const all = filteredTrims();
   const scored = all.map(e => {
     const missMust = musts.filter(w => !e.trim.satisfies.includes(w));
     const niceHits = nices.filter(w => e.trim.satisfies.includes(w));
-    return { ...e, missMust, niceHits, full: missMust.length === 0 };
+    const satN = totN - missMust.length - (nices.length - niceHits.length);
+    return { ...e, missMust, niceHits, satN, pct: Math.round(satN / totN * 100), full: missMust.length === 0 };
   });
 
   const full = scored.filter(s => s.full)
-    .sort((a, b) => (b.niceHits.length - a.niceHits.length) || (startPrice(a.trim) - startPrice(b.trim)));
-  const near = scored.filter(s => s.missMust.length === 1)
-    .sort((a, b) => startPrice(a.trim) - startPrice(b.trim));
+    .sort((a, b) => (b.satN - a.satN) || (startPrice(a.trim) - startPrice(b.trim)));
+  // partial matches that still cover ≥70% of everything the client asked for
+  const partial = scored.filter(s => !s.full && s.pct >= 70)
+    .sort((a, b) => (a.missMust.length - b.missMust.length) || (b.pct - a.pct) || (startPrice(a.trim) - startPrice(b.trim)));
 
-  lastMatch = { musts, nices, full, near };
+  lastMatch = { musts, nices, full, partial };
   head.innerHTML = `<div><h2>Recommendations</h2>
-      <div class="count">${full.length} trim${full.length !== 1 ? "s" : ""} meet every must-have${near.length ? ` · ${near.length} are one feature away` : ""}.</div></div>
+      <div class="count">${full.length ? `${full.length} trim${full.length !== 1 ? "s" : ""} meet every must-have` : "No trim meets every must-have"}${partial.length ? ` · ${partial.length} partial match${partial.length !== 1 ? "es" : ""} (≥70%)` : ""}.</div></div>
     <div class="head-actions">
-      <input id="p-client" class="hidefocus" placeholder="Client name (optional)" value="${esc(state.print.client)}" style="width:150px">
-      <input id="p-rep" placeholder="Prepared by (optional)" value="${esc(state.print.rep)}" style="width:140px">
+      <input id="p-client" placeholder="Client name (optional)" value="${esc(state.print.client)}" style="width:140px">
+      <input id="p-rep" placeholder="Prepared by (optional)" value="${esc(state.print.rep)}" style="width:130px">
       <button id="btn-print" class="btn print">📄 Client summary</button>
+    </div>
+    <div class="paybar">
+      <span class="pl">Payments</span>
+      <label>Lease <span class="adv">advertised</span></label>
+      <label>Finance APR <input id="pay-apr" type="number" step="0.01" min="0" value="${state.pay.apr}">%</label>
+      <label>Term <input id="pay-term" type="number" min="12" step="6" value="${state.pay.term}">mo</label>
+      <label>Down <input id="pay-down" type="number" min="0" step="500" value="${state.pay.down}">$</label>
     </div>`;
   const ci = $("#p-client"), ri = $("#p-rep");
   ci.addEventListener("input", () => state.print.client = ci.value);
   ri.addEventListener("input", () => state.print.rep = ri.value);
   $("#btn-print").addEventListener("click", printSummary);
+  $("#pay-apr").addEventListener("change", e => { state.pay.apr = Math.max(0, +e.target.value || 0); renderMatch(); });
+  $("#pay-term").addEventListener("change", e => { state.pay.term = Math.max(12, +e.target.value || 60); renderMatch(); });
+  $("#pay-down").addEventListener("change", e => { state.pay.down = Math.max(0, +e.target.value || 0); renderMatch(); });
 
   let html = "";
   if (full.length) {
-    const cheapest = full.reduce((a, b) => startPrice(a.trim) <= startPrice(b.trim) ? a : b);
-    full.slice(0, 10).forEach((s, i) => {
-      const opts = { musts, nices, upsell: true };
-      if (i === 0) opts.ribbon = "Top match — most of their wants";
-      html += cardHTML(s, musts, nices, { best: i === 0, ribbon: opts.ribbon, upsell: true });
-    });
+    full.slice(0, 10).forEach((s, i) => html += cardHTML(s, musts, nices,
+      { best: i === 0, ribbon: i === 0 ? "Top match — meets all must-haves" : "", upsell: true, pct: s.pct, satN: s.satN, totN }));
     if (full.length > 10) html += `<div class="hint">+ ${full.length - 10} more qualifying trims (narrow with filters).</div>`;
   } else {
-    html += `<div class="empty"><div class="big">∅</div>No single trim meets all ${musts.length} must-haves. See the closest options below, or relax a must-have.</div>`;
+    html += `<div class="empty" style="padding:30px"><div class="big">∅</div>No single trim meets all ${musts.length} must-have${musts.length !== 1 ? "s" : ""}. The closest matches are below — or relax a must-have.</div>`;
   }
 
-  if (near.length) {
-    html += `<div class="section-label">One feature away — stretch the budget</div><div class="nearmiss">`;
-    near.slice(0, 6).forEach(s => html += cardHTML(s, musts, nices, { missWant: s.missMust[0], upsell: false }));
-    html += `</div>`;
+  // partial tiers: 90%+, 80–89%, 70–79%
+  const tiers = [
+    { lo: 90, hi: 101, label: "Strong matches · 90%+" },
+    { lo: 80, hi: 90, label: "Good matches · 80–89%" },
+    { lo: 70, hi: 80, label: "Worth a look · 70–79%" },
+  ];
+  for (const t of tiers) {
+    const bucket = partial.filter(s => s.pct >= t.lo && s.pct < t.hi);
+    if (!bucket.length) continue;
+    html += `<div class="section-label">${t.label} <span style="color:var(--mut2)">(${bucket.length})</span></div>`;
+    bucket.slice(0, 6).forEach(s => html += cardHTML(s, musts, nices,
+      { upsell: false, pct: s.pct, satN: s.satN, totN, missWant: s.missMust.length === 1 ? s.missMust[0] : null }));
+    if (bucket.length > 6) html += `<div class="hint">+ ${bucket.length - 6} more in this tier.</div>`;
   }
   list.innerHTML = html;
 }
@@ -308,7 +359,9 @@ function renderMatch() {
 function printTrimBlock(entry, musts, nices, opts = {}) {
   const { model, variant, trim } = entry;
   const p = trimPrice(trim);
-  const lease = p.payment ? `${money(p.payment)}/mo · ${p.rate}% · ${p.term} mo · ${p.km.toLocaleString()} km/yr` : "";
+  const lease = p.payment ? `Lease ${money(p.payment)}/mo · ${p.rate}% · ${p.term} mo · ${(p.km / 1000)}k km/yr` : "Lease n/a";
+  const fm = financeMonthly(trim);
+  const fin = fm ? `Finance ~${money(fm)}/mo · ${state.pay.apr}% · ${state.pay.term} mo` : "";
   const rows = [];
   for (const w of musts) {
     const hit = trim.satisfies.includes(w);
@@ -319,23 +372,25 @@ function printTrimBlock(entry, musts, nices, opts = {}) {
   const up = nextTrimUp(model, variant, trim);
   const upHTML = (up && up.delta > 0 && up.gained.length)
     ? `<div class="p-up">Consider stepping up to <b>${esc(variant.name)} ${esc(up.trim.name)}</b> (+${money(up.delta)}): adds ${up.gained.map(esc).join(", ")}.</div>` : "";
+  const war = warrantyFor(variant).map(w => `${esc(w.name)} ${esc(w.term)}`).join(" · ");
   const img = variant.image ? `<div class="p-photo"><img src="${imgUrl(variant.image, 480)}"></div>` : "";
   return `<div class="p-trim ${opts.rec ? "p-rec" : ""}">
     ${opts.rec ? `<div class="p-rib">RECOMMENDED</div>` : ""}
     <div class="p-trim-top">
       <div><div class="pt-name">${esc(model.name)} ${esc(variant.name)} · ${esc(trim.name)}</div>
-        <div class="pt-sub">${esc(model.subtitle)} · ${esc(variant.powertrain)}${trim.attrs.drivetrain ? " · " + esc(trim.attrs.drivetrain) : ""}${trim.attrs.seats ? " · " + trim.attrs.seats + " seats" : ""}</div></div>
-      <div class="pt-price"><div class="amt">${money(p.start)}</div><div class="ls">${lease}</div></div>
+        <div class="pt-sub">${esc(model.subtitle)} · ${esc(variant.ptClass.toUpperCase())}${trim.attrs.drivetrain ? " · " + esc(trim.attrs.drivetrain) : ""}${trim.attrs.seats ? " · " + trim.attrs.seats + " seats" : ""}</div></div>
+      <div class="pt-price"><div class="amt">${money(p.start)}</div><div class="ls"><b>${lease}</b></div>${fin ? `<div class="ls">${fin}</div>` : ""}</div>
     </div>
     ${img}
     <div class="p-tags">${rows.join("")}</div>
     ${upHTML}
+    <div class="p-war"><b>Warranty:</b> ${war}</div>
   </div>`;
 }
 
 function printSummary() {
   if (!lastMatch) return;
-  const { musts, nices, full, near } = lastMatch;
+  const { musts, nices, full, partial } = lastMatch;
   const area = $("#print-area");
   const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
   const mustList = musts.map(w => WANT_BY_ID[w].label).join(", ") || "—";
@@ -344,9 +399,9 @@ function printSummary() {
   let blocks = "";
   if (full.length) {
     full.slice(0, 5).forEach((s, i) => blocks += printTrimBlock(s, musts, nices, { rec: i === 0 }));
-  } else if (near.length) {
-    blocks += `<div class="p-intro">No single trim meets every must-have; these come closest (one feature away):</div>`;
-    near.slice(0, 4).forEach(s => blocks += printTrimBlock(s, musts, nices, {}));
+  } else if (partial.length) {
+    blocks += `<div class="p-intro">No single trim meets every must-have; these are the closest matches (${partial[0].pct}% and below):</div>`;
+    partial.slice(0, 4).forEach((s, i) => blocks += printTrimBlock(s, musts, nices, { rec: i === 0 }));
   } else {
     blocks = `<div class="p-intro">No close matches — consider relaxing a must-have.</div>`;
   }
@@ -360,7 +415,7 @@ function printSummary() {
     </div>
     <div class="p-intro">Based on the priorities we discussed — <b>must-haves:</b> ${esc(mustList)}${nices.length ? `; <b>nice-to-haves:</b> ${esc(niceList)}` : ""} — here ${full.length === 1 ? "is the option" : "are the options"} best suited to you. ★ marks features reserved for higher trims.</div>
     ${blocks}
-    <div class="p-foot">${esc(DATA.meta.priceNote)} Prices in ${esc(DATA.meta.currency)}. Data current as of ${esc(DATA.meta.generated)} (lexus.ca). This summary is for discussion purposes and is not a binding offer.</div>`;
+    <div class="p-foot">${esc(DATA.meta.finance.note)} ${esc(DATA.meta.priceNote)} ${esc(DATA.meta.warranty.note)} Prices in ${esc(DATA.meta.currency)}. Data current as of ${esc(DATA.meta.generated)} (lexus.ca). This summary is for discussion purposes and is not a binding offer.</div>`;
   window.print();
 }
 
@@ -387,9 +442,15 @@ function renderBrowseDetail() {
     `<button class="vtab ${i === state.browseVariant ? "active" : ""}" data-v="${i}">${vv.name}</button>`).join("");
 
   const priceStrip = v.trims.map(t => {
-    const p = trimPrice(t);
-    return `<div class="price-pill ${t.isBase ? "base" : ""}"><span class="pn">${t.name}${t.isBase ? " (base)" : ""}</span><br><span class="pp">${money(p.start)}</span>${p.payment ? ` <span class="pn">· ${money(p.payment)}/mo</span>` : ""}</div>`;
+    const p = trimPrice(t), fm = financeMonthly(t);
+    return `<div class="price-pill ${t.isBase ? "base" : ""}"><span class="pn">${esc(t.name)}${t.isBase ? " (base)" : ""}</span><br><span class="pp">${money(p.start)}</span>
+      ${p.payment ? `<br><span class="pn lease">Lease ${money(p.payment)}/mo · ${p.rate}%/${p.term}mo</span>` : ""}
+      ${fm ? `<br><span class="pn">Finance ~${money(fm)}/mo · ${state.pay.apr}%/${state.pay.term}mo</span>` : ""}</div>`;
   }).join("");
+
+  const warRows = warrantyFor(v).map(w => `<div class="war-row"><span>${esc(w.name)}</span><span>${esc(w.term)}</span></div>`).join("");
+  const warBlock = `<div class="warranty"><div class="war-h">Warranty &amp; coverage — ${esc(v.ptClass.toUpperCase())}</div>${warRows}
+    <div class="war-note">${esc(DATA.meta.warranty.note)}</div></div>`;
 
   const a = v.trims[0].attrs;
   const attrCells = [
@@ -439,8 +500,15 @@ function renderBrowseDetail() {
       <div class="head-actions"><button id="btn-print-spec" class="btn print">📄 Print spec sheet</button></div></div>
     <div class="variant-tabs">${vtabs}</div>
     ${photoHTML(v, 720, "browse-hero")}
+    <div class="paybar browse-pay">
+      <span class="pl">Finance estimate</span>
+      <label>APR <input id="bpay-apr" type="number" step="0.01" min="0" value="${state.pay.apr}">%</label>
+      <label>Term <input id="bpay-term" type="number" min="12" step="6" value="${state.pay.term}">mo</label>
+      <span class="paynote">Lease figures are the advertised offer.</span>
+    </div>
     <div class="price-strip">${priceStrip}</div>
     <div class="attrs">${attrCells}</div>
+    ${warBlock}
     <div class="toolbar"><input id="spec-filter" type="search" placeholder="Filter features… (e.g. heated, audio, wheels)" value="${state.browseSpecFilter.replace(/"/g, "&#34;")}">
       <span class="hint">${present.size} features · ${v.trims.length} trims</span></div>
     <div style="overflow:auto;max-height:60vh">
@@ -449,6 +517,8 @@ function renderBrowseDetail() {
 
   detail.querySelectorAll(".vtab").forEach(b => b.addEventListener("click", () => { state.browseVariant = +b.dataset.v; state.browseSpecFilter = ""; renderBrowseDetail(); }));
   $("#btn-print-spec").addEventListener("click", () => printSpecSheet(m, v));
+  $("#bpay-apr").addEventListener("change", e => { state.pay.apr = Math.max(0, +e.target.value || 0); renderBrowseDetail(); });
+  $("#bpay-term").addEventListener("change", e => { state.pay.term = Math.max(12, +e.target.value || 60); renderBrowseDetail(); });
   const sf = $("#spec-filter");
   if (sf) sf.addEventListener("input", () => { state.browseSpecFilter = sf.value; const pos = sf.selectionStart; renderBrowseDetail(); const n = $("#spec-filter"); if (n) { n.focus(); n.setSelectionRange(pos, pos); } });
 }
@@ -508,61 +578,83 @@ function buildFinderIndex() {
   return idx;
 }
 
-function finderMatches(entryKey) {
-  const idx = buildFinderIndex();
-  const item = idx.get(entryKey);
-  if (!item) return null;
-  const test = item.wantId
-    ? (t => t.satisfies.includes(item.wantId))
-    : (t => [...item.sids].some(s => s in t.features));
+function keyLabel(key) { const it = buildFinderIndex().get(key); return it ? it.label.replace("  (curated need)", "") : key; }
+function finderPredicate(key) {
+  const it = buildFinderIndex().get(key);
+  if (!it) return () => false;
+  return it.wantId ? (t => t.satisfies.includes(it.wantId)) : (t => [...it.sids].some(s => s in t.features));
+}
+function addFinder(key) { if (!state.finder.sel.includes(key)) state.finder.sel.push(key); state.finder.q = ""; renderFinderResults(); }
+function removeFinder(key) { state.finder.sel = state.finder.sel.filter(k => k !== key); renderFinderResults(); }
+
+const POPULAR = ["want:mark_levinson", "want:pano_roof", "want:heated_wheel", "want:hud", "want:third_row",
+  "want:awd", "want:massage", "want:towing", "want:surround_cam", "want:cooled_seats", "want:captain", "want:big_wheels"];
+
+function renderFinder() {
+  const input = $("#finder-input");
+  if (!input.dataset.init) {
+    input.dataset.init = "1";
+    input.addEventListener("input", () => { state.finder.q = input.value.trim(); renderFinderResults(); });
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") { const first = document.querySelector("#finder-suggest .sg[data-k]"); if (first) addFinder(first.dataset.k); }
+    });
+  }
+  renderFinderResults();
+}
+
+function renderFinderResults() {
+  const sug = $("#finder-suggest"), res = $("#finder-results");
+  const sel = state.finder.sel;
+  // selected chips + match-mode toggle
+  let bar = sel.map(k => `<button class="sg sel" data-rm="${esc(k)}">${esc(keyLabel(k))} ✕</button>`).join("");
+  if (sel.length > 1) {
+    bar += `<span class="mode-toggle">Match
+      <button class="mt ${state.finder.mode === "all" ? "on" : ""}" data-mode="all">ALL</button>
+      <button class="mt ${state.finder.mode === "any" ? "on" : ""}" data-mode="any">ANY</button></span>`;
+  }
+  // typeahead OR popular
+  const q = state.finder.q.toLowerCase();
+  let chips = "";
+  if (q.length >= 2) {
+    const matches = [];
+    for (const [k, v] of buildFinderIndex()) if (!sel.includes(k) && v.label.toLowerCase().includes(q)) matches.push([k, v]);
+    matches.sort((a, b) => (a[1].wantId ? 0 : 1) - (b[1].wantId ? 0 : 1) || a[1].label.length - b[1].label.length);
+    chips = matches.length
+      ? matches.slice(0, 18).map(([k, v]) => `<button class="sg" data-k="${esc(k)}">+ ${esc(v.label)}</button>`).join("")
+      : `<span class="hint">No feature matches “${esc(state.finder.q)}”.</span>`;
+  } else {
+    chips = `<span class="poplabel">Popular:</span>` +
+      POPULAR.filter(k => !sel.includes(k)).map(k => `<button class="sg" data-k="${esc(k)}">+ ${esc(keyLabel(k))}</button>`).join("");
+  }
+  sug.innerHTML = (bar ? `<div class="sel-bar">${bar}</div>` : "") + `<div class="sg-row">${chips}</div>`;
+  sug.querySelectorAll(".sg[data-k]").forEach(b => b.addEventListener("click", () => addFinder(b.dataset.k)));
+  sug.querySelectorAll(".sg[data-rm]").forEach(b => b.addEventListener("click", () => removeFinder(b.dataset.rm)));
+  sug.querySelectorAll(".mt").forEach(b => b.addEventListener("click", () => { state.finder.mode = b.dataset.mode; renderFinderResults(); }));
+
+  // results
+  if (!sel.length) {
+    res.innerHTML = `<div class="empty" style="padding:40px"><div class="big">🔍</div>Add one or more features above to see every vehicle and trim that delivers them — and the cheapest way in.</div>`;
+    return;
+  }
+  const preds = sel.map(finderPredicate);
+  const test = state.finder.mode === "all" ? (t => preds.every(p => p(t))) : (t => preds.some(p => p(t)));
   const byModel = [];
   for (const m of DATA.models) {
     const hits = [];
     for (const v of m.variants) for (const t of v.trims) if (test(t)) hits.push({ v, t });
-    if (hits.length) {
-      hits.sort((a, b) => startPrice(a.t) - startPrice(b.t));
-      byModel.push({ model: m, hits });
-    }
+    if (hits.length) { hits.sort((a, b) => startPrice(a.t) - startPrice(b.t)); byModel.push({ model: m, hits }); }
   }
   byModel.sort((a, b) => startPrice(a.hits[0].t) - startPrice(b.hits[0].t));
-  return { item, byModel };
-}
 
-function renderFinder() {
-  const input = $("#finder-input"), sug = $("#finder-suggest"), res = $("#finder-results");
-  // popular suggestion chips
-  if (!sug.dataset.init) {
-    sug.dataset.init = "1";
-    const pop = ["want:mark_levinson", "want:pano_roof", "want:heated_wheel", "want:hud", "want:third_row", "want:awd", "want:massage", "want:towing", "want:surround_cam", "want:cooled_seats"];
-    pop.forEach(k => { const it = buildFinderIndex().get(k); if (!it) return; const c = el("button", "sg", it.label.replace("  (curated need)", "")); c.addEventListener("click", () => selectFinder(k)); sug.appendChild(c); });
+  const modeTxt = sel.length > 1 ? (state.finder.mode === "all" ? "all " : "any of ") : "";
+  if (!byModel.length) {
+    res.innerHTML = `<div class="empty" style="padding:30px">No current trim has ${modeTxt}${sel.length} selected feature${sel.length !== 1 ? "s" : ""}${state.finder.mode === "all" && sel.length > 1 ? " together — try ANY" : ""}.</div>`;
+    return;
   }
-  if (!input.dataset.init) {
-    input.dataset.init = "1";
-    input.addEventListener("input", () => {
-      const q = input.value.trim().toLowerCase();
-      res.innerHTML = "";
-      if (q.length < 2) return;
-      const idx = buildFinderIndex();
-      const matches = [];
-      for (const [k, v] of idx) if (v.label.toLowerCase().includes(q)) matches.push([k, v]);
-      matches.sort((a, b) => (a[1].wantId ? 0 : 1) - (b[1].wantId ? 0 : 1) || a[1].label.length - b[1].label.length);
-      res.innerHTML = `<div class="finder-suggest">` +
-        matches.slice(0, 16).map(([k, v]) => `<button class="sg" data-k="${k.replace(/"/g, "&#34;")}">${v.label}</button>`).join("") + `</div>`;
-      res.querySelectorAll(".sg").forEach(b => b.addEventListener("click", () => selectFinder(b.dataset.k)));
-    });
-  }
-}
-
-function selectFinder(key) {
-  $("#finder-input").value = "";
-  const r = finderMatches(key);
-  const res = $("#finder-results");
-  if (!r || !r.byModel.length) { res.innerHTML = `<div class="empty">No current trims offer that.</div>`; return; }
-  const totalTrims = r.byModel.reduce((a, m) => a + m.hits.length, 0);
-  let html = `<h3 style="margin:6px 0 10px">“${r.item.label.replace("  (curated need)", "")}” is available on ${totalTrims} trim${totalTrims !== 1 ? "s" : ""} across ${r.byModel.length} model${r.byModel.length !== 1 ? "s" : ""}</h3>`;
-  for (const mm of r.byModel) {
+  const totalTrims = byModel.reduce((a, m) => a + m.hits.length, 0);
+  let html = `<h3 style="margin:6px 0 10px">${modeTxt ? "Vehicles with " + modeTxt : ""}${sel.map(k => `<b>${esc(keyLabel(k))}</b>`).join(state.finder.mode === "all" ? " + " : " / ")} — ${totalTrims} trim${totalTrims !== 1 ? "s" : ""} across ${byModel.length} model${byModel.length !== 1 ? "s" : ""}</h3>`;
+  for (const mm of byModel) {
     const cheapest = mm.hits[0];
-    const variants = [...new Set(mm.hits.map(h => h.v.name))];
     const trimList = mm.hits.slice(0, 8).map(h => `${h.v.name} ${h.t.name}`).join(" · ");
     html += `<div class="finder-card">
       ${photoHTML(cheapest.v, 240, "finder-photo")}

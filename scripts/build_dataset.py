@@ -25,6 +25,55 @@ OUT = os.path.join(os.path.dirname(__file__), "..", "data", "lexus.json")
 
 DEFAULT_PROVINCE = "ON"
 
+# Lexus Canada warranty coverage (scraped from lexus.ca/en/know-your-lexus/coverage/).
+# "core" applies to every vehicle; the rest are added by powertrain class.
+WARRANTY = {
+    "core": [
+        {"name": "Comprehensive", "term": "48 mo / 80,000 km"},
+        {"name": "Powertrain & Safety Restraints", "term": "72 mo / 110,000 km"},
+        {"name": "Corrosion Perforation", "term": "72 mo / unlimited km"},
+        {"name": "Roadside Assistance (24/7)", "term": "48 mo / unlimited km"},
+    ],
+    "combustion": [  # gas / hybrid / plug-in (anything with an engine)
+        {"name": "Emission Control Components", "term": "48 mo / 80,000 km"},
+        {"name": "Major Emission Control Components", "term": "96 mo / 130,000 km"},
+    ],
+    "hybrid": [
+        {"name": "Hybrid System & Battery", "term": "96 mo / 160,000 km"},
+    ],
+    "phev": [
+        {"name": "Hybrid System & Battery", "term": "96 mo / 160,000 km"},
+    ],
+    "ev": [
+        {"name": "EV Battery (capacity)", "term": "120 mo / 240,000 km"},
+        {"name": "EV / Fuel Cell Components", "term": "96 mo / 160,000 km"},
+    ],
+    "note": "Lexus Canada New Vehicle Limited Warranty. Whichever comes first. "
+            "Confirm current terms with the warranty booklet.",
+    "source": "lexus.ca/en/know-your-lexus/coverage/",
+}
+
+# Finance is computed live in the app from an editable APR/term the consultant sets to
+# today's Lexus Financial Services rate (purchase-finance rates change weekly). Lease
+# payments are the exact advertised offer from the Build & Price pricing API.
+FINANCE = {
+    "defaultApr": 6.99,
+    "defaultTermMonths": 60,
+    "defaultDown": 0,
+    "note": "Finance payments are estimates at the APR/term you set — adjust to today's "
+            "Lexus Financial Services rate. Lease payments are the advertised offer.",
+}
+
+
+def powertrain_class(slug, powertrain):
+    if slug == "rz":
+        return "ev"
+    if slug in ("nxp", "rxp"):
+        return "phev"
+    if powertrain == "hybrid":
+        return "hybrid"
+    return "gas"
+
 # Body-style / category per model slug (current CA lineup).
 CATEGORY = {
     "es": ("Sedan", "Luxury Sedan"),
@@ -379,6 +428,7 @@ def build():
                 "modelId": mid,
                 "name": mc.get("modelLongDescription", mc.get("modelDescription", "")),
                 "powertrain": mc.get("powertrain", ""),
+                "ptClass": powertrain_class(slug, mc.get("powertrain", "")),
                 "electrified": mc.get("electrified", False),
                 "image": img,
                 "trims": trims,
@@ -416,6 +466,8 @@ def build():
             "priceNote": "Starting prices as shown on lexus.ca Build & Price (include freight/PDI). "
                          "Trim-to-trim package deltas are exact. Confirm final pricing before quoting.",
             "modelCount": len(models_out),
+            "warranty": WARRANTY,
+            "finance": FINANCE,
         },
         "provinces": sorted(provinces),
         "wants": wants_meta,
