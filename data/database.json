@@ -182,7 +182,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 50,
+    "value": 49,
     "luxury": 68,
     "ownership": 92
    }
@@ -310,7 +310,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 17,
+    "value": 16,
     "luxury": 77,
     "ownership": 92
    }
@@ -352,7 +352,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 11,
+    "value": 10,
     "luxury": 79,
     "ownership": 92
    }
@@ -394,7 +394,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 10,
+    "value": 9,
     "luxury": 79,
     "ownership": 92
    }
@@ -739,7 +739,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 47,
-    "value": 100,
+    "value": 99,
     "luxury": 54,
     "ownership": 92
    }
@@ -823,7 +823,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 48,
-    "value": 89,
+    "value": 88,
     "luxury": 57,
     "ownership": 92
    }
@@ -949,7 +949,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 48,
-    "value": 79,
+    "value": 78,
     "luxury": 60,
     "ownership": 92
    }
@@ -1035,7 +1035,7 @@
     "reliability": 93,
     "performance": 18,
     "efficiency": 89,
-    "value": 89,
+    "value": 88,
     "luxury": 57,
     "ownership": 92
    }
@@ -1121,7 +1121,7 @@
     "reliability": 93,
     "performance": 18,
     "efficiency": 89,
-    "value": 83,
+    "value": 82,
     "luxury": 59,
     "ownership": 92
    }
@@ -1293,7 +1293,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 77,
+    "value": 76,
     "luxury": 61,
     "ownership": 92
    }
@@ -1336,7 +1336,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 72,
+    "value": 71,
     "luxury": 62,
     "ownership": 92
    }
@@ -1464,7 +1464,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 91,
+    "value": 90,
     "luxury": 57,
     "ownership": 92
    }
@@ -1590,7 +1590,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 74,
+    "value": 73,
     "luxury": 61,
     "ownership": 92
    }
@@ -1632,7 +1632,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 67,
+    "value": 66,
     "luxury": 63,
     "ownership": 92
    }
@@ -1674,7 +1674,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 67,
+    "value": 66,
     "luxury": 63,
     "ownership": 92
    }
@@ -1802,7 +1802,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 83,
-    "value": 83,
+    "value": 82,
     "luxury": 59,
     "ownership": 92
    }
@@ -1888,7 +1888,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 83,
-    "value": 70,
+    "value": 69,
     "luxury": 63,
     "ownership": 92
    }
@@ -1931,7 +1931,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 83,
-    "value": 63,
+    "value": 62,
     "luxury": 65,
     "ownership": 92
    }
@@ -2146,7 +2146,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 50,
+    "value": 49,
     "luxury": 68,
     "ownership": 92
    }
@@ -2318,7 +2318,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 83,
-    "value": 57,
+    "value": 56,
     "luxury": 66,
     "ownership": 92
    }
@@ -2403,7 +2403,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 77,
+    "value": 76,
     "luxury": 61,
     "ownership": 92
    }
@@ -2445,7 +2445,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 73,
+    "value": 72,
     "luxury": 62,
     "ownership": 92
    }
@@ -2488,7 +2488,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 60,
+    "value": 59,
     "luxury": 65,
     "ownership": 92
    }
@@ -2530,7 +2530,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 59,
+    "value": 58,
     "luxury": 66,
     "ownership": 92
    }
@@ -2572,7 +2572,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 59,
+    "value": 58,
     "luxury": 66,
     "ownership": 92
    }
@@ -2657,7 +2657,7 @@
     "reliability": 93,
     "performance": 43,
     "efficiency": 60,
-    "value": 53,
+    "value": 52,
     "luxury": 67,
     "ownership": 92
    }
@@ -2786,7 +2786,7 @@
     "reliability": 93,
     "performance": 43,
     "efficiency": 60,
-    "value": 42,
+    "value": 41,
     "luxury": 70,
     "ownership": 92
    }
@@ -3001,7 +3001,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 97,
-    "value": 89,
+    "value": 94,
     "luxury": 56,
     "ownership": 92
    }
@@ -3044,7 +3044,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 97,
-    "value": 85,
+    "value": 89,
     "luxury": 57,
     "ownership": 92
    }
@@ -3087,7 +3087,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 97,
-    "value": 78,
+    "value": 83,
     "luxury": 59,
     "ownership": 92
    }
@@ -3129,7 +3129,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 85,
+    "value": 90,
     "luxury": 57,
     "ownership": 92
    }
@@ -3171,7 +3171,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 83,
+    "value": 87,
     "luxury": 58,
     "ownership": 92
    }
@@ -3213,7 +3213,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 70,
+    "value": 76,
     "luxury": 61,
     "ownership": 92
    }
@@ -3255,7 +3255,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 67,
+    "value": 72,
     "luxury": 62,
     "ownership": 92
    }
@@ -3297,7 +3297,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 60,
+    "value": 66,
     "luxury": 64,
     "ownership": 92
    }
@@ -3339,7 +3339,7 @@
     "reliability": 93,
     "performance": 38,
     "efficiency": 45,
-    "value": 80,
+    "value": 85,
     "luxury": 59,
     "ownership": 92
    }
@@ -3381,7 +3381,7 @@
     "reliability": 93,
     "performance": 38,
     "efficiency": 45,
-    "value": 78,
+    "value": 83,
     "luxury": 59,
     "ownership": 92
    }
@@ -3423,7 +3423,7 @@
     "reliability": 93,
     "performance": 38,
     "efficiency": 45,
-    "value": 66,
+    "value": 71,
     "luxury": 63,
     "ownership": 92
    }
@@ -3465,7 +3465,7 @@
     "reliability": 93,
     "performance": 38,
     "efficiency": 45,
-    "value": 62,
+    "value": 67,
     "luxury": 64,
     "ownership": 92
    }
@@ -3507,7 +3507,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 36,
-    "value": 94,
+    "value": 98,
     "luxury": 55,
     "ownership": 92
    }
@@ -3549,7 +3549,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 36,
-    "value": 91,
+    "value": 95,
     "luxury": 56,
     "ownership": 92
    }
@@ -3591,7 +3591,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 36,
-    "value": 82,
+    "value": 87,
     "luxury": 58,
     "ownership": 92
    }
@@ -3633,7 +3633,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 36,
-    "value": 74,
+    "value": 79,
     "luxury": 60,
     "ownership": 92
    }
@@ -3717,7 +3717,7 @@
     "reliability": 93,
     "performance": 64,
     "efficiency": 14,
-    "value": 1,
+    "value": 6,
     "luxury": 83,
     "ownership": 92
    }
@@ -4031,7 +4031,7 @@
     "reliability": 70,
     "performance": 73,
     "efficiency": 28,
-    "value": 75,
+    "value": 79,
     "luxury": 59,
     "ownership": 52
    }
@@ -4123,7 +4123,7 @@
     "reliability": 70,
     "performance": 61,
     "efficiency": 56,
-    "value": 85,
+    "value": 89,
     "luxury": 55,
     "ownership": 52
    }
@@ -4169,7 +4169,7 @@
     "reliability": 70,
     "performance": 83,
     "efficiency": 33,
-    "value": 24,
+    "value": 32,
     "luxury": 71,
     "ownership": 52
    }
@@ -4261,7 +4261,7 @@
     "reliability": 70,
     "performance": 60,
     "efficiency": 53,
-    "value": 90,
+    "value": 93,
     "luxury": 55,
     "ownership": 52
    }
@@ -4307,7 +4307,7 @@
     "reliability": 70,
     "performance": 37,
     "efficiency": 61,
-    "value": 62,
+    "value": 88,
     "luxury": 51,
     "ownership": 52
    }
@@ -4353,7 +4353,7 @@
     "reliability": 70,
     "performance": 60,
     "efficiency": 52,
-    "value": 38,
+    "value": 70,
     "luxury": 56,
     "ownership": 52
    }
@@ -4491,7 +4491,7 @@
     "reliability": 70,
     "performance": 83,
     "efficiency": 31,
-    "value": 33,
+    "value": 38,
     "luxury": 71,
     "ownership": 52
    }
@@ -4537,7 +4537,7 @@
     "reliability": 70,
     "performance": 81,
     "efficiency": 27,
-    "value": 16,
+    "value": 22,
     "luxury": 76,
     "ownership": 52
    }
@@ -4583,7 +4583,7 @@
     "reliability": 70,
     "performance": 32,
     "efficiency": 68,
-    "value": 74,
+    "value": 79,
     "luxury": 58,
     "ownership": 52
    }
@@ -4629,7 +4629,7 @@
     "reliability": 70,
     "performance": 57,
     "efficiency": 57,
-    "value": 39,
+    "value": 46,
     "luxury": 67,
     "ownership": 52
    }
@@ -4675,7 +4675,7 @@
     "reliability": 70,
     "performance": 71,
     "efficiency": 82,
-    "value": 53,
+    "value": 59,
     "luxury": 64,
     "ownership": 52
    }
@@ -4721,7 +4721,7 @@
     "reliability": 70,
     "performance": 52,
     "efficiency": 84,
-    "value": 57,
+    "value": 62,
     "luxury": 63,
     "ownership": 52
    }
@@ -4767,7 +4767,7 @@
     "reliability": 70,
     "performance": 87,
     "efficiency": 84,
-    "value": 37,
+    "value": 44,
     "luxury": 68,
     "ownership": 52
    }
@@ -5089,7 +5089,7 @@
     "reliability": 70,
     "performance": 52,
     "efficiency": 37,
-    "value": 31,
+    "value": 36,
     "luxury": 72,
     "ownership": 52
    }
@@ -5135,7 +5135,7 @@
     "reliability": 70,
     "performance": 80,
     "efficiency": 20,
-    "value": 5,
+    "value": 11,
     "luxury": 80,
     "ownership": 52
    }
@@ -5457,7 +5457,7 @@
     "reliability": 70,
     "performance": 44,
     "efficiency": 57,
-    "value": 93,
+    "value": 92,
     "luxury": 54,
     "ownership": 52
    }
@@ -5549,7 +5549,7 @@
     "reliability": 70,
     "performance": 60,
     "efficiency": 51,
-    "value": 70,
+    "value": 69,
     "luxury": 60,
     "ownership": 52
    }
@@ -5595,7 +5595,7 @@
     "reliability": 70,
     "performance": 64,
     "efficiency": 100,
-    "value": 73,
+    "value": 72,
     "luxury": 59,
     "ownership": 52
    }
@@ -5641,7 +5641,7 @@
     "reliability": 70,
     "performance": 44,
     "efficiency": 94,
-    "value": 86,
+    "value": 91,
     "luxury": 55,
     "ownership": 52
    }
@@ -5687,7 +5687,7 @@
     "reliability": 70,
     "performance": 56,
     "efficiency": 87,
-    "value": 79,
+    "value": 84,
     "luxury": 57,
     "ownership": 52
    }
@@ -5733,7 +5733,7 @@
     "reliability": 70,
     "performance": 86,
     "efficiency": 86,
-    "value": 58,
+    "value": 64,
     "luxury": 62,
     "ownership": 52
    }
@@ -5779,7 +5779,7 @@
     "reliability": 70,
     "performance": 56,
     "efficiency": 91,
-    "value": 48,
+    "value": 47,
     "luxury": 66,
     "ownership": 52
    }
@@ -5963,7 +5963,7 @@
     "reliability": 70,
     "performance": 67,
     "efficiency": 82,
-    "value": 38,
+    "value": 37,
     "luxury": 69,
     "ownership": 52
    }
@@ -6009,7 +6009,7 @@
     "reliability": 70,
     "performance": 75,
     "efficiency": 19,
-    "value": 10,
+    "value": 9,
     "luxury": 77,
     "ownership": 52
    }
@@ -6147,7 +6147,7 @@
     "reliability": 70,
     "performance": 76,
     "efficiency": 19,
-    "value": 8,
+    "value": 7,
     "luxury": 78,
     "ownership": 52
    }
@@ -6239,7 +6239,7 @@
     "reliability": 70,
     "performance": 48,
     "efficiency": 39,
-    "value": 17,
+    "value": 16,
     "luxury": 75,
     "ownership": 52
    }
@@ -6334,6 +6334,2214 @@
     "value": 1,
     "luxury": 100,
     "ownership": 52
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A3 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Subcompact luxury sedan",
+   "trim": "Komfort 40 TFSI quattro",
+   "year": 2026,
+   "ptType": "gas",
+   "engine": "2.0L turbo I4",
+   "hp": 201,
+   "torque": 236,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 8.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.3,
+   "topSpeed": 241,
+   "seats": 5,
+   "priceCad": 47400,
+   "notable": [
+    "Virtual Cockpit",
+    "10.1-inch MMI touch",
+    "LED headlights"
+   ],
+   "pros": [
+    "agile handling",
+    "standard quattro AWD",
+    "premium cabin for class"
+   ],
+   "cons": [
+    "tight rear seat",
+    "pricey for subcompact",
+    "small trunk"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 25,
+    "efficiency": 61,
+    "value": 100,
+    "luxury": 47,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A3 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Subcompact luxury sedan",
+   "trim": "Progressiv 40 TFSI quattro",
+   "year": 2026,
+   "ptType": "gas",
+   "engine": "2.0L turbo I4",
+   "hp": 201,
+   "torque": 236,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 8.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.3,
+   "topSpeed": 241,
+   "seats": 5,
+   "priceCad": 50500,
+   "notable": [
+    "upgraded interior trim",
+    "added driver assistance",
+    "premium audio"
+   ],
+   "pros": [
+    "agile handling",
+    "standard quattro AWD",
+    "well-equipped"
+   ],
+   "cons": [
+    "tight rear seat",
+    "options add up",
+    "small trunk"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 25,
+    "efficiency": 61,
+    "value": 100,
+    "luxury": 48,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A3 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Subcompact luxury sedan",
+   "trim": "Technik 40 TFSI quattro",
+   "year": 2026,
+   "ptType": "gas",
+   "engine": "2.0L turbo I4",
+   "hp": 201,
+   "torque": 236,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 8.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.3,
+   "topSpeed": 241,
+   "seats": 5,
+   "priceCad": 55100,
+   "notable": [
+    "Matrix LED headlamps",
+    "full driver-assistance suite",
+    "Bang & Olufsen audio"
+   ],
+   "pros": [
+    "fully loaded",
+    "agile handling",
+    "standard quattro AWD"
+   ],
+   "cons": [
+    "price near larger A5",
+    "tight rear seat",
+    "small trunk"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 25,
+    "efficiency": 61,
+    "value": 100,
+    "luxury": 50,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "S3 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Subcompact luxury performance sedan",
+   "trim": "Komfort",
+   "year": 2026,
+   "ptType": "gas",
+   "engine": "2.0L turbo I4",
+   "hp": 328,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 9.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 59200,
+   "notable": [
+    "torque-splitter rear diff",
+    "sport suspension",
+    "Virtual Cockpit"
+   ],
+   "pros": [
+    "quick and grippy",
+    "everyday usable",
+    "strong AWD traction"
+   ],
+   "cons": [
+    "firm ride",
+    "muted engine sound",
+    "small back seat"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 53,
+    "efficiency": 53,
+    "value": 100,
+    "luxury": 52,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "S3 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Subcompact luxury performance sedan",
+   "trim": "Progressiv",
+   "year": 2026,
+   "ptType": "gas",
+   "engine": "2.0L turbo I4",
+   "hp": 328,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 9.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 62100,
+   "notable": [
+    "upgraded trim",
+    "added driver assistance",
+    "premium audio"
+   ],
+   "pros": [
+    "quick and grippy",
+    "everyday usable",
+    "well-equipped"
+   ],
+   "cons": [
+    "firm ride",
+    "options add up",
+    "small back seat"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 53,
+    "efficiency": 53,
+    "value": 95,
+    "luxury": 53,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "S3 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Subcompact luxury performance sedan",
+   "trim": "Technik",
+   "year": 2026,
+   "ptType": "gas",
+   "engine": "2.0L turbo I4",
+   "hp": 328,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 9.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 66700,
+   "notable": [
+    "Matrix LED",
+    "full driver-assistance suite",
+    "Bang & Olufsen audio"
+   ],
+   "pros": [
+    "quick and grippy",
+    "fully loaded",
+    "strong AWD traction"
+   ],
+   "cons": [
+    "firm ride",
+    "pricey",
+    "small back seat"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 53,
+    "efficiency": 53,
+    "value": 88,
+    "luxury": 55,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "RS 3 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Subcompact luxury high-performance sedan",
+   "trim": "RS 3",
+   "year": 2026,
+   "ptType": "gas",
+   "engine": "2.5L turbo I5",
+   "hp": 394,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 10.3,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 3.8,
+   "topSpeed": 290,
+   "seats": 5,
+   "priceCad": 81700,
+   "notable": [
+    "RS Torque Splitter",
+    "iconic 5-cylinder engine",
+    "RS sport exhaust"
+   ],
+   "pros": [
+    "thrilling 5-cylinder sound",
+    "huge grip and pace",
+    "drift mode"
+   ],
+   "cons": [
+    "firm ride",
+    "expensive",
+    "small back seat"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 67,
+    "efficiency": 41,
+    "value": 66,
+    "luxury": 62,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A5",
+   "bodyStyle": "Hatchback",
+   "segment": "Compact luxury sedan (Sportback liftback; replaces former gas A4)",
+   "trim": "Komfort 45 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 mild hybrid",
+   "hp": 268,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 8.6,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.9,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 61150,
+   "notable": [
+    "11.9-in cluster + 14.5-in MMI",
+    "Sportback liftback",
+    "MHEV plus tech"
+   ],
+   "pros": [
+    "practical hatch versatility",
+    "strong turbo-four",
+    "modern digital cabin"
+   ],
+   "cons": [
+    "new-gen naming confusion",
+    "options pricey",
+    "no sedan/coupe option"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 35,
+    "efficiency": 60,
+    "value": 83,
+    "luxury": 53,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A5",
+   "bodyStyle": "Hatchback",
+   "segment": "Compact luxury sedan (Sportback liftback; replaces former gas A4)",
+   "trim": "Progressiv 45 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 mild hybrid",
+   "hp": 268,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 8.6,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.9,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 65750,
+   "notable": [
+    "upgraded trim",
+    "added driver assistance",
+    "premium audio"
+   ],
+   "pros": [
+    "practical hatch versatility",
+    "strong turbo-four",
+    "well-equipped"
+   ],
+   "cons": [
+    "options pricey",
+    "naming confusion",
+    "firm-ish ride"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 35,
+    "efficiency": 60,
+    "value": 75,
+    "luxury": 55,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A5",
+   "bodyStyle": "Hatchback",
+   "segment": "Compact luxury sedan (Sportback liftback; replaces former gas A4)",
+   "trim": "Technik 45 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 mild hybrid",
+   "hp": 268,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 8.6,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.9,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 67750,
+   "notable": [
+    "Matrix LED",
+    "full driver-assistance suite",
+    "passenger MMI display option"
+   ],
+   "pros": [
+    "fully loaded",
+    "practical hatch",
+    "strong turbo-four"
+   ],
+   "cons": [
+    "pricey loaded",
+    "naming confusion",
+    "no AWD-off option"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 35,
+    "efficiency": 60,
+    "value": 71,
+    "luxury": 56,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "S5",
+   "bodyStyle": "Hatchback",
+   "segment": "Compact luxury performance sedan (Sportback liftback)",
+   "trim": "Progressiv",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 362,
+   "torque": 406,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 10.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 75600,
+   "notable": [
+    "panoramic roof",
+    "leather sport seats",
+    "head-up display"
+   ],
+   "pros": [
+    "strong V6",
+    "quattro grip",
+    "practical liftback"
+   ],
+   "cons": [
+    "firm ride",
+    "thirsty",
+    "pricey options"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 57,
+    "efficiency": 42,
+    "value": 57,
+    "luxury": 59,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "S5",
+   "bodyStyle": "Hatchback",
+   "segment": "Compact luxury performance sedan (Sportback liftback)",
+   "trim": "Technik",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 362,
+   "torque": 406,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 10.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 79800,
+   "notable": [
+    "automatic parking assist",
+    "Matrix LED",
+    "Bang & Olufsen audio"
+   ],
+   "pros": [
+    "strong V6",
+    "fully loaded",
+    "practical liftback"
+   ],
+   "cons": [
+    "firm ride",
+    "thirsty",
+    "expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 57,
+    "efficiency": 42,
+    "value": 50,
+    "luxury": 61,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "RS 5",
+   "bodyStyle": "Coupe",
+   "segment": "Compact luxury high-performance coupe/Sportback",
+   "trim": "RS 5 (Coupe / Sportback)",
+   "year": 2026,
+   "ptType": "gas",
+   "engine": "2.9L twin-turbo V6",
+   "hp": 444,
+   "torque": 443,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 11.3,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 3.8,
+   "topSpeed": 280,
+   "seats": 4,
+   "priceCad": 127500,
+   "notable": [
+    "RS sport exhaust",
+    "quattro sport differential",
+    "RS design package"
+   ],
+   "pros": [
+    "fast and composed",
+    "everyday usability",
+    "strong brakes"
+   ],
+   "cons": [
+    "transitional model year (outgoing gen; new PHEV RS 5 arrives later)",
+    "expensive",
+    "muted V6 sound"
+   ],
+   "confidence": "low",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 72,
+    "efficiency": 30,
+    "value": 3,
+    "luxury": 82,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A6 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury sedan (gas, new C9 generation)",
+   "trim": "A6 55 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 362,
+   "torque": 406,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 10.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.2,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 85150,
+   "notable": [
+    "new C9 platform",
+    "digital cockpit",
+    "available Sport Plus package (replaces S6)"
+   ],
+   "pros": [
+    "smooth potent V6",
+    "quiet refined cabin",
+    "quattro AWD standard"
+   ],
+   "cons": [
+    "V6-only (no 4-cyl)",
+    "no gas S6 anymore",
+    "options pricey"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 51,
+    "efficiency": 42,
+    "value": 60,
+    "luxury": 63,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A6 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury sedan (gas, new C9 generation)",
+   "trim": "Progressiv",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 362,
+   "torque": 406,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 10.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.2,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 89650,
+   "notable": [
+    "upgraded trim",
+    "added driver assistance",
+    "premium audio"
+   ],
+   "pros": [
+    "smooth potent V6",
+    "quiet cabin",
+    "well-equipped"
+   ],
+   "cons": [
+    "V6-only",
+    "options pricey",
+    "firm-ish ride on big wheels"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 51,
+    "efficiency": 42,
+    "value": 53,
+    "luxury": 65,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A6 Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury sedan (gas, new C9 generation)",
+   "trim": "Technik",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 362,
+   "torque": 406,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 10.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.2,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 91100,
+   "notable": [
+    "Matrix LED",
+    "full driver-assistance suite",
+    "Sport Plus package available"
+   ],
+   "pros": [
+    "smooth potent V6",
+    "fully loaded",
+    "refined"
+   ],
+   "cons": [
+    "V6-only",
+    "expensive loaded",
+    "no S6 gas option"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 51,
+    "efficiency": 42,
+    "value": 51,
+    "luxury": 66,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "RS 6 Avant",
+   "bodyStyle": "Wagon",
+   "segment": "Midsize luxury high-performance wagon",
+   "trim": "RS 6 Avant performance",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 mild hybrid",
+   "hp": 621,
+   "torque": 627,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 14.4,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 3.4,
+   "topSpeed": 305,
+   "seats": 5,
+   "priceCad": 155818,
+   "notable": [
+    "twin-turbo V8",
+    "RS adaptive air suspension",
+    "carbon-ceramic brakes available"
+   ],
+   "pros": [
+    "supercar pace",
+    "huge wagon practicality",
+    "menacing presence"
+   ],
+   "cons": [
+    "very thirsty",
+    "very expensive",
+    "firm on rough roads"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 93,
+    "efficiency": 1,
+    "value": 50,
+    "luxury": 94,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "RS 7",
+   "bodyStyle": "Hatchback",
+   "segment": "Full-size luxury high-performance fastback",
+   "trim": "RS 7 performance",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 mild hybrid",
+   "hp": 621,
+   "torque": 627,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 14.4,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 3.4,
+   "topSpeed": 305,
+   "seats": 5,
+   "priceCad": 161188,
+   "notable": [
+    "fastback styling",
+    "RS sport exhaust",
+    "carbon-ceramic brakes available"
+   ],
+   "pros": [
+    "supercar pace",
+    "striking design",
+    "grand-touring comfort"
+   ],
+   "cons": [
+    "very thirsty",
+    "very expensive",
+    "A7/S7 siblings discontinued"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 93,
+    "efficiency": 1,
+    "value": 1,
+    "luxury": 96,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "A8 L",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size luxury flagship sedan",
+   "trim": "A8 L 55 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 335,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 11.3,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.7,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 112000,
+   "notable": [
+    "long-wheelbase",
+    "adaptive air suspension",
+    "rear-seat luxury package available"
+   ],
+   "pros": [
+    "hushed luxury ride",
+    "understated styling",
+    "strong V6"
+   ],
+   "cons": [
+    "less rear flash than rivals",
+    "aging platform",
+    "price estimated"
+   ],
+   "confidence": "low",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 44,
+    "efficiency": 30,
+    "value": 19,
+    "luxury": 75,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "S8",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size luxury performance flagship sedan",
+   "trim": "S8",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 mild hybrid",
+   "hp": 563,
+   "torque": 590,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 13.3,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 3.8,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 145000,
+   "notable": [
+    "predictive active suspension",
+    "twin-turbo V8",
+    "rear-seat luxury"
+   ],
+   "pros": [
+    "limo comfort with V8 pace",
+    "discreet styling",
+    "advanced suspension"
+   ],
+   "cons": [
+    "thirsty",
+    "very expensive",
+    "price estimated"
+   ],
+   "confidence": "low",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 84,
+    "efficiency": 8,
+    "value": 1,
+    "luxury": 89,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q3",
+   "bodyStyle": "SUV",
+   "segment": "Subcompact luxury SUV (all-new 3rd generation)",
+   "trim": "Progressiv 45 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4",
+   "hp": 255,
+   "torque": 273,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 10.0,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.9,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 55250,
+   "notable": [
+    "11.9-in cluster + 12.8-in display",
+    "new platform",
+    "quattro standard"
+   ],
+   "pros": [
+    "strong base engine",
+    "upscale new interior",
+    "standard AWD"
+   ],
+   "cons": [
+    "big price jump vs 2025",
+    "no PHEV in Canada",
+    "small for the money"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 34,
+    "efficiency": 44,
+    "value": 100,
+    "luxury": 50,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q3",
+   "bodyStyle": "SUV",
+   "segment": "Subcompact luxury SUV (all-new 3rd generation)",
+   "trim": "Technik 45 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4",
+   "hp": 255,
+   "torque": 273,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 10.0,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.9,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 58550,
+   "notable": [
+    "Matrix LED",
+    "full driver-assistance suite",
+    "premium audio"
+   ],
+   "pros": [
+    "strong base engine",
+    "well-equipped",
+    "standard AWD"
+   ],
+   "cons": [
+    "pricey for subcompact",
+    "no PHEV in Canada",
+    "modest cargo"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 34,
+    "efficiency": 44,
+    "value": 99,
+    "luxury": 52,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q5",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury SUV (new generation)",
+   "trim": "Komfort 45 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 mild hybrid",
+   "hp": 268,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 9.9,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.3,
+   "topSpeed": 230,
+   "seats": 5,
+   "priceCad": 62150,
+   "notable": [
+    "digital cockpit",
+    "quattro standard",
+    "4,400 lb towing"
+   ],
+   "pros": [
+    "well-rounded",
+    "strong MHEV four",
+    "spacious cabin"
+   ],
+   "cons": [
+    "pricey options",
+    "firm on big wheels",
+    "dual-clutch low-speed lag"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 32,
+    "efficiency": 46,
+    "value": 94,
+    "luxury": 53,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q5",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury SUV (new generation)",
+   "trim": "Progressiv",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 mild hybrid",
+   "hp": 268,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 9.9,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.3,
+   "topSpeed": 230,
+   "seats": 5,
+   "priceCad": 67350,
+   "notable": [
+    "upgraded trim",
+    "added driver assistance",
+    "premium audio"
+   ],
+   "pros": [
+    "well-rounded",
+    "strong MHEV four",
+    "well-equipped"
+   ],
+   "cons": [
+    "pricey options",
+    "firm on big wheels",
+    "modest sound"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 32,
+    "efficiency": 46,
+    "value": 86,
+    "luxury": 56,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q5",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury SUV (new generation)",
+   "trim": "Technik",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 mild hybrid",
+   "hp": 268,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 9.9,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.3,
+   "topSpeed": 230,
+   "seats": 5,
+   "priceCad": 68850,
+   "notable": [
+    "Matrix LED",
+    "full driver-assistance suite",
+    "Bang & Olufsen audio"
+   ],
+   "pros": [
+    "well-rounded",
+    "fully loaded",
+    "spacious cabin"
+   ],
+   "cons": [
+    "pricey loaded",
+    "firm on big wheels",
+    "dual-clutch low-speed lag"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 32,
+    "efficiency": 46,
+    "value": 83,
+    "luxury": 56,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q5 Sportback",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury coupe-SUV",
+   "trim": "Q5 Sportback (Progressiv)",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 mild hybrid",
+   "hp": 268,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 9.9,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.3,
+   "topSpeed": 230,
+   "seats": 5,
+   "priceCad": 69600,
+   "notable": [
+    "sloping coupe roofline",
+    "digital cockpit",
+    "quattro standard"
+   ],
+   "pros": [
+    "sleek styling",
+    "strong MHEV four",
+    "premium cabin"
+   ],
+   "cons": [
+    "less cargo than Q5",
+    "premium over Q5",
+    "firm on big wheels"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 32,
+    "efficiency": 46,
+    "value": 82,
+    "luxury": 57,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "SQ5",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury performance SUV",
+   "trim": "Progressiv",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 362,
+   "torque": 406,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 11.4,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.8,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 82150,
+   "notable": [
+    "sport-tuned chassis",
+    "V6 power",
+    "quattro sport diff available"
+   ],
+   "pros": [
+    "quick and refined",
+    "everyday usability",
+    "strong V6"
+   ],
+   "cons": [
+    "thirsty",
+    "pricey",
+    "firm ride"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 55,
+    "efficiency": 29,
+    "value": 63,
+    "luxury": 62,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "SQ5",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury performance SUV",
+   "trim": "Technik",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 362,
+   "torque": 406,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 11.4,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.8,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 84650,
+   "notable": [
+    "Matrix LED",
+    "full driver-assistance suite",
+    "Bang & Olufsen audio"
+   ],
+   "pros": [
+    "quick and refined",
+    "fully loaded",
+    "strong V6"
+   ],
+   "cons": [
+    "thirsty",
+    "expensive",
+    "firm ride"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 55,
+    "efficiency": 29,
+    "value": 59,
+    "luxury": 63,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "SQ5 Sportback",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury performance coupe-SUV",
+   "trim": "SQ5 Sportback",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 362,
+   "torque": 406,
+   "drivetrain": "AWD",
+   "transmission": "7-spd S tronic dual-clutch",
+   "fuelL100": 11.4,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.8,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 84400,
+   "notable": [
+    "sloping coupe roofline",
+    "sport-tuned chassis",
+    "V6 power"
+   ],
+   "pros": [
+    "sleek and quick",
+    "strong V6",
+    "premium cabin"
+   ],
+   "cons": [
+    "less cargo",
+    "thirsty",
+    "expensive"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 55,
+    "efficiency": 29,
+    "value": 59,
+    "luxury": 63,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q7",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury 3-row SUV",
+   "trim": "Komfort 45 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 mild hybrid",
+   "hp": 261,
+   "torque": 273,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 11.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 7.0,
+   "topSpeed": 233,
+   "seats": 7,
+   "priceCad": 81265,
+   "notable": [
+    "3-row seating",
+    "air suspension available",
+    "4,400 lb towing"
+   ],
+   "pros": [
+    "spacious and quiet",
+    "high-quality cabin",
+    "smooth ride"
+   ],
+   "cons": [
+    "base 4-cyl works hard",
+    "third row tight",
+    "options costly"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 25,
+    "efficiency": 28,
+    "value": 64,
+    "luxury": 62,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q7",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury 3-row SUV",
+   "trim": "Progressiv 55 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 335,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 12.0,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.6,
+   "topSpeed": 250,
+   "seats": 7,
+   "priceCad": 89000,
+   "notable": [
+    "V6 power",
+    "air suspension",
+    "7,700 lb towing"
+   ],
+   "pros": [
+    "strong smooth V6",
+    "spacious quiet cabin",
+    "good towing"
+   ],
+   "cons": [
+    "thirsty",
+    "third row tight",
+    "options costly"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 45,
+    "efficiency": 22,
+    "value": 52,
+    "luxury": 65,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q7",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury 3-row SUV",
+   "trim": "Technik 55 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 335,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 12.0,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.6,
+   "topSpeed": 250,
+   "seats": 7,
+   "priceCad": 96000,
+   "notable": [
+    "Matrix LED",
+    "full driver-assistance suite",
+    "Bang & Olufsen 3D audio"
+   ],
+   "pros": [
+    "strong smooth V6",
+    "fully loaded",
+    "spacious quiet cabin"
+   ],
+   "cons": [
+    "thirsty",
+    "expensive loaded",
+    "third row tight"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 45,
+    "efficiency": 22,
+    "value": 41,
+    "luxury": 68,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "SQ7",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury performance 3-row SUV",
+   "trim": "SQ7",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 mild hybrid",
+   "hp": 500,
+   "torque": 568,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 13.8,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.1,
+   "topSpeed": 250,
+   "seats": 7,
+   "priceCad": 125110,
+   "notable": [
+    "twin-turbo V8",
+    "active roll stabilization",
+    "quattro sport differential"
+   ],
+   "pros": [
+    "V8 muscle in 3-row SUV",
+    "composed handling",
+    "luxury cabin"
+   ],
+   "cons": [
+    "very thirsty",
+    "expensive",
+    "third row tight"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 75,
+    "efficiency": 2,
+    "value": 1,
+    "luxury": 81,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q8",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury coupe-SUV flagship",
+   "trim": "Progressiv 55 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 335,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 12.1,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 97750,
+   "notable": [
+    "coupe-SUV styling",
+    "air suspension",
+    "Valcona leather, B&O audio"
+   ],
+   "pros": [
+    "striking design",
+    "luxurious cabin",
+    "smooth V6"
+   ],
+   "cons": [
+    "less cargo than Q7",
+    "5-seat only",
+    "thirsty"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 45,
+    "efficiency": 21,
+    "value": 38,
+    "luxury": 69,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q8",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury coupe-SUV flagship",
+   "trim": "Technik 55 TFSI quattro",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo V6 mild hybrid",
+   "hp": 335,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 12.1,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 106540,
+   "notable": [
+    "Matrix LED",
+    "full driver-assistance suite",
+    "360 cameras, night vision"
+   ],
+   "pros": [
+    "striking design",
+    "fully loaded",
+    "luxurious cabin"
+   ],
+   "cons": [
+    "less cargo than Q7",
+    "expensive",
+    "thirsty"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 45,
+    "efficiency": 21,
+    "value": 25,
+    "luxury": 73,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "SQ8",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury performance coupe-SUV",
+   "trim": "SQ8",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 mild hybrid",
+   "hp": 500,
+   "torque": 568,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 14.1,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.1,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 134572,
+   "notable": [
+    "twin-turbo V8",
+    "carbon accents",
+    "4-zone climate"
+   ],
+   "pros": [
+    "V8 pace and sound",
+    "composed handling",
+    "luxury cabin"
+   ],
+   "cons": [
+    "very thirsty",
+    "expensive",
+    "5-seat only"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 75,
+    "efficiency": 1,
+    "value": 1,
+    "luxury": 85,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "RS Q8",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury high-performance coupe-SUV",
+   "trim": "RS Q8 performance",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 mild hybrid",
+   "hp": 631,
+   "torque": 627,
+   "drivetrain": "AWD",
+   "transmission": "8-spd Tiptronic",
+   "fuelL100": 14.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 3.6,
+   "topSpeed": 305,
+   "seats": 5,
+   "priceCad": 172600,
+   "notable": [
+    "active roll stabilization",
+    "carbon-ceramic brakes available",
+    "massage seats"
+   ],
+   "pros": [
+    "supercar pace in an SUV",
+    "huge grip",
+    "luxury appointments"
+   ],
+   "cons": [
+    "extremely thirsty",
+    "very expensive",
+    "firm ride"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 93,
+    "efficiency": 1,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q4 e-tron",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury electric SUV",
+   "trim": "Q4 e-tron 45",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "single rear motor",
+   "hp": 281,
+   "torque": 402,
+   "drivetrain": "RWD",
+   "transmission": "1-spd",
+   "fuelL100": null,
+   "evRangeKm": 463,
+   "batteryKwh": 82,
+   "zero100": 6.6,
+   "topSpeed": 180,
+   "seats": 5,
+   "priceCad": 63440,
+   "notable": [
+    "82 kWh battery",
+    "augmented-reality HUD available",
+    "RWD efficiency"
+   ],
+   "pros": [
+    "good range for class",
+    "comfortable ride",
+    "practical cabin"
+   ],
+   "cons": [
+    "modest charging speed",
+    "softer dynamics",
+    "base infotainment dated"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 30,
+    "efficiency": 87,
+    "value": 92,
+    "luxury": 54,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q4 e-tron",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury electric SUV",
+   "trim": "Q4 e-tron 55 quattro",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual motor",
+   "hp": 335,
+   "torque": 502,
+   "drivetrain": "AWD",
+   "transmission": "1-spd",
+   "fuelL100": null,
+   "evRangeKm": 404,
+   "batteryKwh": 82,
+   "zero100": 5.3,
+   "topSpeed": 180,
+   "seats": 5,
+   "priceCad": 68440,
+   "notable": [
+    "dual-motor quattro",
+    "82 kWh battery",
+    "AR HUD available"
+   ],
+   "pros": [
+    "quick and grippy",
+    "AWD traction",
+    "practical cabin"
+   ],
+   "cons": [
+    "range drops vs RWD",
+    "modest charging speed",
+    "softer dynamics"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 48,
+    "efficiency": 82,
+    "value": 84,
+    "luxury": 56,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q4 Sportback e-tron",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury electric coupe-SUV",
+   "trim": "Q4 Sportback e-tron 55 quattro",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual motor",
+   "hp": 335,
+   "torque": 502,
+   "drivetrain": "AWD",
+   "transmission": "1-spd",
+   "fuelL100": null,
+   "evRangeKm": 415,
+   "batteryKwh": 82,
+   "zero100": 5.3,
+   "topSpeed": 180,
+   "seats": 5,
+   "priceCad": 76900,
+   "notable": [
+    "sloping roofline",
+    "dual-motor quattro",
+    "82 kWh battery"
+   ],
+   "pros": [
+    "sleek styling",
+    "slightly more range than SUV quattro",
+    "AWD traction"
+   ],
+   "cons": [
+    "premium over SUV",
+    "modest charging speed",
+    "less headroom"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 48,
+    "efficiency": 83,
+    "value": 71,
+    "luxury": 60,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q6 e-tron",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury electric SUV (PPE 800V platform)",
+   "trim": "Q6 e-tron quattro",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual motor",
+   "hp": 456,
+   "torque": null,
+   "drivetrain": "AWD",
+   "transmission": "1-spd",
+   "fuelL100": null,
+   "evRangeKm": 513,
+   "batteryKwh": 100,
+   "zero100": 5.4,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 90000,
+   "notable": [
+    "800V architecture",
+    "270 kW fast charging (10-80% ~21 min)",
+    "OLED rear lights"
+   ],
+   "pros": [
+    "fast charging",
+    "strong range",
+    "premium new-gen cabin"
+   ],
+   "cons": [
+    "pricing estimated/not finalized for Canada",
+    "options pricey",
+    "limited early availability"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 59,
+    "efficiency": 92,
+    "value": 50,
+    "luxury": 65,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q6 e-tron Sportback",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury electric coupe-SUV",
+   "trim": "Q6 Sportback e-tron quattro",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual motor",
+   "hp": 456,
+   "torque": null,
+   "drivetrain": "AWD",
+   "transmission": "1-spd",
+   "fuelL100": null,
+   "evRangeKm": 520,
+   "batteryKwh": 100,
+   "zero100": 5.4,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 93000,
+   "notable": [
+    "sloping roofline",
+    "800V architecture",
+    "270 kW fast charging"
+   ],
+   "pros": [
+    "sleek styling",
+    "strong range",
+    "fast charging"
+   ],
+   "cons": [
+    "pricing estimated for Canada",
+    "premium over SUV",
+    "limited early availability"
+   ],
+   "confidence": "low",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 59,
+    "efficiency": 92,
+    "value": 46,
+    "luxury": 67,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "SQ6 e-tron",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury performance electric SUV",
+   "trim": "SQ6 e-tron",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual motor",
+   "hp": 509,
+   "torque": null,
+   "drivetrain": "AWD",
+   "transmission": "1-spd",
+   "fuelL100": null,
+   "evRangeKm": 443,
+   "batteryKwh": 100,
+   "zero100": 4.3,
+   "topSpeed": 230,
+   "seats": 5,
+   "priceCad": 107000,
+   "notable": [
+    "performance dual-motor",
+    "800V architecture",
+    "270 kW fast charging"
+   ],
+   "pros": [
+    "quick acceleration",
+    "fast charging",
+    "premium cabin"
+   ],
+   "cons": [
+    "pricing estimated for Canada",
+    "range trails Q6",
+    "options pricey"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 74,
+    "efficiency": 86,
+    "value": 24,
+    "luxury": 73,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "SQ6 e-tron Sportback",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury performance electric coupe-SUV",
+   "trim": "SQ6 Sportback e-tron",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual motor",
+   "hp": 509,
+   "torque": null,
+   "drivetrain": "AWD",
+   "transmission": "1-spd",
+   "fuelL100": null,
+   "evRangeKm": 450,
+   "batteryKwh": 100,
+   "zero100": 4.3,
+   "topSpeed": 230,
+   "seats": 5,
+   "priceCad": 110000,
+   "notable": [
+    "sloping roofline",
+    "performance dual-motor",
+    "800V architecture"
+   ],
+   "pros": [
+    "quick and sleek",
+    "fast charging",
+    "premium cabin"
+   ],
+   "cons": [
+    "pricing estimated for Canada",
+    "premium over SUV",
+    "options pricey"
+   ],
+   "confidence": "low",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 74,
+    "efficiency": 86,
+    "value": 19,
+    "luxury": 74,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "S e-tron GT",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size luxury electric performance GT",
+   "trim": "S e-tron GT",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual motor",
+   "hp": 670,
+   "torque": null,
+   "drivetrain": "AWD",
+   "transmission": "2-spd rear axle",
+   "fuelL100": null,
+   "evRangeKm": 483,
+   "batteryKwh": 105,
+   "zero100": 3.4,
+   "topSpeed": 245,
+   "seats": 4,
+   "priceCad": 168940,
+   "notable": [
+    "105 kWh (97 usable) battery",
+    "320 kW fast charging (10-80% ~18 min)",
+    "2-speed transmission"
+   ],
+   "pros": [
+    "effortless pace",
+    "stunning design",
+    "rapid charging"
+   ],
+   "cons": [
+    "expensive",
+    "low-slung practicality",
+    "heavy"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 96,
+    "efficiency": 89,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "RS e-tron GT",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size luxury high-performance electric GT",
+   "trim": "RS e-tron GT",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual motor",
+   "hp": 845,
+   "torque": null,
+   "drivetrain": "AWD",
+   "transmission": "2-spd rear axle",
+   "fuelL100": null,
+   "evRangeKm": 455,
+   "batteryKwh": 105,
+   "zero100": 2.8,
+   "topSpeed": 250,
+   "seats": 4,
+   "priceCad": 188000,
+   "notable": [
+    "push-to-pass boost",
+    "320 kW fast charging",
+    "active suspension available"
+   ],
+   "pros": [
+    "brutal acceleration",
+    "stunning design",
+    "rapid charging"
+   ],
+   "cons": [
+    "very expensive",
+    "range trails S",
+    "price estimated"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 100,
+    "efficiency": 87,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "RS e-tron GT",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size luxury high-performance electric GT",
+   "trim": "RS e-tron GT performance",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual motor",
+   "hp": 912,
+   "torque": null,
+   "drivetrain": "AWD",
+   "transmission": "2-spd rear axle",
+   "fuelL100": null,
+   "evRangeKm": 447,
+   "batteryKwh": 105,
+   "zero100": 2.5,
+   "topSpeed": 250,
+   "seats": 4,
+   "priceCad": 224235,
+   "notable": [
+    "912 hp peak (with boost)",
+    "ceramic brakes available",
+    "20-in aero wheels"
+   ],
+   "pros": [
+    "fastest-accelerating Audi ever",
+    "stunning design",
+    "rapid charging"
+   ],
+   "cons": [
+    "extremely expensive",
+    "range trails S",
+    "heavy"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 100,
+    "efficiency": 86,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 50
+   }
+  },
+  {
+   "brand": "Audi",
+   "model": "Q8 e-tron / SQ8 e-tron",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury electric SUV/coupe-SUV (DISCONTINUED - leftover only)",
+   "trim": "Q8 e-tron / SQ8 e-tron (leftover 2025 stock)",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "dual/tri motor",
+   "hp": 402,
+   "torque": null,
+   "drivetrain": "AWD",
+   "transmission": "1-spd",
+   "fuelL100": null,
+   "evRangeKm": 459,
+   "batteryKwh": 114,
+   "zero100": 5.6,
+   "topSpeed": 200,
+   "seats": 5,
+   "priceCad": 89990,
+   "notable": [
+    "114 kWh battery",
+    "discontinued (Brussels plant closed Feb 2025)",
+    "available only as leftover 2025 inventory"
+   ],
+   "pros": [
+    "large battery / decent range",
+    "spacious quiet cabin",
+    "potential clearance discounts"
+   ],
+   "cons": [
+    "DISCONTINUED - no 2026 model year",
+    "slow charging vs new PPE EVs",
+    "depreciation risk"
+   ],
+   "confidence": "low",
+   "image": null,
+   "scores": {
+    "reliability": 50,
+    "performance": 52,
+    "efficiency": 87,
+    "value": 51,
+    "luxury": 65,
+    "ownership": 50
    }
   }
  ]

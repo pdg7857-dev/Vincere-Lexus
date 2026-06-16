@@ -1,0 +1,848 @@
+{
+  "brand": "Audi",
+  "market": "Canada",
+  "year": 2026,
+  "currency": "CAD",
+  "brandReliability": {
+    "score_100": 50,
+    "rank_note": "J.D. Power 2025 VDS ~273 PP100 (worst of the German three; industry avg ~190 PP100, lower is better). Consumer Reports 2026 reliability ranking fell to ~16th. Composite ~50/100.",
+    "predicted_owner_cost_note": "Above-average repair and maintenance costs typical of German luxury brands; complex turbo/quattro drivetrains and electronics drive higher out-of-warranty expense. EV (e-tron) models less proven long-term but lower scheduled-service cost.",
+    "sources": [
+      "https://www.jdpower.com/business/press-releases/2025-us-vehicle-dependability-study-vds",
+      "https://www.consumerreports.org/cars/car-reliability-owner-satisfaction/who-makes-the-most-reliable-cars/"
+    ]
+  },
+  "warranty": {
+    "comprehensive": "4 yr / 80,000 km",
+    "powertrain": "4 yr / 80,000 km",
+    "corrosion": "12 yr / unlimited km",
+    "roadside": "4 yr / unlimited km",
+    "ev_battery": "8 yr / 160,000 km",
+    "notes": "No separate longer powertrain warranty in Canada (same 4 yr/80,000 km as comprehensive). EV high-voltage battery covered 8 yr/160,000 km."
+  },
+  "maintenance": {
+    "complimentary_plan": "3 yr complimentary scheduled maintenance (new for 2026 model year; previously only first service / 1 yr). Audi Care prepaid maintenance plans available to extend coverage.",
+    "est_5yr_service_cad": 4600,
+    "est_annual_service_cad": 920,
+    "notes": "First 3 years of scheduled maintenance now included for 2026 MY. Realistic 5-yr out-of-pocket ~$4,600 after the free period, driven by years 4-5 services plus wear items (brakes, tires, brake fluid) not covered. EVs have materially lower scheduled-service cost."
+  },
+  "models": [
+    {
+      "model": "A3 Sedan",
+      "bodyStyle": "Sedan",
+      "segment": "Subcompact luxury sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Komfort 40 TFSI quattro",
+          "price_cad": 47400,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 201, "torque_lbft": 236, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 8.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.3, "top_speed_kmh": 241 },
+          "seats": 5,
+          "notable_features": ["Virtual Cockpit", "10.1-inch MMI touch", "LED headlights"],
+          "pros": ["agile handling", "standard quattro AWD", "premium cabin for class"],
+          "cons": ["tight rear seat", "pricey for subcompact", "small trunk"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Progressiv 40 TFSI quattro",
+          "price_cad": 50500,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 201, "torque_lbft": 236, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 8.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.3, "top_speed_kmh": 241 },
+          "seats": 5,
+          "notable_features": ["upgraded interior trim", "added driver assistance", "premium audio"],
+          "pros": ["agile handling", "standard quattro AWD", "well-equipped"],
+          "cons": ["tight rear seat", "options add up", "small trunk"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Technik 40 TFSI quattro",
+          "price_cad": 55100,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 201, "torque_lbft": 236, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 8.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.3, "top_speed_kmh": 241 },
+          "seats": 5,
+          "notable_features": ["Matrix LED headlamps", "full driver-assistance suite", "Bang & Olufsen audio"],
+          "pros": ["fully loaded", "agile handling", "standard quattro AWD"],
+          "cons": ["price near larger A5", "tight rear seat", "small trunk"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "S3 Sedan",
+      "bodyStyle": "Sedan",
+      "segment": "Subcompact luxury performance sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Komfort",
+          "price_cad": 59200,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 328, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 9.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["torque-splitter rear diff", "sport suspension", "Virtual Cockpit"],
+          "pros": ["quick and grippy", "everyday usable", "strong AWD traction"],
+          "cons": ["firm ride", "muted engine sound", "small back seat"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Progressiv",
+          "price_cad": 62100,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 328, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 9.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["upgraded trim", "added driver assistance", "premium audio"],
+          "pros": ["quick and grippy", "everyday usable", "well-equipped"],
+          "cons": ["firm ride", "options add up", "small back seat"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Technik",
+          "price_cad": 66700,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 328, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 9.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["Matrix LED", "full driver-assistance suite", "Bang & Olufsen audio"],
+          "pros": ["quick and grippy", "fully loaded", "strong AWD traction"],
+          "cons": ["firm ride", "pricey", "small back seat"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "RS 3 Sedan",
+      "bodyStyle": "Sedan",
+      "segment": "Subcompact luxury high-performance sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "RS 3",
+          "price_cad": 81700,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.5L turbo I5", "hp": 394, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 10.3, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.8, "top_speed_kmh": 290 },
+          "seats": 5,
+          "notable_features": ["RS Torque Splitter", "iconic 5-cylinder engine", "RS sport exhaust"],
+          "pros": ["thrilling 5-cylinder sound", "huge grip and pace", "drift mode"],
+          "cons": ["firm ride", "expensive", "small back seat"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "A5",
+      "bodyStyle": "Hatchback",
+      "segment": "Compact luxury sedan (Sportback liftback; replaces former gas A4)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Komfort 45 TFSI quattro",
+          "price_cad": 61150,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 mild hybrid", "hp": 268, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 8.6, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.9, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["11.9-in cluster + 14.5-in MMI", "Sportback liftback", "MHEV plus tech"],
+          "pros": ["practical hatch versatility", "strong turbo-four", "modern digital cabin"],
+          "cons": ["new-gen naming confusion", "options pricey", "no sedan/coupe option"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Progressiv 45 TFSI quattro",
+          "price_cad": 65750,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 mild hybrid", "hp": 268, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 8.6, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.9, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["upgraded trim", "added driver assistance", "premium audio"],
+          "pros": ["practical hatch versatility", "strong turbo-four", "well-equipped"],
+          "cons": ["options pricey", "naming confusion", "firm-ish ride"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Technik 45 TFSI quattro",
+          "price_cad": 67750,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 mild hybrid", "hp": 268, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 8.6, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.9, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["Matrix LED", "full driver-assistance suite", "passenger MMI display option"],
+          "pros": ["fully loaded", "practical hatch", "strong turbo-four"],
+          "cons": ["pricey loaded", "naming confusion", "no AWD-off option"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "S5",
+      "bodyStyle": "Hatchback",
+      "segment": "Compact luxury performance sedan (Sportback liftback)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Progressiv",
+          "price_cad": 75600,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 362, "torque_lbft": 406, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 10.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["panoramic roof", "leather sport seats", "head-up display"],
+          "pros": ["strong V6", "quattro grip", "practical liftback"],
+          "cons": ["firm ride", "thirsty", "pricey options"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Technik",
+          "price_cad": 79800,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 362, "torque_lbft": 406, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 10.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["automatic parking assist", "Matrix LED", "Bang & Olufsen audio"],
+          "pros": ["strong V6", "fully loaded", "practical liftback"],
+          "cons": ["firm ride", "thirsty", "expensive"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "RS 5",
+      "bodyStyle": "Coupe",
+      "segment": "Compact luxury high-performance coupe/Sportback",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "RS 5 (Coupe / Sportback)",
+          "price_cad": 127500,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.9L twin-turbo V6", "hp": 444, "torque_lbft": 443, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 11.3, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.8, "top_speed_kmh": 280 },
+          "seats": 4,
+          "notable_features": ["RS sport exhaust", "quattro sport differential", "RS design package"],
+          "pros": ["fast and composed", "everyday usability", "strong brakes"],
+          "cons": ["transitional model year (outgoing gen; new PHEV RS 5 arrives later)", "expensive", "muted V6 sound"],
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "model": "A6 Sedan",
+      "bodyStyle": "Sedan",
+      "segment": "Midsize luxury sedan (gas, new C9 generation)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "A6 55 TFSI quattro",
+          "price_cad": 85150,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 362, "torque_lbft": 406, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 10.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.2, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["new C9 platform", "digital cockpit", "available Sport Plus package (replaces S6)"],
+          "pros": ["smooth potent V6", "quiet refined cabin", "quattro AWD standard"],
+          "cons": ["V6-only (no 4-cyl)", "no gas S6 anymore", "options pricey"],
+          "confidence": "med"
+        },
+        {
+          "trim": "Progressiv",
+          "price_cad": 89650,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 362, "torque_lbft": 406, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 10.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.2, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["upgraded trim", "added driver assistance", "premium audio"],
+          "pros": ["smooth potent V6", "quiet cabin", "well-equipped"],
+          "cons": ["V6-only", "options pricey", "firm-ish ride on big wheels"],
+          "confidence": "med"
+        },
+        {
+          "trim": "Technik",
+          "price_cad": 91100,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 362, "torque_lbft": 406, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 10.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.2, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["Matrix LED", "full driver-assistance suite", "Sport Plus package available"],
+          "pros": ["smooth potent V6", "fully loaded", "refined"],
+          "cons": ["V6-only", "expensive loaded", "no S6 gas option"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "RS 6 Avant",
+      "bodyStyle": "Wagon",
+      "segment": "Midsize luxury high-performance wagon",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "RS 6 Avant performance",
+          "price_cad": 155818,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.0L twin-turbo V8 mild hybrid", "hp": 621, "torque_lbft": 627, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 14.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.4, "top_speed_kmh": 305 },
+          "seats": 5,
+          "notable_features": ["twin-turbo V8", "RS adaptive air suspension", "carbon-ceramic brakes available"],
+          "pros": ["supercar pace", "huge wagon practicality", "menacing presence"],
+          "cons": ["very thirsty", "very expensive", "firm on rough roads"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "RS 7",
+      "bodyStyle": "Hatchback",
+      "segment": "Full-size luxury high-performance fastback",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "RS 7 performance",
+          "price_cad": 161188,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.0L twin-turbo V8 mild hybrid", "hp": 621, "torque_lbft": 627, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 14.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.4, "top_speed_kmh": 305 },
+          "seats": 5,
+          "notable_features": ["fastback styling", "RS sport exhaust", "carbon-ceramic brakes available"],
+          "pros": ["supercar pace", "striking design", "grand-touring comfort"],
+          "cons": ["very thirsty", "very expensive", "A7/S7 siblings discontinued"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "A8 L",
+      "bodyStyle": "Sedan",
+      "segment": "Full-size luxury flagship sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "A8 L 55 TFSI quattro",
+          "price_cad": 112000,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 335, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 11.3, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.7, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["long-wheelbase", "adaptive air suspension", "rear-seat luxury package available"],
+          "pros": ["hushed luxury ride", "understated styling", "strong V6"],
+          "cons": ["less rear flash than rivals", "aging platform", "price estimated"],
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "model": "S8",
+      "bodyStyle": "Sedan",
+      "segment": "Full-size luxury performance flagship sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "S8",
+          "price_cad": 145000,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.0L twin-turbo V8 mild hybrid", "hp": 563, "torque_lbft": 590, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 13.3, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.8, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["predictive active suspension", "twin-turbo V8", "rear-seat luxury"],
+          "pros": ["limo comfort with V8 pace", "discreet styling", "advanced suspension"],
+          "cons": ["thirsty", "very expensive", "price estimated"],
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "model": "Q3",
+      "bodyStyle": "SUV",
+      "segment": "Subcompact luxury SUV (all-new 3rd generation)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Progressiv 45 TFSI quattro",
+          "price_cad": 55250,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4", "hp": 255, "torque_lbft": 273, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 10.0, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.9, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["11.9-in cluster + 12.8-in display", "new platform", "quattro standard"],
+          "pros": ["strong base engine", "upscale new interior", "standard AWD"],
+          "cons": ["big price jump vs 2025", "no PHEV in Canada", "small for the money"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Technik 45 TFSI quattro",
+          "price_cad": 58550,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4", "hp": 255, "torque_lbft": 273, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 10.0, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.9, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["Matrix LED", "full driver-assistance suite", "premium audio"],
+          "pros": ["strong base engine", "well-equipped", "standard AWD"],
+          "cons": ["pricey for subcompact", "no PHEV in Canada", "modest cargo"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "Q5",
+      "bodyStyle": "SUV",
+      "segment": "Compact luxury SUV (new generation)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Komfort 45 TFSI quattro",
+          "price_cad": 62150,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 mild hybrid", "hp": 268, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 9.9, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.3, "top_speed_kmh": 230 },
+          "seats": 5,
+          "notable_features": ["digital cockpit", "quattro standard", "4,400 lb towing"],
+          "pros": ["well-rounded", "strong MHEV four", "spacious cabin"],
+          "cons": ["pricey options", "firm on big wheels", "dual-clutch low-speed lag"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Progressiv",
+          "price_cad": 67350,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 mild hybrid", "hp": 268, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 9.9, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.3, "top_speed_kmh": 230 },
+          "seats": 5,
+          "notable_features": ["upgraded trim", "added driver assistance", "premium audio"],
+          "pros": ["well-rounded", "strong MHEV four", "well-equipped"],
+          "cons": ["pricey options", "firm on big wheels", "modest sound"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Technik",
+          "price_cad": 68850,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 mild hybrid", "hp": 268, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 9.9, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.3, "top_speed_kmh": 230 },
+          "seats": 5,
+          "notable_features": ["Matrix LED", "full driver-assistance suite", "Bang & Olufsen audio"],
+          "pros": ["well-rounded", "fully loaded", "spacious cabin"],
+          "cons": ["pricey loaded", "firm on big wheels", "dual-clutch low-speed lag"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "Q5 Sportback",
+      "bodyStyle": "SUV",
+      "segment": "Compact luxury coupe-SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Q5 Sportback (Progressiv)",
+          "price_cad": 69600,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 mild hybrid", "hp": 268, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 9.9, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.3, "top_speed_kmh": 230 },
+          "seats": 5,
+          "notable_features": ["sloping coupe roofline", "digital cockpit", "quattro standard"],
+          "pros": ["sleek styling", "strong MHEV four", "premium cabin"],
+          "cons": ["less cargo than Q5", "premium over Q5", "firm on big wheels"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "SQ5",
+      "bodyStyle": "SUV",
+      "segment": "Compact luxury performance SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Progressiv",
+          "price_cad": 82150,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 362, "torque_lbft": 406, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 11.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.8, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["sport-tuned chassis", "V6 power", "quattro sport diff available"],
+          "pros": ["quick and refined", "everyday usability", "strong V6"],
+          "cons": ["thirsty", "pricey", "firm ride"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Technik",
+          "price_cad": 84650,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 362, "torque_lbft": 406, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 11.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.8, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["Matrix LED", "full driver-assistance suite", "Bang & Olufsen audio"],
+          "pros": ["quick and refined", "fully loaded", "strong V6"],
+          "cons": ["thirsty", "expensive", "firm ride"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "SQ5 Sportback",
+      "bodyStyle": "SUV",
+      "segment": "Compact luxury performance coupe-SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "SQ5 Sportback",
+          "price_cad": 84400,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 362, "torque_lbft": 406, "drivetrain": "AWD", "transmission": "7-spd S tronic dual-clutch", "fuel_l100_comb": 11.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.8, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["sloping coupe roofline", "sport-tuned chassis", "V6 power"],
+          "pros": ["sleek and quick", "strong V6", "premium cabin"],
+          "cons": ["less cargo", "thirsty", "expensive"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "Q7",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury 3-row SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Komfort 45 TFSI quattro",
+          "price_cad": 81265,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 mild hybrid", "hp": 261, "torque_lbft": 273, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 11.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 7.0, "top_speed_kmh": 233 },
+          "seats": 7,
+          "notable_features": ["3-row seating", "air suspension available", "4,400 lb towing"],
+          "pros": ["spacious and quiet", "high-quality cabin", "smooth ride"],
+          "cons": ["base 4-cyl works hard", "third row tight", "options costly"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Progressiv 55 TFSI quattro",
+          "price_cad": 89000,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 335, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 12.0, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 250 },
+          "seats": 7,
+          "notable_features": ["V6 power", "air suspension", "7,700 lb towing"],
+          "pros": ["strong smooth V6", "spacious quiet cabin", "good towing"],
+          "cons": ["thirsty", "third row tight", "options costly"],
+          "confidence": "med"
+        },
+        {
+          "trim": "Technik 55 TFSI quattro",
+          "price_cad": 96000,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 335, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 12.0, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 250 },
+          "seats": 7,
+          "notable_features": ["Matrix LED", "full driver-assistance suite", "Bang & Olufsen 3D audio"],
+          "pros": ["strong smooth V6", "fully loaded", "spacious quiet cabin"],
+          "cons": ["thirsty", "expensive loaded", "third row tight"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "SQ7",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury performance 3-row SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "SQ7",
+          "price_cad": 125110,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.0L twin-turbo V8 mild hybrid", "hp": 500, "torque_lbft": 568, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 13.8, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.1, "top_speed_kmh": 250 },
+          "seats": 7,
+          "notable_features": ["twin-turbo V8", "active roll stabilization", "quattro sport differential"],
+          "pros": ["V8 muscle in 3-row SUV", "composed handling", "luxury cabin"],
+          "cons": ["very thirsty", "expensive", "third row tight"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "Q8",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury coupe-SUV flagship",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Progressiv 55 TFSI quattro",
+          "price_cad": 97750,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 335, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 12.1, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["coupe-SUV styling", "air suspension", "Valcona leather, B&O audio"],
+          "pros": ["striking design", "luxurious cabin", "smooth V6"],
+          "cons": ["less cargo than Q7", "5-seat only", "thirsty"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Technik 55 TFSI quattro",
+          "price_cad": 106540,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo V6 mild hybrid", "hp": 335, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 12.1, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["Matrix LED", "full driver-assistance suite", "360 cameras, night vision"],
+          "pros": ["striking design", "fully loaded", "luxurious cabin"],
+          "cons": ["less cargo than Q7", "expensive", "thirsty"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "SQ8",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury performance coupe-SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "SQ8",
+          "price_cad": 134572,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.0L twin-turbo V8 mild hybrid", "hp": 500, "torque_lbft": 568, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 14.1, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.1, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["twin-turbo V8", "carbon accents", "4-zone climate"],
+          "pros": ["V8 pace and sound", "composed handling", "luxury cabin"],
+          "cons": ["very thirsty", "expensive", "5-seat only"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "RS Q8",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury high-performance coupe-SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "RS Q8 performance",
+          "price_cad": 172600,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.0L twin-turbo V8 mild hybrid", "hp": 631, "torque_lbft": 627, "drivetrain": "AWD", "transmission": "8-spd Tiptronic", "fuel_l100_comb": 14.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.6, "top_speed_kmh": 305 },
+          "seats": 5,
+          "notable_features": ["active roll stabilization", "carbon-ceramic brakes available", "massage seats"],
+          "pros": ["supercar pace in an SUV", "huge grip", "luxury appointments"],
+          "cons": ["extremely thirsty", "very expensive", "firm ride"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "Q4 e-tron",
+      "bodyStyle": "SUV",
+      "segment": "Compact luxury electric SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Q4 e-tron 45",
+          "price_cad": 63440,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "single rear motor", "hp": 281, "torque_lbft": 402, "drivetrain": "RWD", "transmission": "1-spd", "fuel_l100_comb": null, "ev_range_km": 463, "battery_kwh": 82 },
+          "perf": { "zero_100_s": 6.6, "top_speed_kmh": 180 },
+          "seats": 5,
+          "notable_features": ["82 kWh battery", "augmented-reality HUD available", "RWD efficiency"],
+          "pros": ["good range for class", "comfortable ride", "practical cabin"],
+          "cons": ["modest charging speed", "softer dynamics", "base infotainment dated"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Q4 e-tron 55 quattro",
+          "price_cad": 68440,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual motor", "hp": 335, "torque_lbft": 502, "drivetrain": "AWD", "transmission": "1-spd", "fuel_l100_comb": null, "ev_range_km": 404, "battery_kwh": 82 },
+          "perf": { "zero_100_s": 5.3, "top_speed_kmh": 180 },
+          "seats": 5,
+          "notable_features": ["dual-motor quattro", "82 kWh battery", "AR HUD available"],
+          "pros": ["quick and grippy", "AWD traction", "practical cabin"],
+          "cons": ["range drops vs RWD", "modest charging speed", "softer dynamics"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "Q4 Sportback e-tron",
+      "bodyStyle": "SUV",
+      "segment": "Compact luxury electric coupe-SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Q4 Sportback e-tron 55 quattro",
+          "price_cad": 76900,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual motor", "hp": 335, "torque_lbft": 502, "drivetrain": "AWD", "transmission": "1-spd", "fuel_l100_comb": null, "ev_range_km": 415, "battery_kwh": 82 },
+          "perf": { "zero_100_s": 5.3, "top_speed_kmh": 180 },
+          "seats": 5,
+          "notable_features": ["sloping roofline", "dual-motor quattro", "82 kWh battery"],
+          "pros": ["sleek styling", "slightly more range than SUV quattro", "AWD traction"],
+          "cons": ["premium over SUV", "modest charging speed", "less headroom"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "Q6 e-tron",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury electric SUV (PPE 800V platform)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Q6 e-tron quattro",
+          "price_cad": 90000,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual motor", "hp": 456, "torque_lbft": null, "drivetrain": "AWD", "transmission": "1-spd", "fuel_l100_comb": null, "ev_range_km": 513, "battery_kwh": 100 },
+          "perf": { "zero_100_s": 5.4, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["800V architecture", "270 kW fast charging (10-80% ~21 min)", "OLED rear lights"],
+          "pros": ["fast charging", "strong range", "premium new-gen cabin"],
+          "cons": ["pricing estimated/not finalized for Canada", "options pricey", "limited early availability"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "Q6 e-tron Sportback",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury electric coupe-SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Q6 Sportback e-tron quattro",
+          "price_cad": 93000,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual motor", "hp": 456, "torque_lbft": null, "drivetrain": "AWD", "transmission": "1-spd", "fuel_l100_comb": null, "ev_range_km": 520, "battery_kwh": 100 },
+          "perf": { "zero_100_s": 5.4, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["sloping roofline", "800V architecture", "270 kW fast charging"],
+          "pros": ["sleek styling", "strong range", "fast charging"],
+          "cons": ["pricing estimated for Canada", "premium over SUV", "limited early availability"],
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "model": "SQ6 e-tron",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury performance electric SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "SQ6 e-tron",
+          "price_cad": 107000,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual motor", "hp": 509, "torque_lbft": null, "drivetrain": "AWD", "transmission": "1-spd", "fuel_l100_comb": null, "ev_range_km": 443, "battery_kwh": 100 },
+          "perf": { "zero_100_s": 4.3, "top_speed_kmh": 230 },
+          "seats": 5,
+          "notable_features": ["performance dual-motor", "800V architecture", "270 kW fast charging"],
+          "pros": ["quick acceleration", "fast charging", "premium cabin"],
+          "cons": ["pricing estimated for Canada", "range trails Q6", "options pricey"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "SQ6 e-tron Sportback",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury performance electric coupe-SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "SQ6 Sportback e-tron",
+          "price_cad": 110000,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual motor", "hp": 509, "torque_lbft": null, "drivetrain": "AWD", "transmission": "1-spd", "fuel_l100_comb": null, "ev_range_km": 450, "battery_kwh": 100 },
+          "perf": { "zero_100_s": 4.3, "top_speed_kmh": 230 },
+          "seats": 5,
+          "notable_features": ["sloping roofline", "performance dual-motor", "800V architecture"],
+          "pros": ["quick and sleek", "fast charging", "premium cabin"],
+          "cons": ["pricing estimated for Canada", "premium over SUV", "options pricey"],
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "model": "S e-tron GT",
+      "bodyStyle": "Sedan",
+      "segment": "Full-size luxury electric performance GT",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "S e-tron GT",
+          "price_cad": 168940,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual motor", "hp": 670, "torque_lbft": null, "drivetrain": "AWD", "transmission": "2-spd rear axle", "fuel_l100_comb": null, "ev_range_km": 483, "battery_kwh": 105 },
+          "perf": { "zero_100_s": 3.4, "top_speed_kmh": 245 },
+          "seats": 4,
+          "notable_features": ["105 kWh (97 usable) battery", "320 kW fast charging (10-80% ~18 min)", "2-speed transmission"],
+          "pros": ["effortless pace", "stunning design", "rapid charging"],
+          "cons": ["expensive", "low-slung practicality", "heavy"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "RS e-tron GT",
+      "bodyStyle": "Sedan",
+      "segment": "Full-size luxury high-performance electric GT",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "RS e-tron GT",
+          "price_cad": 188000,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual motor", "hp": 845, "torque_lbft": null, "drivetrain": "AWD", "transmission": "2-spd rear axle", "fuel_l100_comb": null, "ev_range_km": 455, "battery_kwh": 105 },
+          "perf": { "zero_100_s": 2.8, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["push-to-pass boost", "320 kW fast charging", "active suspension available"],
+          "pros": ["brutal acceleration", "stunning design", "rapid charging"],
+          "cons": ["very expensive", "range trails S", "price estimated"],
+          "confidence": "med"
+        },
+        {
+          "trim": "RS e-tron GT performance",
+          "price_cad": 224235,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual motor", "hp": 912, "torque_lbft": null, "drivetrain": "AWD", "transmission": "2-spd rear axle", "fuel_l100_comb": null, "ev_range_km": 447, "battery_kwh": 105 },
+          "perf": { "zero_100_s": 2.5, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["912 hp peak (with boost)", "ceramic brakes available", "20-in aero wheels"],
+          "pros": ["fastest-accelerating Audi ever", "stunning design", "rapid charging"],
+          "cons": ["extremely expensive", "range trails S", "heavy"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "Q8 e-tron / SQ8 e-tron",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury electric SUV/coupe-SUV (DISCONTINUED - leftover only)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "Q8 e-tron / SQ8 e-tron (leftover 2025 stock)",
+          "price_cad": 89990,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "dual/tri motor", "hp": 402, "torque_lbft": null, "drivetrain": "AWD", "transmission": "1-spd", "fuel_l100_comb": null, "ev_range_km": 459, "battery_kwh": 114 },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 200 },
+          "seats": 5,
+          "notable_features": ["114 kWh battery", "discontinued (Brussels plant closed Feb 2025)", "available only as leftover 2025 inventory"],
+          "pros": ["large battery / decent range", "spacious quiet cabin", "potential clearance discounts"],
+          "cons": ["DISCONTINUED - no 2026 model year", "slow charging vs new PPE EVs", "depreciation risk"],
+          "confidence": "low"
+        }
+      ]
+    }
+  ],
+  "notes": "Prices are CAD MSRP excluding freight/PDI (~$2,800) and taxes, sourced primarily from Canadian Audi dealer pricing pages (Quebec dealer blogs) and AutoTrader.ca; CarCostCanada blocks automated fetch. KEY 2026 NAMING/LINEUP NOTES: (1) The former gas A4 sedan/Avant is now badged A5 in Canada (one Sportback liftback body; A5/S5 Coupe and Cabriolet are gone). Audi has publicly said it will revert to the old naming around 2029. (2) A7 and S7 (gas) are DISCONTINUED for 2026; only RS 7 performance continues. (3) The gas S6 is DISCONTINUED; the A6 gains a Sport Plus package in its place. New gas A6 is V6-only. (4) A6 e-tron / S6 e-tron are Sportback-only and quattro AWD only in Canada, and SKIP the 2026 model year (sold as 2025, return as 2027) per Automotive News - therefore NOT included as active 2026 trims; the S6 e-tron likewise resumes for 2027. (5) Q6 e-tron family: Canadian dealer pages list 2026 Q6/SQ6 e-tron (SUV + Sportback) with pricing not yet officially finalized (estimated here, med/low confidence); note Automotive News reported a 2026 skip for some North American Q6 variants, so availability/timing has some uncertainty. (6) Q8 e-tron / SQ8 e-tron are DISCONTINUED (production ended Feb 2025) - included ONLY as leftover 2025 inventory, clearly flagged, low confidence. (7) RS 5 for 2026 is uncertain: the outgoing 2.9 V6 RS 5 Coupe/Sportback (444 hp) is shown as transitional/low-confidence; an all-new PHEV RS 5 (~630 hp) launches in Europe summer 2026 and is not yet confirmed as a Canadian 2026 MY car. (8) A8 L and S8 Canadian MSRP are estimated (low confidence) - reliable CAD figures were not confirmed (some search results returned implausible low values). (9) Q3 is all-new 3rd-gen; PHEV not imported to Canada. GAPS: exact Canadian MSRP for A8 L, S8, RS e-tron GT (non-performance), Q6/SQ6 e-tron, Q5/SQ5 Sportback, and Q7 Progressiv/Technik 55 trims are estimates flagged med/low; torque figures for some EVs are null where unconfirmed."
+}
