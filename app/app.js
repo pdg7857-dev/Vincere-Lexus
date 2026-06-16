@@ -718,24 +718,41 @@ function renderFinderResults() {
 }
 
 /* ---------- cart / stock cross-reference ---------- */
-function stockHTML(model, variant, trim) {
-  if (!INV.units.length) return `<div class="stock none">Inventory snapshot not loaded.</div>`;
-  const { exact, alt } = matchUnits(model, variant, trim);
-  const unitRow = u => `<div class="unit">
+const condClass = u => (u.condition === "New" || !u.condition) ? "new" : (/cert/i.test(u.condition) ? "cpo" : "used");
+const condLabel = u => (u.condition === "New" || !u.condition) ? "NEW" : (/cert/i.test(u.condition) ? "CPO" : "USED");
+const isNewUnit = u => (u.condition === "New" || !u.condition);
+
+function unitRow(u) {
+  const yk = !isNewUnit(u)
+    ? `<span class="u-yk">${u.year ? u.year : ""}${u.year && u.odometer ? " · " : ""}${u.odometer ? Math.round(u.odometer).toLocaleString("en-CA") + " km" : ""}</span>` : "";
+  return `<div class="unit">
+      <span class="u-cond ${condClass(u)}">${condLabel(u)}</span>
       <span class="u-stat ${(/stock/i).test(u.status) ? "ok" : "transit"}">${esc(u.status || "—")}</span>
       <span class="u-col">${esc(u.exterior || "—")}</span>
+      ${yk}
       <span class="u-meta">Stock ${esc(u.stock || "—")}${u.vin ? " · VIN …" + esc(String(u.vin).slice(-6)) : ""}</span>
       <span class="u-price">${u.price ? money(u.price) : ""}</span>
       ${u.url ? `<a class="u-link" href="${esc(u.url)}" target="_blank" rel="noopener">View ↗</a>` : ""}
     </div>`;
-  if (exact.length) {
-    return `<div class="stock"><div class="stock-h ok">● In stock — exact trim (${exact.length})</div>${exact.map(unitRow).join("")}</div>`;
-  }
-  let h = `<div class="stock"><div class="stock-h none">○ This exact trim isn't in stock</div>`;
+}
+
+function stockHTML(model, variant, trim) {
+  if (!INV.units.length) return `<div class="stock none">Inventory snapshot not loaded.</div>`;
+  const { exact, alt } = matchUnits(model, variant, trim);
+  const exNew = exact.filter(isNewUnit), exUsed = exact.filter(u => !isNewUnit(u));
+  let h = `<div class="stock">`;
+
+  if (exNew.length) h += `<div class="stock-h ok">● In stock — exact trim (${exNew.length})</div>${exNew.map(unitRow).join("")}`;
+  if (exUsed.length) h += `<div class="stock-h cpo">◆ Pre-owned — same trim (${exUsed.length})</div>${exUsed.map(unitRow).join("")}`;
+  if (!exact.length) h += `<div class="stock-h none">○ This exact trim isn't in stock</div>`;
+
+  // alternatives (other trims of this model) — new and pre-owned
   if (alt.length) {
-    h += `<div class="stock-alt">${alt.length} other ${esc(model.name)} in stock at ${esc(INV.meta.dealer)}:</div>${alt.slice(0, 4).map(unitRow).join("")}`;
-    if (alt.length > 4) h += `<div class="hint">+ ${alt.length - 4} more ${esc(model.name)} units.</div>`;
-  } else {
+    const altNew = alt.filter(isNewUnit), altUsed = alt.filter(u => !isNewUnit(u));
+    h += `<div class="stock-alt">Other ${esc(model.name)} at ${esc(INV.meta.dealer)} — ${altNew.length} new · ${altUsed.length} pre-owned:</div>`;
+    h += [...altNew, ...altUsed].slice(0, 5).map(unitRow).join("");
+    if (alt.length > 5) h += `<div class="hint">+ ${alt.length - 5} more ${esc(model.name)} units.</div>`;
+  } else if (!exact.length) {
     h += `<div class="hint">No ${esc(model.name)} currently in stock — ask the dealer to locate or factory-order.</div>`;
   }
   return h + `</div>`;
@@ -797,9 +814,15 @@ function printCart() {
   for (const { model, variant, trim } of items) {
     const p = trimPrice(trim), fm = financeMonthly(trim);
     const { exact, alt } = matchUnits(model, variant, trim);
-    const stock = exact.length
-      ? `<div class="p-stock yes">In stock (${exact.length}): ${exact.slice(0, 4).map(u => `${esc(u.exterior || "")} #${esc(u.stock || "")}`).join(", ")}</div>`
-      : `<div class="p-stock no">Exact trim not in stock${alt.length ? ` · ${alt.length} other ${esc(model.name)} available` : ""}.</div>`;
+    const exNew = exact.filter(isNewUnit), exUsed = exact.filter(u => !isNewUnit(u));
+    const altUsed = alt.filter(u => !isNewUnit(u));
+    let stock;
+    if (exact.length) {
+      const parts = exact.slice(0, 4).map(u => `${condLabel(u)} ${esc(u.exterior || "")}${!isNewUnit(u) && u.odometer ? " " + Math.round(u.odometer / 1000) + "k km" : ""} #${esc(u.stock || "")}${u.price ? " " + money(u.price) : ""}`);
+      stock = `<div class="p-stock yes">In stock (${exNew.length} new${exUsed.length ? `, ${exUsed.length} pre-owned` : ""}): ${parts.join(" · ")}</div>`;
+    } else {
+      stock = `<div class="p-stock no">Exact trim not in stock${alt.length ? ` · ${alt.length} other ${esc(model.name)} available (incl. ${altUsed.length} pre-owned)` : ""}.</div>`;
+    }
     blocks += `<div class="p-trim">
       <div class="p-trim-top">
         <div><div class="pt-name">${esc(model.name)} ${esc(variant.name)} · ${esc(trim.name)}</div>

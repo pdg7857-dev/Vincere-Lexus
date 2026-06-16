@@ -107,6 +107,13 @@ def num(x):
     return round(float(m.group(0).replace(",", ""))) if m else None
 
 
+def odo(obj):
+    m = obj.get("mileageFromOdometer")
+    if isinstance(m, dict):
+        return num(m.get("value"))
+    return num(m)
+
+
 def parse_vehicle(obj, url):
     t = obj.get("@type", "")
     t = " ".join(t) if isinstance(t, list) else str(t)
@@ -120,6 +127,11 @@ def parse_vehicle(obj, url):
     brand = brand.get("name") if isinstance(brand, dict) else brand
     img = obj.get("image")
     img = img[0] if isinstance(img, list) else img
+    cond_raw = (str(obj.get("itemCondition", "")) + " " + str(obj.get("name", "")) +
+                " " + str(obj.get("vehicleConfiguration", ""))).lower()
+    is_used = "used" in cond_raw or odo(obj)
+    certified = "certified" in cond_raw or "cpo" in cond_raw
+    condition = "Certified Pre-Owned" if certified else ("Used" if is_used else "New")
     return {
         "vin": obj.get("vehicleIdentificationNumber") or obj.get("sku") or "",
         "stock": obj.get("sku") or "",
@@ -128,8 +140,11 @@ def parse_vehicle(obj, url):
         "trim": obj.get("vehicleConfiguration") or obj.get("trim") or "",
         "exterior": (obj.get("color") or obj.get("vehicleInteriorColor") or ""),
         "price": num(offers.get("price")),
+        "odometer": odo(obj),
+        "condition": condition,
+        "certified": certified,
         "status": "In stock" if "InStock" in avail else avail,
-        "type": "used" if re.search(r"used", obj.get("itemCondition", ""), re.I) else "new",
+        "type": "used" if condition != "New" else "new",
         "url": obj.get("url") or url,
         "image": img or "",
         "brand": brand or "Lexus",
@@ -168,35 +183,54 @@ def make_sample():
     data = json.load(open(os.path.join(ROOT, "data", "lexus.json")))
     units = []
     n = 0
-    # spread a few units across popular models/trims that exist in the dataset
-    picks = ["nx", "rx", "es", "gx", "tx", "rz", "is", "uxh", "nxp", "lx"]
-    for slug in picks:
+    cur_year = int(data["meta"].get("generated", "2026")[:4])
+
+    def add(v, t, model, condition, n):
+        new_price = (t["price"].get("ON") or {}).get("start")
+        colour = SAMPLE_COLOURS[n % len(SAMPLE_COLOURS)]
+        if condition == "New":
+            year, km, price = (int(model["year"]) if str(model["year"]).isdigit() else cur_year), None, new_price
+            url = DEALER["url"] + "/new-vehicles"
+        else:
+            age = 1 + (n % 4)                                   # 1-4 years old
+            year = cur_year - age
+            km = 12000 * age + (n % 5) * 1500                    # plausible odometer
+            price = round((new_price or 50000) * (0.90 - 0.06 * age) / 100) * 100 if new_price else None
+            url = DEALER["url"] + ("/certified-vehicles" if condition.startswith("Cert") else "/used-vehicles")
+        units.append({
+            "vin": f"SAMPLE{n:05d}XXXXXXXXX"[:17], "stock": f"SMP{1000 + n}",
+            "year": year, "model": v["name"], "trim": t["name"], "exterior": colour,
+            "price": price, "odometer": km, "condition": condition,
+            "certified": condition.startswith("Cert"),
+            "status": "In transit" if (condition == "New" and n % 4 == 0) else "In stock",
+            "type": "new" if condition == "New" else "used",
+            "url": url, "image": v.get("image", ""), "brand": "Lexus",
+        })
+
+    # New stock across popular models/trims
+    for slug in ["nx", "rx", "es", "gx", "tx", "rz", "is", "uxh", "nxp", "lx"]:
         model = next((m for m in data["models"] if m["slug"] == slug), None)
         if not model:
             continue
         for v in model["variants"][:2]:
             for t in v["trims"][:3]:
                 if n % 2 and t["isBase"]:
-                    continue  # vary the mix
-                price = (t["price"].get("ON") or {}).get("start")
-                colour = SAMPLE_COLOURS[n % len(SAMPLE_COLOURS)]
-                units.append({
-                    "vin": f"SAMPLE{n:05d}XXXXXXXXX"[:17],
-                    "stock": f"SMP{1000 + n}",
-                    "year": int(model["year"]) if str(model["year"]).isdigit() else 2026,
-                    "model": v["name"],
-                    "trim": t["name"],
-                    "exterior": colour,
-                    "price": price,
-                    "status": "In transit" if n % 4 == 0 else "In stock",
-                    "type": "new",
-                    "url": DEALER["url"] + "/new-vehicles",
-                    "image": v.get("image", ""),
-                    "brand": "Lexus",
-                })
-                n += 1
+                    continue
+                add(v, t, model, "New", n); n += 1
                 if n % 3 == 0:
                     break
+
+    # Pre-owned (Certified Pre-Owned + Used) across the most-shopped lines
+    for slug in ["nx", "rx", "es", "is", "gx", "ux", "uxh", "tx", "lx", "rz"]:
+        model = next((m for m in data["models"] if m["slug"] == slug), None)
+        if not model:
+            continue
+        v = model["variants"][0]
+        for t in v["trims"][:3]:
+            cond = "Certified Pre-Owned" if n % 2 == 0 else "Used"
+            add(v, t, model, cond, n); n += 1
+            if n % 2:
+                break
     return units, True
 
 

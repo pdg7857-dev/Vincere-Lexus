@@ -62,10 +62,13 @@ https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/index.html
    way in** for each model ("available from $X on …").
 
 4. **Cart + live stock check** — add one or more trims to a cart (persists across
-   reloads), then cross-reference them against a **Northwest Lexus inventory snapshot**:
-   each item shows whether the **exact trim is in stock** (colour, stock #, VIN, price,
-   status, link) or, if not, the **other units of that model** currently available.
-   Export a **printable quote** of the selected vehicles with their availability.
+   reloads), then cross-reference them against a **Northwest Lexus inventory snapshot**.
+   Each item checks **new and pre-owned** stock: the **exact trim in stock** (colour,
+   stock #, VIN, price, status, link), any **Certified Pre-Owned / Used unit of the same
+   trim** (with year + odometer + price — the cheaper alternative), and the **other
+   units of that model** available (new and pre-owned counts). Units are badged
+   **NEW / CPO / USED**. Export a **printable quote** of the selected vehicles with
+   their availability.
 
    Dealer stock lives in `data/inventory.json`, built by `scripts/scrape_inventory.py`.
    northwestlexus.com sits behind a Cloudflare WAF that blocks datacentre IPs, so the
