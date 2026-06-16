@@ -17,12 +17,25 @@ const state = {
   browseSlug: DATA.models[0].slug,
   browseVariant: 0,
   browseSpecFilter: "",
+  print: { client: "", rep: "" },
 };
+let lastMatch = null;   // cache of last computed recommendations for the print sheet
 
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s);
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 const money = n => (n == null ? "—" : "$" + Math.round(n).toLocaleString("en-CA"));
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&#34;" }[c]));
+// scene7 image sized for crispness
+function imgUrl(url, w) {
+  if (!url) return "";
+  return url + (url.includes("?") ? "&" : "?") + "wid=" + (w || 520);
+}
+function photoHTML(variant, w, cls) {
+  return variant.image
+    ? `<div class="${cls}"><img loading="lazy" src="${imgUrl(variant.image, w)}" alt="${esc(variant.name)}"></div>`
+    : `<div class="${cls}"></div>`;
+}
 
 function trimPrice(trim) {
   const p = trim.price[state.province];
@@ -215,14 +228,19 @@ function cardHTML(entry, musts, nices, opts = {}) {
     why = `<div class="why">One feature away: needs <b>${WANT_BY_ID[opts.missWant].label}</b>${fixTxt}.</div>`;
   }
   return `<div class="card ${opts.best ? "best" : ""}">${ribbon}
-    <div class="card-top">
-      <div><div class="card-title">${model.name} <span class="variant">${variant.name} · ${trim.name}</span></div>
-        <div class="card-sub">${model.subtitle} · ${variant.powertrain}${trim.attrs.drivetrain ? " · " + trim.attrs.drivetrain : ""}${trim.attrs.seats ? " · " + trim.attrs.seats + " seats" : ""}</div></div>
-      <div class="price"><div class="amt">${money(p.start)}</div><div class="lease">${lease}</div></div>
+    <div class="card-body">
+      ${photoHTML(variant, 320, "card-photo")}
+      <div class="card-main">
+        <div class="card-top">
+          <div><div class="card-title">${model.name} <span class="variant">${variant.name} · ${trim.name}</span></div>
+            <div class="card-sub">${model.subtitle} · ${variant.powertrain}${trim.attrs.drivetrain ? " · " + trim.attrs.drivetrain : ""}${trim.attrs.seats ? " · " + trim.attrs.seats + " seats" : ""}</div></div>
+          <div class="price"><div class="amt">${money(p.start)}</div><div class="lease">${lease}</div></div>
+        </div>
+        ${wantTags(model, trim, musts, nices)}
+        ${why}
+        ${opts.upsell ? upsellHTML(model, variant, trim) : ""}
+      </div>
     </div>
-    ${wantTags(model, trim, musts, nices)}
-    ${why}
-    ${opts.upsell ? upsellHTML(model, variant, trim) : ""}
   </div>`;
 }
 
@@ -232,6 +250,7 @@ function renderMatch() {
   const head = $("#results-head"), list = $("#results");
 
   if (!musts.length && !nices.length) {
+    lastMatch = null;
     head.innerHTML = "<h2>Recommendations</h2>";
     list.innerHTML = `<div class="empty"><div class="big">◆</div>
       Mark what matters to your client on the left.<br>Tap once for a <b>must-have</b>, twice for a <b>nice-to-have</b>.<br><br>
@@ -251,7 +270,18 @@ function renderMatch() {
   const near = scored.filter(s => s.missMust.length === 1)
     .sort((a, b) => startPrice(a.trim) - startPrice(b.trim));
 
-  head.innerHTML = `<h2>Recommendations</h2><div class="count">${full.length} trim${full.length !== 1 ? "s" : ""} meet every must-have${near.length ? ` · ${near.length} are one feature away` : ""}.</div>`;
+  lastMatch = { musts, nices, full, near };
+  head.innerHTML = `<div><h2>Recommendations</h2>
+      <div class="count">${full.length} trim${full.length !== 1 ? "s" : ""} meet every must-have${near.length ? ` · ${near.length} are one feature away` : ""}.</div></div>
+    <div class="head-actions">
+      <input id="p-client" class="hidefocus" placeholder="Client name (optional)" value="${esc(state.print.client)}" style="width:150px">
+      <input id="p-rep" placeholder="Prepared by (optional)" value="${esc(state.print.rep)}" style="width:140px">
+      <button id="btn-print" class="btn print">📄 Client summary</button>
+    </div>`;
+  const ci = $("#p-client"), ri = $("#p-rep");
+  ci.addEventListener("input", () => state.print.client = ci.value);
+  ri.addEventListener("input", () => state.print.rep = ri.value);
+  $("#btn-print").addEventListener("click", printSummary);
 
   let html = "";
   if (full.length) {
@@ -272,6 +302,66 @@ function renderMatch() {
     html += `</div>`;
   }
   list.innerHTML = html;
+}
+
+/* ---------- client-facing print / PDF summary ---------- */
+function printTrimBlock(entry, musts, nices, opts = {}) {
+  const { model, variant, trim } = entry;
+  const p = trimPrice(trim);
+  const lease = p.payment ? `${money(p.payment)}/mo · ${p.rate}% · ${p.term} mo · ${p.km.toLocaleString()} km/yr` : "";
+  const rows = [];
+  for (const w of musts) {
+    const hit = trim.satisfies.includes(w);
+    rows.push(`<div class="row ${hit ? "yes" : "no"}">${hit ? "✓" : "✕"} ${esc(WANT_BY_ID[w].label)}${hit && isExclusive(model.slug, w) ? " ★" : ""}</div>`);
+  }
+  const niceHit = nices.filter(w => trim.satisfies.includes(w));
+  if (niceHit.length) rows.push(`<div class="row yes">✓ Also includes: ${niceHit.map(w => esc(WANT_BY_ID[w].label)).join(", ")}</div>`);
+  const up = nextTrimUp(model, variant, trim);
+  const upHTML = (up && up.delta > 0 && up.gained.length)
+    ? `<div class="p-up">Consider stepping up to <b>${esc(variant.name)} ${esc(up.trim.name)}</b> (+${money(up.delta)}): adds ${up.gained.map(esc).join(", ")}.</div>` : "";
+  const img = variant.image ? `<div class="p-photo"><img src="${imgUrl(variant.image, 480)}"></div>` : "";
+  return `<div class="p-trim ${opts.rec ? "p-rec" : ""}">
+    ${opts.rec ? `<div class="p-rib">RECOMMENDED</div>` : ""}
+    <div class="p-trim-top">
+      <div><div class="pt-name">${esc(model.name)} ${esc(variant.name)} · ${esc(trim.name)}</div>
+        <div class="pt-sub">${esc(model.subtitle)} · ${esc(variant.powertrain)}${trim.attrs.drivetrain ? " · " + esc(trim.attrs.drivetrain) : ""}${trim.attrs.seats ? " · " + trim.attrs.seats + " seats" : ""}</div></div>
+      <div class="pt-price"><div class="amt">${money(p.start)}</div><div class="ls">${lease}</div></div>
+    </div>
+    ${img}
+    <div class="p-tags">${rows.join("")}</div>
+    ${upHTML}
+  </div>`;
+}
+
+function printSummary() {
+  if (!lastMatch) return;
+  const { musts, nices, full, near } = lastMatch;
+  const area = $("#print-area");
+  const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
+  const mustList = musts.map(w => WANT_BY_ID[w].label).join(", ") || "—";
+  const niceList = nices.map(w => WANT_BY_ID[w].label).join(", ") || "—";
+
+  let blocks = "";
+  if (full.length) {
+    full.slice(0, 5).forEach((s, i) => blocks += printTrimBlock(s, musts, nices, { rec: i === 0 }));
+  } else if (near.length) {
+    blocks += `<div class="p-intro">No single trim meets every must-have; these come closest (one feature away):</div>`;
+    near.slice(0, 4).forEach(s => blocks += printTrimBlock(s, musts, nices, {}));
+  } else {
+    blocks = `<div class="p-intro">No close matches — consider relaxing a must-have.</div>`;
+  }
+
+  area.innerHTML = `
+    <div class="p-head">
+      <div><div class="pl">LEXUS</div><div class="psub">Vehicle Recommendations</div></div>
+      <div class="pmeta">${state.print.client ? "<b>Prepared for:</b> " + esc(state.print.client) + "<br>" : ""}
+        ${state.print.rep ? "Lexus consultant: " + esc(state.print.rep) + "<br>" : ""}
+        ${today} · Pricing region: ${esc(state.province)}</div>
+    </div>
+    <div class="p-intro">Based on the priorities we discussed — <b>must-haves:</b> ${esc(mustList)}${nices.length ? `; <b>nice-to-haves:</b> ${esc(niceList)}` : ""} — here ${full.length === 1 ? "is the option" : "are the options"} best suited to you. ★ marks features reserved for higher trims.</div>
+    ${blocks}
+    <div class="p-foot">${esc(DATA.meta.priceNote)} Prices in ${esc(DATA.meta.currency)}. Data current as of ${esc(DATA.meta.generated)} (lexus.ca). This summary is for discussion purposes and is not a binding offer.</div>`;
+  window.print();
 }
 
 /* ---------- browse ---------- */
@@ -345,8 +435,10 @@ function renderBrowseDetail() {
   }
 
   detail.innerHTML = `
-    <h2>${m.name} <span style="color:var(--mut);font-weight:400">${m.year} · ${m.subtitle}</span></h2>
+    <div class="results-head"><h2>${m.name} <span style="color:var(--mut);font-weight:400">${m.year} · ${m.subtitle}</span></h2>
+      <div class="head-actions"><button id="btn-print-spec" class="btn print">📄 Print spec sheet</button></div></div>
     <div class="variant-tabs">${vtabs}</div>
+    ${photoHTML(v, 720, "browse-hero")}
     <div class="price-strip">${priceStrip}</div>
     <div class="attrs">${attrCells}</div>
     <div class="toolbar"><input id="spec-filter" type="search" placeholder="Filter features… (e.g. heated, audio, wheels)" value="${state.browseSpecFilter.replace(/"/g, "&#34;")}">
@@ -356,8 +448,45 @@ function renderBrowseDetail() {
     <tbody>${rows || `<tr><td colspan="${v.trims.length + 1}" style="color:var(--mut);padding:20px">No features match “${filter}”.</td></tr>`}</tbody></table></div>`;
 
   detail.querySelectorAll(".vtab").forEach(b => b.addEventListener("click", () => { state.browseVariant = +b.dataset.v; state.browseSpecFilter = ""; renderBrowseDetail(); }));
+  $("#btn-print-spec").addEventListener("click", () => printSpecSheet(m, v));
   const sf = $("#spec-filter");
   if (sf) sf.addEventListener("input", () => { state.browseSpecFilter = sf.value; const pos = sf.selectionStart; renderBrowseDetail(); const n = $("#spec-filter"); if (n) { n.focus(); n.setSelectionRange(pos, pos); } });
+}
+
+function printSpecSheet(m, v) {
+  const area = $("#print-area");
+  const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
+  // full (unfiltered) grouped feature set
+  const groups = {}, present = new Set();
+  for (const t of v.trims) for (const sid in t.features) present.add(sid);
+  for (const sid of present) {
+    const meta = FC[sid]; if (!meta) continue;
+    (groups[meta.group] = groups[meta.group] || {});
+    (groups[meta.group][meta.sub] = groups[meta.group][meta.sub] || []).push(sid);
+  }
+  const order = ["Exterior", "Interior", "Infotainment", "Safety & Convenience", "Powertrain & Mechanical", "Dimensions"];
+  const gks = Object.keys(groups).sort((x, y) => (order.indexOf(x) + 99) % 99 - (order.indexOf(y) + 99) % 99);
+  let rows = "";
+  for (const g of gks) for (const sub of Object.keys(groups[g]).sort()) {
+    rows += `<tr class="g"><td colspan="${v.trims.length + 1}">${esc(g)} · ${esc(sub)}</td></tr>`;
+    for (const sid of [...new Set(groups[g][sub])].sort((a, b) => FC[a].name.localeCompare(FC[b].name))) {
+      let cells = "";
+      for (const t of v.trims) cells += (sid in t.features)
+        ? (t.features[sid] ? `<td class="v">${esc(t.features[sid])}</td>` : `<td class="y">✓</td>`)
+        : `<td class="n">–</td>`;
+      rows += `<tr><td>${esc(FC[sid].name)}</td>${cells}</tr>`;
+    }
+  }
+  const priceRow = v.trims.map(t => `<td><b>${money(startPrice(t))}</b></td>`).join("");
+  area.innerHTML = `
+    <div class="p-head"><div><div class="pl">LEXUS</div><div class="psub">${esc(m.name)} ${esc(v.name)} — Specifications</div></div>
+      <div class="pmeta">${today} · Pricing region: ${esc(state.province)}</div></div>
+    ${v.image ? `<div class="p-photo"><img src="${imgUrl(v.image, 560)}"></div>` : ""}
+    <table class="p-spec"><thead><tr><th>Feature</th>${v.trims.map(t => `<th>${esc(t.name)}</th>`).join("")}</tr>
+      <tr class="g"><td>Starting price (${esc(state.province)})</td>${priceRow}</tr></thead>
+      <tbody>${rows}</tbody></table>
+    <div class="p-foot">${esc(DATA.meta.priceNote)} Data current as of ${esc(DATA.meta.generated)} (lexus.ca).</div>`;
+  window.print();
 }
 
 /* ---------- feature finder ---------- */
@@ -436,10 +565,11 @@ function selectFinder(key) {
     const variants = [...new Set(mm.hits.map(h => h.v.name))];
     const trimList = mm.hits.slice(0, 8).map(h => `${h.v.name} ${h.t.name}`).join(" · ");
     html += `<div class="finder-card">
-      <div><div class="fm">${mm.model.name} <span style="color:var(--mut);font-weight:400;font-size:12px">${mm.model.subtitle}</span></div>
-        <div class="ft">${mm.hits.length} trim${mm.hits.length !== 1 ? "s" : ""}: ${trimList}${mm.hits.length > 8 ? " …" : ""}</div></div>
+      ${photoHTML(cheapest.v, 240, "finder-photo")}
+      <div class="fmid"><div class="fm">${esc(mm.model.name)} <span style="color:var(--mut);font-weight:400;font-size:12px">${esc(mm.model.subtitle)}</span></div>
+        <div class="ft">${mm.hits.length} trim${mm.hits.length !== 1 ? "s" : ""}: ${esc(trimList)}${mm.hits.length > 8 ? " …" : ""}</div></div>
       <div class="ff"><div class="from">from ${money(startPrice(cheapest.t))}</div>
-        <div class="cnt">${cheapest.v.name} ${cheapest.t.name}</div></div>
+        <div class="cnt">${esc(cheapest.v.name)} ${esc(cheapest.t.name)}</div></div>
     </div>`;
   }
   res.innerHTML = html;

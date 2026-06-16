@@ -142,6 +142,67 @@ WANTS = [
          patterns=[r"blind spot monitor"]),
     dict(id="latest_safety", label="Latest Lexus Safety System+ (3.0/4.0)", cat="Safety", kind="attr",
          attr="lss_latest"),
+
+    # ---- expanded vocabulary ----
+    # Comfort & climate
+    dict(id="ambient_lighting", label="Ambient interior lighting", cat="Comfort & Climate", kind="name",
+         patterns=[r"ambient.*illumination", r"ambient lighting", r"64 colour", r"shadow.*illumination",
+                   r"dynamic illumination"]),
+    dict(id="rear_climate", label="Rear climate control / rear vents", cat="Comfort & Climate", kind="name",
+         patterns=[r"rear passenger vents", r"4-zone", r"triple zone independent"]),
+    dict(id="cool_box", label="Cooled centre console", cat="Comfort & Climate", kind="name",
+         patterns=[r"cool box"]),
+    dict(id="neck_heater", label="Neck / radiant heater", cat="Comfort & Climate", kind="name",
+         patterns=[r"neck heater", r"knee heater", r"radiant"]),
+
+    # Seating & space
+    dict(id="premium_leather", label="Premium semi-aniline leather", cat="Seating & Space", kind="name",
+         patterns=[r"semi-aniline"]),
+    dict(id="sport_interior", label="Sport interior (Ultrasuede/Alcantara)", cat="Seating & Space", kind="name",
+         patterns=[r"ultrasuede", r"alcantara"]),
+    dict(id="power_3rd_row", label="Power-folding third row", cat="Seating & Space", kind="name",
+         patterns=[r"power folding third row", r"3rd row power folding", r"power folding.*third"]),
+
+    # Technology
+    dict(id="digital_cluster", label='Digital gauge cluster (12.3")', cat="Technology", kind="name",
+         patterns=[r"12\.3.*digital gauge", r"digital gauge cluster", r"full tft", r"tft.*instrumentation"]),
+    dict(id="rear_entertainment", label="Rear-seat entertainment screens", cat="Technology", kind="name",
+         patterns=[r"rear seat entertainment"]),
+    dict(id="parking_assist", label="Parking assist with auto-braking", cat="Technology", kind="name",
+         patterns=[r"intuitive parking assist", r"parking support brake", r"advanced park"]),
+
+    # Audio
+    dict(id="satellite_radio", label="SiriusXM satellite radio", cat="Audio", kind="name",
+         patterns=[r"siriusxm"]),
+
+    # Exterior & roof
+    dict(id="roof_rails", label="Roof rails (roof-rack ready)", cat="Exterior & Roof", kind="name",
+         patterns=[r"roof rails"]),
+    dict(id="running_boards", label="Running boards", cat="Exterior & Roof", kind="name",
+         patterns=[r"running board"]),
+    dict(id="big_wheels", label='20-inch or larger wheels', cat="Exterior & Roof", kind="name",
+         patterns=[r"\b2[012]\s*[\"”'’].{0,40}(alloy|wheel|aluminum)", r"\b2[012].\s*forged alloy"]),
+
+    # Performance & drive
+    dict(id="rear_steer", label="Rear-wheel steering / dynamic handling", cat="Performance & Drive", kind="name",
+         patterns=[r"dynamic rear steering", r"4 wheel active steering", r"lexus dynamic handling",
+                   r"variable gear ratio steering"]),
+    dict(id="lsd", label="Limited-slip differential", cat="Performance & Drive", kind="name",
+         patterns=[r"limited.slip", r"torsen", r"locking rear differential", r"sport differential"]),
+    dict(id="perf_brakes", label="Performance brakes (Brembo)", cat="Performance & Drive", kind="name",
+         patterns=[r"brembo", r"opposed 6-piston", r"monoblock"]),
+    dict(id="sport_modes", label="Sport+ / performance drive modes", cat="Performance & Drive", kind="name",
+         patterns=[r"sport s\+", r"sport s/s\+", r"sport\+ mode", r"drive mode select with sport"]),
+
+    # Capability
+    dict(id="tow_hitch", label="Tow hitch / trailer package", cat="Capability", kind="name",
+         patterns=[r"tow hitch", r"towing receiver", r"trailer ball", r"class iv", r"trailer brake"]),
+
+    # Safety
+    dict(id="driver_monitor", label="Driver attention monitor", cat="Safety", kind="name",
+         patterns=[r"driver monitor camera"]),
+    dict(id="safe_exit", label="Safe Exit Assist", cat="Safety", kind="name",
+         patterns=[r"safe exit"]),
 ]
 
 

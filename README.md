@@ -5,7 +5,20 @@ priorities against every current-lineup trim**, recommends the right package, an
 surfaces upsell opportunities — plus a full "everything to know" vehicle encyclopedia
 and a reverse feature finder.
 
-Built from live **lexus.ca** data (EN, Canadian market).
+Built from live **lexus.ca** data (EN, Canadian market). Every result and vehicle
+shows the actual lexus.ca hero photo, and any view can be exported to a clean,
+client-facing PDF.
+
+## Open it on a phone / tablet
+
+The app is hosted straight from this repo via a CDN — open the link in
+**“Provide a link”** in the latest message, or build your own from any commit:
+
+```
+https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/index.html
+```
+
+(Add to your home screen for a one-tap showroom app.)
 
 ## What it does
 
@@ -20,11 +33,16 @@ Built from live **lexus.ca** data (EN, Canadian market).
      cheapest way to add it — the natural stretch-the-budget pitch.
    - **★ exclusive flags:** features only the higher trims offer, for aspirational pull.
    - Filters: body style, model, max budget, and **province** (pricing is province-specific).
+   - **📄 Client summary:** export the recommendations to a branded, client-facing PDF
+     (their name + your name, photos, prices, matched features, upgrade suggestions).
+   - 56 curated "wants" spanning comfort, seating, tech, audio, exterior, performance,
+     capability and safety.
 
 2. **Browse vehicles** — pick a model and powertrain variant to get the complete
    grouped spec sheet across all its trims (every feature, with values), key specs
    (power, drivetrain, seats, range, towing, cargo) and the price ladder. Use this as
    the guide when a client wants to know everything about a vehicle.
+   **📄 Print spec sheet** exports the full trim-by-trim comparison.
 
 3. **Feature finder** — client wants one specific thing? Search it and see every model
    and trim that delivers it, plus the **cheapest way in** ("available from $X on …").

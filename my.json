@@ -1,0 +1,1 @@
+{"errors":[{"message":"Variable 'seriesConfigPath' has an invalid value: Variable 'seriesConfigPath' has coerced Null value for NonNull type 'String!'","locations":[{"line":1,"column":46}],"extensions":{"classification":"ValidationError"}}]}
