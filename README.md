@@ -9,6 +9,10 @@ Built from live **lexus.ca** data (EN, Canadian market). Every result and vehicl
 shows the actual lexus.ca hero photo, and any view can be exported to a clean,
 client-facing PDF.
 
+The interface mirrors the **lexus.ca visual system** — the brand **Nobel** display
+typeface and **Source Sans Pro** body font (bundled in `app/fonts/`), Lexus's
+white/light-grey palette, black controls, red accent, and generous whitespace.
+
 ## Open it on a phone / tablet
 
 The app is hosted straight from this repo via a CDN — open the link in
