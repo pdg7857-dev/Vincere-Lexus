@@ -20,7 +20,9 @@ const state = {
   print: { client: "", rep: "" },
   pay: { apr: DATA.meta.finance.defaultApr, term: DATA.meta.finance.defaultTermMonths, down: DATA.meta.finance.defaultDown },
   finder: { sel: [], mode: "all", q: "" },
+  cart: [],
 };
+try { const c = JSON.parse(localStorage.getItem("lexusCart") || "[]"); if (Array.isArray(c)) state.cart = c.filter(resolveKey); } catch (e) {}
 let lastMatch = null;   // cache of last computed recommendations for the print sheet
 
 /* ---------- helpers ---------- */
@@ -73,6 +75,47 @@ function warrantyFor(variant) {
   if (pc !== "ev") rows = rows.concat(W.combustion);
   if (W[pc]) rows = rows.concat(W[pc]);
   return rows;
+}
+
+/* ---------- cart + dealer stock cross-reference ---------- */
+const INV = window.LEXUS_INVENTORY || { meta: {}, units: [] };
+const invNorm = s => (s == null ? "" : String(s)).toLowerCase()
+  .replace(/[^a-z0-9+ ]/g, " ").replace(/\b(awd|fwd|rwd|package|pkg)\b/g, " ").replace(/\s+/g, " ").trim();
+const modelLine = s => invNorm(s).split(" ")[0];
+
+function cartKey(model, variant, trim) { return `${model.slug}|${variant.modelId}|${trim.id}`; }
+function inCart(key) { return state.cart.includes(key); }
+function toggleCart(key) {
+  state.cart = inCart(key) ? state.cart.filter(k => k !== key) : state.cart.concat(key);
+  try { localStorage.setItem("lexusCart", JSON.stringify(state.cart)); } catch (e) {}
+  updateCartCount();
+}
+function resolveKey(key) {
+  const [slug, mid, tid] = key.split("|");
+  const model = DATA.models.find(m => m.slug === slug); if (!model) return null;
+  const variant = model.variants.find(v => v.modelId === mid); if (!variant) return null;
+  const trim = variant.trims.find(t => t.id === tid); if (!trim) return null;
+  return { model, variant, trim };
+}
+function updateCartCount() {
+  const el = $("#cart-count"); if (!el) return;
+  el.textContent = state.cart.length;
+  el.classList.toggle("hidden", state.cart.length === 0);
+}
+// match dealer units to a specific (variant, trim): exact trim, else other trims of same model
+function matchUnits(model, variant, trim) {
+  const vN = invNorm(variant.name), tN = invNorm(trim.name), line = invNorm(model.name);
+  const exact = [], alt = [];
+  for (const u of INV.units) {
+    const um = invNorm(u.model), ut = invNorm(u.trim);
+    const modelEq = um === vN;
+    const trimEq = ut === tN || (ut && tN && (ut.includes(tN) || tN.includes(ut)));
+    if (modelEq && trimEq) exact.push(u);
+    else if (modelLine(u.model) === line) alt.push(u);
+  }
+  exact.sort((a, b) => (a.price || 0) - (b.price || 0));
+  alt.sort((a, b) => (a.price || 0) - (b.price || 0));
+  return { exact, alt };
 }
 
 // flat list of {model, variant, trim} respecting filters (model/category/budget)
@@ -151,7 +194,7 @@ function rebuildModelFilter() {
 function setMode(mode) {
   state.mode = mode;
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.mode === mode));
-  ["match", "browse", "finder"].forEach(m => $("#mode-" + m).classList.toggle("hidden", m !== mode));
+  ["match", "browse", "finder", "cart"].forEach(m => $("#mode-" + m).classList.toggle("hidden", m !== mode));
   renderAll();
 }
 
@@ -251,6 +294,7 @@ function pctClass(p) { return p >= 90 ? "p90" : p >= 80 ? "p80" : p >= 70 ? "p70
 function cardHTML(entry, musts, nices, opts = {}) {
   const { model, variant, trim } = entry;
   const p = trimPrice(trim);
+  const key = cartKey(model, variant, trim);
   const ribbon = opts.ribbon ? `<span class="ribbon">${opts.ribbon}</span>` : "";
   const badge = (opts.pct != null)
     ? `<span class="mpct ${pctClass(opts.pct)}" title="${opts.satN} of ${opts.totN} selected features">${opts.pct}% match · ${opts.satN}/${opts.totN}</span>` : "";
@@ -272,6 +316,7 @@ function cardHTML(entry, musts, nices, opts = {}) {
         ${wantTags(model, trim, musts, nices)}
         ${why}
         ${opts.upsell ? upsellHTML(model, variant, trim) : ""}
+        <div class="card-cta"><button class="btn cart-btn ${inCart(key) ? "in" : ""}" data-cartkey="${key}">${inCart(key) ? "✓ In cart" : "+ Add to cart"}</button></div>
       </div>
     </div>
   </div>`;
@@ -353,6 +398,8 @@ function renderMatch() {
     if (bucket.length > 6) html += `<div class="hint">+ ${bucket.length - 6} more in this tier.</div>`;
   }
   list.innerHTML = html;
+  list.querySelectorAll(".cart-btn").forEach(b =>
+    b.addEventListener("click", () => { toggleCart(b.dataset.cartkey); renderMatch(); }));
 }
 
 /* ---------- client-facing print / PDF summary ---------- */
@@ -442,10 +489,11 @@ function renderBrowseDetail() {
     `<button class="vtab ${i === state.browseVariant ? "active" : ""}" data-v="${i}">${vv.name}</button>`).join("");
 
   const priceStrip = v.trims.map(t => {
-    const p = trimPrice(t), fm = financeMonthly(t);
+    const p = trimPrice(t), fm = financeMonthly(t), key = cartKey(m, v, t);
     return `<div class="price-pill ${t.isBase ? "base" : ""}"><span class="pn">${esc(t.name)}${t.isBase ? " (base)" : ""}</span><br><span class="pp">${money(p.start)}</span>
       ${p.payment ? `<br><span class="pn lease">Lease ${money(p.payment)}/mo · ${p.rate}%/${p.term}mo</span>` : ""}
-      ${fm ? `<br><span class="pn">Finance ~${money(fm)}/mo · ${state.pay.apr}%/${state.pay.term}mo</span>` : ""}</div>`;
+      ${fm ? `<br><span class="pn">Finance ~${money(fm)}/mo · ${state.pay.apr}%/${state.pay.term}mo</span>` : ""}
+      <br><button class="pill-add ${inCart(key) ? "in" : ""}" data-cartkey="${key}">${inCart(key) ? "✓ in cart" : "+ cart"}</button></div>`;
   }).join("");
 
   const warRows = warrantyFor(v).map(w => `<div class="war-row"><span>${esc(w.name)}</span><span>${esc(w.term)}</span></div>`).join("");
@@ -517,6 +565,8 @@ function renderBrowseDetail() {
 
   detail.querySelectorAll(".vtab").forEach(b => b.addEventListener("click", () => { state.browseVariant = +b.dataset.v; state.browseSpecFilter = ""; renderBrowseDetail(); }));
   $("#btn-print-spec").addEventListener("click", () => printSpecSheet(m, v));
+  detail.querySelectorAll(".pill-add").forEach(b =>
+    b.addEventListener("click", () => { toggleCart(b.dataset.cartkey); renderBrowseDetail(); }));
   $("#bpay-apr").addEventListener("change", e => { state.pay.apr = Math.max(0, +e.target.value || 0); renderBrowseDetail(); });
   $("#bpay-term").addEventListener("change", e => { state.pay.term = Math.max(12, +e.target.value || 60); renderBrowseDetail(); });
   const sf = $("#spec-filter");
@@ -667,13 +717,119 @@ function renderFinderResults() {
   res.innerHTML = html;
 }
 
+/* ---------- cart / stock cross-reference ---------- */
+function stockHTML(model, variant, trim) {
+  if (!INV.units.length) return `<div class="stock none">Inventory snapshot not loaded.</div>`;
+  const { exact, alt } = matchUnits(model, variant, trim);
+  const unitRow = u => `<div class="unit">
+      <span class="u-stat ${(/stock/i).test(u.status) ? "ok" : "transit"}">${esc(u.status || "—")}</span>
+      <span class="u-col">${esc(u.exterior || "—")}</span>
+      <span class="u-meta">Stock ${esc(u.stock || "—")}${u.vin ? " · VIN …" + esc(String(u.vin).slice(-6)) : ""}</span>
+      <span class="u-price">${u.price ? money(u.price) : ""}</span>
+      ${u.url ? `<a class="u-link" href="${esc(u.url)}" target="_blank" rel="noopener">View ↗</a>` : ""}
+    </div>`;
+  if (exact.length) {
+    return `<div class="stock"><div class="stock-h ok">● In stock — exact trim (${exact.length})</div>${exact.map(unitRow).join("")}</div>`;
+  }
+  let h = `<div class="stock"><div class="stock-h none">○ This exact trim isn't in stock</div>`;
+  if (alt.length) {
+    h += `<div class="stock-alt">${alt.length} other ${esc(model.name)} in stock at ${esc(INV.meta.dealer)}:</div>${alt.slice(0, 4).map(unitRow).join("")}`;
+    if (alt.length > 4) h += `<div class="hint">+ ${alt.length - 4} more ${esc(model.name)} units.</div>`;
+  } else {
+    h += `<div class="hint">No ${esc(model.name)} currently in stock — ask the dealer to locate or factory-order.</div>`;
+  }
+  return h + `</div>`;
+}
+
+function renderCart() {
+  const head = $("#cart-head"), list = $("#cart-list");
+  const items = state.cart.map(resolveKey).filter(Boolean);
+  const banner = INV.meta.sample
+    ? `<div class="sample-banner">⚠ Showing <b>SAMPLE</b> inventory. Run <code>scripts/scrape_inventory.py</code> from an un-blocked network to load live ${esc(INV.meta.dealer || "dealer")} stock.</div>`
+    : "";
+  const dealerline = INV.meta.dealer
+    ? `Stock checked against <b>${esc(INV.meta.dealer)}</b>${INV.meta.city ? " · " + esc(INV.meta.city) : ""} · snapshot ${esc(INV.meta.scraped || "")} (${INV.units.length} units)`
+    : "No dealer inventory loaded.";
+
+  if (!items.length) {
+    head.innerHTML = `<div><h2>Cart</h2><div class="count">${dealerline}</div></div>`;
+    list.innerHTML = banner + `<div class="empty"><div class="big">🛒</div>No vehicles added yet.<br>Add trims from <b>Match by needs</b> (or any result) to check Northwest Lexus stock and build a quote.</div>`;
+    return;
+  }
+  head.innerHTML = `<div><h2>Cart <span style="color:var(--mut);font-weight:400">· ${items.length} vehicle${items.length !== 1 ? "s" : ""}</span></h2>
+      <div class="count">${dealerline}</div></div>
+    <div class="head-actions">
+      <button id="cart-print" class="btn print">📄 Print quote</button>
+      <button id="cart-clear" class="btn ghost">Clear cart</button>
+    </div>`;
+  $("#cart-clear").addEventListener("click", () => { state.cart = []; try { localStorage.removeItem("lexusCart"); } catch (e) {} updateCartCount(); renderCart(); });
+  $("#cart-print").addEventListener("click", printCart);
+
+  let html = banner;
+  for (const { model, variant, trim } of items) {
+    const key = cartKey(model, variant, trim), p = trimPrice(trim);
+    html += `<div class="card cart-card">
+      <div class="card-body">
+        ${photoHTML(variant, 320, "card-photo")}
+        <div class="card-main">
+          <div class="card-top">
+            <div><div class="card-title">${esc(model.name)} <span class="variant">${esc(variant.name)} · ${esc(trim.name)}</span></div>
+              <div class="card-sub">${esc(model.subtitle)} · ${esc(variant.ptClass.toUpperCase())}${trim.attrs.drivetrain ? " · " + esc(trim.attrs.drivetrain) : ""}</div></div>
+            <div class="price"><div class="amt">${money(p.start)}</div>${payHTML(trim)}</div>
+          </div>
+          ${stockHTML(model, variant, trim)}
+          <div class="card-cta"><button class="btn ghost cart-rm" data-cartkey="${key}">Remove</button></div>
+        </div>
+      </div>
+    </div>`;
+  }
+  list.innerHTML = html;
+  list.querySelectorAll(".cart-rm").forEach(b =>
+    b.addEventListener("click", () => { toggleCart(b.dataset.cartkey); renderCart(); }));
+}
+
+function printCart() {
+  const items = state.cart.map(resolveKey).filter(Boolean);
+  if (!items.length) return;
+  const area = $("#print-area");
+  const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
+  let blocks = "";
+  for (const { model, variant, trim } of items) {
+    const p = trimPrice(trim), fm = financeMonthly(trim);
+    const { exact, alt } = matchUnits(model, variant, trim);
+    const stock = exact.length
+      ? `<div class="p-stock yes">In stock (${exact.length}): ${exact.slice(0, 4).map(u => `${esc(u.exterior || "")} #${esc(u.stock || "")}`).join(", ")}</div>`
+      : `<div class="p-stock no">Exact trim not in stock${alt.length ? ` · ${alt.length} other ${esc(model.name)} available` : ""}.</div>`;
+    blocks += `<div class="p-trim">
+      <div class="p-trim-top">
+        <div><div class="pt-name">${esc(model.name)} ${esc(variant.name)} · ${esc(trim.name)}</div>
+          <div class="pt-sub">${esc(model.subtitle)} · ${esc(variant.ptClass.toUpperCase())}</div></div>
+        <div class="pt-price"><div class="amt">${money(p.start)}</div>
+          <div class="ls"><b>Lease ${p.payment ? money(p.payment) + "/mo · " + p.rate + "%/" + p.term + "mo" : "n/a"}</b></div>
+          ${fm ? `<div class="ls">Finance ~${money(fm)}/mo · ${state.pay.apr}%/${state.pay.term}mo</div>` : ""}</div>
+      </div>
+      ${variant.image ? `<div class="p-photo"><img src="${imgUrl(variant.image, 480)}"></div>` : ""}
+      ${stock}
+    </div>`;
+  }
+  area.innerHTML = `
+    <div class="p-head"><div><div class="pl">LEXUS</div><div class="psub">Selected Vehicles${INV.meta.sample ? " — sample stock" : ""}</div></div>
+      <div class="pmeta">${state.print.client ? "<b>Prepared for:</b> " + esc(state.print.client) + "<br>" : ""}${today} · ${esc(state.province)}</div></div>
+    <div class="p-intro">Vehicles selected for your consideration, with availability at ${esc(INV.meta.dealer || "the dealer")}.</div>
+    ${blocks}
+    <div class="p-foot">${esc(DATA.meta.finance.note)} ${esc(DATA.meta.priceNote)} Stock as of ${esc(INV.meta.scraped || "—")}${INV.meta.sample ? " (SAMPLE data)" : ""}. Not a binding offer.</div>`;
+  window.print();
+}
+
 /* ---------- render dispatch ---------- */
 function renderAll() {
   if (state.mode === "match") { renderWants(); renderMatch(); }
   else if (state.mode === "browse") renderBrowse();
   else if (state.mode === "finder") renderFinder();
+  else if (state.mode === "cart") renderCart();
 }
 
 initControls();
+updateCartCount();
 renderAll();
 })();

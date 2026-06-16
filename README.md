@@ -61,6 +61,22 @@ https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/index.html
    trim that delivers them (toggle **match ALL** vs **match ANY**), with the **cheapest
    way in** for each model ("available from $X on …").
 
+4. **Cart + live stock check** — add one or more trims to a cart (persists across
+   reloads), then cross-reference them against a **Northwest Lexus inventory snapshot**:
+   each item shows whether the **exact trim is in stock** (colour, stock #, VIN, price,
+   status, link) or, if not, the **other units of that model** currently available.
+   Export a **printable quote** of the selected vehicles with their availability.
+
+   Dealer stock lives in `data/inventory.json`, built by `scripts/scrape_inventory.py`.
+   northwestlexus.com sits behind a Cloudflare WAF that blocks datacentre IPs, so the
+   app ships with a clearly-labelled **SAMPLE** snapshot; run the scraper from a normal
+   network to load live stock:
+
+   ```
+   python3 scripts/scrape_inventory.py            # live dealer scrape (JSON-LD)
+   python3 scripts/scrape_inventory.py --sample   # regenerate the demo sample
+   ```
+
 ## Run it
 
 The app is a static site with the dataset baked into `app/data.js`, so it works by

@@ -16,6 +16,7 @@
     <button class="tab active" data-mode="match">Match by needs</button>
     <button class="tab" data-mode="browse">Browse vehicles</button>
     <button class="tab" data-mode="finder">Feature finder</button>
+    <button class="tab" data-mode="cart">Cart<span id="cart-count" class="cart-count hidden">0</span></button>
   </nav>
   <div class="prov">
     <label>Province
@@ -70,6 +71,14 @@
     </div>
   </section>
 
+  <!-- CART MODE -->
+  <section id="mode-cart" class="mode hidden">
+    <div class="panel cart-panel">
+      <div id="cart-head" class="results-head"></div>
+      <div id="cart-list"></div>
+    </div>
+  </section>
+
   <!-- FEATURE FINDER MODE -->
   <section id="mode-finder" class="mode hidden">
     <div class="panel finder">
@@ -90,6 +99,7 @@
 <div id="print-area" class="print-area"></div>
 
 <script src="data.js"></script>
+<script src="inventory.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
