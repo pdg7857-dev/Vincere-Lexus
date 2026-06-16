@@ -246,6 +246,7 @@ main{max-width:1320px;margin:0 auto;padding:26px 22px}
 .unit:last-child{border-bottom:none}
 .u-cond{font-family:var(--body-bold);font-size:9.5px;letter-spacing:.6px;padding:2px 7px;border-radius:0;color:#fff}
 .u-cond.new{background:var(--good)}
+.u-cond.demo{background:#1c5fa8}
 .u-cond.cpo{background:#111}
 .u-cond.used{background:#8a8a8a}
 .u-stat{font-family:var(--body-bold);font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:0}

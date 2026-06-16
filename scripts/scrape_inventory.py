@@ -20,6 +20,7 @@ network/IP (e.g. your machine); datacentre IPs are often challenged. The script 
 gracefully and tells you if it is blocked.
 """
 import argparse
+import glob
 import json
 import os
 import re
@@ -234,6 +235,70 @@ def make_sample():
     return units, True
 
 
+# ---------------- ingest pre-extracted listing JSON ----------------
+LEXUS_CODES = ("nx", "rx", "rz", "es", "is", "ls", "lc", "gx", "lx", "tx", "ux")
+
+
+def _grade(s):
+    g = re.sub(r"\b(package|grade|group)\b", "", s, flags=re.I).strip(" -–")
+    g = re.sub(r"\s+", " ", g).title()
+    return g.replace("F Sport", "F SPORT").replace("Blackline", "BLACKLINE").strip()
+
+
+def normalize_listing(it):
+    """Map a {year,model,trim,condition,price,odometer_km,...} listing to the app schema."""
+    raw_model = (it.get("model") or "").strip()
+    raw_trim = (it.get("trim") or "").strip()
+    base = re.sub(r"^(lexus|toyota)\s+", "", raw_model, flags=re.I).strip()
+    code = base.split()[0].lower() if base else ""
+    is_lexus = "lexus" in raw_model.lower() or code in LEXUS_CODES
+
+    model_full, grade = base, raw_trim
+    if is_lexus:
+        if " - " in raw_trim:                      # new/demo: "350 AWD - PREMIUM PACKAGE"
+            left, right = raw_trim.split(" - ", 1)
+            engine = left.split()[0]
+            model_full = f"{base.split()[0]} {engine}"
+            grade = _grade(right)
+        else:                                       # used: "NX 350 Sportdesign" or "350h"
+            m = re.match(r"^([A-Za-z]{1,3})\s*(\d+[a-z+]*)\s*(.*)$", raw_trim)
+            if m:
+                model_full = f"{m.group(1).upper()} {m.group(2)}"
+                grade = _grade(m.group(3))
+            else:
+                m2 = re.match(r"^(\d+[a-z+]*)\b\s*(.*)$", raw_trim)
+                if m2:
+                    model_full = f"{base.split()[0]} {m2.group(1)}"
+                    grade = _grade(m2.group(2))
+    cond = it.get("condition") or "New"
+    return {
+        "vin": it.get("vin", ""), "stock": it.get("stock_number", ""),
+        "year": it.get("year"), "model": model_full, "trim": grade,
+        "exterior": it.get("exterior_color", ""), "price": it.get("price"),
+        "odometer": it.get("odometer_km"), "condition": cond,
+        "certified": bool(re.search(r"cert", cond, re.I)),
+        "status": "In stock", "type": "new" if cond == "New" else "used",
+        "url": (DEALER["url"] + it["url"]) if it.get("url", "").startswith("/") else it.get("url", ""),
+        "image": it.get("image", ""), "brand": "Lexus" if is_lexus else (raw_model.split()[0] if raw_model else ""),
+    }
+
+
+def ingest(paths):
+    raw = []
+    for p in paths:
+        for f in (glob.glob(os.path.join(p, "*.json")) if os.path.isdir(p) else [p]):
+            d = json.load(open(f))
+            raw.extend(d if isinstance(d, list) else d.get("units", []))
+    units, seen = [], set()
+    for it in raw:
+        vin = it.get("vin") or it.get("stock_number")
+        if vin in seen:
+            continue
+        seen.add(vin)
+        units.append(normalize_listing(it))
+    return units, False
+
+
 def emit(units, sample):
     units = [u for u in units if u.get("model")]
     dataset = {
@@ -261,7 +326,14 @@ def emit(units, sample):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--sample", action="store_true", help="generate a labelled sample snapshot")
+    ap.add_argument("--ingest", nargs="+", metavar="PATH",
+                    help="normalize pre-extracted listing JSON file(s)/dir into the snapshot")
     ap.add_argument("--limit", type=int, default=0, help="max VDPs to scrape (live mode)")
     args = ap.parse_args()
-    units, sample = make_sample() if args.sample else scrape_live(args.limit)
+    if args.ingest:
+        units, sample = ingest(args.ingest)
+    elif args.sample:
+        units, sample = make_sample()
+    else:
+        units, sample = scrape_live(args.limit)
     emit(units, sample)

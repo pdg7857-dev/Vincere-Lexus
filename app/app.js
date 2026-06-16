@@ -718,9 +718,9 @@ function renderFinderResults() {
 }
 
 /* ---------- cart / stock cross-reference ---------- */
-const condClass = u => (u.condition === "New" || !u.condition) ? "new" : (/cert/i.test(u.condition) ? "cpo" : "used");
-const condLabel = u => (u.condition === "New" || !u.condition) ? "NEW" : (/cert/i.test(u.condition) ? "CPO" : "USED");
-const isNewUnit = u => (u.condition === "New" || !u.condition);
+const condClass = u => { const c = (u.condition || "New").toLowerCase(); return c === "new" ? "new" : /demo/.test(c) ? "demo" : /cert/.test(c) ? "cpo" : "used"; };
+const condLabel = u => { const c = (u.condition || "New").toLowerCase(); return c === "new" ? "NEW" : /demo/.test(c) ? "DEMO" : /cert/.test(c) ? "CPO" : "USED"; };
+const isNewUnit = u => (u.condition || "New").toLowerCase() === "new";
 
 function unitRow(u) {
   const yk = !isNewUnit(u)
@@ -743,7 +743,7 @@ function stockHTML(model, variant, trim) {
   let h = `<div class="stock">`;
 
   if (exNew.length) h += `<div class="stock-h ok">● In stock — exact trim (${exNew.length})</div>${exNew.map(unitRow).join("")}`;
-  if (exUsed.length) h += `<div class="stock-h cpo">◆ Pre-owned — same trim (${exUsed.length})</div>${exUsed.map(unitRow).join("")}`;
+  if (exUsed.length) h += `<div class="stock-h cpo">◆ Pre-owned &amp; demo — same trim (${exUsed.length})</div>${exUsed.map(unitRow).join("")}`;
   if (!exact.length) h += `<div class="stock-h none">○ This exact trim isn't in stock</div>`;
 
   // alternatives (other trims of this model) — new and pre-owned

@@ -67,17 +67,23 @@ https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/index.html
    stock #, VIN, price, status, link), any **Certified Pre-Owned / Used unit of the same
    trim** (with year + odometer + price — the cheaper alternative), and the **other
    units of that model** available (new and pre-owned counts). Units are badged
-   **NEW / CPO / USED**. Export a **printable quote** of the selected vehicles with
-   their availability.
+   **NEW / DEMO / CPO / USED** with stock #, VIN and a link to the live listing. Export
+   a **printable quote** of the selected vehicles with their availability.
 
    Dealer stock lives in `data/inventory.json`, built by `scripts/scrape_inventory.py`.
-   northwestlexus.com sits behind a Cloudflare WAF that blocks datacentre IPs, so the
-   app ships with a clearly-labelled **SAMPLE** snapshot; run the scraper from a normal
-   network to load live stock:
+   The committed snapshot is **real, live Northwest Lexus inventory** (≈48 units across
+   new / demo / certified pre-owned / used), pulled from northwestlexus.com. To refresh:
 
    ```
-   python3 scripts/scrape_inventory.py            # live dealer scrape (JSON-LD)
-   python3 scripts/scrape_inventory.py --sample   # regenerate the demo sample
+   # If the dealer site is reachable from your network (it sits behind a Cloudflare WAF
+   # that blocks some datacentre IPs):
+   python3 scripts/scrape_inventory.py                 # live scrape via JSON-LD
+
+   # Or normalize pre-extracted listing JSON (e.g. exported from the listing pages):
+   python3 scripts/scrape_inventory.py --ingest data/inventory_source
+
+   # Or regenerate a labelled demo sample:
+   python3 scripts/scrape_inventory.py --sample
    ```
 
 ## Run it
