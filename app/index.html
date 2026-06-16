@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lexus Trim Matcher — Sales Companion</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="mark">LEXUS</span>
+    <span class="sub">Trim Matcher · Sales Companion</span>
+  </div>
+  <nav class="tabs">
+    <button class="tab active" data-mode="match">Match by needs</button>
+    <button class="tab" data-mode="browse">Browse vehicles</button>
+    <button class="tab" data-mode="finder">Feature finder</button>
+  </nav>
+  <div class="prov">
+    <label>Province
+      <select id="province"></select>
+    </label>
+  </div>
+</header>
+
+<main>
+  <!-- MATCH MODE -->
+  <section id="mode-match" class="mode">
+    <div class="match-grid">
+      <aside class="panel questionnaire">
+        <div class="panel-head">
+          <h2>What matters to your client?</h2>
+          <p class="hint">Tap once for <span class="leg must">Must-have</span>, twice for
+            <span class="leg nice">Nice-to-have</span>, again to clear.</p>
+        </div>
+        <div class="filters">
+          <label>Body style
+            <select id="filter-category"><option value="">All</option></select>
+          </label>
+          <label>Model
+            <select id="filter-model"><option value="">All</option></select>
+          </label>
+          <label>Max budget
+            <select id="filter-budget"></select>
+          </label>
+        </div>
+        <div id="wants" class="wants"></div>
+        <div class="q-actions">
+          <button id="clear-wants" class="btn ghost">Clear all</button>
+          <span id="want-summary" class="summary"></span>
+        </div>
+      </aside>
+
+      <div class="panel results">
+        <div id="results-head" class="results-head"></div>
+        <div id="results" class="results-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BROWSE MODE -->
+  <section id="mode-browse" class="mode hidden">
+    <div class="browse-grid">
+      <aside class="panel browse-nav">
+        <h2>Vehicles</h2>
+        <div id="model-list" class="model-list"></div>
+      </aside>
+      <div id="browse-detail" class="panel browse-detail"></div>
+    </div>
+  </section>
+
+  <!-- FEATURE FINDER MODE -->
+  <section id="mode-finder" class="mode hidden">
+    <div class="panel finder">
+      <h2>Find every vehicle with a specific feature</h2>
+      <p class="hint">Your client wants one specific thing? Search it and see exactly which models and trims deliver — and the cheapest way in.</p>
+      <input id="finder-input" type="search" placeholder="e.g. Mark Levinson, panoramic moonroof, heated steering wheel, towing…" autocomplete="off" />
+      <div id="finder-suggest" class="finder-suggest"></div>
+      <div id="finder-results" class="finder-results"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span id="foot-meta"></span>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
