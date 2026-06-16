@@ -37,6 +37,11 @@ https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/index.html
    - **Lease vs finance:** lease is the exact advertised offer; finance is estimated
      live from an editable APR/term you set to today's Lexus Financial Services rate
      (lease is shown first — we prefer lease).
+   - **Match in-stock vehicles:** toggle from "Trims to order" to "In stock" to score the
+     client's needs against the **actual Northwest Lexus inventory**, filterable by
+     **New / Demo / Used**. Pre-owned and demo units inherit the current model-year trim
+     spec as a feature guide (flagged "features approx."), and show real price/odometer
+     ranges, condition badges and finance on the actual vehicle price.
    - **Upsell on every match (▲):** the next trim up in the same model, the price/payment
      delta, and exactly what the client *also* gains.
    - **One-feature-away (near-miss):** trims missing a single must-have, with the
@@ -71,8 +76,9 @@ https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/index.html
    a **printable quote** of the selected vehicles with their availability.
 
    Dealer stock lives in `data/inventory.json`, built by `scripts/scrape_inventory.py`.
-   The committed snapshot is **real, live Northwest Lexus inventory** (≈48 units across
-   new / demo / certified pre-owned / used), pulled from northwestlexus.com. To refresh:
+   The committed snapshot is the **full, real Northwest Lexus inventory** (≈193 units —
+   new, demo, certified pre-owned and used, incl. trade-ins), pulled from
+   northwestlexus.com. To refresh:
 
    ```
    # If the dealer site is reachable from your network (it sits behind a Cloudflare WAF

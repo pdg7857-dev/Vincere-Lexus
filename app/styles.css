@@ -133,6 +133,21 @@ main{max-width:1320px;margin:0 auto;padding:26px 22px}
 .nearmiss .why,.why{color:var(--red-dk);font-size:12.5px;margin-top:8px}
 .why b{color:#111}
 
+/* match source toggle + condition filter */
+.seg{display:inline-flex;border:1px solid #111}
+.sgm{background:#fff;border:none;color:#111;padding:8px 13px;cursor:pointer;font-family:var(--head);font-size:11.5px;letter-spacing:.4px}
+.sgm.on{background:#111;color:#fff}
+.cond-chips{display:inline-flex;gap:5px}
+.cc{background:#fff;border:1px solid var(--line2);color:var(--mut);padding:7px 12px;cursor:pointer;font-family:var(--body-bold);font-size:11px;border-radius:0}
+.cc.on{color:#fff;border-color:#111}
+.cc.on.new{background:var(--good);border-color:var(--good)}
+.cc.on.demo{background:#1c5fa8;border-color:#1c5fa8}
+.cc.on.used{background:#111}
+.inv-line{margin:8px 0 2px;font-size:12px;color:var(--soft-ink)}
+.inv-line .u-cond{margin-right:6px}
+.inv-line .approx{color:var(--mut2);font-size:11px}
+.price .amt .rng{font-size:14px;color:var(--mut);font-family:var(--body)}
+
 /* match % badge */
 .mpct{font-family:var(--body-bold);font-size:10.5px;padding:2px 9px;border-radius:0;border:1px solid var(--line2);white-space:nowrap;vertical-align:middle;color:var(--mut)}
 .mpct.p90{color:#fff;background:#111;border-color:#111}

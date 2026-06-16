@@ -21,6 +21,8 @@ const state = {
   pay: { apr: DATA.meta.finance.defaultApr, term: DATA.meta.finance.defaultTermMonths, down: DATA.meta.finance.defaultDown },
   finder: { sel: [], mode: "all", q: "" },
   cart: [],
+  matchMode: "catalog",                 // 'catalog' = trims to order, 'stock' = in-stock vehicles
+  stockBuckets: ["New", "Demo", "Used"],
 };
 try { const c = JSON.parse(localStorage.getItem("lexusCart") || "[]"); if (Array.isArray(c)) state.cart = c.filter(resolveKey); } catch (e) {}
 let lastMatch = null;   // cache of last computed recommendations for the print sheet
@@ -116,6 +118,52 @@ function matchUnits(model, variant, trim) {
   exact.sort((a, b) => (a.price || 0) - (b.price || 0));
   alt.sort((a, b) => (a.price || 0) - (b.price || 0));
   return { exact, alt };
+}
+
+// condition bucket for filtering: New / Demo / Used (CPO + Used + As-Is)
+const condBucket = u => { const c = (u.condition || "New").toLowerCase(); return c === "new" ? "New" : /demo/.test(c) ? "Demo" : "Used"; };
+const bucketClass = b => b === "New" ? "new" : b === "Demo" ? "demo" : "used";
+// resolve a dealer unit back to a catalogue {model,variant,trim} so it can inherit features
+function resolveUnitEntry(u) {
+  if (u.brand && u.brand !== "Lexus") return null;
+  const vN = invNorm(u.model); if (!vN) return null;
+  for (const m of DATA.models) for (const v of m.variants) {
+    if (invNorm(v.name) !== vN) continue;
+    const tN = invNorm(u.trim); if (!tN) return null;          // no grade -> can't feature-match
+    const t = v.trims.find(x => invNorm(x.name) === tN) ||
+      v.trims.find(x => { const z = invNorm(x.name); return z.includes(tN) || tN.includes(z); });
+    return t ? { model: m, variant: v, trim: t } : null;
+  }
+  return null;
+}
+INV.units.forEach(u => { u._bucket = condBucket(u); u._entry = resolveUnitEntry(u); });
+
+// group in-stock units (of the selected conditions) into scoreable catalogue entries
+function buildStockEntries() {
+  const groups = new Map();
+  for (const u of INV.units) {
+    if (!u._entry || !state.stockBuckets.includes(u._bucket)) continue;
+    const { model, variant, trim } = u._entry;
+    if (state.filter.category && model.category !== state.filter.category) continue;
+    if (state.filter.model && model.slug !== state.filter.model) continue;
+    const key = `${model.slug}|${variant.modelId}|${trim.id}|${u._bucket}`;
+    let g = groups.get(key);
+    if (!g) { g = { model, variant, trim, inv: { bucket: u._bucket, units: [], minPrice: Infinity, maxPrice: 0, minKm: Infinity, maxKm: 0 } }; groups.set(key, g); }
+    g.inv.units.push(u);
+    if (u.price) { g.inv.minPrice = Math.min(g.inv.minPrice, u.price); g.inv.maxPrice = Math.max(g.inv.maxPrice, u.price); }
+    if (u.odometer) { g.inv.minKm = Math.min(g.inv.minKm, u.odometer); g.inv.maxKm = Math.max(g.inv.maxKm, u.odometer); }
+  }
+  let arr = [...groups.values()];
+  if (state.filter.budget) arr = arr.filter(g => g.inv.minPrice <= state.filter.budget);
+  return arr;
+}
+const entryPrice = e => e.inv ? (e.inv.minPrice === Infinity ? 1e12 : e.inv.minPrice) : startPrice(e.trim);
+function payInv(price) {
+  const P = price - (state.pay.down || 0);
+  if (!(P > 0)) return "";
+  const n = state.pay.term, r = (state.pay.apr / 100) / 12;
+  const m = r === 0 ? P / n : (P * r) / (1 - Math.pow(1 + r, -n));
+  return `<div class="pay fin">Finance ~${money(m)}/mo · ${state.pay.apr}% · ${state.pay.term} mo</div>`;
 }
 
 // flat list of {model, variant, trim} respecting filters (model/category/budget)
@@ -292,10 +340,18 @@ function wantTags(model, trim, musts, nices) {
 function pctClass(p) { return p >= 90 ? "p90" : p >= 80 ? "p80" : p >= 70 ? "p70" : "plow"; }
 
 function cardHTML(entry, musts, nices, opts = {}) {
-  const { model, variant, trim } = entry;
+  const { model, variant, trim, inv } = entry;
   const p = trimPrice(trim);
   const key = cartKey(model, variant, trim);
   const ribbon = opts.ribbon ? `<span class="ribbon">${opts.ribbon}</span>` : "";
+  // price + payments: in-stock uses the real unit price; catalogue uses MSRP + advertised lease
+  const priceBlock = inv
+    ? `<div class="amt">${money(inv.minPrice)}${inv.maxPrice > inv.minPrice ? `<span class="rng">–${money(inv.maxPrice)}</span>` : ""}</div>${payInv(inv.minPrice)}`
+    : `<div class="amt">${money(p.start)}</div>${payHTML(trim)}`;
+  const kmTxt = (inv && inv.bucket !== "New" && inv.maxKm) ? ` · ${Math.round(inv.minKm / 1000)}–${Math.round(inv.maxKm / 1000)}k km` : "";
+  const invLine = inv
+    ? `<div class="inv-line"><span class="u-cond ${bucketClass(inv.bucket)}">${inv.bucket.toUpperCase()}</span> <b>${inv.units.length}</b> in stock at ${esc(INV.meta.dealer)}${kmTxt}${inv.bucket !== "New" ? ` <span class="approx" title="Pre-owned feature match uses the current model-year spec as a guide">·  features approx.</span>` : ""}</div>`
+    : "";
   const badge = (opts.pct != null)
     ? `<span class="mpct ${pctClass(opts.pct)}" title="${opts.satN} of ${opts.totN} selected features">${opts.pct}% match · ${opts.satN}/${opts.totN}</span>` : "";
   let why = "";
@@ -311,8 +367,9 @@ function cardHTML(entry, musts, nices, opts = {}) {
         <div class="card-top">
           <div><div class="card-title">${model.name} <span class="variant">${variant.name} · ${trim.name}</span> ${badge}</div>
             <div class="card-sub">${model.subtitle} · ${variant.ptClass.toUpperCase()}${trim.attrs.drivetrain ? " · " + trim.attrs.drivetrain : ""}${trim.attrs.seats ? " · " + trim.attrs.seats + " seats" : ""}</div></div>
-          <div class="price"><div class="amt">${money(p.start)}</div>${payHTML(trim)}</div>
+          <div class="price">${priceBlock}</div>
         </div>
+        ${invLine}
         ${wantTags(model, trim, musts, nices)}
         ${why}
         ${opts.upsell ? upsellHTML(model, variant, trim) : ""}
@@ -337,7 +394,8 @@ function renderMatch() {
   }
 
   const sel = musts.concat(nices), totN = sel.length;
-  const all = filteredTrims();
+  const stockMode = state.matchMode === "stock";
+  const all = stockMode ? buildStockEntries() : filteredTrims();
   const scored = all.map(e => {
     const missMust = musts.filter(w => !e.trim.satisfies.includes(w));
     const niceHits = nices.filter(w => e.trim.satisfies.includes(w));
@@ -346,18 +404,23 @@ function renderMatch() {
   });
 
   const full = scored.filter(s => s.full)
-    .sort((a, b) => (b.satN - a.satN) || (startPrice(a.trim) - startPrice(b.trim)));
+    .sort((a, b) => (b.satN - a.satN) || (entryPrice(a) - entryPrice(b)));
   // partial matches that still cover ≥70% of everything the client asked for
   const partial = scored.filter(s => !s.full && s.pct >= 70)
-    .sort((a, b) => (a.missMust.length - b.missMust.length) || (b.pct - a.pct) || (startPrice(a.trim) - startPrice(b.trim)));
+    .sort((a, b) => (a.missMust.length - b.missMust.length) || (b.pct - a.pct) || (entryPrice(a) - entryPrice(b)));
 
   lastMatch = { musts, nices, full, partial };
+  const noun = stockMode ? "in-stock vehicle" : "trim";
+  const condChips = stockMode ? `<span class="cond-chips">${["New", "Demo", "Used"].map(b =>
+    `<button class="cc ${state.stockBuckets.includes(b) ? "on " + bucketClass(b) : ""}" data-bucket="${b}">${b}</button>`).join("")}</span>` : "";
   head.innerHTML = `<div><h2>Recommendations</h2>
-      <div class="count">${full.length ? `${full.length} trim${full.length !== 1 ? "s" : ""} meet every must-have` : "No trim meets every must-have"}${partial.length ? ` · ${partial.length} partial match${partial.length !== 1 ? "es" : ""} (≥70%)` : ""}.</div></div>
+      <div class="count">${full.length ? `${full.length} ${noun}${full.length !== 1 ? "s" : ""} meet every must-have` : `No ${noun} meets every must-have`}${partial.length ? ` · ${partial.length} partial (≥70%)` : ""}${stockMode ? ` · live ${esc(INV.meta.dealer)} stock` : ""}.</div></div>
     <div class="head-actions">
-      <input id="p-client" placeholder="Client name (optional)" value="${esc(state.print.client)}" style="width:140px">
-      <input id="p-rep" placeholder="Prepared by (optional)" value="${esc(state.print.rep)}" style="width:130px">
-      <button id="btn-print" class="btn print">📄 Client summary</button>
+      <span class="seg"><button class="sgm ${!stockMode ? "on" : ""}" data-mm="catalog">Trims to order</button><button class="sgm ${stockMode ? "on" : ""}" data-mm="stock">In stock</button></span>
+      ${condChips}
+      <input id="p-client" placeholder="Client name" value="${esc(state.print.client)}" style="width:120px">
+      <input id="p-rep" placeholder="Prepared by" value="${esc(state.print.rep)}" style="width:110px">
+      <button id="btn-print" class="btn print">📄 Summary</button>
     </div>
     <div class="paybar">
       <span class="pl">Payments</span>
@@ -373,14 +436,21 @@ function renderMatch() {
   $("#pay-apr").addEventListener("change", e => { state.pay.apr = Math.max(0, +e.target.value || 0); renderMatch(); });
   $("#pay-term").addEventListener("change", e => { state.pay.term = Math.max(12, +e.target.value || 60); renderMatch(); });
   $("#pay-down").addEventListener("change", e => { state.pay.down = Math.max(0, +e.target.value || 0); renderMatch(); });
+  head.querySelectorAll(".sgm").forEach(b => b.addEventListener("click", () => { state.matchMode = b.dataset.mm; renderMatch(); }));
+  head.querySelectorAll(".cc").forEach(b => b.addEventListener("click", () => {
+    const x = b.dataset.bucket, s = state.stockBuckets;
+    state.stockBuckets = s.includes(x) ? s.filter(v => v !== x) : s.concat(x);
+    if (!state.stockBuckets.length) state.stockBuckets = [x];   // keep at least one
+    renderMatch();
+  }));
 
   let html = "";
   if (full.length) {
-    full.slice(0, 10).forEach((s, i) => html += cardHTML(s, musts, nices,
-      { best: i === 0, ribbon: i === 0 ? "Top match — meets all must-haves" : "", upsell: true, pct: s.pct, satN: s.satN, totN }));
-    if (full.length > 10) html += `<div class="hint">+ ${full.length - 10} more qualifying trims (narrow with filters).</div>`;
+    full.slice(0, 12).forEach((s, i) => html += cardHTML(s, musts, nices,
+      { best: i === 0, ribbon: i === 0 ? "Top match — meets all must-haves" : "", upsell: !stockMode, pct: s.pct, satN: s.satN, totN }));
+    if (full.length > 12) html += `<div class="hint">+ ${full.length - 12} more (narrow with filters).</div>`;
   } else {
-    html += `<div class="empty" style="padding:30px"><div class="big">∅</div>No single trim meets all ${musts.length} must-have${musts.length !== 1 ? "s" : ""}. The closest matches are below — or relax a must-have.</div>`;
+    html += `<div class="empty" style="padding:30px"><div class="big">∅</div>No ${noun} meets all ${musts.length} must-have${musts.length !== 1 ? "s" : ""}${stockMode ? " in the selected conditions" : ""}. The closest matches are below — or relax a must-have${stockMode ? " / widen the condition filter" : ""}.</div>`;
   }
 
   // partial tiers: 90%+, 80–89%, 70–79%
@@ -393,9 +463,9 @@ function renderMatch() {
     const bucket = partial.filter(s => s.pct >= t.lo && s.pct < t.hi);
     if (!bucket.length) continue;
     html += `<div class="section-label">${t.label} <span style="color:var(--mut2)">(${bucket.length})</span></div>`;
-    bucket.slice(0, 6).forEach(s => html += cardHTML(s, musts, nices,
-      { upsell: false, pct: s.pct, satN: s.satN, totN, missWant: s.missMust.length === 1 ? s.missMust[0] : null }));
-    if (bucket.length > 6) html += `<div class="hint">+ ${bucket.length - 6} more in this tier.</div>`;
+    bucket.slice(0, 8).forEach(s => html += cardHTML(s, musts, nices,
+      { upsell: false, pct: s.pct, satN: s.satN, totN, missWant: (!stockMode && s.missMust.length === 1) ? s.missMust[0] : null }));
+    if (bucket.length > 8) html += `<div class="hint">+ ${bucket.length - 8} more in this tier.</div>`;
   }
   list.innerHTML = html;
   list.querySelectorAll(".cart-btn").forEach(b =>
