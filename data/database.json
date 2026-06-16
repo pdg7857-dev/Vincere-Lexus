@@ -182,7 +182,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 49,
+    "value": 60,
     "luxury": 68,
     "ownership": 92
    }
@@ -225,7 +225,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 36,
+    "value": 48,
     "luxury": 72,
     "ownership": 92
    }
@@ -267,7 +267,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 34,
+    "value": 46,
     "luxury": 72,
     "ownership": 92
    }
@@ -310,7 +310,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 16,
+    "value": 30,
     "luxury": 77,
     "ownership": 92
    }
@@ -352,7 +352,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 10,
+    "value": 25,
     "luxury": 79,
     "ownership": 92
    }
@@ -394,7 +394,7 @@
     "reliability": 93,
     "performance": 40,
     "efficiency": 6,
-    "value": 9,
+    "value": 24,
     "luxury": 79,
     "ownership": 92
    }
@@ -739,7 +739,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 47,
-    "value": 99,
+    "value": 100,
     "luxury": 54,
     "ownership": 92
    }
@@ -781,7 +781,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 47,
-    "value": 93,
+    "value": 100,
     "luxury": 56,
     "ownership": 92
    }
@@ -823,7 +823,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 48,
-    "value": 88,
+    "value": 96,
     "luxury": 57,
     "ownership": 92
    }
@@ -865,7 +865,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 47,
-    "value": 87,
+    "value": 95,
     "luxury": 58,
     "ownership": 92
    }
@@ -907,7 +907,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 47,
-    "value": 79,
+    "value": 87,
     "luxury": 60,
     "ownership": 92
    }
@@ -949,7 +949,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 48,
-    "value": 78,
+    "value": 87,
     "luxury": 60,
     "ownership": 92
    }
@@ -992,7 +992,7 @@
     "reliability": 93,
     "performance": 18,
     "efficiency": 89,
-    "value": 95,
+    "value": 100,
     "luxury": 55,
     "ownership": 92
    }
@@ -1035,7 +1035,7 @@
     "reliability": 93,
     "performance": 18,
     "efficiency": 89,
-    "value": 88,
+    "value": 96,
     "luxury": 57,
     "ownership": 92
    }
@@ -1078,7 +1078,7 @@
     "reliability": 93,
     "performance": 18,
     "efficiency": 89,
-    "value": 83,
+    "value": 92,
     "luxury": 59,
     "ownership": 92
    }
@@ -1121,7 +1121,7 @@
     "reliability": 93,
     "performance": 18,
     "efficiency": 89,
-    "value": 82,
+    "value": 91,
     "luxury": 59,
     "ownership": 92
    }
@@ -1164,7 +1164,7 @@
     "reliability": 93,
     "performance": 18,
     "efficiency": 89,
-    "value": 75,
+    "value": 84,
     "luxury": 61,
     "ownership": 92
    }
@@ -1207,7 +1207,7 @@
     "reliability": 93,
     "performance": 18,
     "efficiency": 89,
-    "value": 74,
+    "value": 83,
     "luxury": 61,
     "ownership": 92
    }
@@ -1250,7 +1250,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 92,
+    "value": 100,
     "luxury": 56,
     "ownership": 92
    }
@@ -1293,7 +1293,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 76,
+    "value": 85,
     "luxury": 61,
     "ownership": 92
    }
@@ -1336,7 +1336,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 71,
+    "value": 81,
     "luxury": 62,
     "ownership": 92
    }
@@ -1379,7 +1379,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 66,
+    "value": 76,
     "luxury": 63,
     "ownership": 92
    }
@@ -1422,7 +1422,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 66,
+    "value": 76,
     "luxury": 64,
     "ownership": 92
    }
@@ -1464,7 +1464,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 90,
+    "value": 98,
     "luxury": 57,
     "ownership": 92
    }
@@ -1506,7 +1506,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 79,
+    "value": 88,
     "luxury": 60,
     "ownership": 92
    }
@@ -1548,7 +1548,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 75,
+    "value": 84,
     "luxury": 61,
     "ownership": 92
    }
@@ -1590,7 +1590,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 73,
+    "value": 83,
     "luxury": 61,
     "ownership": 92
    }
@@ -1632,7 +1632,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 66,
+    "value": 76,
     "luxury": 63,
     "ownership": 92
    }
@@ -1674,7 +1674,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 66,
+    "value": 76,
     "luxury": 63,
     "ownership": 92
    }
@@ -1716,7 +1716,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 46,
-    "value": 62,
+    "value": 72,
     "luxury": 65,
     "ownership": 92
    }
@@ -1759,7 +1759,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 83,
-    "value": 86,
+    "value": 94,
     "luxury": 58,
     "ownership": 92
    }
@@ -1802,7 +1802,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 83,
-    "value": 82,
+    "value": 91,
     "luxury": 59,
     "ownership": 92
    }
@@ -1845,7 +1845,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 83,
-    "value": 75,
+    "value": 84,
     "luxury": 61,
     "ownership": 92
    }
@@ -1888,7 +1888,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 83,
-    "value": 69,
+    "value": 79,
     "luxury": 63,
     "ownership": 92
    }
@@ -1931,7 +1931,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 83,
-    "value": 62,
+    "value": 72,
     "luxury": 65,
     "ownership": 92
    }
@@ -1974,7 +1974,7 @@
     "reliability": 93,
     "performance": 43,
     "efficiency": 60,
-    "value": 56,
+    "value": 66,
     "luxury": 66,
     "ownership": 92
    }
@@ -2017,7 +2017,7 @@
     "reliability": 93,
     "performance": 43,
     "efficiency": 60,
-    "value": 47,
+    "value": 58,
     "luxury": 69,
     "ownership": 92
    }
@@ -2060,7 +2060,7 @@
     "reliability": 93,
     "performance": 43,
     "efficiency": 60,
-    "value": 46,
+    "value": 57,
     "luxury": 69,
     "ownership": 92
    }
@@ -2103,7 +2103,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 63,
+    "value": 73,
     "luxury": 64,
     "ownership": 92
    }
@@ -2146,7 +2146,7 @@
     "reliability": 93,
     "performance": 31,
     "efficiency": 82,
-    "value": 49,
+    "value": 60,
     "luxury": 68,
     "ownership": 92
    }
@@ -2189,7 +2189,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 89,
-    "value": 92,
+    "value": 100,
     "luxury": 56,
     "ownership": 92
    }
@@ -2232,7 +2232,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 84,
-    "value": 81,
+    "value": 90,
     "luxury": 59,
     "ownership": 92
    }
@@ -2275,7 +2275,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 83,
-    "value": 72,
+    "value": 81,
     "luxury": 62,
     "ownership": 92
    }
@@ -2318,7 +2318,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 83,
-    "value": 56,
+    "value": 67,
     "luxury": 66,
     "ownership": 92
    }
@@ -2361,7 +2361,7 @@
     "reliability": 93,
     "performance": 50,
     "efficiency": 80,
-    "value": 64,
+    "value": 74,
     "luxury": 64,
     "ownership": 92
    }
@@ -2403,7 +2403,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 76,
+    "value": 85,
     "luxury": 61,
     "ownership": 92
    }
@@ -2445,7 +2445,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 72,
+    "value": 82,
     "luxury": 62,
     "ownership": 92
    }
@@ -2488,7 +2488,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 59,
+    "value": 70,
     "luxury": 65,
     "ownership": 92
    }
@@ -2530,7 +2530,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 58,
+    "value": 69,
     "luxury": 66,
     "ownership": 92
    }
@@ -2572,7 +2572,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 58,
+    "value": 69,
     "luxury": 66,
     "ownership": 92
    }
@@ -2614,7 +2614,7 @@
     "reliability": 93,
     "performance": 25,
     "efficiency": 41,
-    "value": 57,
+    "value": 67,
     "luxury": 66,
     "ownership": 92
    }
@@ -2657,7 +2657,7 @@
     "reliability": 93,
     "performance": 43,
     "efficiency": 60,
-    "value": 52,
+    "value": 63,
     "luxury": 67,
     "ownership": 92
    }
@@ -2700,7 +2700,7 @@
     "reliability": 93,
     "performance": 43,
     "efficiency": 60,
-    "value": 51,
+    "value": 62,
     "luxury": 68,
     "ownership": 92
    }
@@ -2743,7 +2743,7 @@
     "reliability": 93,
     "performance": 43,
     "efficiency": 60,
-    "value": 43,
+    "value": 55,
     "luxury": 70,
     "ownership": 92
    }
@@ -2786,7 +2786,7 @@
     "reliability": 93,
     "performance": 43,
     "efficiency": 60,
-    "value": 41,
+    "value": 53,
     "luxury": 70,
     "ownership": 92
    }
@@ -3001,7 +3001,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 97,
-    "value": 94,
+    "value": 100,
     "luxury": 56,
     "ownership": 92
    }
@@ -3044,7 +3044,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 97,
-    "value": 89,
+    "value": 100,
     "luxury": 57,
     "ownership": 92
    }
@@ -3087,7 +3087,7 @@
     "reliability": 93,
     "performance": 19,
     "efficiency": 97,
-    "value": 83,
+    "value": 95,
     "luxury": 59,
     "ownership": 92
    }
@@ -3129,7 +3129,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 90,
+    "value": 100,
     "luxury": 57,
     "ownership": 92
    }
@@ -3171,7 +3171,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 87,
+    "value": 98,
     "luxury": 58,
     "ownership": 92
    }
@@ -3213,7 +3213,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 76,
+    "value": 88,
     "luxury": 61,
     "ownership": 92
    }
@@ -3255,7 +3255,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 72,
+    "value": 84,
     "luxury": 62,
     "ownership": 92
    }
@@ -3297,7 +3297,7 @@
     "reliability": 93,
     "performance": 14,
     "efficiency": 45,
-    "value": 66,
+    "value": 79,
     "luxury": 64,
     "ownership": 92
    }
@@ -3339,7 +3339,7 @@
     "reliability": 93,
     "performance": 38,
     "efficiency": 45,
-    "value": 85,
+    "value": 96,
     "luxury": 59,
     "ownership": 92
    }
@@ -3381,7 +3381,7 @@
     "reliability": 93,
     "performance": 38,
     "efficiency": 45,
-    "value": 83,
+    "value": 94,
     "luxury": 59,
     "ownership": 92
    }
@@ -3423,7 +3423,7 @@
     "reliability": 93,
     "performance": 38,
     "efficiency": 45,
-    "value": 71,
+    "value": 84,
     "luxury": 63,
     "ownership": 92
    }
@@ -3465,7 +3465,7 @@
     "reliability": 93,
     "performance": 38,
     "efficiency": 45,
-    "value": 67,
+    "value": 80,
     "luxury": 64,
     "ownership": 92
    }
@@ -3507,7 +3507,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 36,
-    "value": 98,
+    "value": 100,
     "luxury": 55,
     "ownership": 92
    }
@@ -3549,7 +3549,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 36,
-    "value": 95,
+    "value": 100,
     "luxury": 56,
     "ownership": 92
    }
@@ -3591,7 +3591,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 36,
-    "value": 87,
+    "value": 98,
     "luxury": 58,
     "ownership": 92
    }
@@ -3633,7 +3633,7 @@
     "reliability": 93,
     "performance": 32,
     "efficiency": 36,
-    "value": 79,
+    "value": 90,
     "luxury": 60,
     "ownership": 92
    }
@@ -3675,7 +3675,7 @@
     "reliability": 93,
     "performance": 53,
     "efficiency": 31,
-    "value": 1,
+    "value": 4,
     "luxury": 88,
     "ownership": 92
    }
@@ -3717,7 +3717,7 @@
     "reliability": 93,
     "performance": 64,
     "efficiency": 14,
-    "value": 6,
+    "value": 1,
     "luxury": 83,
     "ownership": 92
    }
@@ -4031,7 +4031,7 @@
     "reliability": 70,
     "performance": 73,
     "efficiency": 28,
-    "value": 79,
+    "value": 73,
     "luxury": 59,
     "ownership": 52
    }
@@ -4123,7 +4123,7 @@
     "reliability": 70,
     "performance": 61,
     "efficiency": 56,
-    "value": 89,
+    "value": 100,
     "luxury": 55,
     "ownership": 52
    }
@@ -4169,7 +4169,7 @@
     "reliability": 70,
     "performance": 83,
     "efficiency": 33,
-    "value": 32,
+    "value": 48,
     "luxury": 71,
     "ownership": 52
    }
@@ -4261,7 +4261,7 @@
     "reliability": 70,
     "performance": 60,
     "efficiency": 53,
-    "value": 93,
+    "value": 87,
     "luxury": 55,
     "ownership": 52
    }
@@ -4491,7 +4491,7 @@
     "reliability": 70,
     "performance": 83,
     "efficiency": 31,
-    "value": 38,
+    "value": 29,
     "luxury": 71,
     "ownership": 52
    }
@@ -4537,7 +4537,7 @@
     "reliability": 70,
     "performance": 81,
     "efficiency": 27,
-    "value": 22,
+    "value": 12,
     "luxury": 76,
     "ownership": 52
    }
@@ -4583,7 +4583,7 @@
     "reliability": 70,
     "performance": 32,
     "efficiency": 68,
-    "value": 79,
+    "value": 91,
     "luxury": 58,
     "ownership": 52
    }
@@ -4629,7 +4629,7 @@
     "reliability": 70,
     "performance": 57,
     "efficiency": 57,
-    "value": 46,
+    "value": 61,
     "luxury": 67,
     "ownership": 52
    }
@@ -4675,7 +4675,7 @@
     "reliability": 70,
     "performance": 71,
     "efficiency": 82,
-    "value": 59,
+    "value": 73,
     "luxury": 64,
     "ownership": 52
    }
@@ -4721,7 +4721,7 @@
     "reliability": 70,
     "performance": 52,
     "efficiency": 84,
-    "value": 62,
+    "value": 76,
     "luxury": 63,
     "ownership": 52
    }
@@ -4767,7 +4767,7 @@
     "reliability": 70,
     "performance": 87,
     "efficiency": 84,
-    "value": 44,
+    "value": 59,
     "luxury": 68,
     "ownership": 52
    }
@@ -5089,7 +5089,7 @@
     "reliability": 70,
     "performance": 52,
     "efficiency": 37,
-    "value": 36,
+    "value": 28,
     "luxury": 72,
     "ownership": 52
    }
@@ -5135,7 +5135,7 @@
     "reliability": 70,
     "performance": 80,
     "efficiency": 20,
-    "value": 11,
+    "value": 1,
     "luxury": 80,
     "ownership": 52
    }
@@ -5365,7 +5365,7 @@
     "reliability": 70,
     "performance": 44,
     "efficiency": 59,
-    "value": 96,
+    "value": 100,
     "luxury": 53,
     "ownership": 52
    }
@@ -5457,7 +5457,7 @@
     "reliability": 70,
     "performance": 44,
     "efficiency": 57,
-    "value": 92,
+    "value": 100,
     "luxury": 54,
     "ownership": 52
    }
@@ -5549,7 +5549,7 @@
     "reliability": 70,
     "performance": 60,
     "efficiency": 51,
-    "value": 69,
+    "value": 79,
     "luxury": 60,
     "ownership": 52
    }
@@ -5595,7 +5595,7 @@
     "reliability": 70,
     "performance": 64,
     "efficiency": 100,
-    "value": 72,
+    "value": 82,
     "luxury": 59,
     "ownership": 52
    }
@@ -5641,7 +5641,7 @@
     "reliability": 70,
     "performance": 44,
     "efficiency": 94,
-    "value": 91,
+    "value": 100,
     "luxury": 55,
     "ownership": 52
    }
@@ -5687,7 +5687,7 @@
     "reliability": 70,
     "performance": 56,
     "efficiency": 87,
-    "value": 84,
+    "value": 95,
     "luxury": 57,
     "ownership": 52
    }
@@ -5733,7 +5733,7 @@
     "reliability": 70,
     "performance": 86,
     "efficiency": 86,
-    "value": 64,
+    "value": 77,
     "luxury": 62,
     "ownership": 52
    }
@@ -5779,7 +5779,7 @@
     "reliability": 70,
     "performance": 56,
     "efficiency": 91,
-    "value": 47,
+    "value": 59,
     "luxury": 66,
     "ownership": 52
    }
@@ -5825,7 +5825,7 @@
     "reliability": 70,
     "performance": 75,
     "efficiency": 98,
-    "value": 38,
+    "value": 50,
     "luxury": 69,
     "ownership": 52
    }
@@ -5917,7 +5917,7 @@
     "reliability": 70,
     "performance": 51,
     "efficiency": 50,
-    "value": 47,
+    "value": 58,
     "luxury": 66,
     "ownership": 52
    }
@@ -5963,7 +5963,7 @@
     "reliability": 70,
     "performance": 67,
     "efficiency": 82,
-    "value": 37,
+    "value": 49,
     "luxury": 69,
     "ownership": 52
    }
@@ -6009,7 +6009,7 @@
     "reliability": 70,
     "performance": 75,
     "efficiency": 19,
-    "value": 9,
+    "value": 24,
     "luxury": 77,
     "ownership": 52
    }
@@ -6101,7 +6101,7 @@
     "reliability": 70,
     "performance": 52,
     "efficiency": 46,
-    "value": 40,
+    "value": 52,
     "luxury": 68,
     "ownership": 52
    }
@@ -6147,7 +6147,7 @@
     "reliability": 70,
     "performance": 76,
     "efficiency": 19,
-    "value": 7,
+    "value": 22,
     "luxury": 78,
     "ownership": 52
    }
@@ -6239,7 +6239,7 @@
     "reliability": 70,
     "performance": 48,
     "efficiency": 39,
-    "value": 16,
+    "value": 30,
     "luxury": 75,
     "ownership": 52
    }
@@ -6334,6 +6334,2812 @@
     "value": 1,
     "luxury": 100,
     "ownership": 52
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "C-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Compact luxury sedan",
+   "trim": "C 300 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 + 48V mild hybrid (EQ Boost)",
+   "hp": 255,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 9.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.0,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 53700,
+   "notable": [
+    "11.9-inch portrait central touchscreen",
+    "MBUX with augmented-reality navigation",
+    "48V integrated starter-generator"
+   ],
+   "pros": [
+    "refined, quiet ride",
+    "upscale tech-forward interior",
+    "standard AWD"
+   ],
+   "cons": [
+    "only a four-cylinder across the base lineup",
+    "tight rear-seat space",
+    "touch-heavy controls"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 33,
+    "efficiency": 53,
+    "value": 100,
+    "luxury": 50,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "C-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Compact luxury sedan",
+   "trim": "AMG C 43 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 with electric exhaust-gas turbocharger + 48V",
+   "hp": 416,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 10.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 69000,
+   "notable": [
+    "F1-derived electric turbocharger",
+    "AMG RIDE CONTROL suspension",
+    "rear-axle steering"
+   ],
+   "pros": [
+    "huge output from a four-cylinder",
+    "strong AWD traction",
+    "everyday usability"
+   ],
+   "cons": [
+    "four-cylinder sound lacks drama",
+    "firm ride",
+    "pricey for the segment"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 62,
+    "efficiency": 42,
+    "value": 96,
+    "luxury": 56,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "C-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Compact luxury sedan",
+   "trim": "AMG C 63 S E Performance",
+   "year": 2026,
+   "ptType": "phev",
+   "engine": "2.0L turbo I4 + rear e-motor (plug-in hybrid)",
+   "hp": 671,
+   "torque": 752,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 10.5,
+   "evRangeKm": 21,
+   "batteryKwh": 6.1,
+   "zero100": 3.4,
+   "topSpeed": 280,
+   "seats": 5,
+   "priceCad": 99000,
+   "notable": [
+    "F1-inspired plug-in hybrid powertrain",
+    "rear-axle electric motor with 2-speed gearbox",
+    "AMG active aerodynamics"
+   ],
+   "pros": [
+    "supercar-level acceleration",
+    "complex high-tech drivetrain",
+    "AWD all-weather capability"
+   ],
+   "cons": [
+    "heavy",
+    "controversial four-cylinder replacing the old V8",
+    "very expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 96,
+    "efficiency": 82,
+    "value": 55,
+    "luxury": 69,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "CLE",
+   "bodyStyle": "Coupe",
+   "segment": "Midsize luxury coupe/convertible",
+   "trim": "CLE 300 4MATIC Coupe",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 + 48V mild hybrid",
+   "hp": 255,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 9.3,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.2,
+   "topSpeed": 209,
+   "seats": 4,
+   "priceCad": 68045,
+   "notable": [
+    "pillarless coupe styling",
+    "MBUX with 11.9-inch touchscreen",
+    "48V mild-hybrid assist"
+   ],
+   "pros": [
+    "elegant proportions",
+    "comfortable grand-touring ride",
+    "standard AWD"
+   ],
+   "cons": [
+    "modest base power",
+    "snug rear seats",
+    "options add up"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 31,
+    "efficiency": 52,
+    "value": 85,
+    "luxury": 56,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "CLE",
+   "bodyStyle": "Coupe",
+   "segment": "Midsize luxury coupe/convertible",
+   "trim": "CLE 300 4MATIC Cabriolet",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 + 48V mild hybrid",
+   "hp": 255,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 9.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.6,
+   "topSpeed": 209,
+   "seats": 4,
+   "priceCad": 78045,
+   "notable": [
+    "fabric power soft top",
+    "AIRCAP wind deflector",
+    "neck-level heating (AIRSCARF)"
+   ],
+   "pros": [
+    "open-air refinement",
+    "well-insulated top",
+    "standard AWD"
+   ],
+   "cons": [
+    "heavier than coupe",
+    "trunk space drops with top down",
+    "pricey"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 28,
+    "efficiency": 50,
+    "value": 69,
+    "luxury": 60,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "CLE",
+   "bodyStyle": "Coupe",
+   "segment": "Midsize luxury coupe/convertible",
+   "trim": "CLE 450 4MATIC Coupe",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid",
+   "hp": 375,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 9.8,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.4,
+   "topSpeed": 209,
+   "seats": 4,
+   "priceCad": 76500,
+   "notable": [
+    "smooth inline-six with 48V boost",
+    "AMG Line styling available",
+    "adaptive damping"
+   ],
+   "pros": [
+    "silky straight-six power",
+    "effortless cruising",
+    "strong AWD traction"
+   ],
+   "cons": [
+    "price climbs quickly",
+    "rear seat tight",
+    "no manual option"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 60,
+    "efficiency": 47,
+    "value": 72,
+    "luxury": 60,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "CLE",
+   "bodyStyle": "Coupe",
+   "segment": "Midsize luxury coupe/convertible",
+   "trim": "CLE 450 4MATIC Cabriolet",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid",
+   "hp": 375,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 10.0,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.7,
+   "topSpeed": 209,
+   "seats": 4,
+   "priceCad": 87500,
+   "notable": [
+    "power soft top",
+    "inline-six refinement",
+    "AIRSCARF neck heating"
+   ],
+   "pros": [
+    "potent six-cylinder convertible",
+    "refined open-air experience",
+    "all-wheel-drive grip"
+   ],
+   "cons": [
+    "heavy",
+    "expensive",
+    "reduced cargo with top down"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 57,
+    "efficiency": 44,
+    "value": 55,
+    "luxury": 64,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "CLE",
+   "bodyStyle": "Coupe",
+   "segment": "Midsize luxury coupe/convertible",
+   "trim": "AMG CLE 53 4MATIC+ Coupe",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid (AMG)",
+   "hp": 443,
+   "torque": 413,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 10.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.2,
+   "topSpeed": 250,
+   "seats": 4,
+   "priceCad": 84550,
+   "notable": [
+    "AMG-tuned inline-six",
+    "fully variable 4MATIC+ AWD",
+    "AMG RIDE CONTROL suspension"
+   ],
+   "pros": [
+    "strong, characterful six",
+    "balanced handling",
+    "daily usability"
+   ],
+   "cons": [
+    "firm AMG ride",
+    "expensive options",
+    "tight rear seats"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 68,
+    "efficiency": 39,
+    "value": 59,
+    "luxury": 63,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "CLE",
+   "bodyStyle": "Coupe",
+   "segment": "Midsize luxury coupe/convertible",
+   "trim": "AMG CLE 53 4MATIC+ Cabriolet",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid (AMG)",
+   "hp": 443,
+   "torque": 413,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 10.7,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.4,
+   "topSpeed": 250,
+   "seats": 4,
+   "priceCad": 90600,
+   "notable": [
+    "AMG performance soft-top convertible",
+    "4MATIC+ variable AWD",
+    "AIRSCARF and AIRCAP"
+   ],
+   "pros": [
+    "fast open-air AMG",
+    "refined yet sporty",
+    "all-weather AWD"
+   ],
+   "cons": [
+    "heavy",
+    "costly",
+    "small trunk"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 67,
+    "efficiency": 37,
+    "value": 50,
+    "luxury": 66,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "E-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury sedan",
+   "trim": "E 350 4MATIC Sedan",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 + 48V mild hybrid",
+   "hp": 255,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 9.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.1,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 75550,
+   "notable": [
+    "available MBUX Superscreen passenger display",
+    "advanced driver-assist suite",
+    "air-balance cabin fragrance"
+   ],
+   "pros": [
+    "serene ride and quiet cabin",
+    "cutting-edge interior tech",
+    "roomy back seat"
+   ],
+   "cons": [
+    "base four-cylinder feels modest for the size",
+    "expensive tech options",
+    "complex infotainment"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 32,
+    "efficiency": 53,
+    "value": 87,
+    "luxury": 59,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "E-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury sedan",
+   "trim": "E 450 4MATIC Sedan",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid",
+   "hp": 375,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 9.9,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.5,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 85650,
+   "notable": [
+    "smooth inline-six with EQ Boost",
+    "available rear-axle steering",
+    "air suspension available"
+   ],
+   "pros": [
+    "effortless six-cylinder power",
+    "exceptional refinement",
+    "limousine-like comfort"
+   ],
+   "cons": [
+    "pricey",
+    "options inflate cost",
+    "infotainment learning curve"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 59,
+    "efficiency": 46,
+    "value": 73,
+    "luxury": 64,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "E-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury sedan",
+   "trim": "E 450 4MATIC All-Terrain Wagon",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid",
+   "hp": 375,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 10.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.9,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 92250,
+   "notable": [
+    "raised all-terrain ride height with air suspension",
+    "rugged cladding",
+    "large versatile cargo area"
+   ],
+   "pros": [
+    "rare wagon practicality",
+    "strong six-cylinder",
+    "comfortable yet capable"
+   ],
+   "cons": [
+    "niche body style",
+    "expensive",
+    "thirstier than sedan"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 55,
+    "efficiency": 42,
+    "value": 64,
+    "luxury": 66,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "E-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury sedan",
+   "trim": "AMG E 53 HYBRID 4MATIC+ Sedan",
+   "year": 2026,
+   "ptType": "phev",
+   "engine": "3.0L turbo I6 + e-motor (plug-in hybrid, AMG)",
+   "hp": 577,
+   "torque": 553,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 8.5,
+   "evRangeKm": 69,
+   "batteryKwh": 28.6,
+   "zero100": 4.0,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 106700,
+   "notable": [
+    "large 28.6 kWh battery for long EV range",
+    "AMG Dynamic Plus with boost function",
+    "DC fast-charging capable"
+   ],
+   "pros": [
+    "huge EV-only range for a PHEV",
+    "very strong performance",
+    "low running costs if charged"
+   ],
+   "cons": [
+    "heavy battery",
+    "complex powertrain",
+    "premium price"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 84,
+    "efficiency": 82,
+    "value": 44,
+    "luxury": 73,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "E-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury sedan",
+   "trim": "AMG E 53 HYBRID 4MATIC+ Wagon",
+   "year": 2026,
+   "ptType": "phev",
+   "engine": "3.0L turbo I6 + e-motor (plug-in hybrid, AMG)",
+   "hp": 577,
+   "torque": 553,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 8.7,
+   "evRangeKm": 66,
+   "batteryKwh": 28.6,
+   "zero100": 3.9,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 109900,
+   "notable": [
+    "AMG performance wagon body",
+    "plug-in hybrid with DC fast charging",
+    "AMG RIDE CONTROL air suspension"
+   ],
+   "pros": [
+    "fast and practical wagon",
+    "long EV range",
+    "all-weather AWD grip"
+   ],
+   "cons": [
+    "very expensive",
+    "heavy",
+    "rare/niche appeal"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 85,
+    "efficiency": 82,
+    "value": 40,
+    "luxury": 74,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "S-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size flagship luxury sedan",
+   "trim": "S 500 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid",
+   "hp": 442,
+   "torque": 413,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 10.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.9,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 149100,
+   "notable": [
+    "E-Active Body Control suspension",
+    "rear-axle steering up to 10 degrees",
+    "MBUX 12.8-inch OLED central display"
+   ],
+   "pros": [
+    "benchmark ride comfort",
+    "whisper-quiet cabin",
+    "leading luxury tech"
+   ],
+   "cons": [
+    "very expensive",
+    "complex electronics",
+    "costly to repair out of warranty"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 62,
+    "efficiency": 39,
+    "value": 1,
+    "luxury": 91,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "S-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size flagship luxury sedan",
+   "trim": "S 580 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 + 48V mild hybrid",
+   "hp": 496,
+   "torque": 516,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 12.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.4,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 163300,
+   "notable": [
+    "twin-turbo V8 with EQ Boost",
+    "rear executive seating available",
+    "Burmester 4D surround sound"
+   ],
+   "pros": [
+    "effortless V8 muscle",
+    "supreme comfort",
+    "flagship-level refinement"
+   ],
+   "cons": [
+    "thirsty",
+    "very pricey",
+    "expensive maintenance"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 72,
+    "efficiency": 17,
+    "value": 1,
+    "luxury": 97,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "S-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size flagship luxury sedan",
+   "trim": "AMG S 63 E Performance",
+   "year": 2026,
+   "ptType": "phev",
+   "engine": "4.0L twin-turbo V8 + e-motor (plug-in hybrid, AMG)",
+   "hp": 791,
+   "torque": 1055,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 11.5,
+   "evRangeKm": 33,
+   "batteryKwh": 13.1,
+   "zero100": 3.3,
+   "topSpeed": 290,
+   "seats": 5,
+   "priceCad": 216695,
+   "notable": [
+    "791 hp plug-in hybrid V8 flagship",
+    "AMG active ride control",
+    "rear-axle e-motor with 2-speed gearbox"
+   ],
+   "pros": [
+    "staggering performance for a full-size sedan",
+    "luxury and speed combined",
+    "EV-only short commutes"
+   ],
+   "cons": [
+    "enormous price",
+    "very heavy",
+    "high running/repair costs"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 97,
+    "efficiency": 82,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "S-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size flagship luxury sedan",
+   "trim": "Mercedes-Maybach S 580 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 + 48V mild hybrid",
+   "hp": 496,
+   "torque": 516,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 12.8,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.8,
+   "topSpeed": 210,
+   "seats": 4,
+   "priceCad": 262900,
+   "notable": [
+    "extended wheelbase with executive rear seats",
+    "two-tone paint and Maybach styling",
+    "reclining rear seats with calf rests"
+   ],
+   "pros": [
+    "ultimate rear-seat luxury",
+    "supremely quiet and comfortable",
+    "exclusive Maybach branding"
+   ],
+   "cons": [
+    "extremely expensive",
+    "best enjoyed from the back seat",
+    "thirsty V8"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 68,
+    "efficiency": 13,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "S-Class",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size flagship luxury sedan",
+   "trim": "Mercedes-Maybach S 680 4MATIC",
+   "year": 2026,
+   "ptType": "gas",
+   "engine": "6.0L twin-turbo V12",
+   "hp": 621,
+   "torque": 664,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 15.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.3,
+   "topSpeed": 250,
+   "seats": 4,
+   "priceCad": 319000,
+   "notable": [
+    "hand-built twin-turbo V12",
+    "First-Class rear suite",
+    "champagne flutes and refrigerator option"
+   ],
+   "pros": [
+    "rare V12 smoothness",
+    "pinnacle of Mercedes luxury",
+    "exclusivity"
+   ],
+   "cons": [
+    "six-figure-plus price",
+    "very thirsty",
+    "high running costs"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 85,
+    "efficiency": 1,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLA",
+   "bodyStyle": "SUV",
+   "segment": "Subcompact luxury SUV",
+   "trim": "GLA 250 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 + 48V mild hybrid",
+   "hp": 221,
+   "torque": 258,
+   "drivetrain": "AWD",
+   "transmission": "8-spd dual-clutch",
+   "fuelL100": 8.6,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.8,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 52200,
+   "notable": [
+    "MBUX infotainment",
+    "compact crossover packaging",
+    "standard 4MATIC AWD"
+   ],
+   "pros": [
+    "premium cabin in a small footprint",
+    "easy to park",
+    "good standard tech"
+   ],
+   "cons": [
+    "tight rear seat and cargo",
+    "firm ride",
+    "options get pricey"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 23,
+    "efficiency": 60,
+    "value": 100,
+    "luxury": 49,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLA",
+   "bodyStyle": "SUV",
+   "segment": "Subcompact luxury SUV",
+   "trim": "AMG GLA 35 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 (AMG)",
+   "hp": 302,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "8-spd dual-clutch (AMG SPEEDSHIFT)",
+   "fuelL100": 9.4,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.2,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 63700,
+   "notable": [
+    "AMG-tuned turbo four",
+    "AMG RIDE CONTROL suspension",
+    "sport exhaust"
+   ],
+   "pros": [
+    "fun, quick compact SUV",
+    "AWD grip",
+    "everyday practicality"
+   ],
+   "cons": [
+    "firm ride",
+    "small cargo area",
+    "pricey for size"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 45,
+    "efficiency": 51,
+    "value": 99,
+    "luxury": 54,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLB",
+   "bodyStyle": "SUV",
+   "segment": "Subcompact luxury SUV (3-row available)",
+   "trim": "GLB 250 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 + 48V mild hybrid",
+   "hp": 221,
+   "torque": 258,
+   "drivetrain": "AWD",
+   "transmission": "8-spd dual-clutch",
+   "fuelL100": 8.9,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 7.1,
+   "topSpeed": 210,
+   "seats": 7,
+   "priceCad": 56200,
+   "notable": [
+    "available third-row seating (up to 7)",
+    "boxy practical interior",
+    "MBUX infotainment"
+   ],
+   "pros": [
+    "surprising versatility for its size",
+    "optional 7 seats",
+    "boxy cabin space"
+   ],
+   "cons": [
+    "third row very tight",
+    "modest base power",
+    "firm ride"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 20,
+    "efficiency": 57,
+    "value": 100,
+    "luxury": 51,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLB",
+   "bodyStyle": "SUV",
+   "segment": "Subcompact luxury SUV (3-row available)",
+   "trim": "AMG GLB 35 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 (AMG)",
+   "hp": 302,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "8-spd dual-clutch (AMG SPEEDSHIFT)",
+   "fuelL100": 9.6,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.5,
+   "topSpeed": 250,
+   "seats": 7,
+   "priceCad": 68200,
+   "notable": [
+    "AMG performance tuning",
+    "available third row",
+    "AMG RIDE CONTROL suspension"
+   ],
+   "pros": [
+    "quick yet family-friendly",
+    "optional 7 seats",
+    "AWD traction"
+   ],
+   "cons": [
+    "firm AMG ride",
+    "cramped third row",
+    "thirstier than base"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 42,
+    "efficiency": 49,
+    "value": 93,
+    "luxury": 56,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLC",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury SUV",
+   "trim": "GLC 300 4MATIC SUV",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 + 48V mild hybrid",
+   "hp": 255,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 9.3,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.2,
+   "topSpeed": 209,
+   "seats": 5,
+   "priceCad": 60450,
+   "notable": [
+    "11.9-inch central touchscreen",
+    "MBUX with off-road display",
+    "48V mild-hybrid assist"
+   ],
+   "pros": [
+    "polished ride and quiet cabin",
+    "high-quality interior",
+    "strong resale"
+   ],
+   "cons": [
+    "only four-cylinder base power",
+    "pricey options",
+    "touch controls"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 31,
+    "efficiency": 52,
+    "value": 100,
+    "luxury": 53,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLC",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury SUV",
+   "trim": "GLC 300 4MATIC Coupe",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 + 48V mild hybrid",
+   "hp": 255,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 9.4,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.2,
+   "topSpeed": 209,
+   "seats": 5,
+   "priceCad": 64600,
+   "notable": [
+    "sloped coupe roofline",
+    "MBUX infotainment",
+    "AMG Line styling available"
+   ],
+   "pros": [
+    "sleek styling",
+    "refined drivetrain",
+    "well-built cabin"
+   ],
+   "cons": [
+    "less cargo and headroom than SUV",
+    "premium over standard SUV",
+    "four-cylinder only"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 31,
+    "efficiency": 51,
+    "value": 98,
+    "luxury": 54,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLC",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury SUV",
+   "trim": "AMG GLC 43 4MATIC SUV",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 with electric turbocharger + 48V (AMG)",
+   "hp": 416,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 10.3,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.8,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 82100,
+   "notable": [
+    "F1-derived electric turbocharger",
+    "AMG RIDE CONTROL suspension",
+    "rear-axle steering"
+   ],
+   "pros": [
+    "big power from a four-cylinder",
+    "sharp handling for an SUV",
+    "AWD grip"
+   ],
+   "cons": [
+    "four-cylinder soundtrack",
+    "firm ride",
+    "pricey"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 60,
+    "efficiency": 41,
+    "value": 73,
+    "luxury": 62,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLC",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury SUV",
+   "trim": "AMG GLC 43 4MATIC Coupe",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 with electric turbocharger + 48V (AMG)",
+   "hp": 416,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 10.4,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.7,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 83400,
+   "notable": [
+    "coupe body with AMG aero",
+    "electric exhaust-gas turbocharger",
+    "AMG performance suspension"
+   ],
+   "pros": [
+    "quick and stylish",
+    "strong AWD traction",
+    "engaging handling"
+   ],
+   "cons": [
+    "reduced practicality vs SUV",
+    "firm ride",
+    "expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 61,
+    "efficiency": 40,
+    "value": 71,
+    "luxury": 63,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLC",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury SUV",
+   "trim": "AMG GLC 63 S E Performance SUV",
+   "year": 2026,
+   "ptType": "phev",
+   "engine": "2.0L turbo I4 + rear e-motor (plug-in hybrid, AMG)",
+   "hp": 671,
+   "torque": 752,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 10.8,
+   "evRangeKm": 12,
+   "batteryKwh": 6.1,
+   "zero100": 3.5,
+   "topSpeed": 275,
+   "seats": 5,
+   "priceCad": 111500,
+   "notable": [
+    "671 hp plug-in hybrid powertrain",
+    "rear-axle electric motor with 2-speed gearbox",
+    "AMG active aero and rear-axle steering"
+   ],
+   "pros": [
+    "explosive acceleration for an SUV",
+    "high-tech F1-derived hybrid",
+    "AWD all-weather grip"
+   ],
+   "cons": [
+    "heavy",
+    "tiny EV range",
+    "very expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 95,
+    "efficiency": 82,
+    "value": 31,
+    "luxury": 75,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLC",
+   "bodyStyle": "SUV",
+   "segment": "Compact luxury SUV",
+   "trim": "AMG GLC 63 S E Performance Coupe",
+   "year": 2026,
+   "ptType": "phev",
+   "engine": "2.0L turbo I4 + rear e-motor (plug-in hybrid, AMG)",
+   "hp": 671,
+   "torque": 752,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 10.9,
+   "evRangeKm": 12,
+   "batteryKwh": 6.1,
+   "zero100": 3.5,
+   "topSpeed": 275,
+   "seats": 5,
+   "priceCad": 117250,
+   "notable": [
+    "coupe roofline with AMG aero",
+    "plug-in hybrid performance drivetrain",
+    "rear-axle steering"
+   ],
+   "pros": [
+    "supercar pace",
+    "stylish coupe body",
+    "complex hybrid tech"
+   ],
+   "cons": [
+    "less cargo than SUV",
+    "heavy",
+    "premium price"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 95,
+    "efficiency": 82,
+    "value": 23,
+    "luxury": 77,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLE",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury SUV",
+   "trim": "GLE 350 4MATIC SUV",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "2.0L turbo I4 + 48V mild hybrid",
+   "hp": 255,
+   "torque": 295,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 10.0,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 7.1,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 85400,
+   "notable": [
+    "available air suspension",
+    "MBUX dual-screen dash",
+    "available third-row seat"
+   ],
+   "pros": [
+    "comfortable, quiet cruiser",
+    "spacious cabin",
+    "refined road manners"
+   ],
+   "cons": [
+    "four-cylinder feels modest in a big SUV",
+    "pricey options",
+    "heavy"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 23,
+    "efficiency": 44,
+    "value": 68,
+    "luxury": 63,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLE",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury SUV",
+   "trim": "GLE 450 4MATIC SUV",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid",
+   "hp": 375,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 10.6,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 96895,
+   "notable": [
+    "smooth inline-six with EQ Boost",
+    "available E-Active Body Control",
+    "available third row"
+   ],
+   "pros": [
+    "effortless six-cylinder power",
+    "excellent ride comfort",
+    "roomy and refined"
+   ],
+   "cons": [
+    "expensive once optioned",
+    "thirsty for a daily",
+    "heavy"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 49,
+    "efficiency": 38,
+    "value": 52,
+    "luxury": 68,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLE",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury SUV",
+   "trim": "GLE 450 4MATIC Coupe",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid",
+   "hp": 375,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 10.7,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.6,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 102800,
+   "notable": [
+    "sloped coupe roofline",
+    "inline-six refinement",
+    "AMG Line styling"
+   ],
+   "pros": [
+    "sleek styling",
+    "strong six-cylinder",
+    "smooth ride"
+   ],
+   "cons": [
+    "less cargo/headroom than SUV",
+    "no third row",
+    "premium price"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 49,
+    "efficiency": 37,
+    "value": 43,
+    "luxury": 71,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLE",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury SUV",
+   "trim": "GLE 450e 4MATIC PHEV SUV",
+   "year": 2026,
+   "ptType": "phev",
+   "engine": "2.0L turbo I4 + e-motor (plug-in hybrid)",
+   "hp": 381,
+   "torque": 479,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 8.0,
+   "evRangeKm": 77,
+   "batteryKwh": 31.2,
+   "zero100": 6.1,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 97550,
+   "notable": [
+    "large 31.2 kWh battery, long EV range",
+    "DC fast-charging capable",
+    "EV-only daily driving"
+   ],
+   "pros": [
+    "impressive electric-only range",
+    "low running costs if charged",
+    "smooth, quiet EV mode"
+   ],
+   "cons": [
+    "reduced cargo from battery",
+    "heavy",
+    "long full-charge time on AC"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 45,
+    "efficiency": 82,
+    "value": 51,
+    "luxury": 69,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLE",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury SUV",
+   "trim": "AMG GLE 53 4MATIC+ SUV",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid (AMG)",
+   "hp": 429,
+   "torque": 413,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 11.2,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.0,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 119400,
+   "notable": [
+    "AMG-tuned inline-six",
+    "AMG RIDE CONTROL+ air suspension",
+    "active anti-roll stabilization available"
+   ],
+   "pros": [
+    "strong, smooth six-cylinder",
+    "composed handling for a big SUV",
+    "AWD grip"
+   ],
+   "cons": [
+    "firm AMG ride",
+    "thirsty",
+    "expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 60,
+    "efficiency": 31,
+    "value": 20,
+    "luxury": 78,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLE",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury SUV",
+   "trim": "AMG GLE 53 4MATIC+ Coupe",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid (AMG)",
+   "hp": 429,
+   "torque": 413,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 11.3,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.0,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 124800,
+   "notable": [
+    "coupe body with AMG aero",
+    "AMG air suspension",
+    "inline-six performance"
+   ],
+   "pros": [
+    "quick and stylish",
+    "refined power delivery",
+    "all-weather AWD"
+   ],
+   "cons": [
+    "less practical than SUV",
+    "firm ride",
+    "pricey"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 60,
+    "efficiency": 30,
+    "value": 12,
+    "luxury": 81,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLE",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury SUV",
+   "trim": "AMG GLE 63 S 4MATIC+ SUV",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 + 48V mild hybrid (AMG)",
+   "hp": 603,
+   "torque": 627,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 13.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 3.9,
+   "topSpeed": 280,
+   "seats": 5,
+   "priceCad": 169495,
+   "notable": [
+    "handcrafted twin-turbo V8",
+    "AMG active ride control with anti-roll",
+    "AMG performance exhaust"
+   ],
+   "pros": [
+    "thunderous V8 performance",
+    "surprising agility",
+    "luxury and pace combined"
+   ],
+   "cons": [
+    "very thirsty",
+    "expensive",
+    "high running costs"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 87,
+    "efficiency": 6,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLE",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury SUV",
+   "trim": "AMG GLE 63 S 4MATIC+ Coupe",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 + 48V mild hybrid (AMG)",
+   "hp": 603,
+   "torque": 627,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 13.6,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 3.8,
+   "topSpeed": 280,
+   "seats": 5,
+   "priceCad": 174400,
+   "notable": [
+    "coupe body with aggressive AMG styling",
+    "twin-turbo V8",
+    "active roll stabilization"
+   ],
+   "pros": [
+    "blistering acceleration",
+    "muscular V8 sound",
+    "strong AWD traction"
+   ],
+   "cons": [
+    "reduced practicality",
+    "very thirsty",
+    "very expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 88,
+    "efficiency": 4,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLS",
+   "bodyStyle": "SUV",
+   "segment": "Full-size luxury SUV",
+   "trim": "GLS 450 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid",
+   "hp": 375,
+   "torque": 369,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 11.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 6.1,
+   "topSpeed": 210,
+   "seats": 7,
+   "priceCad": 121400,
+   "notable": [
+    "standard 7-seat three-row layout",
+    "available E-Active Body Control",
+    "MBUX dual-screen dash"
+   ],
+   "pros": [
+    "limousine-like comfort for 7",
+    "spacious and refined",
+    "smooth six-cylinder"
+   ],
+   "cons": [
+    "large and heavy",
+    "thirsty",
+    "expensive options"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 44,
+    "efficiency": 28,
+    "value": 17,
+    "luxury": 79,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLS",
+   "bodyStyle": "SUV",
+   "segment": "Full-size luxury SUV",
+   "trim": "GLS 580 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 + 48V mild hybrid",
+   "hp": 510,
+   "torque": 538,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 13.0,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.9,
+   "topSpeed": 210,
+   "seats": 7,
+   "priceCad": 148400,
+   "notable": [
+    "twin-turbo V8 with EQ Boost",
+    "air suspension with E-Active Body Control",
+    "three-row seating"
+   ],
+   "pros": [
+    "effortless V8 power",
+    "supreme three-row comfort",
+    "refined and quiet"
+   ],
+   "cons": [
+    "very thirsty",
+    "large footprint",
+    "pricey"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 69,
+    "efficiency": 11,
+    "value": 1,
+    "luxury": 91,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLS",
+   "bodyStyle": "SUV",
+   "segment": "Full-size luxury SUV",
+   "trim": "AMG GLS 63 4MATIC+",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 + 48V mild hybrid (AMG)",
+   "hp": 603,
+   "torque": 627,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 14.0,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.2,
+   "topSpeed": 250,
+   "seats": 7,
+   "priceCad": 199800,
+   "notable": [
+    "handcrafted AMG V8",
+    "active roll stabilization",
+    "AMG performance exhaust"
+   ],
+   "pros": [
+    "astonishing pace for a 3-row SUV",
+    "luxury and power",
+    "seats 7 in comfort"
+   ],
+   "cons": [
+    "very thirsty",
+    "very expensive",
+    "huge and heavy"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 84,
+    "efficiency": 1,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "GLS",
+   "bodyStyle": "SUV",
+   "segment": "Full-size luxury SUV",
+   "trim": "Mercedes-Maybach GLS 600 4MATIC",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 + 48V mild hybrid",
+   "hp": 550,
+   "torque": 538,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 13.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.9,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 243800,
+   "notable": [
+    "Maybach executive rear seating",
+    "two-tone paint and Maybach styling",
+    "rear refrigerator and champagne flutes option"
+   ],
+   "pros": [
+    "ultra-luxurious rear cabin",
+    "supreme comfort and quiet",
+    "exclusive Maybach branding"
+   ],
+   "cons": [
+    "extremely expensive",
+    "thirsty V8",
+    "fewer seats than standard GLS"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 73,
+    "efficiency": 6,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "G-Class",
+   "bodyStyle": "SUV",
+   "segment": "Full-size luxury off-road SUV",
+   "trim": "G 550",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "3.0L turbo I6 + 48V mild hybrid",
+   "hp": 443,
+   "torque": 413,
+   "drivetrain": "AWD",
+   "transmission": "9G-TRONIC",
+   "fuelL100": 13.5,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 5.5,
+   "topSpeed": 209,
+   "seats": 5,
+   "priceCad": 191900,
+   "notable": [
+    "three locking differentials",
+    "low-range transfer case",
+    "iconic boxy styling with refreshed interior"
+   ],
+   "pros": [
+    "unmatched off-road capability",
+    "iconic design and status",
+    "smooth inline-six"
+   ],
+   "cons": [
+    "very thirsty",
+    "trucky on-road manners",
+    "extremely expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 57,
+    "efficiency": 6,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "G-Class",
+   "bodyStyle": "SUV",
+   "segment": "Full-size luxury off-road SUV",
+   "trim": "AMG G 63",
+   "year": 2026,
+   "ptType": "mild-hybrid",
+   "engine": "4.0L twin-turbo V8 + 48V mild hybrid (AMG)",
+   "hp": 577,
+   "torque": 627,
+   "drivetrain": "AWD",
+   "transmission": "AMG SPEEDSHIFT",
+   "fuelL100": 15.0,
+   "evRangeKm": null,
+   "batteryKwh": null,
+   "zero100": 4.4,
+   "topSpeed": 220,
+   "seats": 5,
+   "priceCad": 252550,
+   "notable": [
+    "handcrafted AMG V8",
+    "AMG side exhaust",
+    "three locking differentials retained"
+   ],
+   "pros": [
+    "absurd performance for a brick",
+    "huge presence and status",
+    "still genuinely off-road capable"
+   ],
+   "cons": [
+    "extremely thirsty",
+    "very expensive",
+    "firm, trucky ride"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 80,
+    "efficiency": 1,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "G-Class",
+   "bodyStyle": "SUV",
+   "segment": "Full-size luxury off-road SUV",
+   "trim": "G 580 with EQ Technology",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Quad electric motors (one per wheel)",
+   "hp": 579,
+   "torque": 859,
+   "drivetrain": "AWD",
+   "transmission": "single-speed (2-speed low range)",
+   "fuelL100": null,
+   "evRangeKm": 385,
+   "batteryKwh": 116,
+   "zero100": 4.7,
+   "topSpeed": 180,
+   "seats": 5,
+   "priceCad": 207200,
+   "notable": [
+    "four individual wheel motors",
+    "G-Turn (tank-turn) and G-Steering",
+    "low-range crawl mode for off-road"
+   ],
+   "pros": [
+    "instant electric torque",
+    "genuine off-road ability",
+    "unique party tricks (tank turn)"
+   ],
+   "cons": [
+    "heavy",
+    "modest range for the price",
+    "very expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 77,
+    "efficiency": 81,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQB",
+   "bodyStyle": "SUV",
+   "segment": "Subcompact luxury electric SUV (3-row available)",
+   "trim": "EQB 300 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 225,
+   "torque": 288,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 370,
+   "batteryKwh": 70.5,
+   "zero100": 8.0,
+   "topSpeed": 160,
+   "seats": 7,
+   "priceCad": 64000,
+   "notable": [
+    "available third-row seating (up to 7)",
+    "boxy practical EV body",
+    "MBUX infotainment"
+   ],
+   "pros": [
+    "rare 7-seat option in a compact EV",
+    "practical, upright cabin",
+    "standard AWD"
+   ],
+   "cons": [
+    "modest range",
+    "slow charging vs newer EVs",
+    "tight third row"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 12,
+    "efficiency": 80,
+    "value": 99,
+    "luxury": 54,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQB",
+   "bodyStyle": "SUV",
+   "segment": "Subcompact luxury electric SUV (3-row available)",
+   "trim": "EQB 350 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 288,
+   "torque": 384,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 370,
+   "batteryKwh": 70.5,
+   "zero100": 6.2,
+   "topSpeed": 160,
+   "seats": 7,
+   "priceCad": 70000,
+   "notable": [
+    "more powerful dual-motor setup",
+    "available third row",
+    "MBUX infotainment"
+   ],
+   "pros": [
+    "quicker acceleration",
+    "practical family EV",
+    "optional 7 seats"
+   ],
+   "cons": [
+    "modest range",
+    "slower charging",
+    "pricey for size"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 35,
+    "efficiency": 80,
+    "value": 90,
+    "luxury": 57,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQE Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury electric sedan",
+   "trim": "EQE 320+",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Single electric motor (rear)",
+   "hp": 315,
+   "torque": 417,
+   "drivetrain": "RWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 495,
+   "batteryKwh": 96,
+   "zero100": 6.3,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 87650,
+   "notable": [
+    "available MBUX Hyperscreen",
+    "aerodynamic 'cab-forward' EV design",
+    "rear-wheel drive for max range"
+   ],
+   "pros": [
+    "long range",
+    "very quiet and comfortable",
+    "tech-rich cabin"
+   ],
+   "cons": [
+    "polarizing rounded styling",
+    "tight headroom from roofline",
+    "modest charging speed vs rivals"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 36,
+    "efficiency": 90,
+    "value": 70,
+    "luxury": 64,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQE Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury electric sedan",
+   "trim": "EQE 320 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 315,
+   "torque": 564,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 430,
+   "batteryKwh": 96,
+   "zero100": 6.0,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 90650,
+   "notable": [
+    "dual-motor AWD",
+    "available Hyperscreen",
+    "air suspension available"
+   ],
+   "pros": [
+    "all-weather traction",
+    "refined, quiet ride",
+    "good range"
+   ],
+   "cons": [
+    "shorter range than RWD",
+    "polarizing styling",
+    "tight rear headroom"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 39,
+    "efficiency": 85,
+    "value": 66,
+    "luxury": 66,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQE Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Midsize luxury electric sedan",
+   "trim": "AMG EQE 53 4MATIC+",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors (AMG)",
+   "hp": 617,
+   "torque": 701,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 370,
+   "batteryKwh": 90.6,
+   "zero100": 3.2,
+   "topSpeed": 240,
+   "seats": 5,
+   "priceCad": 124000,
+   "notable": [
+    "AMG Dynamic Plus boost (up to ~677 hp)",
+    "AMG Sound Experience",
+    "rear-axle steering"
+   ],
+   "pros": [
+    "explosive acceleration",
+    "engaging AMG dynamics",
+    "luxury EV refinement"
+   ],
+   "cons": [
+    "reduced range under hard use",
+    "heavy",
+    "expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 95,
+    "efficiency": 80,
+    "value": 21,
+    "luxury": 80,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQE SUV",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury electric SUV",
+   "trim": "EQE 320+",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Single electric motor (rear)",
+   "hp": 315,
+   "torque": 417,
+   "drivetrain": "RWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 460,
+   "batteryKwh": 96,
+   "zero100": 6.3,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 95900,
+   "notable": [
+    "available MBUX Hyperscreen",
+    "spacious EV SUV packaging",
+    "rear-wheel drive for range"
+   ],
+   "pros": [
+    "roomy, quiet cabin",
+    "good range",
+    "comfortable ride"
+   ],
+   "cons": [
+    "pricey",
+    "modest charging speed",
+    "no third-row option"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 36,
+    "efficiency": 87,
+    "value": 53,
+    "luxury": 68,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQE SUV",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury electric SUV",
+   "trim": "EQE 320 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 315,
+   "torque": 564,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 425,
+   "batteryKwh": 96,
+   "zero100": 6.2,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 98936,
+   "notable": [
+    "dual-motor AWD",
+    "available Hyperscreen",
+    "air suspension available"
+   ],
+   "pros": [
+    "all-weather grip",
+    "quiet and comfortable",
+    "good real-world range"
+   ],
+   "cons": [
+    "shorter range than RWD",
+    "expensive",
+    "moderate charge speed"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 37,
+    "efficiency": 84,
+    "value": 49,
+    "luxury": 69,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQE SUV",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury electric SUV",
+   "trim": "EQE 500 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 402,
+   "torque": 633,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 425,
+   "batteryKwh": 96,
+   "zero100": 4.6,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 109900,
+   "notable": [
+    "more powerful dual-motor setup",
+    "available Hyperscreen",
+    "air suspension with rear-axle steering"
+   ],
+   "pros": [
+    "strong acceleration",
+    "refined luxury EV",
+    "all-weather traction"
+   ],
+   "cons": [
+    "pricey",
+    "range trails some rivals",
+    "heavy"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 61,
+    "efficiency": 84,
+    "value": 33,
+    "luxury": 74,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQE SUV",
+   "bodyStyle": "SUV",
+   "segment": "Midsize luxury electric SUV",
+   "trim": "AMG EQE 53 4MATIC+ SUV",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors (AMG)",
+   "hp": 617,
+   "torque": 701,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 370,
+   "batteryKwh": 90.6,
+   "zero100": 3.7,
+   "topSpeed": 240,
+   "seats": 5,
+   "priceCad": 143057,
+   "notable": [
+    "AMG Dynamic Plus boost",
+    "AMG Sound Experience",
+    "rear-axle steering and air suspension"
+   ],
+   "pros": [
+    "very quick for an SUV",
+    "engaging AMG tuning",
+    "luxury and tech"
+   ],
+   "cons": [
+    "reduced range under spirited driving",
+    "heavy",
+    "very expensive"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 90,
+    "efficiency": 80,
+    "value": 1,
+    "luxury": 88,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQS Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size flagship electric sedan",
+   "trim": "EQS 450 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 355,
+   "torque": 590,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 590,
+   "batteryKwh": 118,
+   "zero100": 5.7,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 133500,
+   "notable": [
+    "available 56-inch MBUX Hyperscreen",
+    "rear-axle steering up to 10 degrees",
+    "class-leading aerodynamics"
+   ],
+   "pros": [
+    "very long range",
+    "supremely quiet and comfortable",
+    "agile for its size with rear steer"
+   ],
+   "cons": [
+    "polarizing one-bow styling",
+    "huge and heavy",
+    "expensive"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 46,
+    "efficiency": 98,
+    "value": 8,
+    "luxury": 84,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQS Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size flagship electric sedan",
+   "trim": "EQS 580 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 536,
+   "torque": 633,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 580,
+   "batteryKwh": 118,
+   "zero100": 4.4,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 158500,
+   "notable": [
+    "dual-motor with more power",
+    "Hyperscreen available",
+    "rear-axle steering"
+   ],
+   "pros": [
+    "effortless acceleration",
+    "long range",
+    "flagship comfort and quiet"
+   ],
+   "cons": [
+    "very expensive",
+    "large footprint",
+    "polarizing styling"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 76,
+    "efficiency": 97,
+    "value": 1,
+    "luxury": 95,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQS Sedan",
+   "bodyStyle": "Sedan",
+   "segment": "Full-size flagship electric sedan",
+   "trim": "AMG EQS 4MATIC+",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors (AMG)",
+   "hp": 649,
+   "torque": 633,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 450,
+   "batteryKwh": 120,
+   "zero100": 3.8,
+   "topSpeed": 250,
+   "seats": 5,
+   "priceCad": 185000,
+   "notable": [
+    "AMG Dynamic Plus boost up to ~751 hp",
+    "AMG Sound Experience",
+    "AMG-specific air suspension tuning"
+   ],
+   "pros": [
+    "blistering acceleration",
+    "luxury and performance",
+    "rear-axle steering agility"
+   ],
+   "cons": [
+    "reduced range under hard use",
+    "very expensive",
+    "very heavy"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 93,
+    "efficiency": 86,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQS SUV",
+   "bodyStyle": "SUV",
+   "segment": "Full-size flagship electric SUV (3-row available)",
+   "trim": "EQS 450 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 355,
+   "torque": 590,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 530,
+   "batteryKwh": 118,
+   "zero100": 6.1,
+   "topSpeed": 210,
+   "seats": 7,
+   "priceCad": 136950,
+   "notable": [
+    "optional third-row seating (up to 7)",
+    "available MBUX Hyperscreen",
+    "rear-axle steering"
+   ],
+   "pros": [
+    "spacious luxury EV with optional 7 seats",
+    "long range",
+    "quiet and comfortable"
+   ],
+   "cons": [
+    "large and heavy",
+    "expensive",
+    "third row tight"
+   ],
+   "confidence": "high",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 42,
+    "efficiency": 93,
+    "value": 1,
+    "luxury": 86,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQS SUV",
+   "bodyStyle": "SUV",
+   "segment": "Full-size flagship electric SUV (3-row available)",
+   "trim": "EQS 580 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 536,
+   "torque": 633,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 510,
+   "batteryKwh": 118,
+   "zero100": 4.7,
+   "topSpeed": 210,
+   "seats": 7,
+   "priceCad": 158500,
+   "notable": [
+    "more powerful dual-motor setup",
+    "optional third row",
+    "rear-axle steering and air suspension"
+   ],
+   "pros": [
+    "strong acceleration",
+    "roomy three-row option",
+    "flagship comfort"
+   ],
+   "cons": [
+    "very expensive",
+    "large and heavy",
+    "range trails sedan"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 73,
+    "efficiency": 91,
+    "value": 1,
+    "luxury": 95,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "EQS SUV",
+   "bodyStyle": "SUV",
+   "segment": "Full-size flagship electric SUV (3-row available)",
+   "trim": "Mercedes-Maybach EQS 680 SUV",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors (Maybach)",
+   "hp": 649,
+   "torque": 700,
+   "drivetrain": "AWD",
+   "transmission": "single-speed",
+   "fuelL100": null,
+   "evRangeKm": 486,
+   "batteryKwh": 118,
+   "zero100": 4.4,
+   "topSpeed": 210,
+   "seats": 4,
+   "priceCad": 230000,
+   "notable": [
+    "Maybach executive rear lounge seating",
+    "two-tone paint and Maybach styling",
+    "active noise cancellation"
+   ],
+   "pros": [
+    "ultra-luxurious electric flagship",
+    "very quiet and smooth",
+    "exclusive Maybach branding"
+   ],
+   "cons": [
+    "extremely expensive",
+    "heavy",
+    "range modest for the price"
+   ],
+   "confidence": "med",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 87,
+    "efficiency": 89,
+    "value": 1,
+    "luxury": 100,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "CLA",
+   "bodyStyle": "Sedan",
+   "segment": "Compact luxury electric sedan",
+   "trim": "CLA 250+",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Single electric motor (rear)",
+   "hp": 268,
+   "torque": 247,
+   "drivetrain": "RWD",
+   "transmission": "2-speed",
+   "fuelL100": null,
+   "evRangeKm": 600,
+   "batteryKwh": 85,
+   "zero100": 6.6,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 55000,
+   "notable": [
+    "new 800V electric architecture",
+    "two-speed transmission for efficiency",
+    "MBUX Superscreen available"
+   ],
+   "pros": [
+    "very long range for a compact EV",
+    "fast 800V charging",
+    "efficient new platform"
+   ],
+   "cons": [
+    "Canadian availability not until late 2026",
+    "compact rear-seat space",
+    "new model, unproven"
+   ],
+   "confidence": "low",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 29,
+    "efficiency": 99,
+    "value": 100,
+    "luxury": 50,
+    "ownership": 42
+   }
+  },
+  {
+   "brand": "Mercedes-Benz",
+   "model": "CLA",
+   "bodyStyle": "Sedan",
+   "segment": "Compact luxury electric sedan",
+   "trim": "CLA 350 4MATIC",
+   "year": 2026,
+   "ptType": "ev",
+   "engine": "Dual electric motors",
+   "hp": 349,
+   "torque": 380,
+   "drivetrain": "AWD",
+   "transmission": "2-speed",
+   "fuelL100": null,
+   "evRangeKm": 550,
+   "batteryKwh": 85,
+   "zero100": 4.9,
+   "topSpeed": 210,
+   "seats": 5,
+   "priceCad": 62000,
+   "notable": [
+    "dual-motor AWD on 800V platform",
+    "two-speed transmission",
+    "fast DC charging"
+   ],
+   "pros": [
+    "quick AWD performance",
+    "long range",
+    "modern 800V charging"
+   ],
+   "cons": [
+    "provisional Canadian launch late 2026",
+    "tight rear seat",
+    "premium price for compact"
+   ],
+   "confidence": "low",
+   "image": null,
+   "scores": {
+    "reliability": 57,
+    "performance": 53,
+    "efficiency": 95,
+    "value": 100,
+    "luxury": 53,
+    "ownership": 42
    }
   },
   {
@@ -6561,7 +9367,7 @@
     "reliability": 50,
     "performance": 53,
     "efficiency": 53,
-    "value": 95,
+    "value": 100,
     "luxury": 53,
     "ownership": 50
    }
@@ -6607,7 +9413,7 @@
     "reliability": 50,
     "performance": 53,
     "efficiency": 53,
-    "value": 88,
+    "value": 99,
     "luxury": 55,
     "ownership": 50
    }
@@ -6653,7 +9459,7 @@
     "reliability": 50,
     "performance": 67,
     "efficiency": 41,
-    "value": 66,
+    "value": 78,
     "luxury": 62,
     "ownership": 50
    }
@@ -6929,7 +9735,7 @@
     "reliability": 50,
     "performance": 72,
     "efficiency": 30,
-    "value": 3,
+    "value": 1,
     "luxury": 82,
     "ownership": 50
    }
@@ -6975,7 +9781,7 @@
     "reliability": 50,
     "performance": 51,
     "efficiency": 42,
-    "value": 60,
+    "value": 74,
     "luxury": 63,
     "ownership": 50
    }
@@ -7021,7 +9827,7 @@
     "reliability": 50,
     "performance": 51,
     "efficiency": 42,
-    "value": 53,
+    "value": 68,
     "luxury": 65,
     "ownership": 50
    }
@@ -7067,7 +9873,7 @@
     "reliability": 50,
     "performance": 51,
     "efficiency": 42,
-    "value": 51,
+    "value": 66,
     "luxury": 66,
     "ownership": 50
    }
@@ -7205,7 +10011,7 @@
     "reliability": 50,
     "performance": 44,
     "efficiency": 30,
-    "value": 19,
+    "value": 37,
     "luxury": 75,
     "ownership": 50
    }
@@ -7343,7 +10149,7 @@
     "reliability": 50,
     "performance": 34,
     "efficiency": 44,
-    "value": 99,
+    "value": 100,
     "luxury": 52,
     "ownership": 50
    }
@@ -7389,7 +10195,7 @@
     "reliability": 50,
     "performance": 32,
     "efficiency": 46,
-    "value": 94,
+    "value": 100,
     "luxury": 53,
     "ownership": 50
    }
@@ -7435,7 +10241,7 @@
     "reliability": 50,
     "performance": 32,
     "efficiency": 46,
-    "value": 86,
+    "value": 94,
     "luxury": 56,
     "ownership": 50
    }
@@ -7481,7 +10287,7 @@
     "reliability": 50,
     "performance": 32,
     "efficiency": 46,
-    "value": 83,
+    "value": 92,
     "luxury": 56,
     "ownership": 50
    }
@@ -7527,7 +10333,7 @@
     "reliability": 50,
     "performance": 32,
     "efficiency": 46,
-    "value": 82,
+    "value": 91,
     "luxury": 57,
     "ownership": 50
    }
@@ -7573,7 +10379,7 @@
     "reliability": 50,
     "performance": 55,
     "efficiency": 29,
-    "value": 63,
+    "value": 73,
     "luxury": 62,
     "ownership": 50
    }
@@ -7619,7 +10425,7 @@
     "reliability": 50,
     "performance": 55,
     "efficiency": 29,
-    "value": 59,
+    "value": 69,
     "luxury": 63,
     "ownership": 50
    }
@@ -7665,7 +10471,7 @@
     "reliability": 50,
     "performance": 55,
     "efficiency": 29,
-    "value": 59,
+    "value": 70,
     "luxury": 63,
     "ownership": 50
    }
@@ -7711,7 +10517,7 @@
     "reliability": 50,
     "performance": 25,
     "efficiency": 28,
-    "value": 64,
+    "value": 74,
     "luxury": 62,
     "ownership": 50
    }
@@ -7757,7 +10563,7 @@
     "reliability": 50,
     "performance": 45,
     "efficiency": 22,
-    "value": 52,
+    "value": 63,
     "luxury": 65,
     "ownership": 50
    }
@@ -7803,7 +10609,7 @@
     "reliability": 50,
     "performance": 45,
     "efficiency": 22,
-    "value": 41,
+    "value": 53,
     "luxury": 68,
     "ownership": 50
    }
@@ -7849,7 +10655,7 @@
     "reliability": 50,
     "performance": 75,
     "efficiency": 2,
-    "value": 1,
+    "value": 11,
     "luxury": 81,
     "ownership": 50
    }
@@ -7895,7 +10701,7 @@
     "reliability": 50,
     "performance": 45,
     "efficiency": 21,
-    "value": 38,
+    "value": 51,
     "luxury": 69,
     "ownership": 50
    }
@@ -7941,7 +10747,7 @@
     "reliability": 50,
     "performance": 45,
     "efficiency": 21,
-    "value": 25,
+    "value": 38,
     "luxury": 73,
     "ownership": 50
    }
@@ -8079,7 +10885,7 @@
     "reliability": 50,
     "performance": 30,
     "efficiency": 87,
-    "value": 92,
+    "value": 99,
     "luxury": 54,
     "ownership": 50
    }
@@ -8125,7 +10931,7 @@
     "reliability": 50,
     "performance": 48,
     "efficiency": 82,
-    "value": 84,
+    "value": 92,
     "luxury": 56,
     "ownership": 50
    }
@@ -8171,7 +10977,7 @@
     "reliability": 50,
     "performance": 48,
     "efficiency": 83,
-    "value": 71,
+    "value": 80,
     "luxury": 60,
     "ownership": 50
    }
@@ -8217,7 +11023,7 @@
     "reliability": 50,
     "performance": 59,
     "efficiency": 92,
-    "value": 50,
+    "value": 62,
     "luxury": 65,
     "ownership": 50
    }
@@ -8263,7 +11069,7 @@
     "reliability": 50,
     "performance": 59,
     "efficiency": 92,
-    "value": 46,
+    "value": 57,
     "luxury": 67,
     "ownership": 50
    }
@@ -8309,7 +11115,7 @@
     "reliability": 50,
     "performance": 74,
     "efficiency": 86,
-    "value": 24,
+    "value": 37,
     "luxury": 73,
     "ownership": 50
    }
@@ -8355,7 +11161,7 @@
     "reliability": 50,
     "performance": 74,
     "efficiency": 86,
-    "value": 19,
+    "value": 33,
     "luxury": 74,
     "ownership": 50
    }
@@ -8539,7 +11345,7 @@
     "reliability": 50,
     "performance": 52,
     "efficiency": 87,
-    "value": 51,
+    "value": 62,
     "luxury": 65,
     "ownership": 50
    }

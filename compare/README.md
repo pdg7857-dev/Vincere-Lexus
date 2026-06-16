@@ -8,6 +8,9 @@ favours Lexus**.
 It's a sibling to the Lexus-only sales matcher in [`../app`](../app); this tool is
 the cross-brand "which should I actually buy" layer.
 
+**Coverage (2026, Canada): 250 trims** — Lexus 86 · BMW 55 · Mercedes-Benz 61 · Audi 48,
+across sedans, SUVs, coupes, convertibles, wagons and hatchbacks, gas / hybrid / PHEV / EV.
+
 ## Open it
 
 Static site, no build step — just open `index.html`, or serve it:

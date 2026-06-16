@@ -1,0 +1,1499 @@
+{
+  "brand": "Mercedes-Benz",
+  "market": "Canada",
+  "year": 2026,
+  "currency": "CAD",
+  "brandReliability": {
+    "score_100": 57,
+    "rank_note": "Below industry average. J.D. Power 2025 Vehicle Dependability Study ~243 PP100 vs industry avg 202 (higher = more problems, so worse than average). Consumer Reports has insufficient data for a full brand ranking.",
+    "predicted_owner_cost_note": "High. Mercedes-Benz is generally the costliest of the German luxury brands to own long-term, driven by complex electronics, expensive parts/labour, and out-of-warranty repair bills.",
+    "sources": ["https://www.jdpower.com/business/press-releases/2025-us-vehicle-dependability-study-vds"]
+  },
+  "warranty": {
+    "comprehensive": "4 yr / 80,000 km",
+    "powertrain": "4 yr / 80,000 km",
+    "corrosion": "5 yr / unlimited km",
+    "roadside": "4 yr / unlimited km",
+    "ev_battery": "8 yr / 160,000 km",
+    "notes": "No separate longer powertrain term in Canada; basic and powertrain run together at 4 yr/80,000 km."
+  },
+  "maintenance": {
+    "complimentary_plan": "None brand-wide. Star/Prepaid Maintenance is a paid add-on (pre-purchased scheduled service), not complimentary.",
+    "est_5yr_service_cad": 5600,
+    "est_annual_service_cad": 1400,
+    "notes": "Mercedes is the costliest of the German luxury brands to maintain long-term. Estimates cover scheduled A/B services; brakes, tires, and wear items are extra. Synthetic oil, cabin filters, and brake fluid services add up quickly on AMG/V8/V12 models."
+  },
+  "models": [
+    {
+      "model": "C-Class",
+      "bodyStyle": "Sedan",
+      "segment": "Compact luxury sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "C 300 4MATIC",
+          "price_cad": 53700,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 + 48V mild hybrid (EQ Boost)",
+            "hp": 255,
+            "torque_lbft": 295,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 9.2,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 6.0, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["11.9-inch portrait central touchscreen", "MBUX with augmented-reality navigation", "48V integrated starter-generator"],
+          "pros": ["refined, quiet ride", "upscale tech-forward interior", "standard AWD"],
+          "cons": ["only a four-cylinder across the base lineup", "tight rear-seat space", "touch-heavy controls"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG C 43 4MATIC",
+          "price_cad": 69000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 with electric exhaust-gas turbocharger + 48V",
+            "hp": 416,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 10.2,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["F1-derived electric turbocharger", "AMG RIDE CONTROL suspension", "rear-axle steering"],
+          "pros": ["huge output from a four-cylinder", "strong AWD traction", "everyday usability"],
+          "cons": ["four-cylinder sound lacks drama", "firm ride", "pricey for the segment"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG C 63 S E Performance",
+          "price_cad": 99000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "phev",
+            "engine": "2.0L turbo I4 + rear e-motor (plug-in hybrid)",
+            "hp": 671,
+            "torque_lbft": 752,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 10.5,
+            "ev_range_km": 21,
+            "battery_kwh": 6.1
+          },
+          "perf": { "zero_100_s": 3.4, "top_speed_kmh": 280 },
+          "seats": 5,
+          "notable_features": ["F1-inspired plug-in hybrid powertrain", "rear-axle electric motor with 2-speed gearbox", "AMG active aerodynamics"],
+          "pros": ["supercar-level acceleration", "complex high-tech drivetrain", "AWD all-weather capability"],
+          "cons": ["heavy", "controversial four-cylinder replacing the old V8", "very expensive"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "CLE",
+      "bodyStyle": "Coupe",
+      "segment": "Midsize luxury coupe/convertible",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "CLE 300 4MATIC Coupe",
+          "price_cad": 68045,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 + 48V mild hybrid",
+            "hp": 255,
+            "torque_lbft": 295,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 9.3,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 6.2, "top_speed_kmh": 209 },
+          "seats": 4,
+          "notable_features": ["pillarless coupe styling", "MBUX with 11.9-inch touchscreen", "48V mild-hybrid assist"],
+          "pros": ["elegant proportions", "comfortable grand-touring ride", "standard AWD"],
+          "cons": ["modest base power", "snug rear seats", "options add up"],
+          "confidence": "high"
+        },
+        {
+          "trim": "CLE 300 4MATIC Cabriolet",
+          "price_cad": 78045,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 + 48V mild hybrid",
+            "hp": 255,
+            "torque_lbft": 295,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 9.5,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 6.6, "top_speed_kmh": 209 },
+          "seats": 4,
+          "notable_features": ["fabric power soft top", "AIRCAP wind deflector", "neck-level heating (AIRSCARF)"],
+          "pros": ["open-air refinement", "well-insulated top", "standard AWD"],
+          "cons": ["heavier than coupe", "trunk space drops with top down", "pricey"],
+          "confidence": "high"
+        },
+        {
+          "trim": "CLE 450 4MATIC Coupe",
+          "price_cad": 76500,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid",
+            "hp": 375,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 9.8,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.4, "top_speed_kmh": 209 },
+          "seats": 4,
+          "notable_features": ["smooth inline-six with 48V boost", "AMG Line styling available", "adaptive damping"],
+          "pros": ["silky straight-six power", "effortless cruising", "strong AWD traction"],
+          "cons": ["price climbs quickly", "rear seat tight", "no manual option"],
+          "confidence": "high"
+        },
+        {
+          "trim": "CLE 450 4MATIC Cabriolet",
+          "price_cad": 87500,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid",
+            "hp": 375,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 10.0,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.7, "top_speed_kmh": 209 },
+          "seats": 4,
+          "notable_features": ["power soft top", "inline-six refinement", "AIRSCARF neck heating"],
+          "pros": ["potent six-cylinder convertible", "refined open-air experience", "all-wheel-drive grip"],
+          "cons": ["heavy", "expensive", "reduced cargo with top down"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG CLE 53 4MATIC+ Coupe",
+          "price_cad": 84550,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid (AMG)",
+            "hp": 443,
+            "torque_lbft": 413,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 10.5,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.2, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["AMG-tuned inline-six", "fully variable 4MATIC+ AWD", "AMG RIDE CONTROL suspension"],
+          "pros": ["strong, characterful six", "balanced handling", "daily usability"],
+          "cons": ["firm AMG ride", "expensive options", "tight rear seats"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG CLE 53 4MATIC+ Cabriolet",
+          "price_cad": 90600,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid (AMG)",
+            "hp": 443,
+            "torque_lbft": 413,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 10.7,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.4, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["AMG performance soft-top convertible", "4MATIC+ variable AWD", "AIRSCARF and AIRCAP"],
+          "pros": ["fast open-air AMG", "refined yet sporty", "all-weather AWD"],
+          "cons": ["heavy", "costly", "small trunk"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "E-Class",
+      "bodyStyle": "Sedan",
+      "segment": "Midsize luxury sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "E 350 4MATIC Sedan",
+          "price_cad": 75550,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 + 48V mild hybrid",
+            "hp": 255,
+            "torque_lbft": 295,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 9.2,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 6.1, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["available MBUX Superscreen passenger display", "advanced driver-assist suite", "air-balance cabin fragrance"],
+          "pros": ["serene ride and quiet cabin", "cutting-edge interior tech", "roomy back seat"],
+          "cons": ["base four-cylinder feels modest for the size", "expensive tech options", "complex infotainment"],
+          "confidence": "high"
+        },
+        {
+          "trim": "E 450 4MATIC Sedan",
+          "price_cad": 85650,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid",
+            "hp": 375,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 9.9,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.5, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["smooth inline-six with EQ Boost", "available rear-axle steering", "air suspension available"],
+          "pros": ["effortless six-cylinder power", "exceptional refinement", "limousine-like comfort"],
+          "cons": ["pricey", "options inflate cost", "infotainment learning curve"],
+          "confidence": "high"
+        },
+        {
+          "trim": "E 450 4MATIC All-Terrain Wagon",
+          "price_cad": 92250,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid",
+            "hp": 375,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 10.2,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.9, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["raised all-terrain ride height with air suspension", "rugged cladding", "large versatile cargo area"],
+          "pros": ["rare wagon practicality", "strong six-cylinder", "comfortable yet capable"],
+          "cons": ["niche body style", "expensive", "thirstier than sedan"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG E 53 HYBRID 4MATIC+ Sedan",
+          "price_cad": 106700,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "phev",
+            "engine": "3.0L turbo I6 + e-motor (plug-in hybrid, AMG)",
+            "hp": 577,
+            "torque_lbft": 553,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 8.5,
+            "ev_range_km": 69,
+            "battery_kwh": 28.6
+          },
+          "perf": { "zero_100_s": 4.0, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["large 28.6 kWh battery for long EV range", "AMG Dynamic Plus with boost function", "DC fast-charging capable"],
+          "pros": ["huge EV-only range for a PHEV", "very strong performance", "low running costs if charged"],
+          "cons": ["heavy battery", "complex powertrain", "premium price"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG E 53 HYBRID 4MATIC+ Wagon",
+          "price_cad": 109900,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "phev",
+            "engine": "3.0L turbo I6 + e-motor (plug-in hybrid, AMG)",
+            "hp": 577,
+            "torque_lbft": 553,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 8.7,
+            "ev_range_km": 66,
+            "battery_kwh": 28.6
+          },
+          "perf": { "zero_100_s": 3.9, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["AMG performance wagon body", "plug-in hybrid with DC fast charging", "AMG RIDE CONTROL air suspension"],
+          "pros": ["fast and practical wagon", "long EV range", "all-weather AWD grip"],
+          "cons": ["very expensive", "heavy", "rare/niche appeal"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "S-Class",
+      "bodyStyle": "Sedan",
+      "segment": "Full-size flagship luxury sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "S 500 4MATIC",
+          "price_cad": 149100,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid",
+            "hp": 442,
+            "torque_lbft": 413,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 10.5,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.9, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["E-Active Body Control suspension", "rear-axle steering up to 10 degrees", "MBUX 12.8-inch OLED central display"],
+          "pros": ["benchmark ride comfort", "whisper-quiet cabin", "leading luxury tech"],
+          "cons": ["very expensive", "complex electronics", "costly to repair out of warranty"],
+          "confidence": "high"
+        },
+        {
+          "trim": "S 580 4MATIC",
+          "price_cad": 163300,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "4.0L twin-turbo V8 + 48V mild hybrid",
+            "hp": 496,
+            "torque_lbft": 516,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 12.5,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.4, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["twin-turbo V8 with EQ Boost", "rear executive seating available", "Burmester 4D surround sound"],
+          "pros": ["effortless V8 muscle", "supreme comfort", "flagship-level refinement"],
+          "cons": ["thirsty", "very pricey", "expensive maintenance"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG S 63 E Performance",
+          "price_cad": 216695,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "phev",
+            "engine": "4.0L twin-turbo V8 + e-motor (plug-in hybrid, AMG)",
+            "hp": 791,
+            "torque_lbft": 1055,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 11.5,
+            "ev_range_km": 33,
+            "battery_kwh": 13.1
+          },
+          "perf": { "zero_100_s": 3.3, "top_speed_kmh": 290 },
+          "seats": 5,
+          "notable_features": ["791 hp plug-in hybrid V8 flagship", "AMG active ride control", "rear-axle e-motor with 2-speed gearbox"],
+          "pros": ["staggering performance for a full-size sedan", "luxury and speed combined", "EV-only short commutes"],
+          "cons": ["enormous price", "very heavy", "high running/repair costs"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Mercedes-Maybach S 580 4MATIC",
+          "price_cad": 262900,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "4.0L twin-turbo V8 + 48V mild hybrid",
+            "hp": 496,
+            "torque_lbft": 516,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 12.8,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.8, "top_speed_kmh": 210 },
+          "seats": 4,
+          "notable_features": ["extended wheelbase with executive rear seats", "two-tone paint and Maybach styling", "reclining rear seats with calf rests"],
+          "pros": ["ultimate rear-seat luxury", "supremely quiet and comfortable", "exclusive Maybach branding"],
+          "cons": ["extremely expensive", "best enjoyed from the back seat", "thirsty V8"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Mercedes-Maybach S 680 4MATIC",
+          "price_cad": 319000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "gas",
+            "engine": "6.0L twin-turbo V12",
+            "hp": 621,
+            "torque_lbft": 664,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 15.5,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.3, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["hand-built twin-turbo V12", "First-Class rear suite", "champagne flutes and refrigerator option"],
+          "pros": ["rare V12 smoothness", "pinnacle of Mercedes luxury", "exclusivity"],
+          "cons": ["six-figure-plus price", "very thirsty", "high running costs"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "GLA",
+      "bodyStyle": "SUV",
+      "segment": "Subcompact luxury SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "GLA 250 4MATIC",
+          "price_cad": 52200,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 + 48V mild hybrid",
+            "hp": 221,
+            "torque_lbft": 258,
+            "drivetrain": "AWD",
+            "transmission": "8-spd dual-clutch",
+            "fuel_l100_comb": 8.6,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 6.8, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["MBUX infotainment", "compact crossover packaging", "standard 4MATIC AWD"],
+          "pros": ["premium cabin in a small footprint", "easy to park", "good standard tech"],
+          "cons": ["tight rear seat and cargo", "firm ride", "options get pricey"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLA 35 4MATIC",
+          "price_cad": 63700,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 (AMG)",
+            "hp": 302,
+            "torque_lbft": 295,
+            "drivetrain": "AWD",
+            "transmission": "8-spd dual-clutch (AMG SPEEDSHIFT)",
+            "fuel_l100_comb": 9.4,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 5.2, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["AMG-tuned turbo four", "AMG RIDE CONTROL suspension", "sport exhaust"],
+          "pros": ["fun, quick compact SUV", "AWD grip", "everyday practicality"],
+          "cons": ["firm ride", "small cargo area", "pricey for size"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "GLB",
+      "bodyStyle": "SUV",
+      "segment": "Subcompact luxury SUV (3-row available)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "GLB 250 4MATIC",
+          "price_cad": 56200,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 + 48V mild hybrid",
+            "hp": 221,
+            "torque_lbft": 258,
+            "drivetrain": "AWD",
+            "transmission": "8-spd dual-clutch",
+            "fuel_l100_comb": 8.9,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 7.1, "top_speed_kmh": 210 },
+          "seats": 7,
+          "notable_features": ["available third-row seating (up to 7)", "boxy practical interior", "MBUX infotainment"],
+          "pros": ["surprising versatility for its size", "optional 7 seats", "boxy cabin space"],
+          "cons": ["third row very tight", "modest base power", "firm ride"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLB 35 4MATIC",
+          "price_cad": 68200,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 (AMG)",
+            "hp": 302,
+            "torque_lbft": 295,
+            "drivetrain": "AWD",
+            "transmission": "8-spd dual-clutch (AMG SPEEDSHIFT)",
+            "fuel_l100_comb": 9.6,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 5.5, "top_speed_kmh": 250 },
+          "seats": 7,
+          "notable_features": ["AMG performance tuning", "available third row", "AMG RIDE CONTROL suspension"],
+          "pros": ["quick yet family-friendly", "optional 7 seats", "AWD traction"],
+          "cons": ["firm AMG ride", "cramped third row", "thirstier than base"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "GLC",
+      "bodyStyle": "SUV",
+      "segment": "Compact luxury SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "GLC 300 4MATIC SUV",
+          "price_cad": 60450,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 + 48V mild hybrid",
+            "hp": 255,
+            "torque_lbft": 295,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 9.3,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 6.2, "top_speed_kmh": 209 },
+          "seats": 5,
+          "notable_features": ["11.9-inch central touchscreen", "MBUX with off-road display", "48V mild-hybrid assist"],
+          "pros": ["polished ride and quiet cabin", "high-quality interior", "strong resale"],
+          "cons": ["only four-cylinder base power", "pricey options", "touch controls"],
+          "confidence": "high"
+        },
+        {
+          "trim": "GLC 300 4MATIC Coupe",
+          "price_cad": 64600,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 + 48V mild hybrid",
+            "hp": 255,
+            "torque_lbft": 295,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 9.4,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 6.2, "top_speed_kmh": 209 },
+          "seats": 5,
+          "notable_features": ["sloped coupe roofline", "MBUX infotainment", "AMG Line styling available"],
+          "pros": ["sleek styling", "refined drivetrain", "well-built cabin"],
+          "cons": ["less cargo and headroom than SUV", "premium over standard SUV", "four-cylinder only"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLC 43 4MATIC SUV",
+          "price_cad": 82100,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 with electric turbocharger + 48V (AMG)",
+            "hp": 416,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 10.3,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.8, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["F1-derived electric turbocharger", "AMG RIDE CONTROL suspension", "rear-axle steering"],
+          "pros": ["big power from a four-cylinder", "sharp handling for an SUV", "AWD grip"],
+          "cons": ["four-cylinder soundtrack", "firm ride", "pricey"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLC 43 4MATIC Coupe",
+          "price_cad": 83400,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 with electric turbocharger + 48V (AMG)",
+            "hp": 416,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 10.4,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.7, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["coupe body with AMG aero", "electric exhaust-gas turbocharger", "AMG performance suspension"],
+          "pros": ["quick and stylish", "strong AWD traction", "engaging handling"],
+          "cons": ["reduced practicality vs SUV", "firm ride", "expensive"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLC 63 S E Performance SUV",
+          "price_cad": 111500,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "phev",
+            "engine": "2.0L turbo I4 + rear e-motor (plug-in hybrid, AMG)",
+            "hp": 671,
+            "torque_lbft": 752,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 10.8,
+            "ev_range_km": 12,
+            "battery_kwh": 6.1
+          },
+          "perf": { "zero_100_s": 3.5, "top_speed_kmh": 275 },
+          "seats": 5,
+          "notable_features": ["671 hp plug-in hybrid powertrain", "rear-axle electric motor with 2-speed gearbox", "AMG active aero and rear-axle steering"],
+          "pros": ["explosive acceleration for an SUV", "high-tech F1-derived hybrid", "AWD all-weather grip"],
+          "cons": ["heavy", "tiny EV range", "very expensive"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLC 63 S E Performance Coupe",
+          "price_cad": 117250,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "phev",
+            "engine": "2.0L turbo I4 + rear e-motor (plug-in hybrid, AMG)",
+            "hp": 671,
+            "torque_lbft": 752,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 10.9,
+            "ev_range_km": 12,
+            "battery_kwh": 6.1
+          },
+          "perf": { "zero_100_s": 3.5, "top_speed_kmh": 275 },
+          "seats": 5,
+          "notable_features": ["coupe roofline with AMG aero", "plug-in hybrid performance drivetrain", "rear-axle steering"],
+          "pros": ["supercar pace", "stylish coupe body", "complex hybrid tech"],
+          "cons": ["less cargo than SUV", "heavy", "premium price"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "GLE",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "GLE 350 4MATIC SUV",
+          "price_cad": 85400,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "2.0L turbo I4 + 48V mild hybrid",
+            "hp": 255,
+            "torque_lbft": 295,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 10.0,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 7.1, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["available air suspension", "MBUX dual-screen dash", "available third-row seat"],
+          "pros": ["comfortable, quiet cruiser", "spacious cabin", "refined road manners"],
+          "cons": ["four-cylinder feels modest in a big SUV", "pricey options", "heavy"],
+          "confidence": "high"
+        },
+        {
+          "trim": "GLE 450 4MATIC SUV",
+          "price_cad": 96895,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid",
+            "hp": 375,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 10.6,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["smooth inline-six with EQ Boost", "available E-Active Body Control", "available third row"],
+          "pros": ["effortless six-cylinder power", "excellent ride comfort", "roomy and refined"],
+          "cons": ["expensive once optioned", "thirsty for a daily", "heavy"],
+          "confidence": "high"
+        },
+        {
+          "trim": "GLE 450 4MATIC Coupe",
+          "price_cad": 102800,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid",
+            "hp": 375,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 10.7,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["sloped coupe roofline", "inline-six refinement", "AMG Line styling"],
+          "pros": ["sleek styling", "strong six-cylinder", "smooth ride"],
+          "cons": ["less cargo/headroom than SUV", "no third row", "premium price"],
+          "confidence": "high"
+        },
+        {
+          "trim": "GLE 450e 4MATIC PHEV SUV",
+          "price_cad": 97550,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "phev",
+            "engine": "2.0L turbo I4 + e-motor (plug-in hybrid)",
+            "hp": 381,
+            "torque_lbft": 479,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 8.0,
+            "ev_range_km": 77,
+            "battery_kwh": 31.2
+          },
+          "perf": { "zero_100_s": 6.1, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["large 31.2 kWh battery, long EV range", "DC fast-charging capable", "EV-only daily driving"],
+          "pros": ["impressive electric-only range", "low running costs if charged", "smooth, quiet EV mode"],
+          "cons": ["reduced cargo from battery", "heavy", "long full-charge time on AC"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLE 53 4MATIC+ SUV",
+          "price_cad": 119400,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid (AMG)",
+            "hp": 429,
+            "torque_lbft": 413,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 11.2,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 5.0, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["AMG-tuned inline-six", "AMG RIDE CONTROL+ air suspension", "active anti-roll stabilization available"],
+          "pros": ["strong, smooth six-cylinder", "composed handling for a big SUV", "AWD grip"],
+          "cons": ["firm AMG ride", "thirsty", "expensive"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLE 53 4MATIC+ Coupe",
+          "price_cad": 124800,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid (AMG)",
+            "hp": 429,
+            "torque_lbft": 413,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 11.3,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 5.0, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["coupe body with AMG aero", "AMG air suspension", "inline-six performance"],
+          "pros": ["quick and stylish", "refined power delivery", "all-weather AWD"],
+          "cons": ["less practical than SUV", "firm ride", "pricey"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLE 63 S 4MATIC+ SUV",
+          "price_cad": 169495,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "4.0L twin-turbo V8 + 48V mild hybrid (AMG)",
+            "hp": 603,
+            "torque_lbft": 627,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 13.5,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 3.9, "top_speed_kmh": 280 },
+          "seats": 5,
+          "notable_features": ["handcrafted twin-turbo V8", "AMG active ride control with anti-roll", "AMG performance exhaust"],
+          "pros": ["thunderous V8 performance", "surprising agility", "luxury and pace combined"],
+          "cons": ["very thirsty", "expensive", "high running costs"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLE 63 S 4MATIC+ Coupe",
+          "price_cad": 174400,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "4.0L twin-turbo V8 + 48V mild hybrid (AMG)",
+            "hp": 603,
+            "torque_lbft": 627,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 13.6,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 3.8, "top_speed_kmh": 280 },
+          "seats": 5,
+          "notable_features": ["coupe body with aggressive AMG styling", "twin-turbo V8", "active roll stabilization"],
+          "pros": ["blistering acceleration", "muscular V8 sound", "strong AWD traction"],
+          "cons": ["reduced practicality", "very thirsty", "very expensive"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "GLS",
+      "bodyStyle": "SUV",
+      "segment": "Full-size luxury SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "GLS 450 4MATIC",
+          "price_cad": 121400,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid",
+            "hp": 375,
+            "torque_lbft": 369,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 11.5,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 6.1, "top_speed_kmh": 210 },
+          "seats": 7,
+          "notable_features": ["standard 7-seat three-row layout", "available E-Active Body Control", "MBUX dual-screen dash"],
+          "pros": ["limousine-like comfort for 7", "spacious and refined", "smooth six-cylinder"],
+          "cons": ["large and heavy", "thirsty", "expensive options"],
+          "confidence": "high"
+        },
+        {
+          "trim": "GLS 580 4MATIC",
+          "price_cad": 148400,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "4.0L twin-turbo V8 + 48V mild hybrid",
+            "hp": 510,
+            "torque_lbft": 538,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 13.0,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.9, "top_speed_kmh": 210 },
+          "seats": 7,
+          "notable_features": ["twin-turbo V8 with EQ Boost", "air suspension with E-Active Body Control", "three-row seating"],
+          "pros": ["effortless V8 power", "supreme three-row comfort", "refined and quiet"],
+          "cons": ["very thirsty", "large footprint", "pricey"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG GLS 63 4MATIC+",
+          "price_cad": 199800,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "4.0L twin-turbo V8 + 48V mild hybrid (AMG)",
+            "hp": 603,
+            "torque_lbft": 627,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 14.0,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.2, "top_speed_kmh": 250 },
+          "seats": 7,
+          "notable_features": ["handcrafted AMG V8", "active roll stabilization", "AMG performance exhaust"],
+          "pros": ["astonishing pace for a 3-row SUV", "luxury and power", "seats 7 in comfort"],
+          "cons": ["very thirsty", "very expensive", "huge and heavy"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Mercedes-Maybach GLS 600 4MATIC",
+          "price_cad": 243800,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "4.0L twin-turbo V8 + 48V mild hybrid",
+            "hp": 550,
+            "torque_lbft": 538,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 13.5,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.9, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["Maybach executive rear seating", "two-tone paint and Maybach styling", "rear refrigerator and champagne flutes option"],
+          "pros": ["ultra-luxurious rear cabin", "supreme comfort and quiet", "exclusive Maybach branding"],
+          "cons": ["extremely expensive", "thirsty V8", "fewer seats than standard GLS"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "G-Class",
+      "bodyStyle": "SUV",
+      "segment": "Full-size luxury off-road SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "G 550",
+          "price_cad": 191900,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "3.0L turbo I6 + 48V mild hybrid",
+            "hp": 443,
+            "torque_lbft": 413,
+            "drivetrain": "AWD",
+            "transmission": "9G-TRONIC",
+            "fuel_l100_comb": 13.5,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 5.5, "top_speed_kmh": 209 },
+          "seats": 5,
+          "notable_features": ["three locking differentials", "low-range transfer case", "iconic boxy styling with refreshed interior"],
+          "pros": ["unmatched off-road capability", "iconic design and status", "smooth inline-six"],
+          "cons": ["very thirsty", "trucky on-road manners", "extremely expensive"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG G 63",
+          "price_cad": 252550,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "mild-hybrid",
+            "engine": "4.0L twin-turbo V8 + 48V mild hybrid (AMG)",
+            "hp": 577,
+            "torque_lbft": 627,
+            "drivetrain": "AWD",
+            "transmission": "AMG SPEEDSHIFT",
+            "fuel_l100_comb": 15.0,
+            "ev_range_km": null,
+            "battery_kwh": null
+          },
+          "perf": { "zero_100_s": 4.4, "top_speed_kmh": 220 },
+          "seats": 5,
+          "notable_features": ["handcrafted AMG V8", "AMG side exhaust", "three locking differentials retained"],
+          "pros": ["absurd performance for a brick", "huge presence and status", "still genuinely off-road capable"],
+          "cons": ["extremely thirsty", "very expensive", "firm, trucky ride"],
+          "confidence": "high"
+        },
+        {
+          "trim": "G 580 with EQ Technology",
+          "price_cad": 207200,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Quad electric motors (one per wheel)",
+            "hp": 579,
+            "torque_lbft": 859,
+            "drivetrain": "AWD",
+            "transmission": "single-speed (2-speed low range)",
+            "fuel_l100_comb": null,
+            "ev_range_km": 385,
+            "battery_kwh": 116
+          },
+          "perf": { "zero_100_s": 4.7, "top_speed_kmh": 180 },
+          "seats": 5,
+          "notable_features": ["four individual wheel motors", "G-Turn (tank-turn) and G-Steering", "low-range crawl mode for off-road"],
+          "pros": ["instant electric torque", "genuine off-road ability", "unique party tricks (tank turn)"],
+          "cons": ["heavy", "modest range for the price", "very expensive"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "EQB",
+      "bodyStyle": "SUV",
+      "segment": "Subcompact luxury electric SUV (3-row available)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "EQB 300 4MATIC",
+          "price_cad": 64000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 225,
+            "torque_lbft": 288,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 370,
+            "battery_kwh": 70.5
+          },
+          "perf": { "zero_100_s": 8.0, "top_speed_kmh": 160 },
+          "seats": 7,
+          "notable_features": ["available third-row seating (up to 7)", "boxy practical EV body", "MBUX infotainment"],
+          "pros": ["rare 7-seat option in a compact EV", "practical, upright cabin", "standard AWD"],
+          "cons": ["modest range", "slow charging vs newer EVs", "tight third row"],
+          "confidence": "med"
+        },
+        {
+          "trim": "EQB 350 4MATIC",
+          "price_cad": 70000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 288,
+            "torque_lbft": 384,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 370,
+            "battery_kwh": 70.5
+          },
+          "perf": { "zero_100_s": 6.2, "top_speed_kmh": 160 },
+          "seats": 7,
+          "notable_features": ["more powerful dual-motor setup", "available third row", "MBUX infotainment"],
+          "pros": ["quicker acceleration", "practical family EV", "optional 7 seats"],
+          "cons": ["modest range", "slower charging", "pricey for size"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "EQE Sedan",
+      "bodyStyle": "Sedan",
+      "segment": "Midsize luxury electric sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "EQE 320+",
+          "price_cad": 87650,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Single electric motor (rear)",
+            "hp": 315,
+            "torque_lbft": 417,
+            "drivetrain": "RWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 495,
+            "battery_kwh": 96
+          },
+          "perf": { "zero_100_s": 6.3, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["available MBUX Hyperscreen", "aerodynamic 'cab-forward' EV design", "rear-wheel drive for max range"],
+          "pros": ["long range", "very quiet and comfortable", "tech-rich cabin"],
+          "cons": ["polarizing rounded styling", "tight headroom from roofline", "modest charging speed vs rivals"],
+          "confidence": "high"
+        },
+        {
+          "trim": "EQE 320 4MATIC",
+          "price_cad": 90650,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 315,
+            "torque_lbft": 564,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 430,
+            "battery_kwh": 96
+          },
+          "perf": { "zero_100_s": 6.0, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["dual-motor AWD", "available Hyperscreen", "air suspension available"],
+          "pros": ["all-weather traction", "refined, quiet ride", "good range"],
+          "cons": ["shorter range than RWD", "polarizing styling", "tight rear headroom"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG EQE 53 4MATIC+",
+          "price_cad": 124000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors (AMG)",
+            "hp": 617,
+            "torque_lbft": 701,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 370,
+            "battery_kwh": 90.6
+          },
+          "perf": { "zero_100_s": 3.2, "top_speed_kmh": 240 },
+          "seats": 5,
+          "notable_features": ["AMG Dynamic Plus boost (up to ~677 hp)", "AMG Sound Experience", "rear-axle steering"],
+          "pros": ["explosive acceleration", "engaging AMG dynamics", "luxury EV refinement"],
+          "cons": ["reduced range under hard use", "heavy", "expensive"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "EQE SUV",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury electric SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "EQE 320+",
+          "price_cad": 95900,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Single electric motor (rear)",
+            "hp": 315,
+            "torque_lbft": 417,
+            "drivetrain": "RWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 460,
+            "battery_kwh": 96
+          },
+          "perf": { "zero_100_s": 6.3, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["available MBUX Hyperscreen", "spacious EV SUV packaging", "rear-wheel drive for range"],
+          "pros": ["roomy, quiet cabin", "good range", "comfortable ride"],
+          "cons": ["pricey", "modest charging speed", "no third-row option"],
+          "confidence": "med"
+        },
+        {
+          "trim": "EQE 320 4MATIC",
+          "price_cad": 98936,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 315,
+            "torque_lbft": 564,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 425,
+            "battery_kwh": 96
+          },
+          "perf": { "zero_100_s": 6.2, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["dual-motor AWD", "available Hyperscreen", "air suspension available"],
+          "pros": ["all-weather grip", "quiet and comfortable", "good real-world range"],
+          "cons": ["shorter range than RWD", "expensive", "moderate charge speed"],
+          "confidence": "med"
+        },
+        {
+          "trim": "EQE 500 4MATIC",
+          "price_cad": 109900,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 402,
+            "torque_lbft": 633,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 425,
+            "battery_kwh": 96
+          },
+          "perf": { "zero_100_s": 4.6, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["more powerful dual-motor setup", "available Hyperscreen", "air suspension with rear-axle steering"],
+          "pros": ["strong acceleration", "refined luxury EV", "all-weather traction"],
+          "cons": ["pricey", "range trails some rivals", "heavy"],
+          "confidence": "med"
+        },
+        {
+          "trim": "AMG EQE 53 4MATIC+ SUV",
+          "price_cad": 143057,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors (AMG)",
+            "hp": 617,
+            "torque_lbft": 701,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 370,
+            "battery_kwh": 90.6
+          },
+          "perf": { "zero_100_s": 3.7, "top_speed_kmh": 240 },
+          "seats": 5,
+          "notable_features": ["AMG Dynamic Plus boost", "AMG Sound Experience", "rear-axle steering and air suspension"],
+          "pros": ["very quick for an SUV", "engaging AMG tuning", "luxury and tech"],
+          "cons": ["reduced range under spirited driving", "heavy", "very expensive"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "EQS Sedan",
+      "bodyStyle": "Sedan",
+      "segment": "Full-size flagship electric sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "EQS 450 4MATIC",
+          "price_cad": 133500,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 355,
+            "torque_lbft": 590,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 590,
+            "battery_kwh": 118
+          },
+          "perf": { "zero_100_s": 5.7, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["available 56-inch MBUX Hyperscreen", "rear-axle steering up to 10 degrees", "class-leading aerodynamics"],
+          "pros": ["very long range", "supremely quiet and comfortable", "agile for its size with rear steer"],
+          "cons": ["polarizing one-bow styling", "huge and heavy", "expensive"],
+          "confidence": "high"
+        },
+        {
+          "trim": "EQS 580 4MATIC",
+          "price_cad": 158500,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 536,
+            "torque_lbft": 633,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 580,
+            "battery_kwh": 118
+          },
+          "perf": { "zero_100_s": 4.4, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["dual-motor with more power", "Hyperscreen available", "rear-axle steering"],
+          "pros": ["effortless acceleration", "long range", "flagship comfort and quiet"],
+          "cons": ["very expensive", "large footprint", "polarizing styling"],
+          "confidence": "high"
+        },
+        {
+          "trim": "AMG EQS 4MATIC+",
+          "price_cad": 185000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors (AMG)",
+            "hp": 649,
+            "torque_lbft": 633,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 450,
+            "battery_kwh": 120
+          },
+          "perf": { "zero_100_s": 3.8, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["AMG Dynamic Plus boost up to ~751 hp", "AMG Sound Experience", "AMG-specific air suspension tuning"],
+          "pros": ["blistering acceleration", "luxury and performance", "rear-axle steering agility"],
+          "cons": ["reduced range under hard use", "very expensive", "very heavy"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "EQS SUV",
+      "bodyStyle": "SUV",
+      "segment": "Full-size flagship electric SUV (3-row available)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "EQS 450 4MATIC",
+          "price_cad": 136950,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 355,
+            "torque_lbft": 590,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 530,
+            "battery_kwh": 118
+          },
+          "perf": { "zero_100_s": 6.1, "top_speed_kmh": 210 },
+          "seats": 7,
+          "notable_features": ["optional third-row seating (up to 7)", "available MBUX Hyperscreen", "rear-axle steering"],
+          "pros": ["spacious luxury EV with optional 7 seats", "long range", "quiet and comfortable"],
+          "cons": ["large and heavy", "expensive", "third row tight"],
+          "confidence": "high"
+        },
+        {
+          "trim": "EQS 580 4MATIC",
+          "price_cad": 158500,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 536,
+            "torque_lbft": 633,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 510,
+            "battery_kwh": 118
+          },
+          "perf": { "zero_100_s": 4.7, "top_speed_kmh": 210 },
+          "seats": 7,
+          "notable_features": ["more powerful dual-motor setup", "optional third row", "rear-axle steering and air suspension"],
+          "pros": ["strong acceleration", "roomy three-row option", "flagship comfort"],
+          "cons": ["very expensive", "large and heavy", "range trails sedan"],
+          "confidence": "med"
+        },
+        {
+          "trim": "Mercedes-Maybach EQS 680 SUV",
+          "price_cad": 230000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors (Maybach)",
+            "hp": 649,
+            "torque_lbft": 700,
+            "drivetrain": "AWD",
+            "transmission": "single-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 486,
+            "battery_kwh": 118
+          },
+          "perf": { "zero_100_s": 4.4, "top_speed_kmh": 210 },
+          "seats": 4,
+          "notable_features": ["Maybach executive rear lounge seating", "two-tone paint and Maybach styling", "active noise cancellation"],
+          "pros": ["ultra-luxurious electric flagship", "very quiet and smooth", "exclusive Maybach branding"],
+          "cons": ["extremely expensive", "heavy", "range modest for the price"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "CLA",
+      "bodyStyle": "Sedan",
+      "segment": "Compact luxury electric sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "CLA 250+",
+          "price_cad": 55000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Single electric motor (rear)",
+            "hp": 268,
+            "torque_lbft": 247,
+            "drivetrain": "RWD",
+            "transmission": "2-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 600,
+            "battery_kwh": 85
+          },
+          "perf": { "zero_100_s": 6.6, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["new 800V electric architecture", "two-speed transmission for efficiency", "MBUX Superscreen available"],
+          "pros": ["very long range for a compact EV", "fast 800V charging", "efficient new platform"],
+          "cons": ["Canadian availability not until late 2026", "compact rear-seat space", "new model, unproven"],
+          "confidence": "low"
+        },
+        {
+          "trim": "CLA 350 4MATIC",
+          "price_cad": 62000,
+          "freight_incl": false,
+          "powertrain": {
+            "type": "ev",
+            "engine": "Dual electric motors",
+            "hp": 349,
+            "torque_lbft": 380,
+            "drivetrain": "AWD",
+            "transmission": "2-speed",
+            "fuel_l100_comb": null,
+            "ev_range_km": 550,
+            "battery_kwh": 85
+          },
+          "perf": { "zero_100_s": 4.9, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["dual-motor AWD on 800V platform", "two-speed transmission", "fast DC charging"],
+          "pros": ["quick AWD performance", "long range", "modern 800V charging"],
+          "cons": ["provisional Canadian launch late 2026", "tight rear seat", "premium price for compact"],
+          "confidence": "low"
+        }
+      ]
+    }
+  ],
+  "notes": "Prices are CAD MSRP and do NOT include freight/PDI (~$2,500-5,050 depending on line). NOT sold in Canada for 2026 (excluded from trims): A-Class (discontinued), gasoline CLA (discontinued; only the new electric CLA is offered, provisionally late 2026), CLS (discontinued), AMG E 63 (no such variant this generation), S 580e plug-in hybrid (US-only), AMG GLA 45 S (dropped). The electric CLA is provisional (late-2026 Canadian availability, confidence low) and several EQB/EQE/EQS/Maybach EV range and spec figures are estimates pending final Canadian NRCan data (confidence med). ICE/PHEV combined fuel figures are reasonable estimates where exact NRCan numbers were not confirmed."
+}

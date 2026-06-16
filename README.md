@@ -1,5 +1,13 @@
 # Lexus Trim Matcher — Sales Companion
 
+> **Two tools in this repo:**
+> 1. **Lexus Trim Matcher** (`app/`) — the Lexus-only sales companion documented below.
+> 2. **2026 Luxury Cross-Reference** (`compare/`) — a cross-brand decision tool that ranks
+>    every 2026 **Lexus · BMW · Mercedes-Benz · Audi** trim (Canada, **250 trims**) by
+>    reliability, running cost, value, luxury, efficiency and performance, with a default
+>    **reliability/running-cost lean that favours Lexus** and live, user-adjustable weights.
+>    See [`compare/README.md`](compare/README.md).
+
 An internal tool for Lexus Canada sales executives that **cross-matches a client's
 priorities against every current-lineup trim**, recommends the right package, and
 surfaces upsell opportunities — plus a full "everything to know" vehicle encyclopedia
