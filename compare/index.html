@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>2026 Luxury Cross-Reference — Lexus · BMW · Mercedes-Benz · Audi</title>
+<meta name="description" content="Cross-reference every 2026 Lexus, BMW, Mercedes-Benz and Audi trim (Canada) by reliability, ownership cost, performance, value and more." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="top">
+  <div class="brandmark">
+    <span class="vl">VINCERE</span><span class="lx">·LEXUS</span>
+    <span class="tag">2026 Luxury Cross-Reference</span>
+  </div>
+  <div class="topmeta">
+    <span id="trimCount">—</span> trims · 4 brands · Canada (CAD)
+    <button id="aboutBtn" class="ghost">How scoring works</button>
+  </div>
+</header>
+
+<section class="brandstrip" id="brandStrip"><!-- brand summary cards --></section>
+
+<main>
+  <aside class="controls">
+    <div class="panel">
+      <h3>Priorities</h3>
+      <p class="hint">Drag to weight what matters. The ranking & composite score update live.</p>
+      <div class="presets" id="presets"></div>
+      <div id="sliders"></div>
+      <button id="resetWeights" class="ghost small">Reset to reliability-first</button>
+    </div>
+
+    <div class="panel">
+      <h3>Filters</h3>
+      <div class="filtergroup"><label>Brand</label><div id="fBrand" class="chips"></div></div>
+      <div class="filtergroup"><label>Body style</label><div id="fBody" class="chips"></div></div>
+      <div class="filtergroup"><label>Powertrain</label><div id="fPt" class="chips"></div></div>
+      <div class="filtergroup">
+        <label>Max price (CAD): <strong id="priceLabel">any</strong></label>
+        <input type="range" id="fPrice" min="30000" max="300000" step="5000" value="300000" />
+      </div>
+      <div class="filtergroup">
+        <label>Min seats</label>
+        <select id="fSeats"><option value="0">any</option><option value="2">2+</option><option value="4">4+</option><option value="5">5+</option><option value="6">6+</option><option value="7">7+</option></select>
+      </div>
+      <div class="filtergroup">
+        <label>Search</label>
+        <input type="text" id="fSearch" placeholder="model or trim…" />
+      </div>
+      <button id="clearFilters" class="ghost small">Clear filters</button>
+    </div>
+  </aside>
+
+  <section class="results">
+    <div class="resbar">
+      <div class="sortwrap">
+        <span id="resCount">—</span>
+        <label>Sort: <select id="sortBy">
+          <option value="composite">Best overall (your weights)</option>
+          <option value="reliability">Reliability</option>
+          <option value="ownership">Lowest running cost</option>
+          <option value="performance">Performance</option>
+          <option value="value">Value</option>
+          <option value="efficiency">Efficiency</option>
+          <option value="priceCad">Price (low→high)</option>
+          <option value="priceDesc">Price (high→low)</option>
+        </select></label>
+      </div>
+      <div class="legend"><span class="dot lexus"></span>Lexus <span class="dot bmw"></span>BMW <span class="dot mb"></span>Mercedes <span class="dot audi"></span>Audi</div>
+    </div>
+    <div id="cards" class="cards"></div>
+  </section>
+</main>
+
+<div id="comparebar" class="comparebar hidden">
+  <span id="cmpLabel">Compare (0)</span>
+  <div id="cmpChips" class="cmpchips"></div>
+  <button id="openCompare" class="primary">Compare side-by-side</button>
+  <button id="clearCompare" class="ghost small">clear</button>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modalinner" id="modalInner"></div></div>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

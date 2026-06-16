@@ -1,0 +1,902 @@
+{
+  "brand": "BMW",
+  "market": "Canada",
+  "year": 2026,
+  "currency": "CAD",
+  "brandReliability": {
+    "score_100": 55,
+    "rank_note": "Mid-pack: J.D. Power 2025 VDS ~189 PP100 (~9th), better than Mercedes/Audi but well behind Lexus (~140); CR 2025 overall brand strong on satisfaction but middling on predicted reliability. Most reliable of the German big three yet below Japanese leaders.",
+    "predicted_owner_cost_note": "Above-average repair frequency plus high parts/labour costs make long-term ownership expensive (RepairPal ~US$968/yr vs ~US$652 industry avg). Common pain points: electronics, cooling system, gaskets/seals. Budget for elevated out-of-warranty bills.",
+    "sources": [
+      "https://www.jdpower.com/cars/ratings/dependability/2025",
+      "https://www.consumerreports.org/cars/car-reliability-owner-satisfaction/who-makes-the-most-reliable-cars-a7824554938/",
+      "https://www.bmwblog.com/2025/06/29/2025-jd-power-initial-quality-study-bmw-below-average/",
+      "https://repairpal.com/bmw"
+    ]
+  },
+  "warranty": {
+    "comprehensive": "4 yr / 80,000 km",
+    "powertrain": "4 yr / 80,000 km",
+    "corrosion": "12 yr / unlimited km",
+    "roadside": "4 yr / unlimited km",
+    "ev_battery": "8 yr / 160,000 km",
+    "notes": "BMW Canada uses a single 4 yr / 80,000 km bumper-to-bumper warranty with no separate longer powertrain term (a weakness vs mainstream brands). Emissions components (ECM, catalytic converter, OBD-II) carry a separate 8 yr / 130,000 km warranty. Coverage can be extended via purchased plans up to 6 yr / 200,000 km."
+  },
+  "maintenance": {
+    "complimentary_plan": "3 yr / 60,000 km BMW Ultimate Care (no-charge scheduled maintenance; 3 yr / unlimited km for BEVs). Covers oil/filter, fluids, cabin/engine air filters, spark plugs, wiper inserts, brake fluid per Condition Based Service.",
+    "est_5yr_service_cad": 8000,
+    "est_annual_service_cad": 1500,
+    "notes": "Free plan is 3 yr (BMW cut it from the older 4 yr term), so out-of-pocket starts in year 4. Realistic post-free scheduled-maintenance 5-yr estimate ~$7,000-$9,500 at a BMW dealer; all-in with brakes (~$1,800-$3,000) and a set of tires (~$1,800-$2,800) climbs toward $11,000-$14,000. Wear items (brakes, tires, alignment) always owner-paid. BMW is among the costliest brands to maintain after warranty."
+  },
+  "models": [
+    {
+      "model": "2 Series Coupe",
+      "bodyStyle": "Coupe",
+      "segment": "Subcompact luxury coupe",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "230i xDrive",
+          "price_cad": 48500,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 255, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 8.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["iDrive 8.5 curved display", "M Sport package available", "wireless CarPlay/Android Auto"],
+          "pros": ["punchy turbo four", "balanced RWD-based chassis", "compact and quick"],
+          "cons": ["tight rear seat", "firm ride", "options get pricey"],
+          "confidence": "med"
+        },
+        {
+          "trim": "M240i xDrive",
+          "price_cad": 58500,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "3.0L turbo I6", "hp": 382, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.3, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["adaptive M suspension available", "M Sport differential", "Harman Kardon audio"],
+          "pros": ["strong straight-six", "rapid acceleration", "GT-like refinement"],
+          "cons": ["steering numb vs M2", "snug rear seat", "no manual"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "2 Series Gran Coupe",
+      "bodyStyle": "Sedan",
+      "segment": "Subcompact luxury sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "228i xDrive",
+          "price_cad": 44000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 241, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd dual-clutch", "fuel_l100_comb": 8.0, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.1, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["iDrive 9 curved display", "FWD-based platform", "ambient interaction bar"],
+          "pros": ["stylish", "value entry to the brand", "frugal"],
+          "cons": ["FWD-based, not classic RWD", "DCT low-speed manners", "tight rear headroom"],
+          "confidence": "low"
+        },
+        {
+          "trim": "M235i xDrive",
+          "price_cad": 52000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 312, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd dual-clutch", "fuel_l100_comb": 8.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.9, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["M Sport suspension", "adaptive dampers available", "sport exhaust"],
+          "pros": ["genuinely quick", "sharp looks", "well equipped"],
+          "cons": ["four-cylinder only", "FWD-based dynamics", "pricey for class"],
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "model": "M2",
+      "bodyStyle": "Coupe",
+      "segment": "Compact M performance coupe",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "M2 Coupe",
+          "price_cad": 76000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "3.0L twin-turbo I6 (S58)", "hp": 473, "torque_lbft": 443, "drivetrain": "RWD", "transmission": "6-spd manual or 8-spd auto", "fuel_l100_comb": 11.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.0, "top_speed_kmh": 285 },
+          "seats": 4,
+          "notable_features": ["6-speed manual available", "carbon bucket seats optional", "Active M differential"],
+          "pros": ["one of the last manual Ms", "huge grip and poise", "thrilling to drive"],
+          "cons": ["firm ride", "boxy looks divisive", "options costly"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "3 Series",
+      "bodyStyle": "Sedan",
+      "segment": "Compact luxury sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "330i xDrive",
+          "price_cad": 54000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 255, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 8.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["iDrive 8.5 curved display", "LED headlights", "M Sport package available"],
+          "pros": ["benchmark handling/ride balance", "refined four-cylinder", "roomy cabin"],
+          "cons": ["divisive curved-screen UX", "road noise", "options add up"],
+          "confidence": "med"
+        },
+        {
+          "trim": "M340i xDrive",
+          "price_cad": 66000,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 + 48V mild hybrid", "hp": 386, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.0, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.4, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["adaptive M suspension", "M Sport differential", "sport exhaust"],
+          "pros": ["superb straight-six", "near-M pace", "daily usable"],
+          "cons": ["pricey", "firm M Sport ride", "no manual"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "M3",
+      "bodyStyle": "Sedan",
+      "segment": "Compact M performance sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "M3 Competition xDrive",
+          "price_cad": 104000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "3.0L twin-turbo I6 (S58)", "hp": 523, "torque_lbft": 479, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 11.0, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.5, "top_speed_kmh": 290 },
+          "seats": 5,
+          "notable_features": ["M xDrive with RWD mode", "carbon fibre roof", "adaptive M suspension"],
+          "pros": ["savage pace", "brilliant chassis", "AWD all-weather traction"],
+          "cons": ["very firm ride", "thirsty", "polarizing grille"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "4 Series Coupe",
+      "bodyStyle": "Coupe",
+      "segment": "Compact luxury coupe",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "430i xDrive Coupe",
+          "price_cad": 56000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 255, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 8.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.5, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["iDrive 8.5 curved display", "M Sport package available", "LED headlights"],
+          "pros": ["elegant comfortable GT", "efficient four-cylinder", "composed ride"],
+          "cons": ["large grille divisive", "snug rear seat", "options pricey"],
+          "confidence": "med"
+        },
+        {
+          "trim": "M440i xDrive Coupe",
+          "price_cad": 66500,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 + 48V mild hybrid", "hp": 382, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.4, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["adaptive M suspension available", "M Sport differential", "sport exhaust"],
+          "pros": ["smooth strong straight-six", "refined GT", "quick"],
+          "cons": ["pricey", "heavy", "grille looks polarizing"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "4 Series Gran Coupe",
+      "bodyStyle": "Hatchback",
+      "segment": "Compact luxury liftback",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "430i xDrive Gran Coupe",
+          "price_cad": 58000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 255, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 8.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["practical liftback tailgate", "curved display", "M Sport available"],
+          "pros": ["practical liftback", "stylish", "AWD traction"],
+          "cons": ["heavier than coupe", "options pricey", "firm ride"],
+          "confidence": "med"
+        },
+        {
+          "trim": "M440i xDrive Gran Coupe",
+          "price_cad": 68500,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 + 48V mild hybrid", "hp": 382, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.3, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.5, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["adaptive M suspension available", "M Sport differential", "liftback practicality"],
+          "pros": ["straight-six punch plus practicality", "refined", "quick"],
+          "cons": ["price", "weight", "divisive nose"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "4 Series Convertible",
+      "bodyStyle": "Convertible",
+      "segment": "Compact luxury convertible",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "430i xDrive Convertible",
+          "price_cad": 64000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 255, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 8.8, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.2, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["power soft-top", "year-round AWD", "M Sport available"],
+          "pros": ["refined soft-top", "all-weather AWD", "stylish"],
+          "cons": ["heavier and slower", "pricey", "wind/road noise"],
+          "confidence": "med"
+        },
+        {
+          "trim": "M440i xDrive Convertible",
+          "price_cad": 74000,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 + 48V mild hybrid", "hp": 382, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.8, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.9, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["power soft-top", "adaptive M suspension available", "M Sport differential"],
+          "pros": ["muscular straight-six", "open-air GT", "quick"],
+          "cons": ["heaviest 4 Series", "expensive", "some cowl shake on rough roads"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "M4",
+      "bodyStyle": "Coupe",
+      "segment": "Compact M performance coupe/convertible",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "M4 Competition xDrive Coupe",
+          "price_cad": 104000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "3.0L twin-turbo I6 (S58)", "hp": 523, "torque_lbft": 479, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 11.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.5, "top_speed_kmh": 290 },
+          "seats": 4,
+          "notable_features": ["M xDrive with RWD mode", "carbon fibre roof", "adaptive M suspension"],
+          "pros": ["ferocious pace", "track-capable", "AWD grip"],
+          "cons": ["very firm ride", "thirsty", "polarizing grille"],
+          "confidence": "med"
+        },
+        {
+          "trim": "M4 Competition xDrive Convertible",
+          "price_cad": 115000,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "3.0L twin-turbo I6 (S58)", "hp": 523, "torque_lbft": 479, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 11.6, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.7, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["power soft-top", "M xDrive with RWD mode", "adaptive M suspension"],
+          "pros": ["supercar pace open-air", "AWD traction", "everyday usable"],
+          "cons": ["heaviest M4", "expensive", "soft-top cuts trunk space"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "5 Series",
+      "bodyStyle": "Sedan",
+      "segment": "Midsize luxury sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "530i xDrive",
+          "price_cad": 72900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 + 48V mild hybrid", "hp": 255, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 7.9, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.1, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["12.3in + 14.9in curved display (iDrive 8.5)", "panoramic roof", "driver-assistance suite"],
+          "pros": ["value entry", "efficient", "refined ride"],
+          "cons": ["only adequate power", "four-cylinder lacks character", "screen-heavy cabin"],
+          "confidence": "high"
+        },
+        {
+          "trim": "540i xDrive Legacy Edition",
+          "price_cad": 94500,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 + 48V mild hybrid", "hp": 375, "torque_lbft": 398, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 8.9, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.7, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["limited 151-unit Canada run", "straight-six send-off edition", "unique trim details"],
+          "pros": ["smooth potent straight-six", "exclusive limited edition", "quick"],
+          "cons": ["limited availability only", "single fixed price", "standard 540i not offered"],
+          "confidence": "high"
+        },
+        {
+          "trim": "550e xDrive",
+          "price_cad": 85900,
+          "freight_incl": false,
+          "powertrain": { "type": "phev", "engine": "3.0L turbo I6 PHEV + e-motor", "hp": 483, "torque_lbft": 516, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.5, "ev_range_km": 55, "battery_kwh": 22.1 },
+          "perf": { "zero_100_s": 4.3, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["~55 km electric range", "effective M550i replacement", "curved display"],
+          "pros": ["genuinely fast", "real EV commute range", "smooth straight-six"],
+          "cons": ["smaller trunk (~520 L)", "heavy", "pricey"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "i5",
+      "bodyStyle": "Sedan",
+      "segment": "Midsize luxury EV sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "i5 xDrive40",
+          "price_cad": 83700,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric", "hp": 389, "torque_lbft": 435, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 428, "battery_kwh": 81.2 },
+          "perf": { "zero_100_s": 5.4, "top_speed_kmh": 230 },
+          "seats": 5,
+          "notable_features": ["up to ~205 kW DC fast charge", "curved display iDrive 8.5", "AWD traction"],
+          "pros": ["quiet and refined", "all-wheel-drive traction", "excellent tech"],
+          "cons": ["heavy (~2,300 kg)", "range trails rivals", "options pricey"],
+          "confidence": "high"
+        },
+        {
+          "trim": "i5 M60 xDrive",
+          "price_cad": 95700,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric", "hp": 593, "torque_lbft": 605, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 428, "battery_kwh": 84.3 },
+          "perf": { "zero_100_s": 3.8, "top_speed_kmh": 230 },
+          "seats": 5,
+          "notable_features": ["adaptive M suspension", "20in staggered M wheels", "IconicSounds Electric"],
+          "pros": ["very fast", "M-tuned chassis", "luxurious cabin"],
+          "cons": ["range drops under hard use", "very heavy (~2,370 kg)", "pricey"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "M5",
+      "bodyStyle": "Sedan",
+      "segment": "Midsize M performance PHEV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "M5 Sedan",
+          "price_cad": 139900,
+          "freight_incl": false,
+          "powertrain": { "type": "phev", "engine": "4.4L twin-turbo V8 (S68) + e-motor", "hp": 717, "torque_lbft": 738, "drivetrain": "AWD", "transmission": "8-spd M Steptronic", "fuel_l100_comb": 16.4, "ev_range_km": 47, "battery_kwh": 22.1 },
+          "perf": { "zero_100_s": 3.4, "top_speed_kmh": 305 },
+          "seats": 5,
+          "notable_features": ["M xDrive with 2WD mode", "~47 km EV range", "Active M differential"],
+          "pros": ["717 hp with all-weather traction", "short EV commute capability", "huge real-world pace"],
+          "cons": ["very heavy (~2,400+ kg) dulls agility", "modest EV range", "high price"],
+          "confidence": "high"
+        },
+        {
+          "trim": "M5 Touring",
+          "price_cad": 144900,
+          "freight_incl": false,
+          "powertrain": { "type": "phev", "engine": "4.4L twin-turbo V8 (S68) + e-motor", "hp": 717, "torque_lbft": 738, "drivetrain": "AWD", "transmission": "8-spd M Steptronic", "fuel_l100_comb": 16.8, "ev_range_km": 40, "battery_kwh": 22.1 },
+          "perf": { "zero_100_s": 3.6, "top_speed_kmh": 305 },
+          "seats": 5,
+          "notable_features": ["first-ever M5 wagon in North America", "~500 L / ~1,630 L cargo", "M xDrive"],
+          "pros": ["supercar pace with wagon space", "all-weather traction", "rare body style"],
+          "cons": ["very heavy", "modest EV range", "high price"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "7 Series",
+      "bodyStyle": "Sedan",
+      "segment": "Full-size luxury sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "750e xDrive",
+          "price_cad": 144900,
+          "freight_incl": false,
+          "powertrain": { "type": "phev", "engine": "3.0L turbo I6 PHEV + e-motor", "hp": 483, "torque_lbft": 516, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.8, "ev_range_km": 56, "battery_kwh": 22.1 },
+          "perf": { "zero_100_s": 4.8, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["~56 km EV range", "lowest-priced combustion 7 in Canada", "Executive Lounge options"],
+          "pros": ["serene plug-in luxury", "real EV range", "smooth straight-six"],
+          "cons": ["heavy", "expensive", "740i gas not offered in Canada"],
+          "confidence": "high"
+        },
+        {
+          "trim": "760i xDrive",
+          "price_cad": 153900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.4L twin-turbo V8 + 48V mild hybrid", "hp": 536, "torque_lbft": 553, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 11.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.2, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["twin-turbo V8", "Executive Lounge seating available", "4-wheel steering"],
+          "pros": ["effortless V8", "quickest combustion 7", "rich standard equipment"],
+          "cons": ["thirsty, premium fuel", "expensive", "numb steering"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "i7",
+      "bodyStyle": "Sedan",
+      "segment": "Full-size luxury EV sedan",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "i7 xDrive60",
+          "price_cad": 153900,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric", "hp": 536, "torque_lbft": 549, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 500, "battery_kwh": 101.7 },
+          "perf": { "zero_100_s": 4.7, "top_speed_kmh": 240 },
+          "seats": 5,
+          "notable_features": ["optional 31in Theatre Screen", "Executive Lounge rear seat", "rear-wheel steering"],
+          "pros": ["whisper-quiet luxury", "lavish rear cabin", "strong tech"],
+          "cons": ["range drops when driven hard", "very heavy", "expensive options"],
+          "confidence": "high"
+        },
+        {
+          "trim": "i7 M70 xDrive",
+          "price_cad": 188900,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric", "hp": 650, "torque_lbft": 811, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 459, "battery_kwh": 101.7 },
+          "perf": { "zero_100_s": 3.7, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["650 hp dual-motor", "Executive Lounge rear seat", "adaptive air suspension"],
+          "pros": ["supercar pace with limo comfort", "lavish interior", "all-weather traction"],
+          "cons": ["range drops hard-driven", "very heavy (~2,710 kg)", "top-of-range price"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "8 Series",
+      "bodyStyle": "Coupe",
+      "segment": "Grand tourer (final year, production ends ~Apr 2026)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "840i xDrive",
+          "price_cad": 105000,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 (B58) + 48V mild hybrid", "hp": 335, "torque_lbft": 369, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 10.7, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.8, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["available as Coupe, Gran Coupe (5-seat), Convertible", "curved display", "adaptive suspension"],
+          "pros": ["smooth straight-six", "elegant GT styling", "comfortable cruiser"],
+          "cons": ["heavy", "final model year (ending)", "options expensive"],
+          "confidence": "med"
+        },
+        {
+          "trim": "M850i xDrive",
+          "price_cad": 122500,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.4L twin-turbo V8 (N63) + 48V mild hybrid", "hp": 523, "torque_lbft": 553, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 12.2, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.8, "top_speed_kmh": 250 },
+          "seats": 4,
+          "notable_features": ["available Coupe / Gran Coupe / Convertible", "adaptive M suspension", "M Sport differential and brakes"],
+          "pros": ["muscular V8", "rapid GT pace", "luxurious cabin"],
+          "cons": ["thirsty", "final model year (ending)", "Convertible priciest of the trio"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "Z4",
+      "bodyStyle": "Convertible",
+      "segment": "Two-seat roadster (final year, production ends ~Apr 2026)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "sDrive30i",
+          "price_cad": 70900,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 255, "torque_lbft": 295, "drivetrain": "RWD", "transmission": "8-spd auto", "fuel_l100_comb": 8.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.4, "top_speed_kmh": 250 },
+          "seats": 2,
+          "notable_features": ["power soft-top", "curved display", "sport seats"],
+          "pros": ["balanced rear-drive roadster", "refined four-cylinder", "open-air fun"],
+          "cons": ["only adequate power", "final model year (ending)", "limited cargo"],
+          "confidence": "high"
+        },
+        {
+          "trim": "M40i",
+          "price_cad": 85900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 (B58) + 48V mild hybrid", "hp": 382, "torque_lbft": 369, "drivetrain": "RWD", "transmission": "6-spd manual or 8-spd auto", "fuel_l100_comb": 9.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.0, "top_speed_kmh": 250 },
+          "seats": 2,
+          "notable_features": ["rare available 6-speed manual", "adaptive M suspension", "M Sport differential and brakes"],
+          "pros": ["strong straight-six", "available manual", "engaging roadster"],
+          "cons": ["pricey", "final model year (ending)", "firm ride"],
+          "confidence": "high"
+        },
+        {
+          "trim": "Final Edition",
+          "price_cad": 99900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 (B58) + 48V mild hybrid", "hp": 382, "torque_lbft": 369, "drivetrain": "RWD", "transmission": "6-spd manual or 8-spd auto", "fuel_l100_comb": 9.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.0, "top_speed_kmh": 250 },
+          "seats": 2,
+          "notable_features": ["limited send-off edition (Feb-Apr 2026)", "exclusive Frozen Black metallic paint", "commemorative sill badging"],
+          "pros": ["collectible send-off model", "manual available", "rich standard kit"],
+          "cons": ["high price premium", "limited availability", "Z4 line ending"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "X1",
+      "bodyStyle": "SUV",
+      "segment": "Subcompact luxury SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "xDrive28i",
+          "price_cad": 50900,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 241, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd dual-clutch", "fuel_l100_comb": 8.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.4, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["curved display (iDrive 9)", "standard AWD", "panoramic roof available"],
+          "pros": ["strong value entry point", "practical cargo and space", "refined ride"],
+          "cons": ["DCT jerky at low speed", "option packages add up fast", "firm M Sport ride"],
+          "confidence": "high"
+        },
+        {
+          "trim": "M35i xDrive",
+          "price_cad": 60900,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4 (high-output)", "hp": 312, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd dual-clutch", "fuel_l100_comb": 8.7, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.4, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["M Sport brakes and diff tuning", "sport exhaust", "adaptive suspension available"],
+          "pros": ["genuinely quick hot SUV", "engaging", "everyday usable"],
+          "cons": ["pricey for subcompact", "thrummy four-cylinder vs six-cyl rivals", "firm ride"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "X2",
+      "bodyStyle": "SUV",
+      "segment": "Subcompact luxury coupe-SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "xDrive28i",
+          "price_cad": 52900,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4", "hp": 241, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd dual-clutch", "fuel_l100_comb": 8.3, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.5, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["10.7in touchscreen iDrive 9", "wireless charging", "sloped coupe roofline"],
+          "pros": ["sportier styling than X1", "well equipped", "same strong powertrain"],
+          "cons": ["less rear headroom/cargo vs X1", "premium over X1 for the look", "DCT low-speed manners"],
+          "confidence": "high"
+        },
+        {
+          "trim": "M35i xDrive",
+          "price_cad": 62900,
+          "freight_incl": false,
+          "powertrain": { "type": "gas", "engine": "2.0L turbo I4 (high-output)", "hp": 312, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "7-spd dual-clutch", "fuel_l100_comb": 8.9, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.4, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["M Sport brakes and suspension", "sport exhaust", "adaptive dampers available"],
+          "pros": ["quickest subcompact BMW SUV", "distinctive looks", "engaging"],
+          "cons": ["coupe practicality compromise", "four-cylinder sound", "expensive"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "X3",
+      "bodyStyle": "SUV",
+      "segment": "Compact luxury SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "30 xDrive",
+          "price_cad": 57900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "2.0L turbo I4 + 48V mild hybrid", "hp": 255, "torque_lbft": 295, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 8.1, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 6.2, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["new G45 generation", "curved display iDrive 9", "interaction bar ambient lighting"],
+          "pros": ["efficient and refined", "roomy and agile", "strong value"],
+          "cons": ["touchscreen-heavy controls", "some cheaper-feeling materials", "base engine adequate not thrilling"],
+          "confidence": "high"
+        },
+        {
+          "trim": "M50 xDrive",
+          "price_cad": 77900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 (B58) + 48V mild hybrid", "hp": 393, "torque_lbft": 428, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.4, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.6, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["M Sport differential", "adaptive M suspension", "M Sport brakes and exhaust"],
+          "pros": ["excellent straight-six", "genuinely fast", "well-balanced chassis"],
+          "cons": ["pricey", "thirstier", "touchscreen-heavy UX"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "iX3",
+      "bodyStyle": "SUV",
+      "segment": "Compact luxury EV SUV (Neue Klasse; arrives Fall 2026, badged 2027)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "50 xDrive",
+          "price_cad": 75900,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric (6th-gen eDrive, 800V)", "hp": 463, "torque_lbft": 476, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 698, "battery_kwh": 108.7 },
+          "perf": { "zero_100_s": 4.9, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["BMW Panoramic iDrive pillar-to-pillar display", "up to 400 kW DC charging (10-80% ~21 min)", "800V architecture"],
+          "pros": ["class-leading ~698 km range", "very fast DC charging", "cutting-edge cabin tech"],
+          "cons": ["not arriving until Fall 2026", "single trim at launch", "new platform unproven reliability"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "i4",
+      "bodyStyle": "Sedan",
+      "segment": "Compact luxury EV gran coupe",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "eDrive",
+          "price_cad": 64990,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Single-motor electric", "hp": 335, "torque_lbft": 317, "drivetrain": "RWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 536, "battery_kwh": 81.2 },
+          "perf": { "zero_100_s": 5.7, "top_speed_kmh": 190 },
+          "seats": 5,
+          "notable_features": ["liftback practicality", "curved display iDrive 8.5", "up to ~205 kW DC charge"],
+          "pros": ["longest i4 range", "engaging rear-drive", "good value EV"],
+          "cons": ["RWD traction in winter", "firm with M Sport", "rear headroom snug"],
+          "confidence": "med"
+        },
+        {
+          "trim": "xDrive40",
+          "price_cad": 69900,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric", "hp": 396, "torque_lbft": 443, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 462, "battery_kwh": 81.2 },
+          "perf": { "zero_100_s": 5.0, "top_speed_kmh": 190 },
+          "seats": 5,
+          "notable_features": ["dual-motor AWD", "liftback practicality", "curved display"],
+          "pros": ["all-weather traction", "quick", "refined"],
+          "cons": ["range trails RWD model", "firm M Sport ride", "pricey options"],
+          "confidence": "med"
+        },
+        {
+          "trim": "M60 xDrive",
+          "price_cad": 82900,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric", "hp": 593, "torque_lbft": 811, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 447, "battery_kwh": 81.2 },
+          "perf": { "zero_100_s": 3.9, "top_speed_kmh": 225 },
+          "seats": 5,
+          "notable_features": ["593 hp dual-motor (updated 2026)", "adaptive M suspension", "M Sport brakes"],
+          "pros": ["ferocious instant pace", "M-tuned chassis", "everyday usable EV"],
+          "cons": ["range drops under hard use", "heavy", "expensive"],
+          "confidence": "med"
+        }
+      ]
+    },
+    {
+      "model": "iX",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury EV SUV (final year in Canada, ends end of 2026)",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "xDrive45",
+          "price_cad": 92133,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric", "hp": 402, "torque_lbft": 442, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 502, "battery_kwh": 94.8 },
+          "perf": { "zero_100_s": 5.1, "top_speed_kmh": 200 },
+          "seats": 5,
+          "notable_features": ["~100 kWh gross battery", "curved display iDrive 8.5", "panoramic glass roof"],
+          "pros": ["quiet refined luxury", "strong range", "spacious cabin"],
+          "cons": ["polarizing exterior styling", "very heavy", "iX line ending in Canada"],
+          "confidence": "high"
+        },
+        {
+          "trim": "xDrive60",
+          "price_cad": 98133,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric", "hp": 536, "torque_lbft": 564, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 586, "battery_kwh": 109.9 },
+          "perf": { "zero_100_s": 4.5, "top_speed_kmh": 200 },
+          "seats": 5,
+          "notable_features": ["113.4 kWh battery", "longest iX range", "adaptive air suspension"],
+          "pros": ["excellent range", "effortless power", "refined"],
+          "cons": ["expensive", "very heavy", "iX line ending in Canada"],
+          "confidence": "high"
+        },
+        {
+          "trim": "M70 xDrive",
+          "price_cad": 138679,
+          "freight_incl": false,
+          "powertrain": { "type": "ev", "engine": "Dual-motor electric", "hp": 650, "torque_lbft": 811, "drivetrain": "AWD", "transmission": "single-speed", "fuel_l100_comb": null, "ev_range_km": 488, "battery_kwh": 108.9 },
+          "perf": { "zero_100_s": 3.8, "top_speed_kmh": 250 },
+          "seats": 5,
+          "notable_features": ["650 hp dual-motor", "M Sport chassis tuning", "air suspension"],
+          "pros": ["supercar pace", "huge torque", "luxurious"],
+          "cons": ["range drops hard-driven", "very heavy", "top-of-range price"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "X5",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "xDrive40i",
+          "price_cad": 92500,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 + 48V mild hybrid", "hp": 375, "torque_lbft": 398, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.4, "top_speed_kmh": 209 },
+          "seats": 5,
+          "notable_features": ["48V mild-hybrid", "curved display iDrive", "M Sport Edition available"],
+          "pros": ["smooth refined straight-six", "value entry", "well-rounded daily"],
+          "cons": ["base suspension less composed than air", "key features cost extra", "pricey options"],
+          "confidence": "high"
+        },
+        {
+          "trim": "xDrive50e",
+          "price_cad": 98500,
+          "freight_incl": false,
+          "powertrain": { "type": "phev", "engine": "3.0L turbo I6 PHEV + e-motor", "hp": 483, "torque_lbft": 516, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 11.0, "ev_range_km": 64, "battery_kwh": 25.7 },
+          "perf": { "zero_100_s": 4.8, "top_speed_kmh": 209 },
+          "seats": 5,
+          "notable_features": ["~64 km EV range", "11 kW AC charging", "curved display"],
+          "pros": ["long EV range for class", "quick and refined", "tax/fuel savings"],
+          "cons": ["reduced cargo under load floor", "premium over 40i", "needs home charging"],
+          "confidence": "high"
+        },
+        {
+          "trim": "M60i xDrive",
+          "price_cad": 116500,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.4L twin-turbo V8 + 48V mild hybrid", "hp": 523, "torque_lbft": 553, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 12.3, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.3, "top_speed_kmh": 209 },
+          "seats": 5,
+          "notable_features": ["adaptive M suspension", "M Sport differential", "quad exhaust"],
+          "pros": ["strong V8 thrust and sound", "balanced", "quick"],
+          "cons": ["thirsty", "pricey vs the 50e", "not a full M"],
+          "confidence": "high"
+        },
+        {
+          "trim": "X5 M Competition",
+          "price_cad": 156900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.4L twin-turbo V8 (S68) + 48V mild hybrid", "hp": 617, "torque_lbft": 553, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 15.8, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.9, "top_speed_kmh": 285 },
+          "seats": 5,
+          "notable_features": ["M chassis, brakes, active anti-roll", "M xDrive rear-bias modes", "M sport seats"],
+          "pros": ["supercar-quick", "huge grip", "full M engineering"],
+          "cons": ["very thirsty", "firm ride", "big price jump"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "X6",
+      "bodyStyle": "SUV",
+      "segment": "Midsize luxury coupe-SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "xDrive40i",
+          "price_cad": 96900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 + 48V mild hybrid", "hp": 375, "torque_lbft": 398, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 9.9, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.3, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["48V mild-hybrid", "curved display", "adaptive M suspension available"],
+          "pros": ["smooth efficient six", "value entry", "good real-world economy"],
+          "cons": ["coupe roofline cuts rear room/cargo", "least powerful", "options inflate price"],
+          "confidence": "high"
+        },
+        {
+          "trim": "M60i xDrive",
+          "price_cad": 117900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.4L twin-turbo V8 + 48V mild hybrid", "hp": 523, "torque_lbft": 553, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 12.3, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.2, "top_speed_kmh": 210 },
+          "seats": 5,
+          "notable_features": ["twin-turbo V8 (S68)", "M Sport differential", "M exhaust"],
+          "pros": ["strong V8 with mild-hybrid smoothness", "near-M pace for less", "GT character"],
+          "cons": ["thirsty", "six figures with options", "coupe practicality compromises"],
+          "confidence": "high"
+        },
+        {
+          "trim": "X6 M Competition",
+          "price_cad": 158900,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.4L twin-turbo V8 (S68) + 48V mild hybrid", "hp": 617, "torque_lbft": 553, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 15.8, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 3.8, "top_speed_kmh": 285 },
+          "seats": 5,
+          "notable_features": ["full M chassis/brakes/AWD rear-bias modes", "staggered 21in/22in wheels", "M sport seats with Merino"],
+          "pros": ["supercar-quick SUV", "immense grip", "usable daily"],
+          "cons": ["very thirsty", "expensive to run", "polarizing styling and firm ride"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "X7",
+      "bodyStyle": "SUV",
+      "segment": "Full-size luxury SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "xDrive40i",
+          "price_cad": 112000,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "3.0L turbo I6 + 48V mild hybrid", "hp": 375, "torque_lbft": 398, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 10.5, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 5.7, "top_speed_kmh": 215 },
+          "seats": 7,
+          "notable_features": ["standard air suspension", "7-seat std (6-seat captain's chairs optional)", "curved display iDrive 8.5"],
+          "pros": ["refined efficient straight-six", "true 3-row luxury", "lower running costs than V8"],
+          "cons": ["pricey with freight/options", "heavy (adequate not quick)", "6-seat and luxury items extra"],
+          "confidence": "high"
+        },
+        {
+          "trim": "M60i xDrive",
+          "price_cad": 140000,
+          "freight_incl": false,
+          "powertrain": { "type": "mild-hybrid", "engine": "4.4L twin-turbo V8 + 48V mild hybrid", "hp": 523, "torque_lbft": 553, "drivetrain": "AWD", "transmission": "8-spd auto", "fuel_l100_comb": 13.3, "ev_range_km": null, "battery_kwh": null },
+          "perf": { "zero_100_s": 4.7, "top_speed_kmh": 250 },
+          "seats": 7,
+          "notable_features": ["S68 twin-turbo V8", "M-tuned air suspension", "M Sport differential and brakes"],
+          "pros": ["genuinely fast 3-row", "sportier dynamics with practicality", "loaded standard"],
+          "cons": ["high fuel use", "~$25-30k jump over 40i", "heavy and firm"],
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "model": "XM",
+      "bodyStyle": "SUV",
+      "segment": "High-performance M PHEV SUV",
+      "modelReliability_100": null,
+      "trims": [
+        {
+          "trim": "XM Label",
+          "price_cad": 220000,
+          "freight_incl": false,
+          "powertrain": { "type": "phev", "engine": "4.4L twin-turbo V8 (577 hp) + e-motor (194 hp)", "hp": 738, "torque_lbft": 738, "drivetrain": "AWD", "transmission": "8-spd M Steptronic", "fuel_l100_comb": 17.0, "ev_range_km": 48, "battery_kwh": 25.7 },
+          "perf": { "zero_100_s": 3.7, "top_speed_kmh": 282 },
+          "seats": 5,
+          "notable_features": ["738 hp (sole XM trim for 2026)", "illuminated kidney grille", "M Lounge quilted rear bench and headliner"],
+          "pros": ["enormous power and torque", "real EV-only commuting (~48 km)", "lavish distinctive interior"],
+          "cons": ["$220k+ price", "polarizing styling", "heavy (~2.7 t) with real-world penalties"],
+          "confidence": "high"
+        }
+      ]
+    }
+  ],
+  "notes": "Covers the full 2026 BMW Canada lineup. Prices are bmw.ca-style starting MSRP EXCLUDING freight/PDI; per schema a nominal ~$2,480 freight figure is referenced, but BMW Canada's actual 2026 combined freight + PDI is meaningfully higher (~$4,050: freight ~$1,495 + PDI ~$2,555), added on top of MSRP before tax. KEY LINEUP NOTES: (1) Discontinued/absent for 2026 in Canada: standard 540i (only a 151-unit Legacy Edition), M550i (replaced by 550e PHEV), 740i gas (not sold in Canada; 750e is entry combustion 7), i5 eDrive40 (US-only), M8 (all body styles dropped), X3 M (replaced by X3 M50), X4 (discontinued, no 2026 MY), base XM 644hp (only 738hp Label remains). (2) Final year/ending: 8 Series and Z4 (production ~Apr 2026), iX (ends in Canada end of 2026). (3) NOT sold in Canada: iX1, iX2 (Europe-only EVs). (4) iX3 (Neue Klasse, 50 xDrive, ~698 km range, $75,900) is officially badged a 2027 model but goes on sale in Canada Fall 2026 with reservations open now; included here as the 2026-window EV SUV launch. (5) i4 simplified for 2026 to eDrive (RWD), xDrive40, and M60 (former M50 renamed/uprated). DATA CONFIDENCE: SUV gas trims (X1/X2/X3) and the 5/7/i5/i7/M5/Z4 lines are high confidence (Canadian press releases + The Car Guide). The 2/3/4 Series and M2/M3/M4 prices are med confidence (bmw.ca configurator was returning 503 to automated fetch; triangulated from AutoTrader.ca, dealer sites, BMW West Island blog). EV ranges are Canada/NRCan figures where available, otherwise EPA-converted to km; some top speeds are BMW electronic limits. Manual base M3/M4 and M3/M4 CS exist but Canadian 2026 catalog status was not firmly confirmed, so only the high-volume Competition xDrive variants are listed."
+}

@@ -1,0 +1,129 @@
+:root{
+  --bg:#f4f4f2; --panel:#ffffff; --ink:#1a1a1a; --muted:#6b6b6b; --line:#e3e3df;
+  --lexus:#c40e2e; --bmw:#16588E; --mb:#00A19B; --audi:#BB0A30;
+  --good:#1d7a4d; --mid:#b7791f; --bad:#b23b3b;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 6px 24px rgba(0,0,0,.05);
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Source Sans Pro",sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.45; -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit; cursor:pointer}
+h3{margin:0 0 .5rem; font-size:.82rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+
+/* header */
+.top{display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  padding:.8rem 1.2rem; background:#fff; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:30}
+.brandmark{display:flex; align-items:baseline; gap:.35rem}
+.brandmark .vl{font-weight:800; letter-spacing:.14em}
+.brandmark .lx{color:var(--lexus); font-weight:800; letter-spacing:.1em}
+.brandmark .tag{margin-left:.8rem; font-size:.8rem; color:var(--muted); letter-spacing:.04em}
+.topmeta{font-size:.82rem; color:var(--muted); display:flex; align-items:center; gap:.8rem}
+
+/* brand strip */
+.brandstrip{display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; padding:1rem 1.2rem 0}
+.bcard{background:var(--panel); border:1px solid var(--line); border-top:4px solid var(--bc,#999);
+  border-radius:var(--radius); padding:.8rem .9rem; box-shadow:var(--shadow)}
+.bcard h4{margin:0 0 .3rem; font-size:1rem}
+.bcard .nums{display:flex; gap:1rem; margin:.4rem 0}
+.bcard .num{font-size:.74rem; color:var(--muted)}
+.bcard .num b{display:block; font-size:1.15rem; color:var(--ink)}
+.bcard .note{font-size:.72rem; color:var(--muted); line-height:1.35}
+
+/* layout */
+main{display:grid; grid-template-columns:300px 1fr; gap:1rem; padding:1rem 1.2rem 6rem; align-items:start}
+.controls{position:sticky; top:64px; display:flex; flex-direction:column; gap:1rem}
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:1rem; box-shadow:var(--shadow)}
+.hint{font-size:.76rem; color:var(--muted); margin:.2rem 0 .7rem}
+
+/* presets + sliders */
+.presets{display:flex; flex-wrap:wrap; gap:.35rem; margin-bottom:.8rem}
+.presets button{font-size:.72rem; padding:.32rem .55rem; border:1px solid var(--line); background:#fafafa; border-radius:20px}
+.presets button.active{background:var(--ink); color:#fff; border-color:var(--ink)}
+.slider{margin:.55rem 0}
+.slider .row{display:flex; justify-content:space-between; font-size:.8rem; margin-bottom:.15rem}
+.slider .row b{font-variant-numeric:tabular-nums}
+input[type=range]{width:100%; accent-color:var(--lexus)}
+select,input[type=text]{width:100%; padding:.4rem .5rem; border:1px solid var(--line); border-radius:8px; background:#fff; font-size:.85rem}
+
+/* filters */
+.filtergroup{margin-bottom:.75rem}
+.filtergroup>label{display:block; font-size:.78rem; color:var(--muted); margin-bottom:.3rem}
+.chips{display:flex; flex-wrap:wrap; gap:.3rem}
+.chips button{font-size:.74rem; padding:.28rem .5rem; border:1px solid var(--line); background:#fafafa; border-radius:20px}
+.chips button.on{background:var(--ink); color:#fff; border-color:var(--ink)}
+.ghost{background:none; border:1px solid var(--line); border-radius:8px; padding:.4rem .6rem; font-size:.8rem; color:var(--ink)}
+.ghost.small{font-size:.74rem; padding:.3rem .5rem; width:100%; margin-top:.3rem}
+.primary{background:var(--ink); color:#fff; border:none; border-radius:8px; padding:.5rem .9rem; font-size:.85rem; font-weight:600}
+
+/* results */
+.resbar{display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:.7rem}
+.sortwrap{display:flex; align-items:center; gap:.7rem; font-size:.85rem}
+.sortwrap select{width:auto}
+#resCount{font-weight:700}
+.legend{font-size:.74rem; color:var(--muted); display:flex; align-items:center; gap:.5rem}
+.legend .dot{width:.6rem; height:.6rem; border-radius:50%; display:inline-block; margin-right:.15rem}
+.dot.lexus{background:var(--lexus)} .dot.bmw{background:var(--bmw)} .dot.mb{background:var(--mb)} .dot.audi{background:var(--audi)}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:.8rem}
+.card{background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--bc,#999);
+  border-radius:var(--radius); padding:.85rem .95rem; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:.5rem}
+.card .head{display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem}
+.card .rank{font-size:.72rem; color:var(--muted); font-weight:700}
+.card .name{font-weight:700; font-size:1.02rem; line-height:1.2}
+.card .sub{font-size:.76rem; color:var(--muted)}
+.card .composite{text-align:right}
+.card .composite .big{font-size:1.5rem; font-weight:800; line-height:1; font-variant-numeric:tabular-nums}
+.card .composite .lbl{font-size:.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
+.card .price{font-weight:700; font-size:1rem}
+.card .price small{font-weight:400; color:var(--muted)}
+.specrow{display:flex; flex-wrap:wrap; gap:.3rem .7rem; font-size:.76rem; color:var(--muted)}
+.specrow b{color:var(--ink); font-weight:600}
+
+.bars{display:flex; flex-direction:column; gap:.22rem}
+.bar{display:grid; grid-template-columns:78px 1fr 30px; align-items:center; gap:.4rem; font-size:.7rem}
+.bar .track{height:7px; background:#eee; border-radius:4px; overflow:hidden}
+.bar .fill{height:100%; border-radius:4px}
+.bar .v{text-align:right; color:var(--muted); font-variant-numeric:tabular-nums}
+.fill.s-good{background:var(--good)} .fill.s-mid{background:var(--mid)} .fill.s-bad{background:var(--bad)}
+
+.card .actions{display:flex; gap:.4rem; margin-top:.2rem}
+.card .actions button{flex:1; font-size:.76rem; padding:.35rem}
+.tags{display:flex; flex-wrap:wrap; gap:.25rem}
+.tag-pro,.tag-con{font-size:.7rem; padding:.18rem .45rem; border-radius:6px}
+.tag-pro{background:#e7f3ec; color:var(--good)} .tag-con{background:#fbeaea; color:var(--bad)}
+.conf{font-size:.62rem; color:var(--muted)}
+
+/* compare bar */
+.comparebar{position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--line);
+  display:flex; align-items:center; gap:.8rem; padding:.6rem 1.2rem; box-shadow:0 -4px 20px rgba(0,0,0,.07); z-index:40}
+.cmpchips{display:flex; gap:.4rem; flex:1; overflow-x:auto}
+.cmpchips .c{display:flex; align-items:center; gap:.3rem; font-size:.74rem; background:#f2f2f0; border-radius:20px; padding:.2rem .5rem; white-space:nowrap}
+.cmpchips .c button{border:none; background:none; color:var(--muted); font-size:.9rem; line-height:1}
+#cmpLabel{font-weight:700; font-size:.85rem}
+
+/* modal */
+.modal{position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:50; display:flex; align-items:flex-start; justify-content:center; padding:2rem 1rem; overflow:auto}
+.modalinner{background:#fff; border-radius:var(--radius); max-width:1100px; width:100%; padding:1.4rem; box-shadow:var(--shadow)}
+.modal h2{margin:0 0 .3rem}
+.cmptable{width:100%; border-collapse:collapse; font-size:.82rem; margin-top:1rem}
+.cmptable th,.cmptable td{text-align:left; padding:.5rem .6rem; border-bottom:1px solid var(--line); vertical-align:top}
+.cmptable th{background:#fafafa; position:sticky; top:0}
+.cmptable .metric{color:var(--muted); font-weight:600; white-space:nowrap}
+.cmptable .best{background:#e7f3ec; font-weight:700}
+.cmptable td .minibar{height:6px; background:#eee; border-radius:3px; margin-top:.2rem; overflow:hidden}
+.cmptable td .minibar i{display:block; height:100%}
+.closebtn{float:right}
+.hidden{display:none}
+
+@media (max-width:900px){
+  main{grid-template-columns:1fr}
+  .controls{position:static}
+  .brandstrip{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:560px){
+  .brandstrip{grid-template-columns:1fr}
+}
