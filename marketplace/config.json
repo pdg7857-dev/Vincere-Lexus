@@ -1,0 +1,46 @@
+{
+  "_comment": "All settings for the auto-lister. Safe to edit by hand. Restart the app after changing.",
+
+  "relistEveryDays": 10,
+  "schedulerCheckMinutes": 60,
+
+  "port": 4545,
+
+  "browser": {
+    "headless": false,
+    "_headless_note": "Keep false. Facebook is far more tolerant of a real, visible browser window. Headless logins frequently get challenged.",
+    "userDataDir": "data/browser-profile",
+    "slowMo": 60,
+    "locale": "en-US"
+  },
+
+  "facebook": {
+    "createVehicleUrl": "https://www.facebook.com/marketplace/create/vehicle",
+    "yourListingsUrl": "https://www.facebook.com/marketplace/you/selling",
+    "_labels_note": "These are the on-screen field labels Playwright looks for. If your Facebook is in another language, translate the values here.",
+    "labels": {
+      "photos": "Add Photos",
+      "vehicleType": "Vehicle type",
+      "year": "Year",
+      "make": "Make",
+      "model": "Model",
+      "mileage": "Mileage",
+      "price": "Price",
+      "bodyStyle": "Body style",
+      "exteriorColor": "Exterior color",
+      "interiorColor": "Interior color",
+      "fuelType": "Fuel type",
+      "transmission": "Transmission",
+      "condition": "Vehicle condition",
+      "description": "Description",
+      "location": "Location",
+      "next": "Next",
+      "publish": "Publish"
+    }
+  },
+
+  "defaults": {
+    "location": "",
+    "negotiable": true
+  }
+}

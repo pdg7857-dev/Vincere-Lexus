@@ -1,0 +1,18 @@
+🚗 {year} {make} {model} {trim} — ${price}{negotiable_tag}
+
+📍 {location}
+🛣️ {mileage} km  •  ⛽ {fuel_type}  •  ⚙️ {transmission}  •  🛞 {drivetrain}
+🎨 {exterior_color} exterior / {interior_color} interior
+🪪 Title: {title_status}  •  Condition: {condition}
+
+✨ FEATURES
+{features}
+
+📋 NOTES
+{description}
+
+——————————————
+✅ Clean & well maintained
+📅 Listed {listed_date}
+💬 Serious buyers — message me here on Marketplace. Quick to respond.
+🚫 No lowballers / no trades unless noted.

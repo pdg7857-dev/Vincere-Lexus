@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketplace Auto-Lister</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>🚗 Marketplace Auto-Lister</h1>
+    <p class="sub">Fill the blanks → standard caption → post from your signed-in browser. Auto delete &amp; relist every <span id="relistDays">10</span> days.</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>New / Edit listing</h2>
+      <form id="form">
+        <input type="hidden" id="listingId" />
+        <div class="grid">
+          <label>Year <input id="year" inputmode="numeric" placeholder="2019" /></label>
+          <label>Make <input id="make" placeholder="Toyota" /></label>
+          <label>Model <input id="model" placeholder="Corolla" /></label>
+          <label>Trim <input id="trim" placeholder="LE / optional" /></label>
+          <label>Price (no $) <input id="price" inputmode="numeric" placeholder="14995" /></label>
+          <label>Mileage (km) <input id="mileage" inputmode="numeric" placeholder="86000" /></label>
+          <label>Body style
+            <select id="bodyStyle">
+              <option value="">—</option>
+              <option>Sedan</option><option>SUV</option><option>Coupe</option><option>Truck</option>
+              <option>Hatchback</option><option>Van</option><option>Convertible</option><option>Wagon</option><option>Other</option>
+            </select>
+          </label>
+          <label>Fuel type
+            <select id="fuelType">
+              <option value="">—</option><option>Gasoline</option><option>Diesel</option>
+              <option>Hybrid</option><option>Plug-in Hybrid</option><option>Electric</option>
+            </select>
+          </label>
+          <label>Transmission
+            <select id="transmission"><option value="">—</option><option>Automatic</option><option>Manual</option></select>
+          </label>
+          <label>Drivetrain
+            <select id="drivetrain"><option value="">—</option><option>FWD</option><option>RWD</option><option>AWD</option><option>4WD</option></select>
+          </label>
+          <label>Condition
+            <select id="condition">
+              <option value="">—</option><option>New</option><option>Used - Like New</option>
+              <option>Used - Good</option><option>Used - Fair</option>
+            </select>
+          </label>
+          <label>Title status
+            <select id="titleStatus"><option>Clean</option><option>Rebuilt</option><option>Salvage</option></select>
+          </label>
+          <label>Exterior color <input id="exteriorColor" placeholder="Silver" /></label>
+          <label>Interior color <input id="interiorColor" placeholder="Black" /></label>
+          <label>Location <input id="location" placeholder="City, Province" /></label>
+        </div>
+        <label class="full">Features (comma or one per line)
+          <textarea id="features" rows="3" placeholder="Backup camera, Heated seats, CarPlay, New brakes"></textarea>
+        </label>
+        <label class="full">Notes / description
+          <textarea id="description" rows="3" placeholder="Second owner, non-smoker, recent service..."></textarea>
+        </label>
+        <label class="check"><input type="checkbox" id="negotiable" checked /> Price negotiable (OBO)</label>
+        <label class="check"><input type="checkbox" id="autoRelist" checked /> Auto delete &amp; relist every 10 days</label>
+
+        <div class="photos">
+          <h3>Photos</h3>
+          <input type="file" id="photoInput" accept="image/*" multiple />
+          <div id="photoList" class="thumbs"></div>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="saveBtn" class="primary">💾 Save</button>
+          <button type="button" id="dryBtn">🧪 Fill form (don't publish)</button>
+          <button type="button" id="publishBtn" class="go">🚀 Publish now</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Caption preview</h2>
+      <pre id="preview" class="caption">—</pre>
+
+      <h2 style="margin-top:28px">Your listings</h2>
+      <div id="listings" class="listings"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
