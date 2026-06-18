@@ -108,9 +108,20 @@ memorization:
 - **Trim families** — F SPORT (sporty look/handling) vs full "F", F SPORT Design
   vs F SPORT Performance, Luxury / Executive / Ultra Luxury, Overtrail off-road.
 
-97 multiple-choice questions, each with an explanation. **Every load reshuffles
+It also includes **customer-scenario questions** — "a client wants a comfort RX
+but insists on a panoramic moonroof; what's the most affordable trim?" — whose
+answers are computed straight from the real price-ordered trim/feature matrix in
+`data/lexus.json`, so the "cheapest way in" to each feature is accurate.
+
+**Pick your focus before you start:** a menu lets you scope the quiz to the
+**whole lineup**, **SUVs** (UX · NX · RX · TX · GX · LX · RZ), **Sedans**
+(ES · IS · LS), or **Coupe & Convertible** (LC). The naming/powertrain
+fundamentals are tagged `all` and always included in every scope; only the
+model-specific questions are filtered. You can also choose a length (Full / 50 / 20).
+
+128 multiple-choice questions, each with an explanation. **Every run reshuffles
 the question order *and* each question's answer options** (Fisher–Yates), so no
-two runs are alike. One question at a time with instant feedback, a live score,
+two quizzes are alike. One question at a time with instant feedback, a live score,
 and a per-topic breakdown at the end. Open it like the main app:
 
 ```
@@ -118,8 +129,9 @@ open app/quiz.html
 # or via CDN: https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/quiz.html
 ```
 
-Questions live in `app/quiz-data.js` (the correct answer is stored separately
-from the distractors so it's never "always A").
+Questions live in `app/quiz-data.js`. Each carries a `cat` (topic), a `seg`
+(`suv` / `sedan` / `coupe` / `all`) used by the focus filter, and the correct
+answer stored separately from the distractors so it's never "always A".
 
 ## Run it
 

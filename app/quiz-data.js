@@ -1,1005 +1,146 @@
 /*
  * Lexus 2026 Lineup Quiz — question bank
  * ------------------------------------------------------------
- * Goal: learn the GENERAL differences between models and trim families,
- * what the powertrain suffixes (h / h+ / e) mean, and what the numbers
- * on a badge (e.g. RX 350h+) signify. Not memorizing per-trim equipment.
+ * Learn the GENERAL differences between models and trim families,
+ * what the powertrain suffixes (h / h+ / e) mean, what the badge
+ * numbers signify, and which trim unlocks a feature a customer wants.
  *
- * Sourced from the 2026 Canadian lineup baked into data/lexus.json
- * (lexus.ca specifications + Build & Price) and Lexus naming guidance.
+ * Grounded in the 2026 Canadian lineup in data/lexus.json
+ * (lexus.ca specifications + Build & Price pricing).
  *
- * Each question stores the CORRECT answer separately from the distractors,
- * so the app can shuffle the options on every render (the right answer is
- * never "always A"). Questions themselves are shuffled on every load.
- *
- * Shape: { cat, q, correct, options:[...distractors], explain }
+ * Fields: cat (topic) · seg (body scope: 'suv'|'sedan'|'coupe'|'all') ·
+ *   q · correct (kept apart from distractors; options shuffle) · options · explain.
+ * seg 'all' = foundational naming/concept questions, shown in EVERY scope.
+ * A scope shows its own segment plus all the 'all' questions.
+ * Question order AND option order reshuffle on every load.
  */
 window.QUIZ_QUESTIONS = [
-
-  /* ============================================================
-   * A. POWERTRAIN SUFFIXES  —  h / h+ / e / (no letter)
-   * ========================================================== */
-  {
-    cat: "Powertrain suffixes",
-    q: "On a Lexus badge, what does a lowercase \"h\" (e.g. RX 350h) signify?",
-    correct: "A self-charging hybrid (gas engine + electric motors, never plugged in)",
-    options: [
-      "A plug-in hybrid you recharge from an outlet",
-      "A fully electric vehicle",
-      "A high-output performance engine"
-    ],
-    explain: "\"h\" = hybrid: a gas engine paired with electric motors and a small battery that charges itself from the engine and braking. You never plug it in. Examples: NX 350h, RX 350h, UX 300h."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "What does the \"+\" in a name like RX 450h+ or NX 450h+ tell you?",
-    correct: "It's a plug-in hybrid (PHEV) — bigger battery, charges from an outlet, drives on electric alone",
-    options: [
-      "It's a longer-wheelbase version of the car",
-      "It has a more powerful gas engine than the non-plus version",
-      "It includes the F SPORT appearance package"
-    ],
-    explain: "The \"+\" added to \"h\" means plug-in hybrid. It has a much larger battery you recharge from a 120V/240V outlet, giving meaningful electric-only range before it behaves like a normal hybrid."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "A lowercase \"e\" at the end of a name (e.g. RZ 450e) indicates what?",
-    correct: "A fully battery-electric vehicle (BEV) with no gas engine",
-    options: [
-      "An \"economy\" fuel-saving tune of the gas engine",
-      "A mild hybrid with a tiny assist motor",
-      "A European-market-only model"
-    ],
-    explain: "\"e\" = fully electric (BEV). No gas engine at all. The RZ family (RZ 350e / 450e / 550e) and the new electric ES variants (ES 350e / 500e) use this suffix."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "A Lexus with just a number and NO trailing letter (e.g. GX 550, IS 350, LX 600) is what?",
-    correct: "A conventional gasoline-only model (no electrification)",
-    options: [
-      "Always a hybrid by default",
-      "A plug-in hybrid",
-      "A diesel model"
-    ],
-    explain: "No suffix letter = gas only. GX 550, IS 350, LS 500, LC 500 and LX 600 are pure combustion vehicles."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "Which suffix means you CAN plug the vehicle into a wall to recharge a usable electric range, yet it still has a gas engine for long trips?",
-    correct: "h+ (plug-in hybrid)",
-    options: ["h (hybrid)", "e (electric)", "no suffix (gas)"],
-    explain: "Only h+ (plug-in hybrid) both plugs in AND keeps a gas engine. A plain \"h\" hybrid can't be plugged in; an \"e\" car has no gas engine at all."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "Which suffix means the vehicle has NO gas engine and must be charged?",
-    correct: "e (electric)",
-    options: ["h (hybrid)", "h+ (plug-in hybrid)", "no suffix (gas)"],
-    explain: "\"e\" is a full battery-electric vehicle. It cannot use gasoline and is charged from a plug, like the RZ."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "Rank these by battery size, smallest to largest: hybrid (h), plug-in hybrid (h+), electric (e).",
-    correct: "h  <  h+  <  e",
-    options: ["e  <  h+  <  h", "h+  <  h  <  e", "they all use the same battery"],
-    explain: "A plain hybrid needs only a small self-charging battery. A plug-in hybrid uses a larger battery for electric-only range. A full EV needs the largest battery of all since it's the only energy source."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "True or false: a regular Lexus hybrid (the \"h\" models) needs to be plugged in to work.",
-    correct: "False — it charges itself; you never plug it in",
-    options: [
-      "True — you must charge it nightly",
-      "True — but only in cold weather",
-      "Only the AWD versions need charging"
-    ],
-    explain: "A standard \"h\" hybrid is self-charging. The gas engine and regenerative braking keep the battery topped up. Only \"h+\" plug-ins and \"e\" EVs plug in."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "The NX 450h+ is best described as which type of vehicle?",
-    correct: "A plug-in hybrid compact SUV",
-    options: [
-      "A gas-only compact SUV",
-      "A fully electric compact SUV",
-      "A self-charging hybrid only"
-    ],
-    explain: "The \"h+\" makes the NX 450h+ Lexus's plug-in hybrid NX — electric range for daily driving plus a gas engine for road trips."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "The RZ (RZ 350e / 450e / 550e) is Lexus's only what?",
-    correct: "Fully electric (BEV) model line",
-    options: [
-      "Plug-in hybrid line",
-      "Body-on-frame off-roader",
-      "Hydrogen fuel-cell vehicle"
-    ],
-    explain: "Every RZ wears an \"e\", marking the RZ as Lexus's dedicated all-electric SUV with no gas option."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "Which everyday benefit is UNIQUE to a plug-in hybrid (h+) versus a normal hybrid (h)?",
-    correct: "You can drive a meaningful distance on electricity alone before any gas is used",
-    options: [
-      "Better crash safety ratings",
-      "A longer factory warranty on the paint",
-      "It never needs an oil change"
-    ],
-    explain: "The plug-in's bigger, rechargeable battery lets you cover typical daily commutes on electricity only. A regular hybrid's tiny battery just assists the gas engine — it can't go far on electricity alone."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "Which is the right \"electrification ladder\" from least to most electric?",
-    correct: "Gas → Hybrid (h) → Plug-in hybrid (h+) → Electric (e)",
-    options: [
-      "Electric (e) → Plug-in (h+) → Hybrid (h) → Gas",
-      "Hybrid (h) → Gas → Electric (e) → Plug-in (h+)",
-      "Plug-in (h+) → Gas → Hybrid (h) → Electric (e)"
-    ],
-    explain: "Lexus's powertrain ladder runs gas (no letter) → self-charging hybrid (h) → plug-in hybrid (h+) → battery electric (e), each step using more electric power."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "The LX 600 and LX 700h are the same flagship SUV. What's the key difference the names tell you?",
-    correct: "The 700h is the hybrid; the 600 is gas-only",
-    options: [
-      "The 700h is a plug-in hybrid; the 600 is a hybrid",
-      "The 700h is electric; the 600 is hybrid",
-      "Nothing — the numbers are just trim levels"
-    ],
-    explain: "The \"h\" on LX 700h marks the hybrid powertrain. The LX 600 has no suffix, so it's the pure-gas version of the same flagship."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "The UX 300h is offered only as which powertrain?",
-    correct: "Hybrid (it's hybrid-only for 2026)",
-    options: ["Gas only", "Plug-in hybrid only", "Electric only"],
-    explain: "For 2026 the subcompact UX comes solely as the UX 300h hybrid — there's no gas-only UX in the lineup."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "If a client wants electric-only commuting on weekdays but a gas tank for long road trips with no charging stops, which suffix fits best?",
-    correct: "h+ (plug-in hybrid)",
-    options: ["h (hybrid)", "e (electric)", "no suffix (gas)"],
-    explain: "A plug-in hybrid (h+) gives electric-only daily range plus a gas engine for unlimited long-distance driving — exactly that use case."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "If a client wants zero gas, zero tailpipe, and charges at home, which suffix fits?",
-    correct: "e (fully electric)",
-    options: ["h (hybrid)", "h+ (plug-in hybrid)", "no suffix (gas)"],
-    explain: "Only the \"e\" battery-electric models (the RZ, electric ES) use no gasoline and have no tailpipe emissions."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "Among NX 350, NX 350h, and NX 450h+, which one can be driven on electricity from a wall charge?",
-    correct: "NX 450h+ (plug-in hybrid)",
-    options: ["NX 350 (gas)", "NX 350h (hybrid)", "All three can"],
-    explain: "Only the NX 450h+ plugs in. The NX 350 is gas; the NX 350h is a self-charging hybrid that never plugs in."
-  },
-  {
-    cat: "Powertrain suffixes",
-    q: "Which statement about a self-charging hybrid (h) is correct?",
-    correct: "It improves fuel economy and adds electric assist, but always carries and uses a gas engine",
-    options: [
-      "It can complete most commutes with the gas engine off, charged from a wall",
-      "It has no gas engine",
-      "It must be plugged in overnight"
-    ],
-    explain: "A plain hybrid blends a gas engine with electric assist to save fuel, but the gas engine is always part of the equation and it's never plugged in."
-  },
-
-  /* ============================================================
-   * B. THE NUMBERS  —  what 350 / 500 / 600 mean
-   * ========================================================== */
-  {
-    cat: "What the numbers mean",
-    q: "Historically, the number on a Lexus (e.g. ES 350) referred to what?",
-    correct: "Engine displacement — ES 350 meant a 3.5-litre engine",
-    options: [
-      "The number of trim levels offered",
-      "The model's place in its release order",
-      "Horsepower divided by ten"
-    ],
-    explain: "Traditionally the badge number was engine size: 350 ≈ 3.5L, 500 ≈ 5.0L, 600 ≈ a 6-cylinder/larger class. It was a quick read on how big the engine was."
-  },
-  {
-    cat: "What the numbers mean",
-    q: "On modern turbocharged and electrified Lexus models, what does the number now mostly indicate?",
-    correct: "A performance/output level — higher number = more power — not literal litres",
-    options: [
-      "The exact engine displacement in every case",
-      "The model year",
-      "The towing capacity in thousands of kg"
-    ],
-    explain: "With small turbo and hybrid powertrains, the badge no longer equals displacement. e.g. the RX 350 uses a 2.4L turbo, not a 3.5L. The number now signals a performance tier — bigger number, more power."
-  },
-  {
-    cat: "What the numbers mean",
-    q: "Within one model, what does a HIGHER number generally mean (e.g. RX 350h vs RX 500h)?",
-    correct: "More power / a higher-output, sportier powertrain",
-    options: [
-      "Older model year",
-      "Lower price",
-      "Smaller body size"
-    ],
-    explain: "The bigger number flags the more powerful setup. The RX 500h is the high-output performance hybrid; the RX 350/350h are the standard-output versions."
-  },
-  {
-    cat: "What the numbers mean",
-    q: "Decode the full badge: RX 350h+.",
-    correct: "RX model · 350 performance class · h = hybrid · + = plug-in",
-    options: [
-      "RX model · 3.5L engine guaranteed · h = high-output · + = bigger body",
-      "RX trim 350 · h+ = horsepower-plus package",
-      "Radiant Crossover · 350 hp · hybrid-plus warranty"
-    ],
-    explain: "Read it in pieces: RX (the model) + 350 (output/performance tier) + h (hybrid) + \"+\" (plug-in). So: a plug-in hybrid RX at the 350 power tier. (In the 2026 line the PHEV RX wears the 450h+ badge.)"
-  },
-  {
-    cat: "What the numbers mean",
-    q: "True or false: the RX 350 has a 3.5-litre engine because of its number.",
-    correct: "False — it actually uses a 2.4-litre turbocharged engine",
-    options: [
-      "True — the number is always the displacement",
-      "True — it's a 3.5L V6",
-      "False — it has no engine, it's electric"
-    ],
-    explain: "This is the classic gotcha. The RX 350's number is a performance label, not its litres. It runs a 2.4L turbo-four. The badge number survived as a 'class' even though displacement shrank."
-  },
-  {
-    cat: "What the numbers mean",
-    q: "Why might two different Lexus models both wear \"350\" (e.g. NX 350 and RX 350) yet not have identical engines?",
-    correct: "The number marks a comparable performance tier within each line, not one specific engine",
-    options: [
-      "It's a mistake in Lexus's badging",
-      "They must share the exact same engine by rule",
-      "350 always means 350 horsepower exactly"
-    ],
-    explain: "\"350\" signals a similar output class across the lineup, but each model is tuned for its own size and mission, so the actual hardware can differ."
-  },
-  {
-    cat: "What the numbers mean",
-    q: "In the RX line, which has the most powerful powertrain based on its number?",
-    correct: "RX 500h",
-    options: ["RX 350", "RX 350h", "They're all equal"],
-    explain: "500 > 350, so the RX 500h sits at the top for power — it's the high-output performance hybrid (F SPORT Performance)."
-  },
-  {
-    cat: "What the numbers mean",
-    q: "The GX 550 and LX 600 numbers tell a buyer roughly what, relative to each other?",
-    correct: "They're large-SUV output classes; the LX (600) sits above the GX (550) in the flagship hierarchy",
-    options: [
-      "The GX is more powerful because 550 is 'sportier'",
-      "Both have identical 5.5L and 6.0L engines exactly",
-      "The numbers are random marketing"
-    ],
-    explain: "Both are big body-on-frame SUVs; the numbers place the LX 600 as the larger flagship above the GX 550. (Both actually use twin-turbo V6s — again, not literal litres.)"
-  },
-  {
-    cat: "What the numbers mean",
-    q: "A customer says 'I want the 500h because it must have a 5.0-litre V8.' What's the accurate correction?",
-    correct: "The 500h is a high-output turbo-hybrid; the number is a performance label, not 5.0 litres",
-    options: [
-      "They're right, it's a 5.0L V8 hybrid",
-      "The 500h is actually electric",
-      "The 500h has the smallest engine in the range"
-    ],
-    explain: "Modern '500h' models (RX 500h, TX 500h) pair a turbo engine with hybrid electric power for high output — the badge denotes the performance tier, not displacement."
-  },
-  {
-    cat: "What the numbers mean",
-    q: "Putting it together, a Lexus name is read as which pattern?",
-    correct: "Model letters + performance number + powertrain suffix (h / h+ / e)",
-    options: [
-      "Trim level + price tier + colour code",
-      "Year + factory + option pack",
-      "Region + dealer + engine litres"
-    ],
-    explain: "Every badge follows the same grammar: the model (e.g. RX), a number for the performance/output class, and an optional suffix for electrification (h, h+, or e)."
-  },
-
-  /* ============================================================
-   * C. MODELS, BODY STYLES & SEGMENTS
-   * ========================================================== */
-  {
-    cat: "Models & segments",
-    q: "Order these Lexus SUVs from SMALLEST to LARGEST.",
-    correct: "UX → NX → RX → TX/GX → LX",
-    options: [
-      "LX → GX → RX → NX → UX",
-      "RX → UX → LX → NX → TX",
-      "NX → UX → RX → LX → GX"
-    ],
-    explain: "UX (subcompact) is smallest, then NX (compact), RX (midsize 2-row), TX (midsize 3-row) and GX (midsize body-on-frame) in the middle, with the LX flagship largest."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which Lexus SUV is the dedicated THREE-ROW, family-hauler crossover?",
-    correct: "TX",
-    options: ["RX", "NX", "UX"],
-    explain: "The TX is Lexus's three-row crossover built for six or seven passengers. The RX is a two-row midsize; NX and UX are smaller still."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which is Lexus's smallest / entry SUV?",
-    correct: "UX",
-    options: ["NX", "RX", "GX"],
-    explain: "The subcompact UX is the smallest and most affordable entry into a Lexus SUV."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which two SUVs are the rugged, body-on-frame, off-road-capable models (vs car-based crossovers)?",
-    correct: "GX and LX",
-    options: ["NX and RX", "UX and RZ", "RX and TX"],
-    explain: "The GX and LX ride on truck-style body-on-frame platforms built for serious off-roading and towing. The UX, NX, RX, TX and RZ are car-based (unibody) crossovers."
-  },
-  {
-    cat: "Models & segments",
-    q: "The RZ is which kind of Lexus?",
-    correct: "A fully electric crossover SUV",
-    options: ["A gas sport sedan", "A plug-in hybrid flagship", "A body-on-frame off-roader"],
-    explain: "The RZ is Lexus's dedicated battery-electric SUV (RZ 350e / 450e / 550e)."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which body style is the ES?",
-    correct: "A midsize luxury sedan",
-    options: ["A compact SUV", "A two-door coupe", "A body-on-frame SUV"],
-    explain: "The ES is a comfort-focused midsize luxury sedan — for 2026 offered as a hybrid (350h) and as electric variants (350e / 500e)."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which Lexus is the compact SPORT sedan, aimed at driving enthusiasts?",
-    correct: "IS",
-    options: ["ES", "LS", "LC"],
-    explain: "The IS is the smaller rear-drive-rooted sport sedan. The ES is the larger comfort sedan; the LS is the flagship; the LC is a coupe."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which is Lexus's flagship full-size luxury SEDAN?",
-    correct: "LS",
-    options: ["ES", "IS", "LC"],
-    explain: "The LS sits at the very top of the sedan range as Lexus's flagship limousine. (For 2026 it's offered as the LS 500 Heritage Edition.)"
-  },
-  {
-    cat: "Models & segments",
-    q: "The LC is what type of vehicle?",
-    correct: "A luxury grand-touring coupe (with a convertible variant)",
-    options: [
-      "A compact crossover",
-      "A three-row SUV",
-      "An electric sedan"
-    ],
-    explain: "The LC is a flagship 2-door grand tourer — a halo coupe — and is also offered as the LC Convertible."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which Lexus is the flagship full-size luxury SUV?",
-    correct: "LX",
-    options: ["GX", "TX", "RX"],
-    explain: "The LX is the top-of-the-line, body-on-frame full-size SUV — the SUV equivalent of the LS flagship."
-  },
-  {
-    cat: "Models & segments",
-    q: "How do the ES and IS sedans differ in mission?",
-    correct: "ES = comfort/refinement focus; IS = compact, sportier driver's car",
-    options: [
-      "ES is the sporty one; IS is the comfort cruiser",
-      "They're the same car with different names",
-      "ES is electric-only; IS is gas-only"
-    ],
-    explain: "The ES prioritizes a quiet, smooth, spacious ride; the smaller IS is tuned for handling and driver engagement."
-  },
-  {
-    cat: "Models & segments",
-    q: "How do the GX and LX differ, both being body-on-frame SUVs?",
-    correct: "LX is the larger, more expensive full-size flagship; GX is the slightly smaller, more rugged-value midsize",
-    options: [
-      "GX is the flagship; LX is the entry model",
-      "GX is a car-based crossover; LX is body-on-frame",
-      "They are identical apart from colour options"
-    ],
-    explain: "Both are truck-based off-roaders, but the LX is the larger, plusher, pricier flagship while the GX slots just beneath it as a more compact, rugged choice."
-  },
-  {
-    cat: "Models & segments",
-    q: "A buyer needs three rows of seats but wants a Lexus crossover (not a truck-based SUV). Best fit?",
-    correct: "TX",
-    options: ["RX", "GX", "NX"],
-    explain: "The TX is the car-based three-row crossover. The GX also seats three rows but is a heavier body-on-frame off-roader; the RX and NX are two-row."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which pair are the two-door / open-top halo cars in the range?",
-    correct: "LC and LC Convertible",
-    options: ["ES and IS", "RX and RZ", "GX and LX"],
-    explain: "The LC coupe and LC Convertible are the flagship grand-touring two-doors that anchor the top of the car range."
-  },
-  {
-    cat: "Models & segments",
-    q: "Between RX and NX, which is larger and positioned higher?",
-    correct: "RX (midsize) sits above NX (compact)",
-    options: [
-      "NX is larger than RX",
-      "They're the same size",
-      "NX is the flagship SUV"
-    ],
-    explain: "The RX is the midsize SUV one class above the compact NX. Many shoppers cross-shop them by size and budget."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which Lexus SUV is offered ONLY as an electric vehicle (no gas or hybrid option)?",
-    correct: "RZ",
-    options: ["NX", "RX", "GX"],
-    explain: "The RZ is electric-only. The NX and RX offer gas/hybrid/plug-in choices; the GX is gas-only."
-  },
-  {
-    cat: "Models & segments",
-    q: "Roughly how many distinct models make up the 2026 Lexus lineup covered here?",
-    correct: "About 14 models (ES, IS, LS, LC, LC Convertible, NX, NX Plug-in, RX, RX Plug-in, RZ, GX, LX, TX, UX)",
-    options: [
-      "About 4 models",
-      "About 30 models",
-      "Exactly 2 models"
-    ],
-    explain: "The 2026 Canadian range spans ~14 models across sedans, coupes/convertible, and a broad SUV family from subcompact UX to flagship LX."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which group is ALL sedans?",
-    correct: "ES, IS, LS",
-    options: ["ES, NX, LC", "IS, RX, LX", "LS, UX, GX"],
-    explain: "ES, IS and LS are the three sedans. NX/RX/UX/GX/LX/TX/RZ are SUVs, and LC is a coupe."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which group is ALL SUVs?",
-    correct: "UX, NX, RX, TX, GX, LX, RZ",
-    options: ["ES, IS, LS, LC", "RX, ES, LC, IS", "GX, LX, LS, LC"],
-    explain: "All seven of UX, NX, RX, TX, GX, LX and RZ are SUVs. ES/IS/LS are sedans and LC is a coupe."
-  },
-  {
-    cat: "Models & segments",
-    q: "If a client wants the most off-road / overlanding capability, which models should you point to?",
-    correct: "GX and LX (body-on-frame, available Overtrail off-road trims)",
-    options: [
-      "ES and IS",
-      "UX and RZ",
-      "LC and LS"
-    ],
-    explain: "The body-on-frame GX and LX, especially in Overtrail guise, are built for off-road duty with the durability and clearance overlanders want."
-  },
-  {
-    cat: "Models & segments",
-    q: "A first-time luxury buyer on a tight budget wants the easiest entry into a Lexus SUV. Best starting point?",
-    correct: "UX (the subcompact, lowest-priced SUV)",
-    options: ["LX (flagship)", "TX (three-row)", "RZ (electric)"],
-    explain: "The subcompact UX is the smallest and most affordable SUV — the usual entry door into the brand."
-  },
-  {
-    cat: "Models & segments",
-    q: "The TX is most directly cross-shopped against which need?",
-    correct: "Families needing three rows / 6–7 seats in a comfortable crossover",
-    options: [
-      "Buyers wanting a two-seat sports car",
-      "Off-road rock crawlers",
-      "Single commuters wanting the smallest footprint"
-    ],
-    explain: "The TX exists to give three-row families a roomy, car-like Lexus without stepping into a heavy body-on-frame truck."
-  },
-  {
-    cat: "Models & segments",
-    q: "Which best captures the ES's character versus the LS?",
-    correct: "ES is the attainable midsize luxury sedan; LS is the larger, top-tier flagship",
-    options: [
-      "ES is the flagship; LS is the entry sedan",
-      "ES is a coupe; LS is an SUV",
-      "They are the same size and price"
-    ],
-    explain: "The ES delivers core Lexus luxury at a midsize size and accessible price; the LS is the bigger, more exclusive flagship above it."
-  },
-
-  /* ============================================================
-   * D. TRIM FAMILIES & PHILOSOPHY
-   * ========================================================== */
-  {
-    cat: "Trim families",
-    q: "What is the defining theme of an \"F SPORT\" trim?",
-    correct: "A sportier look and feel — aggressive styling, sport seats, sport-tuned chassis bits",
-    options: [
-      "The most fuel-efficient, eco-focused trim",
-      "The cheapest, most stripped-down trim",
-      "An off-road / overlanding trim"
-    ],
-    explain: "F SPORT is the athletic appearance-and-handling theme: unique mesh grille, bolstered sport seats, special wheels and sportier suspension tuning. It's about sporty character, not necessarily big power gains."
-  },
-  {
-    cat: "Trim families",
-    q: "How does \"F SPORT\" differ from a full \"F\" (e.g. the historic IS F / RC F) model?",
-    correct: "F SPORT is a styling/handling package on a normal model; a full \"F\" is a hardcore high-performance car",
-    options: [
-      "They are the same thing",
-      "F SPORT is more powerful than a full F",
-      "Full F means fuel-economy focused"
-    ],
-    explain: "Lexus's \"F\" division (named after Fuji Speedway) builds genuine high-performance machines. \"F SPORT\" is a sportier dress-up and chassis package layered onto regular models — sportier, but not a full-blown F."
-  },
-  {
-    cat: "Trim families",
-    q: "What does the \"Luxury\" trim family emphasize?",
-    correct: "Comfort, refinement and upscale materials over sportiness",
-    options: [
-      "Maximum track performance",
-      "Off-road hardware",
-      "The lowest possible price"
-    ],
-    explain: "Luxury trims lean into plush materials, comfort features and a refined ride — the opposite emphasis from the sporty F SPORT theme."
-  },
-  {
-    cat: "Trim families",
-    q: "Trims named \"Executive\", \"Executive VIP\" or \"Ultra Luxury\" represent what?",
-    correct: "The top-tier, most opulent trims (rear-seat luxury, premium materials, every comfort)",
-    options: [
-      "The base / entry trims",
-      "Track-focused performance trims",
-      "Off-road trims"
-    ],
-    explain: "Executive / VIP / Ultra Luxury are the flagship comfort trims, often loaded with rear-passenger luxury, semi-aniline leather, massage and the richest materials."
-  },
-  {
-    cat: "Trim families",
-    q: "What do \"Overtrail\" / \"Overtrail+\" trims (on GX and LX) signal?",
-    correct: "An off-road-focused package — more clearance, all-terrain tires, locking diff, rugged kit",
-    options: [
-      "A track / circuit performance package",
-      "A luxury rear-lounge package",
-      "A fuel-saving eco package"
-    ],
-    explain: "Overtrail is the dirt-focused trim line on the body-on-frame GX and LX: all-terrain rubber, a locking differential and hardware tuned for getting off pavement."
-  },
-  {
-    cat: "Trim families",
-    q: "\"Premium\" and \"Signature\" trims generally sit where in the range?",
-    correct: "At the entry / well-equipped base end",
-    options: [
-      "At the very top, above Executive",
-      "They're off-road-only trims",
-      "They're the F performance trims"
-    ],
-    explain: "Premium and Signature are typical starting trims — nicely equipped but the accessible end of a model's ladder, below Luxury and Executive."
-  },
-  {
-    cat: "Trim families",
-    q: "What's the difference between \"F SPORT Design\" and \"F SPORT Performance\"?",
-    correct: "Design = the sporty LOOK only; Performance = genuine added power/handling hardware",
-    options: [
-      "Design is faster than Performance",
-      "They're identical names for the same thing",
-      "Performance is the eco version"
-    ],
-    explain: "F SPORT Design gives you the aggressive F SPORT styling without the mechanical upgrades. F SPORT Performance (e.g. RX 500h, TX 500h) actually adds power and performance hardware like DIRECT4 AWD."
-  },
-  {
-    cat: "Trim families",
-    q: "On the RX, which trim is the true high-PERFORMANCE one (not just an appearance package)?",
-    correct: "RX 500h F SPORT Performance",
-    options: [
-      "RX 350h F SPORT Design",
-      "RX 350 Premium",
-      "RX 350h Luxury"
-    ],
-    explain: "The RX 500h F SPORT Performance is the genuinely quicker RX — high-output hybrid and DIRECT4 AWD. \"F SPORT Design\" trims only wear the look."
-  },
-  {
-    cat: "Trim families",
-    q: "A \"Black Line\" or \"Special Appearance\" trim is best described as what?",
-    correct: "A special, often limited, appearance/styling edition",
-    options: [
-      "A base economy trim",
-      "An off-road package",
-      "A long-wheelbase body"
-    ],
-    explain: "Black Line / Special Appearance editions are styling-led special editions — blacked-out or unique trim accents — for buyers who want a distinctive look."
-  },
-  {
-    cat: "Trim families",
-    q: "Two clients: one wants the sportiest-LOOKING and -handling RX, the other wants the most pampering rear seat. Which trims?",
-    correct: "F SPORT for the sporty client; Executive / Ultra Luxury for the pampering client",
-    options: [
-      "Premium for both",
-      "Overtrail for the sporty one; F SPORT for luxury",
-      "Signature for both"
-    ],
-    explain: "Match the trim THEME to the buyer: F SPORT = sporty look/feel; Executive/Ultra Luxury = top-tier comfort and rear-seat luxury."
-  },
-  {
-    cat: "Trim families",
-    q: "Which lineup of trim THEMES is ordered from sporty → luxurious in character?",
-    correct: "F SPORT → Premium → Luxury → Executive/Ultra Luxury",
-    options: [
-      "Executive → Luxury → Premium → F SPORT only by price",
-      "Overtrail → F SPORT → Premium → Signature",
-      "Black Line → Signature → F SPORT → Luxury"
-    ],
-    explain: "In character: F SPORT is the sporty theme, Premium the well-equipped base, Luxury the comfort step, and Executive/Ultra Luxury the opulent top. (Exact pricing ladders vary by model.)"
-  },
-  {
-    cat: "Trim families",
-    q: "Does choosing an F SPORT trim usually change the car's POWERTRAIN/engine?",
-    correct: "Not by itself — F SPORT is mainly look + chassis; power is set by the number/suffix (e.g. 500h)",
-    options: [
-      "Yes, F SPORT always doubles the horsepower",
-      "Yes, F SPORT makes any car electric",
-      "Yes, F SPORT removes the hybrid system"
-    ],
-    explain: "The engine/output is told by the number and suffix (350h, 500h, etc.). F SPORT changes styling and handling feel; only \"F SPORT Performance\" variants pair the look with a genuinely hotter powertrain."
-  },
-  {
-    cat: "Trim families",
-    q: "A client loves the F SPORT styling but doesn't care about extra performance and wants to save money. Best recommendation?",
-    correct: "An \"F SPORT Design\" trim — the look without paying for performance hardware",
-    options: [
-      "An Overtrail trim",
-      "The Executive VIP trim",
-      "The base Signature with no F SPORT cues"
-    ],
-    explain: "F SPORT Design delivers the aggressive F SPORT appearance without the costlier performance upgrades — ideal for a looks-first, budget-conscious buyer."
-  },
-  {
-    cat: "Trim families",
-    q: "Across models, the SAME trim name (e.g. \"Luxury\") signals what?",
-    correct: "A consistent THEME/positioning, even though exact equipment differs by model",
-    options: [
-      "Identical features and price on every model",
-      "Nothing — names are random per model",
-      "Only the paint colour"
-    ],
-    explain: "Trim names are a positioning language: 'Luxury' always means the comfort-oriented step, 'F SPORT' always the sporty one — but the specific contents scale with each model's size and price."
-  },
-  {
-    cat: "Trim families",
-    q: "Which trim family would you show an off-road / overlanding enthusiast on the GX?",
-    correct: "Overtrail / Overtrail+",
-    options: ["F SPORT", "Executive", "Ultra Luxury"],
-    explain: "Overtrail and Overtrail+ are the GX's off-road trims with the all-terrain hardware adventurers want."
-  },
-  {
-    cat: "Trim families",
-    q: "On the IS sport sedan, most trims carry an F SPORT theme. What does that tell you about the IS's positioning?",
-    correct: "The IS is positioned as the driver-focused, sporty sedan in the range",
-    options: [
-      "The IS is the comfort-first flagship",
-      "The IS is an off-road model",
-      "The IS is electric-only"
-    ],
-    explain: "Leaning heavily on F SPORT trims reflects the IS's identity as the athletic, enthusiast-oriented compact sport sedan."
-  },
-  {
-    cat: "Trim families",
-    q: "Which statement about trims vs models is most accurate?",
-    correct: "The MODEL sets the size/segment; the TRIM sets the theme and equipment level within that model",
-    options: [
-      "Trim and model mean the same thing",
-      "The trim determines the body style",
-      "The model determines the seat colour only"
-    ],
-    explain: "First pick the model (size/segment/body), then the trim tailors character (sporty vs luxurious vs off-road) and how loaded it is."
-  },
-  {
-    cat: "Trim families",
-    q: "\"DIRECT4\" that shows up on F SPORT Performance and electric models refers to what?",
-    correct: "Lexus's advanced all-wheel-drive system that manages torque front-to-rear",
-    options: [
-      "A four-zone climate control system",
-      "A four-speaker base audio package",
-      "A four-year free maintenance plan"
-    ],
-    explain: "DIRECT4 is Lexus's performance AWD tech (on high-output hybrids and EVs like RX 500h, RZ) that continuously varies drive between the axles for grip and agility."
-  },
-  {
-    cat: "Trim families",
-    q: "A buyer asks for 'the sporty one' and 'the fancy one' in the NX. Which two trim themes answer that?",
-    correct: "F SPORT (sporty) and Ultra Luxury / Executive (fancy)",
-    options: [
-      "Premium (sporty) and Signature (fancy)",
-      "Overtrail (sporty) and F SPORT (fancy)",
-      "Black Line (sporty) and Premium (fancy)"
-    ],
-    explain: "On the NX, F SPORT trims cover the sporty want and Ultra Luxury/Executive cover the upscale, fancy want."
-  },
-  {
-    cat: "Trim families",
-    q: "Why might a top luxury trim cost much more than a sporty F SPORT trim on the same model?",
-    correct: "Top luxury trims pile on premium materials, rear-seat comfort and tech; F SPORT focuses spend on look/handling",
-    options: [
-      "Because F SPORT trims have no engine",
-      "Because luxury trims are always smaller",
-      "Because F SPORT is always the most expensive trim"
-    ],
-    explain: "Different priorities: the Executive/Ultra Luxury trims invest in opulence and rear-passenger experience, which can out-price the performance-styling F SPORT trims."
-  },
-  {
-    cat: "Trim families",
-    q: "If a client cares mostly about ride comfort and quiet, which trim THEME steers them wrong?",
-    correct: "F SPORT (it adds sportier, firmer suspension tuning)",
-    options: [
-      "Luxury",
-      "Executive",
-      "Ultra Luxury"
-    ],
-    explain: "F SPORT's sport-tuned chassis trades some ride softness for sharper handling — the comfort-seeking buyer is better in a Luxury/Executive trim."
-  },
-  {
-    cat: "Trim families",
-    q: "Which best summarizes the F SPORT value proposition to a customer?",
-    correct: "Sportier styling and a more engaging drive feel, without becoming a hardcore track car",
-    options: [
-      "Maximum luxury and rear-seat space",
-      "Best fuel economy in the range",
-      "Most off-road capability"
-    ],
-    explain: "F SPORT = the look and feel of sport — exclusive styling, sport seats, firmer tuning — for buyers who want attitude and engagement short of a full 'F' performance car."
-  },
-  {
-    cat: "Trim families",
-    q: "On the LX flagship, which trim would suit a client who wants luxury but also genuine trail capability?",
-    correct: "An Overtrail+ trim (rugged hardware) — vs the Luxury/Executive VIP comfort trims",
-    options: [
-      "F SPORT",
-      "Black Line",
-      "Signature"
-    ],
-    explain: "The LX's Overtrail+ pairs the flagship's luxury with off-road hardware; the Luxury and Executive VIP trims focus purely on on-road opulence."
-  },
-  {
-    cat: "Trim families",
-    q: "Numbers like 'F SPORT 2' and 'F SPORT 3' on a trim typically indicate what?",
-    correct: "Escalating equipment tiers within the F SPORT theme (3 more loaded than 2)",
-    options: [
-      "The number of cylinders",
-      "Two- vs three-row seating",
-      "The number of driven wheels"
-    ],
-    explain: "Lexus uses numbered sub-grades (F SPORT 2, F SPORT 3, etc.) to mark progressively more equipment within the same F SPORT styling theme."
-  },
-
-  /* ============================================================
-   * E. PUT-IT-TOGETHER DECODING
-   * ========================================================== */
-  {
-    cat: "Decode the badge",
-    q: "Decode: NX 350h.",
-    correct: "Compact SUV (NX) · 350 output class · h = self-charging hybrid",
-    options: [
-      "Compact SUV · 3.5L V6 · plug-in hybrid",
-      "Midsize SUV · 350 hp · electric",
-      "Sedan · 350 trim · gas"
-    ],
-    explain: "NX (compact SUV) + 350 (performance class) + h (hybrid). A self-charging hybrid compact SUV."
-  },
-  {
-    cat: "Decode the badge",
-    q: "Decode: GX 550 Overtrail.",
-    correct: "Body-on-frame midsize SUV (GX) · 550 output class · gas · Overtrail = off-road trim",
-    options: [
-      "Compact crossover · 5.5L · hybrid · luxury trim",
-      "Electric SUV · 550 km range · sport trim",
-      "Sedan · 550 hp · F SPORT"
-    ],
-    explain: "GX (rugged body-on-frame SUV) + 550 (output class, no suffix = gas) + Overtrail (the off-road trim theme)."
-  },
-  {
-    cat: "Decode the badge",
-    q: "Decode: RZ 450e.",
-    correct: "Electric SUV (RZ) · 450 output class · e = fully battery-electric",
-    options: [
-      "Hybrid SUV · 4.5L · eco trim",
-      "Plug-in SUV · 450 km · executive",
-      "Gas SUV · 450 hp · F SPORT"
-    ],
-    explain: "RZ (Lexus's electric SUV) + 450 (output/performance class) + e (battery-electric). No gas at all."
-  },
-  {
-    cat: "Decode the badge",
-    q: "Decode: ES 350h.",
-    correct: "Luxury sedan (ES) · 350 class · h = hybrid",
-    options: [
-      "Luxury sedan · 3.5L V6 · plug-in",
-      "SUV · 350 hp · electric",
-      "Coupe · 350 trim · gas"
-    ],
-    explain: "ES (midsize luxury sedan) + 350 (class) + h (hybrid). The self-charging hybrid ES."
-  },
-  {
-    cat: "Decode the badge",
-    q: "Decode: TX 500h F SPORT Performance.",
-    correct: "Three-row SUV (TX) · 500 high-output class · h = hybrid · genuine performance trim",
-    options: [
-      "Three-row SUV · 5.0L V8 · appearance-only trim",
-      "Sedan · 500 hp · electric · base trim",
-      "Two-row SUV · 500 class · plug-in · eco trim"
-    ],
-    explain: "TX (3-row crossover) + 500 (high-output class) + h (hybrid) + F SPORT Performance (real added performance, not just looks)."
-  },
-  {
-    cat: "Decode the badge",
-    q: "Decode: LX 700h Executive VIP.",
-    correct: "Flagship SUV (LX) · 700 class · h = hybrid · Executive VIP = top luxury trim",
-    options: [
-      "Compact SUV · 7.0L · gas · base trim",
-      "Sedan · 700 hp · electric · sport trim",
-      "Coupe · 700 class · plug-in · off-road trim"
-    ],
-    explain: "LX (full-size flagship SUV) + 700 (top output class) + h (hybrid) + Executive VIP (the most opulent trim)."
-  },
-  {
-    cat: "Decode the badge",
-    q: "Decode: IS 350 F SPORT.",
-    correct: "Sport sedan (IS) · 350 class · gas · F SPORT styling/handling theme",
-    options: [
-      "Sport sedan · 3.5L · hybrid · luxury theme",
-      "SUV · 350 hp · electric · off-road",
-      "Coupe · 350 class · plug-in · base"
-    ],
-    explain: "IS (compact sport sedan) + 350 (class) + no suffix (gas) + F SPORT (the sporty appearance/handling theme)."
-  },
-  {
-    cat: "Decode the badge",
-    q: "Decode: RX 450h+ (in the 2026 RX Plug-in).",
-    correct: "Midsize SUV (RX) · 450 class · h = hybrid · + = plug-in (PHEV)",
-    options: [
-      "Midsize SUV · 4.5L V8 · gas · plus-size body",
-      "Sedan · 450 hp · electric · plus warranty",
-      "SUV · 450 class · hybrid · no plug"
-    ],
-    explain: "RX (midsize SUV) + 450 (class) + h (hybrid) + \"+\" (plug-in). The plug-in hybrid RX."
-  },
-  {
-    cat: "Decode the badge",
-    q: "Decode: LC 500.",
-    correct: "Luxury grand-touring coupe (LC) · 500 class · gas, no electrification",
-    options: [
-      "Sedan · 5.0L · hybrid · base",
-      "SUV · 500 km · electric · sport",
-      "Coupe · 500 class · plug-in · luxury"
-    ],
-    explain: "LC (flagship GT coupe) + 500 (high class) + no suffix (gas). A pure-combustion grand tourer."
-  },
-  {
-    cat: "Decode the badge",
-    q: "Which two pieces of a badge together tell you almost everything about cost-to-run and how you fuel it?",
-    correct: "The number (power tier) and the suffix (h / h+ / e / none = how it's powered)",
-    options: [
-      "The trim name and the paint colour",
-      "The model letters and the wheel size",
-      "The province and the dealer code"
-    ],
-    explain: "The suffix tells you HOW it's powered (gas/hybrid/plug-in/electric → how you fuel/charge it) and the number tells you the power tier — the two biggest drivers of running cost and character."
-  },
-
-  /* ============================================================
-   * F. CROSS-MODEL DIFFERENCES & ADVICE
-   * ========================================================== */
-  {
-    cat: "Model differences",
-    q: "Client wants a midsize SUV and the option to never visit a gas station for the daily commute, but no range anxiety on road trips. Best single recommendation?",
-    correct: "RX 450h+ (plug-in hybrid RX)",
-    options: ["RX 350 (gas)", "RZ 450e (electric)", "GX 550 (gas)"],
-    explain: "The plug-in hybrid RX 450h+ covers commutes on electricity (charge at home) yet keeps a gas engine so road trips have zero range anxiety."
-  },
-  {
-    cat: "Model differences",
-    q: "Client wants a fully electric Lexus SUV. Which model?",
-    correct: "RZ",
-    options: ["NX", "GX", "TX"],
-    explain: "The RZ is the only all-electric Lexus SUV. The others top out at hybrid or plug-in hybrid."
-  },
-  {
-    cat: "Model differences",
-    q: "Client tows a large trailer and goes off-road. Which Lexus suits them best?",
-    correct: "LX (or GX) — body-on-frame, built for towing and trails",
-    options: ["UX (subcompact crossover)", "ES (sedan)", "RZ (electric crossover)"],
-    explain: "Heavy towing and off-roading call for the body-on-frame LX or GX, engineered for that duty. Car-based crossovers and sedans aren't the right tool."
-  },
-  {
-    cat: "Model differences",
-    q: "Two clients want a Lexus sedan: one prizes a serene, comfortable ride, the other wants sporty handling. Which models?",
-    correct: "ES for comfort; IS for sporty handling",
-    options: [
-      "IS for comfort; ES for sport",
-      "Both should get the LC",
-      "Both should get the LX"
-    ],
-    explain: "The ES is the comfort-tuned cruiser; the smaller IS is the sport sedan for the driver who wants engagement."
-  },
-  {
-    cat: "Model differences",
-    q: "Why might you steer a three-row-seat family AWAY from the RX?",
-    correct: "The RX is a two-row SUV; the three-row crossover is the TX",
-    options: [
-      "The RX has no AWD",
-      "The RX is electric-only",
-      "The RX can't be a hybrid"
-    ],
-    explain: "The RX seats two rows. Families needing a third row should look at the TX (car-based) or GX/LX (body-on-frame)."
-  },
-  {
-    cat: "Model differences",
-    q: "Within the RX line, how would you explain 350 vs 350h vs 450h+ vs 500h to a customer in one breath?",
-    correct: "350 = gas, 350h = hybrid, 450h+ = plug-in hybrid, 500h = high-output performance hybrid",
-    options: [
-      "They're four different body sizes of RX",
-      "They're four trim levels with the same engine",
-      "350 = electric, 500h = gas, others = diesel"
-    ],
-    explain: "Same RX body, four powertrains: gas (350), self-charging hybrid (350h), plug-in hybrid (450h+) and the hot performance hybrid (500h)."
-  },
-  {
-    cat: "Model differences",
-    q: "A buyer cross-shopping NX vs RX mainly needs to decide what?",
-    correct: "How much size/space and budget they want — NX is the smaller compact, RX the larger midsize",
-    options: [
-      "Whether they want a sedan or a coupe",
-      "Gas vs electric only — they have no overlap",
-      "Two-door vs four-door"
-    ],
-    explain: "NX and RX are both crossovers offered with similar powertrain choices; the main fork is size and price — compact NX vs midsize RX."
-  },
-  {
-    cat: "Model differences",
-    q: "Which is the most accurate one-line map of the SUV family by mission?",
-    correct: "UX entry · NX compact-value · RX midsize mainstream · TX 3-row family · GX/LX rugged flagships · RZ electric",
-    options: [
-      "They're all the same size, differing only in colour",
-      "UX flagship · LX entry · RX electric · RZ off-road",
-      "All SUVs are body-on-frame off-roaders"
-    ],
-    explain: "Each SUV has a clear job: UX (entry), NX (compact value), RX (midsize mainstream), TX (three-row family), GX/LX (rugged body-on-frame flagships), RZ (electric)."
-  },
-  {
-    cat: "Model differences",
-    q: "Client: 'I want the sportiest-DRIVING Lexus SUV, not just sporty looks.' Strong pick?",
-    correct: "RX 500h F SPORT Performance (high-output hybrid + DIRECT4 AWD)",
-    options: [
-      "UX 300h Premium",
-      "GX 550 Overtrail",
-      "RX 350h F SPORT Design"
-    ],
-    explain: "For genuine performance (not just the look), the RX 500h F SPORT Performance brings the high-output hybrid and DIRECT4 AWD. 'F SPORT Design' trims only add the styling."
-  },
-  {
-    cat: "Model differences",
-    q: "How would you contrast the RZ and the NX 450h+ for an eco-minded buyer?",
-    correct: "RZ = fully electric (charge only, no gas); NX 450h+ = plug-in hybrid (electric daily + gas backup)",
-    options: [
-      "RZ uses gas; NX 450h+ is electric-only",
-      "Both are gas-only",
-      "Both are self-charging hybrids with no plug"
-    ],
-    explain: "The RZ has no gas engine and must be charged; the NX 450h+ plugs in for electric commuting but keeps a gas engine for flexibility."
-  },
-  {
-    cat: "Model differences",
-    q: "Which best explains why a buyer might choose GX over LX despite both being rugged SUVs?",
-    correct: "The GX is a bit smaller and less expensive while keeping serious off-road/towing ability",
-    options: [
-      "The GX is the electric one",
-      "The GX is a sedan",
-      "The GX can't go off-road"
-    ],
-    explain: "The GX offers much of the LX's body-on-frame capability in a slightly smaller, more affordable package — the value choice in the rugged-SUV pair."
-  },
-  {
-    cat: "Model differences",
-    q: "Summarize the suffix system a customer must learn in one sentence.",
-    correct: "No letter = gas, h = hybrid, h+ = plug-in hybrid, e = electric — increasing electrification left to right",
-    options: [
-      "h = high power, + = bigger, e = economy, none = base",
-      "The letters mean trim levels: e is the top trim",
-      "Letters indicate the country of manufacture"
-    ],
-    explain: "That single rule — none → h → h+ → e — unlocks the whole lineup's powertrain story for any customer."
-  }
+  {"cat":"Powertrain suffixes","seg":"all","q":"On a Lexus badge, what does a lowercase \"h\" (e.g. RX 350h) signify?","correct":"A self-charging hybrid (gas engine + electric motors, never plugged in)","options":["A plug-in hybrid you recharge from an outlet","A fully electric vehicle","A high-output performance engine"],"explain":"\"h\" = hybrid: a gas engine paired with electric motors and a small battery that charges itself from the engine and braking. You never plug it in. Examples: NX 350h, RX 350h, UX 300h."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"What does the \"+\" in a name like RX 450h+ or NX 450h+ tell you?","correct":"It's a plug-in hybrid (PHEV) — bigger battery, charges from an outlet, drives on electric alone","options":["It's a longer-wheelbase version of the car","It has a more powerful gas engine than the non-plus version","It includes the F SPORT appearance package"],"explain":"The \"+\" added to \"h\" means plug-in hybrid. It has a much larger battery you recharge from a 120V/240V outlet, giving meaningful electric-only range before it behaves like a normal hybrid."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"A lowercase \"e\" at the end of a name (e.g. RZ 450e) indicates what?","correct":"A fully battery-electric vehicle (BEV) with no gas engine","options":["An \"economy\" fuel-saving tune of the gas engine","A mild hybrid with a tiny assist motor","A European-market-only model"],"explain":"\"e\" = fully electric (BEV). No gas engine at all. The RZ family (RZ 350e / 450e / 550e) and the new electric ES variants (ES 350e / 500e) use this suffix."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"A Lexus with just a number and NO trailing letter (e.g. GX 550, IS 350, LX 600) is what?","correct":"A conventional gasoline-only model (no electrification)","options":["Always a hybrid by default","A plug-in hybrid","A diesel model"],"explain":"No suffix letter = gas only. GX 550, IS 350, LS 500, LC 500 and LX 600 are pure combustion vehicles."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"Which suffix means you CAN plug the vehicle into a wall to recharge a usable electric range, yet it still has a gas engine for long trips?","correct":"h+ (plug-in hybrid)","options":["h (hybrid)","e (electric)","no suffix (gas)"],"explain":"Only h+ (plug-in hybrid) both plugs in AND keeps a gas engine. A plain \"h\" hybrid can't be plugged in; an \"e\" car has no gas engine at all."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"Which suffix means the vehicle has NO gas engine and must be charged?","correct":"e (electric)","options":["h (hybrid)","h+ (plug-in hybrid)","no suffix (gas)"],"explain":"\"e\" is a full battery-electric vehicle. It cannot use gasoline and is charged from a plug, like the RZ."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"Rank these by battery size, smallest to largest: hybrid (h), plug-in hybrid (h+), electric (e).","correct":"h  <  h+  <  e","options":["e  <  h+  <  h","h+  <  h  <  e","they all use the same battery"],"explain":"A plain hybrid needs only a small self-charging battery. A plug-in hybrid uses a larger battery for electric-only range. A full EV needs the largest battery of all since it's the only energy source."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"True or false: a regular Lexus hybrid (the \"h\" models) needs to be plugged in to work.","correct":"False — it charges itself; you never plug it in","options":["True — you must charge it nightly","True — but only in cold weather","Only the AWD versions need charging"],"explain":"A standard \"h\" hybrid is self-charging. The gas engine and regenerative braking keep the battery topped up. Only \"h+\" plug-ins and \"e\" EVs plug in."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"The NX 450h+ is best described as which type of vehicle?","correct":"A plug-in hybrid compact SUV","options":["A gas-only compact SUV","A fully electric compact SUV","A self-charging hybrid only"],"explain":"The \"h+\" makes the NX 450h+ Lexus's plug-in hybrid NX — electric range for daily driving plus a gas engine for road trips."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"The RZ (RZ 350e / 450e / 550e) is Lexus's only what?","correct":"Fully electric (BEV) model line","options":["Plug-in hybrid line","Body-on-frame off-roader","Hydrogen fuel-cell vehicle"],"explain":"Every RZ wears an \"e\", marking the RZ as Lexus's dedicated all-electric SUV with no gas option."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"Which everyday benefit is UNIQUE to a plug-in hybrid (h+) versus a normal hybrid (h)?","correct":"You can drive a meaningful distance on electricity alone before any gas is used","options":["Better crash safety ratings","A longer factory warranty on the paint","It never needs an oil change"],"explain":"The plug-in's bigger, rechargeable battery lets you cover typical daily commutes on electricity only. A regular hybrid's tiny battery just assists the gas engine — it can't go far on electricity alone."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"Which is the right \"electrification ladder\" from least to most electric?","correct":"Gas → Hybrid (h) → Plug-in hybrid (h+) → Electric (e)","options":["Electric (e) → Plug-in (h+) → Hybrid (h) → Gas","Hybrid (h) → Gas → Electric (e) → Plug-in (h+)","Plug-in (h+) → Gas → Hybrid (h) → Electric (e)"],"explain":"Lexus's powertrain ladder runs gas (no letter) → self-charging hybrid (h) → plug-in hybrid (h+) → battery electric (e), each step using more electric power."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"The LX 600 and LX 700h are the same flagship SUV. What's the key difference the names tell you?","correct":"The 700h is the hybrid; the 600 is gas-only","options":["The 700h is a plug-in hybrid; the 600 is a hybrid","The 700h is electric; the 600 is hybrid","Nothing — the numbers are just trim levels"],"explain":"The \"h\" on LX 700h marks the hybrid powertrain. The LX 600 has no suffix, so it's the pure-gas version of the same flagship."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"The UX 300h is offered only as which powertrain?","correct":"Hybrid (it's hybrid-only for 2026)","options":["Gas only","Plug-in hybrid only","Electric only"],"explain":"For 2026 the subcompact UX comes solely as the UX 300h hybrid — there's no gas-only UX in the lineup."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"If a client wants electric-only commuting on weekdays but a gas tank for long road trips with no charging stops, which suffix fits best?","correct":"h+ (plug-in hybrid)","options":["h (hybrid)","e (electric)","no suffix (gas)"],"explain":"A plug-in hybrid (h+) gives electric-only daily range plus a gas engine for unlimited long-distance driving — exactly that use case."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"If a client wants zero gas, zero tailpipe, and charges at home, which suffix fits?","correct":"e (fully electric)","options":["h (hybrid)","h+ (plug-in hybrid)","no suffix (gas)"],"explain":"Only the \"e\" battery-electric models (the RZ, electric ES) use no gasoline and have no tailpipe emissions."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"Among NX 350, NX 350h, and NX 450h+, which one can be driven on electricity from a wall charge?","correct":"NX 450h+ (plug-in hybrid)","options":["NX 350 (gas)","NX 350h (hybrid)","All three can"],"explain":"Only the NX 450h+ plugs in. The NX 350 is gas; the NX 350h is a self-charging hybrid that never plugs in."},
+  {"cat":"Powertrain suffixes","seg":"all","q":"Which statement about a self-charging hybrid (h) is correct?","correct":"It improves fuel economy and adds electric assist, but always carries and uses a gas engine","options":["It can complete most commutes with the gas engine off, charged from a wall","It has no gas engine","It must be plugged in overnight"],"explain":"A plain hybrid blends a gas engine with electric assist to save fuel, but the gas engine is always part of the equation and it's never plugged in."},
+  {"cat":"What the numbers mean","seg":"all","q":"Historically, the number on a Lexus (e.g. ES 350) referred to what?","correct":"Engine displacement — ES 350 meant a 3.5-litre engine","options":["The number of trim levels offered","The model's place in its release order","Horsepower divided by ten"],"explain":"Traditionally the badge number was engine size: 350 ≈ 3.5L, 500 ≈ 5.0L, 600 ≈ a 6-cylinder/larger class. It was a quick read on how big the engine was."},
+  {"cat":"What the numbers mean","seg":"all","q":"On modern turbocharged and electrified Lexus models, what does the number now mostly indicate?","correct":"A performance/output level — higher number = more power — not literal litres","options":["The exact engine displacement in every case","The model year","The towing capacity in thousands of kg"],"explain":"With small turbo and hybrid powertrains, the badge no longer equals displacement. e.g. the RX 350 uses a 2.4L turbo, not a 3.5L. The number now signals a performance tier — bigger number, more power."},
+  {"cat":"What the numbers mean","seg":"all","q":"Within one model, what does a HIGHER number generally mean (e.g. RX 350h vs RX 500h)?","correct":"More power / a higher-output, sportier powertrain","options":["Older model year","Lower price","Smaller body size"],"explain":"The bigger number flags the more powerful setup. The RX 500h is the high-output performance hybrid; the RX 350/350h are the standard-output versions."},
+  {"cat":"What the numbers mean","seg":"all","q":"Decode the full badge: RX 350h+.","correct":"RX model · 350 performance class · h = hybrid · + = plug-in","options":["RX model · 3.5L engine guaranteed · h = high-output · + = bigger body","RX trim 350 · h+ = horsepower-plus package","Radiant Crossover · 350 hp · hybrid-plus warranty"],"explain":"Read it in pieces: RX (the model) + 350 (output/performance tier) + h (hybrid) + \"+\" (plug-in). So: a plug-in hybrid RX at the 350 power tier. (In the 2026 line the PHEV RX wears the 450h+ badge.)"},
+  {"cat":"What the numbers mean","seg":"all","q":"True or false: the RX 350 has a 3.5-litre engine because of its number.","correct":"False — it actually uses a 2.4-litre turbocharged engine","options":["True — the number is always the displacement","True — it's a 3.5L V6","False — it has no engine, it's electric"],"explain":"This is the classic gotcha. The RX 350's number is a performance label, not its litres. It runs a 2.4L turbo-four. The badge number survived as a 'class' even though displacement shrank."},
+  {"cat":"What the numbers mean","seg":"all","q":"Why might two different Lexus models both wear \"350\" (e.g. NX 350 and RX 350) yet not have identical engines?","correct":"The number marks a comparable performance tier within each line, not one specific engine","options":["It's a mistake in Lexus's badging","They must share the exact same engine by rule","350 always means 350 horsepower exactly"],"explain":"\"350\" signals a similar output class across the lineup, but each model is tuned for its own size and mission, so the actual hardware can differ."},
+  {"cat":"What the numbers mean","seg":"all","q":"In the RX line, which has the most powerful powertrain based on its number?","correct":"RX 500h","options":["RX 350","RX 350h","They're all equal"],"explain":"500 > 350, so the RX 500h sits at the top for power — it's the high-output performance hybrid (F SPORT Performance)."},
+  {"cat":"What the numbers mean","seg":"all","q":"The GX 550 and LX 600 numbers tell a buyer roughly what, relative to each other?","correct":"They're large-SUV output classes; the LX (600) sits above the GX (550) in the flagship hierarchy","options":["The GX is more powerful because 550 is 'sportier'","Both have identical 5.5L and 6.0L engines exactly","The numbers are random marketing"],"explain":"Both are big body-on-frame SUVs; the numbers place the LX 600 as the larger flagship above the GX 550. (Both actually use twin-turbo V6s — again, not literal litres.)"},
+  {"cat":"What the numbers mean","seg":"all","q":"A customer says 'I want the 500h because it must have a 5.0-litre V8.' What's the accurate correction?","correct":"The 500h is a high-output turbo-hybrid; the number is a performance label, not 5.0 litres","options":["They're right, it's a 5.0L V8 hybrid","The 500h is actually electric","The 500h has the smallest engine in the range"],"explain":"Modern '500h' models (RX 500h, TX 500h) pair a turbo engine with hybrid electric power for high output — the badge denotes the performance tier, not displacement."},
+  {"cat":"What the numbers mean","seg":"all","q":"Putting it together, a Lexus name is read as which pattern?","correct":"Model letters + performance number + powertrain suffix (h / h+ / e)","options":["Trim level + price tier + colour code","Year + factory + option pack","Region + dealer + engine litres"],"explain":"Every badge follows the same grammar: the model (e.g. RX), a number for the performance/output class, and an optional suffix for electrification (h, h+, or e)."},
+  {"cat":"Models & segments","seg":"suv","q":"Order these Lexus SUVs from SMALLEST to LARGEST.","correct":"UX → NX → RX → TX/GX → LX","options":["LX → GX → RX → NX → UX","RX → UX → LX → NX → TX","NX → UX → RX → LX → GX"],"explain":"UX (subcompact) is smallest, then NX (compact), RX (midsize 2-row), TX (midsize 3-row) and GX (midsize body-on-frame) in the middle, with the LX flagship largest."},
+  {"cat":"Models & segments","seg":"suv","q":"Which Lexus SUV is the dedicated THREE-ROW, family-hauler crossover?","correct":"TX","options":["RX","NX","UX"],"explain":"The TX is Lexus's three-row crossover built for six or seven passengers. The RX is a two-row midsize; NX and UX are smaller still."},
+  {"cat":"Models & segments","seg":"suv","q":"Which is Lexus's smallest / entry SUV?","correct":"UX","options":["NX","RX","GX"],"explain":"The subcompact UX is the smallest and most affordable entry into a Lexus SUV."},
+  {"cat":"Models & segments","seg":"suv","q":"Which two SUVs are the rugged, body-on-frame, off-road-capable models (vs car-based crossovers)?","correct":"GX and LX","options":["NX and RX","UX and RZ","RX and TX"],"explain":"The GX and LX ride on truck-style body-on-frame platforms built for serious off-roading and towing. The UX, NX, RX, TX and RZ are car-based (unibody) crossovers."},
+  {"cat":"Models & segments","seg":"suv","q":"The RZ is which kind of Lexus?","correct":"A fully electric crossover SUV","options":["A gas sport sedan","A plug-in hybrid flagship","A body-on-frame off-roader"],"explain":"The RZ is Lexus's dedicated battery-electric SUV (RZ 350e / 450e / 550e)."},
+  {"cat":"Models & segments","seg":"sedan","q":"Which body style is the ES?","correct":"A midsize luxury sedan","options":["A compact SUV","A two-door coupe","A body-on-frame SUV"],"explain":"The ES is a comfort-focused midsize luxury sedan — for 2026 offered as a hybrid (350h) and as electric variants (350e / 500e)."},
+  {"cat":"Models & segments","seg":"sedan","q":"Which Lexus is the compact SPORT sedan, aimed at driving enthusiasts?","correct":"IS","options":["ES","LS","LC"],"explain":"The IS is the smaller rear-drive-rooted sport sedan. The ES is the larger comfort sedan; the LS is the flagship; the LC is a coupe."},
+  {"cat":"Models & segments","seg":"sedan","q":"Which is Lexus's flagship full-size luxury SEDAN?","correct":"LS","options":["ES","IS","LC"],"explain":"The LS sits at the very top of the sedan range as Lexus's flagship limousine. (For 2026 it's offered as the LS 500 Heritage Edition.)"},
+  {"cat":"Models & segments","seg":"coupe","q":"The LC is what type of vehicle?","correct":"A luxury grand-touring coupe (with a convertible variant)","options":["A compact crossover","A three-row SUV","An electric sedan"],"explain":"The LC is a flagship 2-door grand tourer — a halo coupe — and is also offered as the LC Convertible."},
+  {"cat":"Models & segments","seg":"suv","q":"Which Lexus is the flagship full-size luxury SUV?","correct":"LX","options":["GX","TX","RX"],"explain":"The LX is the top-of-the-line, body-on-frame full-size SUV — the SUV equivalent of the LS flagship."},
+  {"cat":"Models & segments","seg":"sedan","q":"How do the ES and IS sedans differ in mission?","correct":"ES = comfort/refinement focus; IS = compact, sportier driver's car","options":["ES is the sporty one; IS is the comfort cruiser","They're the same car with different names","ES is electric-only; IS is gas-only"],"explain":"The ES prioritizes a quiet, smooth, spacious ride; the smaller IS is tuned for handling and driver engagement."},
+  {"cat":"Models & segments","seg":"suv","q":"How do the GX and LX differ, both being body-on-frame SUVs?","correct":"LX is the larger, more expensive full-size flagship; GX is the slightly smaller, more rugged-value midsize","options":["GX is the flagship; LX is the entry model","GX is a car-based crossover; LX is body-on-frame","They are identical apart from colour options"],"explain":"Both are truck-based off-roaders, but the LX is the larger, plusher, pricier flagship while the GX slots just beneath it as a more compact, rugged choice."},
+  {"cat":"Models & segments","seg":"suv","q":"A buyer needs three rows of seats but wants a Lexus crossover (not a truck-based SUV). Best fit?","correct":"TX","options":["RX","GX","NX"],"explain":"The TX is the car-based three-row crossover. The GX also seats three rows but is a heavier body-on-frame off-roader; the RX and NX are two-row."},
+  {"cat":"Models & segments","seg":"coupe","q":"Which pair are the two-door / open-top halo cars in the range?","correct":"LC and LC Convertible","options":["ES and IS","RX and RZ","GX and LX"],"explain":"The LC coupe and LC Convertible are the flagship grand-touring two-doors that anchor the top of the car range."},
+  {"cat":"Models & segments","seg":"suv","q":"Between RX and NX, which is larger and positioned higher?","correct":"RX (midsize) sits above NX (compact)","options":["NX is larger than RX","They're the same size","NX is the flagship SUV"],"explain":"The RX is the midsize SUV one class above the compact NX. Many shoppers cross-shop them by size and budget."},
+  {"cat":"Models & segments","seg":"suv","q":"Which Lexus SUV is offered ONLY as an electric vehicle (no gas or hybrid option)?","correct":"RZ","options":["NX","RX","GX"],"explain":"The RZ is electric-only. The NX and RX offer gas/hybrid/plug-in choices; the GX is gas-only."},
+  {"cat":"Models & segments","seg":"all","q":"Roughly how many distinct models make up the 2026 Lexus lineup covered here?","correct":"About 14 models (ES, IS, LS, LC, LC Convertible, NX, NX Plug-in, RX, RX Plug-in, RZ, GX, LX, TX, UX)","options":["About 4 models","About 30 models","Exactly 2 models"],"explain":"The 2026 Canadian range spans ~14 models across sedans, coupes/convertible, and a broad SUV family from subcompact UX to flagship LX."},
+  {"cat":"Models & segments","seg":"sedan","q":"Which group is ALL sedans?","correct":"ES, IS, LS","options":["ES, NX, LC","IS, RX, LX","LS, UX, GX"],"explain":"ES, IS and LS are the three sedans. NX/RX/UX/GX/LX/TX/RZ are SUVs, and LC is a coupe."},
+  {"cat":"Models & segments","seg":"suv","q":"Which group is ALL SUVs?","correct":"UX, NX, RX, TX, GX, LX, RZ","options":["ES, IS, LS, LC","RX, ES, LC, IS","GX, LX, LS, LC"],"explain":"All seven of UX, NX, RX, TX, GX, LX and RZ are SUVs. ES/IS/LS are sedans and LC is a coupe."},
+  {"cat":"Models & segments","seg":"suv","q":"If a client wants the most off-road / overlanding capability, which models should you point to?","correct":"GX and LX (body-on-frame, available Overtrail off-road trims)","options":["ES and IS","UX and RZ","LC and LS"],"explain":"The body-on-frame GX and LX, especially in Overtrail guise, are built for off-road duty with the durability and clearance overlanders want."},
+  {"cat":"Models & segments","seg":"suv","q":"A first-time luxury buyer on a tight budget wants the easiest entry into a Lexus SUV. Best starting point?","correct":"UX (the subcompact, lowest-priced SUV)","options":["LX (flagship)","TX (three-row)","RZ (electric)"],"explain":"The subcompact UX is the smallest and most affordable SUV — the usual entry door into the brand."},
+  {"cat":"Models & segments","seg":"suv","q":"The TX is most directly cross-shopped against which need?","correct":"Families needing three rows / 6–7 seats in a comfortable crossover","options":["Buyers wanting a two-seat sports car","Off-road rock crawlers","Single commuters wanting the smallest footprint"],"explain":"The TX exists to give three-row families a roomy, car-like Lexus without stepping into a heavy body-on-frame truck."},
+  {"cat":"Models & segments","seg":"sedan","q":"Which best captures the ES's character versus the LS?","correct":"ES is the attainable midsize luxury sedan; LS is the larger, top-tier flagship","options":["ES is the flagship; LS is the entry sedan","ES is a coupe; LS is an SUV","They are the same size and price"],"explain":"The ES delivers core Lexus luxury at a midsize size and accessible price; the LS is the bigger, more exclusive flagship above it."},
+  {"cat":"Trim families","seg":"all","q":"What is the defining theme of an \"F SPORT\" trim?","correct":"A sportier look and feel — aggressive styling, sport seats, sport-tuned chassis bits","options":["The most fuel-efficient, eco-focused trim","The cheapest, most stripped-down trim","An off-road / overlanding trim"],"explain":"F SPORT is the athletic appearance-and-handling theme: unique mesh grille, bolstered sport seats, special wheels and sportier suspension tuning. It's about sporty character, not necessarily big power gains."},
+  {"cat":"Trim families","seg":"sedan","q":"How does \"F SPORT\" differ from a full \"F\" (e.g. the historic IS F / RC F) model?","correct":"F SPORT is a styling/handling package on a normal model; a full \"F\" is a hardcore high-performance car","options":["They are the same thing","F SPORT is more powerful than a full F","Full F means fuel-economy focused"],"explain":"Lexus's \"F\" division (named after Fuji Speedway) builds genuine high-performance machines. \"F SPORT\" is a sportier dress-up and chassis package layered onto regular models — sportier, but not a full-blown F."},
+  {"cat":"Trim families","seg":"all","q":"What does the \"Luxury\" trim family emphasize?","correct":"Comfort, refinement and upscale materials over sportiness","options":["Maximum track performance","Off-road hardware","The lowest possible price"],"explain":"Luxury trims lean into plush materials, comfort features and a refined ride — the opposite emphasis from the sporty F SPORT theme."},
+  {"cat":"Trim families","seg":"all","q":"Trims named \"Executive\", \"Executive VIP\" or \"Ultra Luxury\" represent what?","correct":"The top-tier, most opulent trims (rear-seat luxury, premium materials, every comfort)","options":["The base / entry trims","Track-focused performance trims","Off-road trims"],"explain":"Executive / VIP / Ultra Luxury are the flagship comfort trims, often loaded with rear-passenger luxury, semi-aniline leather, massage and the richest materials."},
+  {"cat":"Trim families","seg":"suv","q":"What do \"Overtrail\" / \"Overtrail+\" trims (on GX and LX) signal?","correct":"An off-road-focused package — more clearance, all-terrain tires, locking diff, rugged kit","options":["A track / circuit performance package","A luxury rear-lounge package","A fuel-saving eco package"],"explain":"Overtrail is the dirt-focused trim line on the body-on-frame GX and LX: all-terrain rubber, a locking differential and hardware tuned for getting off pavement."},
+  {"cat":"Trim families","seg":"all","q":"\"Premium\" and \"Signature\" trims generally sit where in the range?","correct":"At the entry / well-equipped base end","options":["At the very top, above Executive","They're off-road-only trims","They're the F performance trims"],"explain":"Premium and Signature are typical starting trims — nicely equipped but the accessible end of a model's ladder, below Luxury and Executive."},
+  {"cat":"Trim families","seg":"all","q":"What's the difference between \"F SPORT Design\" and \"F SPORT Performance\"?","correct":"Design = the sporty LOOK only; Performance = genuine added power/handling hardware","options":["Design is faster than Performance","They're identical names for the same thing","Performance is the eco version"],"explain":"F SPORT Design gives you the aggressive F SPORT styling without the mechanical upgrades. F SPORT Performance (e.g. RX 500h, TX 500h) actually adds power and performance hardware like DIRECT4 AWD."},
+  {"cat":"Trim families","seg":"suv","q":"On the RX, which trim is the true high-PERFORMANCE one (not just an appearance package)?","correct":"RX 500h F SPORT Performance","options":["RX 350h F SPORT Design","RX 350 Premium","RX 350h Luxury"],"explain":"The RX 500h F SPORT Performance is the genuinely quicker RX — high-output hybrid and DIRECT4 AWD. \"F SPORT Design\" trims only wear the look."},
+  {"cat":"Trim families","seg":"all","q":"A \"Black Line\" or \"Special Appearance\" trim is best described as what?","correct":"A special, often limited, appearance/styling edition","options":["A base economy trim","An off-road package","A long-wheelbase body"],"explain":"Black Line / Special Appearance editions are styling-led special editions — blacked-out or unique trim accents — for buyers who want a distinctive look."},
+  {"cat":"Trim families","seg":"suv","q":"Two clients: one wants the sportiest-LOOKING and -handling RX, the other wants the most pampering rear seat. Which trims?","correct":"F SPORT for the sporty client; Executive / Ultra Luxury for the pampering client","options":["Premium for both","Overtrail for the sporty one; F SPORT for luxury","Signature for both"],"explain":"Match the trim THEME to the buyer: F SPORT = sporty look/feel; Executive/Ultra Luxury = top-tier comfort and rear-seat luxury."},
+  {"cat":"Trim families","seg":"all","q":"Which lineup of trim THEMES is ordered from sporty → luxurious in character?","correct":"F SPORT → Premium → Luxury → Executive/Ultra Luxury","options":["Executive → Luxury → Premium → F SPORT only by price","Overtrail → F SPORT → Premium → Signature","Black Line → Signature → F SPORT → Luxury"],"explain":"In character: F SPORT is the sporty theme, Premium the well-equipped base, Luxury the comfort step, and Executive/Ultra Luxury the opulent top. (Exact pricing ladders vary by model.)"},
+  {"cat":"Trim families","seg":"all","q":"Does choosing an F SPORT trim usually change the car's POWERTRAIN/engine?","correct":"Not by itself — F SPORT is mainly look + chassis; power is set by the number/suffix (e.g. 500h)","options":["Yes, F SPORT always doubles the horsepower","Yes, F SPORT makes any car electric","Yes, F SPORT removes the hybrid system"],"explain":"The engine/output is told by the number and suffix (350h, 500h, etc.). F SPORT changes styling and handling feel; only \"F SPORT Performance\" variants pair the look with a genuinely hotter powertrain."},
+  {"cat":"Trim families","seg":"all","q":"A client loves the F SPORT styling but doesn't care about extra performance and wants to save money. Best recommendation?","correct":"An \"F SPORT Design\" trim — the look without paying for performance hardware","options":["An Overtrail trim","The Executive VIP trim","The base Signature with no F SPORT cues"],"explain":"F SPORT Design delivers the aggressive F SPORT appearance without the costlier performance upgrades — ideal for a looks-first, budget-conscious buyer."},
+  {"cat":"Trim families","seg":"all","q":"Across models, the SAME trim name (e.g. \"Luxury\") signals what?","correct":"A consistent THEME/positioning, even though exact equipment differs by model","options":["Identical features and price on every model","Nothing — names are random per model","Only the paint colour"],"explain":"Trim names are a positioning language: 'Luxury' always means the comfort-oriented step, 'F SPORT' always the sporty one — but the specific contents scale with each model's size and price."},
+  {"cat":"Trim families","seg":"suv","q":"Which trim family would you show an off-road / overlanding enthusiast on the GX?","correct":"Overtrail / Overtrail+","options":["F SPORT","Executive","Ultra Luxury"],"explain":"Overtrail and Overtrail+ are the GX's off-road trims with the all-terrain hardware adventurers want."},
+  {"cat":"Trim families","seg":"sedan","q":"On the IS sport sedan, most trims carry an F SPORT theme. What does that tell you about the IS's positioning?","correct":"The IS is positioned as the driver-focused, sporty sedan in the range","options":["The IS is the comfort-first flagship","The IS is an off-road model","The IS is electric-only"],"explain":"Leaning heavily on F SPORT trims reflects the IS's identity as the athletic, enthusiast-oriented compact sport sedan."},
+  {"cat":"Trim families","seg":"all","q":"Which statement about trims vs models is most accurate?","correct":"The MODEL sets the size/segment; the TRIM sets the theme and equipment level within that model","options":["Trim and model mean the same thing","The trim determines the body style","The model determines the seat colour only"],"explain":"First pick the model (size/segment/body), then the trim tailors character (sporty vs luxurious vs off-road) and how loaded it is."},
+  {"cat":"Trim families","seg":"all","q":"\"DIRECT4\" that shows up on F SPORT Performance and electric models refers to what?","correct":"Lexus's advanced all-wheel-drive system that manages torque front-to-rear","options":["A four-zone climate control system","A four-speaker base audio package","A four-year free maintenance plan"],"explain":"DIRECT4 is Lexus's performance AWD tech (on high-output hybrids and EVs like RX 500h, RZ) that continuously varies drive between the axles for grip and agility."},
+  {"cat":"Trim families","seg":"suv","q":"A buyer asks for 'the sporty one' and 'the fancy one' in the NX. Which two trim themes answer that?","correct":"F SPORT (sporty) and Ultra Luxury / Executive (fancy)","options":["Premium (sporty) and Signature (fancy)","Overtrail (sporty) and F SPORT (fancy)","Black Line (sporty) and Premium (fancy)"],"explain":"On the NX, F SPORT trims cover the sporty want and Ultra Luxury/Executive cover the upscale, fancy want."},
+  {"cat":"Trim families","seg":"all","q":"Why might a top luxury trim cost much more than a sporty F SPORT trim on the same model?","correct":"Top luxury trims pile on premium materials, rear-seat comfort and tech; F SPORT focuses spend on look/handling","options":["Because F SPORT trims have no engine","Because luxury trims are always smaller","Because F SPORT is always the most expensive trim"],"explain":"Different priorities: the Executive/Ultra Luxury trims invest in opulence and rear-passenger experience, which can out-price the performance-styling F SPORT trims."},
+  {"cat":"Trim families","seg":"all","q":"If a client cares mostly about ride comfort and quiet, which trim THEME steers them wrong?","correct":"F SPORT (it adds sportier, firmer suspension tuning)","options":["Luxury","Executive","Ultra Luxury"],"explain":"F SPORT's sport-tuned chassis trades some ride softness for sharper handling — the comfort-seeking buyer is better in a Luxury/Executive trim."},
+  {"cat":"Trim families","seg":"all","q":"Which best summarizes the F SPORT value proposition to a customer?","correct":"Sportier styling and a more engaging drive feel, without becoming a hardcore track car","options":["Maximum luxury and rear-seat space","Best fuel economy in the range","Most off-road capability"],"explain":"F SPORT = the look and feel of sport — exclusive styling, sport seats, firmer tuning — for buyers who want attitude and engagement short of a full 'F' performance car."},
+  {"cat":"Trim families","seg":"suv","q":"On the LX flagship, which trim would suit a client who wants luxury but also genuine trail capability?","correct":"An Overtrail+ trim (rugged hardware) — vs the Luxury/Executive VIP comfort trims","options":["F SPORT","Black Line","Signature"],"explain":"The LX's Overtrail+ pairs the flagship's luxury with off-road hardware; the Luxury and Executive VIP trims focus purely on on-road opulence."},
+  {"cat":"Trim families","seg":"all","q":"Numbers like 'F SPORT 2' and 'F SPORT 3' on a trim typically indicate what?","correct":"Escalating equipment tiers within the F SPORT theme (3 more loaded than 2)","options":["The number of cylinders","Two- vs three-row seating","The number of driven wheels"],"explain":"Lexus uses numbered sub-grades (F SPORT 2, F SPORT 3, etc.) to mark progressively more equipment within the same F SPORT styling theme."},
+  {"cat":"Decode the badge","seg":"suv","q":"Decode: NX 350h.","correct":"Compact SUV (NX) · 350 output class · h = self-charging hybrid","options":["Compact SUV · 3.5L V6 · plug-in hybrid","Midsize SUV · 350 hp · electric","Sedan · 350 trim · gas"],"explain":"NX (compact SUV) + 350 (performance class) + h (hybrid). A self-charging hybrid compact SUV."},
+  {"cat":"Decode the badge","seg":"suv","q":"Decode: GX 550 Overtrail.","correct":"Body-on-frame midsize SUV (GX) · 550 output class · gas · Overtrail = off-road trim","options":["Compact crossover · 5.5L · hybrid · luxury trim","Electric SUV · 550 km range · sport trim","Sedan · 550 hp · F SPORT"],"explain":"GX (rugged body-on-frame SUV) + 550 (output class, no suffix = gas) + Overtrail (the off-road trim theme)."},
+  {"cat":"Decode the badge","seg":"suv","q":"Decode: RZ 450e.","correct":"Electric SUV (RZ) · 450 output class · e = fully battery-electric","options":["Hybrid SUV · 4.5L · eco trim","Plug-in SUV · 450 km · executive","Gas SUV · 450 hp · F SPORT"],"explain":"RZ (Lexus's electric SUV) + 450 (output/performance class) + e (battery-electric). No gas at all."},
+  {"cat":"Decode the badge","seg":"sedan","q":"Decode: ES 350h.","correct":"Luxury sedan (ES) · 350 class · h = hybrid","options":["Luxury sedan · 3.5L V6 · plug-in","SUV · 350 hp · electric","Coupe · 350 trim · gas"],"explain":"ES (midsize luxury sedan) + 350 (class) + h (hybrid). The self-charging hybrid ES."},
+  {"cat":"Decode the badge","seg":"suv","q":"Decode: TX 500h F SPORT Performance.","correct":"Three-row SUV (TX) · 500 high-output class · h = hybrid · genuine performance trim","options":["Three-row SUV · 5.0L V8 · appearance-only trim","Sedan · 500 hp · electric · base trim","Two-row SUV · 500 class · plug-in · eco trim"],"explain":"TX (3-row crossover) + 500 (high-output class) + h (hybrid) + F SPORT Performance (real added performance, not just looks)."},
+  {"cat":"Decode the badge","seg":"suv","q":"Decode: LX 700h Executive VIP.","correct":"Flagship SUV (LX) · 700 class · h = hybrid · Executive VIP = top luxury trim","options":["Compact SUV · 7.0L · gas · base trim","Sedan · 700 hp · electric · sport trim","Coupe · 700 class · plug-in · off-road trim"],"explain":"LX (full-size flagship SUV) + 700 (top output class) + h (hybrid) + Executive VIP (the most opulent trim)."},
+  {"cat":"Decode the badge","seg":"sedan","q":"Decode: IS 350 F SPORT.","correct":"Sport sedan (IS) · 350 class · gas · F SPORT styling/handling theme","options":["Sport sedan · 3.5L · hybrid · luxury theme","SUV · 350 hp · electric · off-road","Coupe · 350 class · plug-in · base"],"explain":"IS (compact sport sedan) + 350 (class) + no suffix (gas) + F SPORT (the sporty appearance/handling theme)."},
+  {"cat":"Decode the badge","seg":"suv","q":"Decode: RX 450h+ (in the 2026 RX Plug-in).","correct":"Midsize SUV (RX) · 450 class · h = hybrid · + = plug-in (PHEV)","options":["Midsize SUV · 4.5L V8 · gas · plus-size body","Sedan · 450 hp · electric · plus warranty","SUV · 450 class · hybrid · no plug"],"explain":"RX (midsize SUV) + 450 (class) + h (hybrid) + \"+\" (plug-in). The plug-in hybrid RX."},
+  {"cat":"Decode the badge","seg":"coupe","q":"Decode: LC 500.","correct":"Luxury grand-touring coupe (LC) · 500 class · gas, no electrification","options":["Sedan · 5.0L · hybrid · base","SUV · 500 km · electric · sport","Coupe · 500 class · plug-in · luxury"],"explain":"LC (flagship GT coupe) + 500 (high class) + no suffix (gas). A pure-combustion grand tourer."},
+  {"cat":"Decode the badge","seg":"all","q":"Which two pieces of a badge together tell you almost everything about cost-to-run and how you fuel it?","correct":"The number (power tier) and the suffix (h / h+ / e / none = how it's powered)","options":["The trim name and the paint colour","The model letters and the wheel size","The province and the dealer code"],"explain":"The suffix tells you HOW it's powered (gas/hybrid/plug-in/electric → how you fuel/charge it) and the number tells you the power tier — the two biggest drivers of running cost and character."},
+  {"cat":"Model differences","seg":"suv","q":"Client wants a midsize SUV and the option to never visit a gas station for the daily commute, but no range anxiety on road trips. Best single recommendation?","correct":"RX 450h+ (plug-in hybrid RX)","options":["RX 350 (gas)","RZ 450e (electric)","GX 550 (gas)"],"explain":"The plug-in hybrid RX 450h+ covers commutes on electricity (charge at home) yet keeps a gas engine so road trips have zero range anxiety."},
+  {"cat":"Model differences","seg":"suv","q":"Client wants a fully electric Lexus SUV. Which model?","correct":"RZ","options":["NX","GX","TX"],"explain":"The RZ is the only all-electric Lexus SUV. The others top out at hybrid or plug-in hybrid."},
+  {"cat":"Model differences","seg":"suv","q":"Client tows a large trailer and goes off-road. Which Lexus suits them best?","correct":"LX (or GX) — body-on-frame, built for towing and trails","options":["UX (subcompact crossover)","ES (sedan)","RZ (electric crossover)"],"explain":"Heavy towing and off-roading call for the body-on-frame LX or GX, engineered for that duty. Car-based crossovers and sedans aren't the right tool."},
+  {"cat":"Model differences","seg":"sedan","q":"Two clients want a Lexus sedan: one prizes a serene, comfortable ride, the other wants sporty handling. Which models?","correct":"ES for comfort; IS for sporty handling","options":["IS for comfort; ES for sport","Both should get the LC","Both should get the LX"],"explain":"The ES is the comfort-tuned cruiser; the smaller IS is the sport sedan for the driver who wants engagement."},
+  {"cat":"Model differences","seg":"suv","q":"Why might you steer a three-row-seat family AWAY from the RX?","correct":"The RX is a two-row SUV; the three-row crossover is the TX","options":["The RX has no AWD","The RX is electric-only","The RX can't be a hybrid"],"explain":"The RX seats two rows. Families needing a third row should look at the TX (car-based) or GX/LX (body-on-frame)."},
+  {"cat":"Model differences","seg":"suv","q":"Within the RX line, how would you explain 350 vs 350h vs 450h+ vs 500h to a customer in one breath?","correct":"350 = gas, 350h = hybrid, 450h+ = plug-in hybrid, 500h = high-output performance hybrid","options":["They're four different body sizes of RX","They're four trim levels with the same engine","350 = electric, 500h = gas, others = diesel"],"explain":"Same RX body, four powertrains: gas (350), self-charging hybrid (350h), plug-in hybrid (450h+) and the hot performance hybrid (500h)."},
+  {"cat":"Model differences","seg":"suv","q":"A buyer cross-shopping NX vs RX mainly needs to decide what?","correct":"How much size/space and budget they want — NX is the smaller compact, RX the larger midsize","options":["Whether they want a sedan or a coupe","Gas vs electric only — they have no overlap","Two-door vs four-door"],"explain":"NX and RX are both crossovers offered with similar powertrain choices; the main fork is size and price — compact NX vs midsize RX."},
+  {"cat":"Model differences","seg":"suv","q":"Which is the most accurate one-line map of the SUV family by mission?","correct":"UX entry · NX compact-value · RX midsize mainstream · TX 3-row family · GX/LX rugged flagships · RZ electric","options":["They're all the same size, differing only in colour","UX flagship · LX entry · RX electric · RZ off-road","All SUVs are body-on-frame off-roaders"],"explain":"Each SUV has a clear job: UX (entry), NX (compact value), RX (midsize mainstream), TX (three-row family), GX/LX (rugged body-on-frame flagships), RZ (electric)."},
+  {"cat":"Model differences","seg":"suv","q":"Client: 'I want the sportiest-DRIVING Lexus SUV, not just sporty looks.' Strong pick?","correct":"RX 500h F SPORT Performance (high-output hybrid + DIRECT4 AWD)","options":["UX 300h Premium","GX 550 Overtrail","RX 350h F SPORT Design"],"explain":"For genuine performance (not just the look), the RX 500h F SPORT Performance brings the high-output hybrid and DIRECT4 AWD. 'F SPORT Design' trims only add the styling."},
+  {"cat":"Model differences","seg":"suv","q":"How would you contrast the RZ and the NX 450h+ for an eco-minded buyer?","correct":"RZ = fully electric (charge only, no gas); NX 450h+ = plug-in hybrid (electric daily + gas backup)","options":["RZ uses gas; NX 450h+ is electric-only","Both are gas-only","Both are self-charging hybrids with no plug"],"explain":"The RZ has no gas engine and must be charged; the NX 450h+ plugs in for electric commuting but keeps a gas engine for flexibility."},
+  {"cat":"Model differences","seg":"suv","q":"Which best explains why a buyer might choose GX over LX despite both being rugged SUVs?","correct":"The GX is a bit smaller and less expensive while keeping serious off-road/towing ability","options":["The GX is the electric one","The GX is a sedan","The GX can't go off-road"],"explain":"The GX offers much of the LX's body-on-frame capability in a slightly smaller, more affordable package — the value choice in the rugged-SUV pair."},
+  {"cat":"Model differences","seg":"all","q":"Summarize the suffix system a customer must learn in one sentence.","correct":"No letter = gas, h = hybrid, h+ = plug-in hybrid, e = electric — increasing electrification left to right","options":["h = high power, + = bigger, e = economy, none = base","The letters mean trim levels: e is the top trim","Letters indicate the country of manufacture"],"explain":"That single rule — none → h → h+ → e — unlocks the whole lineup's powertrain story for any customer."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A client wants a comfort-oriented RX but insists on a panoramic moonroof. What's the most affordable trim that includes it?","correct":"Luxury","options":["F SPORT Design","Premium","F SPORT 2"],"explain":"On the RX, panoramic moonroof first appears on the Luxury trim (from $71,696). Trims below it — like F SPORT Design — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A client loves the RX and wants Mark Levinson premium audio. What's the most affordable trim that includes it?","correct":"Executive","options":["Ultra Luxury","Luxury","F SPORT 2"],"explain":"On the RX, mark levinson premium audio first appears on the Executive trim (from $79,701). Trims below it — like Ultra Luxury — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An RX buyer wants heated rear seats for the kids. What's the most affordable trim that includes it?","correct":"Luxury","options":["F SPORT Design","Premium","F SPORT 2"],"explain":"On the RX, heated rear seats first appears on the Luxury trim (from $71,696). Trims below it — like F SPORT Design — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An RX buyer wants a Head-Up Display. What's the most affordable trim that includes it?","correct":"F SPORT 2","options":["Luxury","F SPORT Design","Premium"],"explain":"On the RX, head-up display first appears on the F SPORT 2 trim (from $74,196). Trims below it — like Luxury — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An RX buyer wants the 360° Panoramic View camera. What's the most affordable trim that includes it?","correct":"Ultra Luxury","options":["Luxury","F SPORT 2","F SPORT Design"],"explain":"On the RX, 360° camera / panoramic view monitor first appears on the Ultra Luxury trim (from $75,201). Trims below it — like Luxury — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An RX buyer wants the digital rear-view mirror. What's the most affordable trim that includes it?","correct":"Ultra Luxury","options":["Luxury","F SPORT 2","F SPORT Design"],"explain":"On the RX, digital rear-view mirror first appears on the Ultra Luxury trim (from $75,201). Trims below it — like Luxury — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A client wants a comfort-focused NX with a panoramic moonroof. What's the most affordable trim that includes it?","correct":"Ultra Luxury","options":["F SPORT 2","Luxury","Premium"],"explain":"On the NX, panoramic moonroof first appears on the Ultra Luxury trim (from $66,584). Trims below it — like F SPORT 2 — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An NX buyer wants ventilated (cooled) front seats. What's the most affordable trim that includes it?","correct":"Premium","options":["F SPORT 2","F SPORT 3","Luxury"],"explain":"On the NX, the Premium trim (from $58,477) is the entry point that includes ventilated / cooled front seats."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An NX buyer wants Mark Levinson audio. What's the most affordable trim that includes it?","correct":"Executive","options":["Ultra Luxury","F SPORT 2","Luxury"],"explain":"On the NX, mark levinson premium audio first appears on the Executive trim (from $71,850). Trims below it — like Ultra Luxury — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An NX buyer wants the digital key (phone as key). What's the most affordable trim that includes it?","correct":"Luxury","options":["Premium","F SPORT 2","F SPORT 3"],"explain":"On the NX, digital key (phone as key) first appears on the Luxury trim (from $62,616). Trims below it — like Premium — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An NX buyer wants Advanced Park self-parking. What's the most affordable trim that includes it?","correct":"Executive","options":["Ultra Luxury","F SPORT 2","Luxury"],"explain":"On the NX, advanced park (self-parking) first appears on the Executive trim (from $71,850). Trims below it — like Ultra Luxury — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A family wants a three-row TX — which trim is the entry point?","correct":"Luxury","options":["F SPORT 3","F SPORT 3 + Towing Hitch","F SPORT Performance 2"],"explain":"On the TX, the Luxury trim (from $73,252) is the entry point that includes third-row seating (6+ seats)."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A TX buyer wants second-row captain’s chairs. What's the most affordable trim that includes it?","correct":"Executive 7-Pass","options":["Ultra Luxury","Luxury","F SPORT 3"],"explain":"On the TX, second-row captain's chairs first appears on the Executive 7-Pass trim (from $84,258). Trims below it — like Ultra Luxury — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A TX buyer wants a panoramic moonroof. What's the most affordable trim that includes it?","correct":"Luxury","options":["F SPORT 3","F SPORT 3 + Towing Hitch","F SPORT Performance 2"],"explain":"On the TX, the Luxury trim (from $73,252) is the entry point that includes panoramic moonroof."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A TX buyer wants Mark Levinson audio. What's the most affordable trim that includes it?","correct":"Executive 7-Pass","options":["Ultra Luxury","Luxury","F SPORT 3"],"explain":"On the TX, mark levinson premium audio first appears on the Executive 7-Pass trim (from $84,258). Trims below it — like Ultra Luxury — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A GX buyer wants second-row captain’s chairs. What's the most affordable trim that includes it?","correct":"Executive","options":["Overtrail+","Luxury","Overtrail"],"explain":"On the GX, second-row captain's chairs first appears on the Executive trim (from $116,620). Trims below it — like Overtrail+ — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A GX buyer wants Mark Levinson audio. What's the most affordable trim that includes it?","correct":"Luxury","options":["Overtrail","Premium","Signature"],"explain":"On the GX, mark levinson premium audio first appears on the Luxury trim (from $112,084). Trims below it — like Overtrail — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A GX buyer wants a panoramic moonroof. What's the most affordable trim that includes it?","correct":"Executive","options":["Overtrail+","Luxury","Overtrail"],"explain":"On the GX, panoramic moonroof first appears on the Executive trim (from $116,620). Trims below it — like Overtrail+ — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A GX buyer wants third-row seating. What's the most affordable trim that includes it?","correct":"Signature","options":["Premium","Overtrail","Luxury"],"explain":"On the GX, the Signature trim (from $90,787) is the entry point that includes third-row seating (6+ seats)."},
+  {"cat":"Customer scenarios","seg":"sedan","q":"An ES buyer wants Mark Levinson audio. What's the most affordable trim that includes it?","correct":"Premium+","options":["Signature","Premium","Luxury"],"explain":"On the ES, mark levinson premium audio first appears on the Premium+ trim (from $69,957). Trims below it — like Signature — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"sedan","q":"An ES buyer wants ventilated (cooled) front seats. What's the most affordable trim that includes it?","correct":"Signature","options":["Premium","Premium+","Luxury"],"explain":"On the ES, the Signature trim (from $63,297) is the entry point that includes ventilated / cooled front seats."},
+  {"cat":"Customer scenarios","seg":"sedan","q":"An ES buyer wants heated rear seats. What's the most affordable trim that includes it?","correct":"Executive VIP","options":["Luxury+","Luxury","Premium"],"explain":"On the ES, heated rear seats first appears on the Executive VIP trim (from $81,360). Trims below it — like Luxury+ — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"sedan","q":"An ES buyer wants premium semi-aniline leather. What's the most affordable trim that includes it?","correct":"Luxury","options":["Premium","Premium+","Signature"],"explain":"On the ES, premium semi-aniline leather first appears on the Luxury trim (from $74,955). Trims below it — like Premium — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An RZ (electric) buyer wants a panoramic moonroof. What's the most affordable trim that includes it?","correct":"Luxury","options":["Signature","F SPORT","Executive"],"explain":"On the RZ All-Electric, panoramic moonroof first appears on the Luxury trim (from $76,381). Trims below it — like Signature — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An RZ buyer wants ventilated front seats. What's the most affordable trim that includes it?","correct":"Signature","options":["F SPORT","Luxury","Executive"],"explain":"On the RZ All-Electric, the Signature trim (from $63,380) is the entry point that includes ventilated / cooled front seats."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An RZ buyer wants the 360° camera. What's the most affordable trim that includes it?","correct":"Luxury","options":["Signature","F SPORT","Executive"],"explain":"On the RZ All-Electric, 360° camera / panoramic view monitor first appears on the Luxury trim (from $76,381). Trims below it — like Signature — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A UX buyer wants ventilated front seats. What's the most affordable trim that includes it?","correct":"Premium","options":["F SPORT  Design","Luxury","FSPORT 2"],"explain":"On the UX, the Premium trim (from $48,442) is the entry point that includes ventilated / cooled front seats."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A UX buyer wants a Head-Up Display. What's the most affordable trim that includes it?","correct":"Luxury","options":["F SPORT  Design","Premium","FSPORT 2"],"explain":"On the UX, head-up display first appears on the Luxury trim (from $53,906). Trims below it — like F SPORT  Design — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A plug-in NX (NX 450h+) buyer wants a heated steering wheel. What's the most affordable trim that includes it?","correct":"Ultra Premium","options":["F SPORT 2","F SPORT 3","Luxury"],"explain":"On the NX Plug-in, the Ultra Premium trim (from $63,387) is the entry point that includes heated steering wheel."},
+  {"cat":"Customer scenarios","seg":"suv","q":"A plug-in NX buyer wants a panoramic moonroof. What's the most affordable trim that includes it?","correct":"Executive","options":["F SPORT 2","Luxury","Ultra Premium"],"explain":"On the NX Plug-in, panoramic moonroof first appears on the Executive trim (from $80,002). Trims below it — like F SPORT 2 — don't include it, so it's the most affordable way in."},
+  {"cat":"Customer scenarios","seg":"suv","q":"An LX buyer wants massaging front seats. What's the most affordable trim that includes it?","correct":"Overtrail+ (2ROW)","options":["Premium","F SPORT","Overtrail+ (3 ROW)"],"explain":"On the LX, massage seats first appears on the Overtrail+ (2ROW) trim (from $150,326). Trims below it — like Premium — don't include it, so it's the most affordable way in."}
 ];

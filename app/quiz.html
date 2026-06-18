@@ -25,32 +25,38 @@
   }
   .wrap{max-width:680px;margin:0 auto;padding:0 18px 64px}
 
-  /* Header */
-  header{
-    background:var(--black); color:#fff; padding:22px 18px 20px;
-    position:sticky; top:0; z-index:10;
-  }
+  header{background:var(--black); color:#fff; padding:22px 18px 20px; position:sticky; top:0; z-index:10;}
   header .inner{max-width:680px;margin:0 auto}
-  .brand{font-family:'Nobel',sans-serif;font-weight:700;letter-spacing:.32em;
-    text-transform:uppercase;font-size:15px;margin:0}
+  .brand{font-family:'Nobel',sans-serif;font-weight:700;letter-spacing:.32em;text-transform:uppercase;font-size:15px;margin:0}
   .sub{font-size:12.5px;letter-spacing:.04em;color:#cfcfcf;margin:5px 0 0;text-transform:uppercase}
   .progress{height:4px;background:#333;border-radius:3px;margin-top:14px;overflow:hidden}
   .progress > i{display:block;height:100%;width:0;background:var(--accent);transition:width .35s ease}
   .meta{display:flex;justify-content:space-between;font-size:12.5px;color:#cfcfcf;margin-top:8px;letter-spacing:.03em}
   .meta b{color:#fff;font-weight:600}
+  .meta.hide{visibility:hidden}
 
-  /* Card */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:4px;
-    margin-top:20px;padding:22px 20px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-  .tag{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--grey);border:1px solid var(--line);border-radius:2px;padding:3px 9px;margin-bottom:14px}
-  h2.q{font-family:'Nobel',sans-serif;font-weight:400;font-size:21px;line-height:1.32;
-    margin:0 0 18px;color:var(--ink)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:4px;margin-top:20px;padding:22px 20px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);border:1px solid var(--line);border-radius:2px;padding:3px 9px;margin-bottom:14px}
+  h2.q{font-family:'Nobel',sans-serif;font-weight:400;font-size:21px;line-height:1.32;margin:0 0 18px;color:var(--ink)}
 
-  /* Options */
-  .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);
-    border-radius:4px;padding:13px 15px;margin:0 0 11px;font-size:16px;color:var(--ink);
-    cursor:pointer;font-family:inherit;transition:border-color .12s,background .12s;line-height:1.35}
+  /* Start menu */
+  .lead{font-family:'Nobel',sans-serif;font-size:24px;font-weight:400;margin:4px 0 4px}
+  .leadsub{color:var(--grey);font-size:15px;margin:0 0 6px}
+  .seclabel{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);margin:22px 0 10px;font-weight:600}
+  .scopes{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:480px){.scopes{grid-template-columns:1fr}}
+  .scope{border:1.5px solid var(--line);border-radius:5px;padding:14px 15px;cursor:pointer;background:#fff;text-align:left;font-family:inherit;transition:border-color .12s,background .12s}
+  .scope:hover{border-color:#9a9a9a}
+  .scope.sel{border-color:var(--ink);background:#fafafa;box-shadow:inset 0 0 0 1px var(--ink)}
+  .scope .nm{font-weight:700;font-size:16px;display:flex;justify-content:space-between;align-items:baseline}
+  .scope .ct{font-size:12px;color:var(--grey);font-weight:600}
+  .scope .ds{font-size:13px;color:var(--grey);margin-top:3px;line-height:1.35}
+  .segctl{display:flex;gap:8px;flex-wrap:wrap}
+  .seg{border:1.5px solid var(--line);background:#fff;border-radius:4px;padding:10px 16px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink)}
+  .seg.sel{border-color:var(--ink);background:var(--black);color:#fff}
+  .startbtn{margin-top:24px;width:100%}
+
+  .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:4px;padding:13px 15px;margin:0 0 11px;font-size:16px;color:var(--ink);cursor:pointer;font-family:inherit;transition:border-color .12s,background .12s;line-height:1.35}
   .opt:hover:not(:disabled){border-color:#9a9a9a}
   .opt:disabled{cursor:default}
   .opt .mk{display:inline-block;width:22px;font-weight:700;color:var(--grey)}
@@ -60,31 +66,23 @@
   .opt.wrong .mk{color:var(--accent)}
   .opt.dim{opacity:.55}
 
-  /* Explanation */
-  .explain{border-left:3px solid var(--ink);background:#fafafa;padding:13px 15px;margin-top:6px;
-    font-size:15px;color:#333;border-radius:0 4px 4px 0;display:none}
+  .explain{border-left:3px solid var(--ink);background:#fafafa;padding:13px 15px;margin-top:6px;font-size:15px;color:#333;border-radius:0 4px 4px 0;display:none}
   .explain.show{display:block}
-  .explain b{font-weight:700}
   .verdict{font-weight:700;display:block;margin-bottom:5px;letter-spacing:.02em}
   .verdict.ok{color:var(--good)} .verdict.no{color:var(--accent)}
 
-  /* Controls */
   .row{display:flex;gap:12px;margin-top:18px;align-items:center}
-  .btn{background:var(--black);color:#fff;border:none;border-radius:3px;padding:13px 22px;
-    font-size:14px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;cursor:pointer;
-    font-family:inherit}
+  .btn{background:var(--black);color:#fff;border:none;border-radius:3px;padding:13px 22px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;cursor:pointer;font-family:inherit}
   .btn:disabled{opacity:.35;cursor:default}
   .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
   .spacer{flex:1}
 
-  /* Result screen */
   .result{text-align:center;padding:34px 20px}
   .score{font-family:'Nobel',sans-serif;font-size:54px;line-height:1;margin:6px 0}
   .score small{font-size:22px;color:var(--grey)}
   .pct{font-size:17px;color:var(--grey);margin-bottom:6px}
   .breakdown{text-align:left;margin:22px auto 0;max-width:430px}
-  .breakdown .b{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);
-    padding:9px 2px;font-size:14.5px}
+  .breakdown .b{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:9px 2px;font-size:14.5px}
   .breakdown .b b{font-weight:600}
   .note{font-size:13px;color:var(--grey);margin-top:22px;line-height:1.5}
   footer{font-size:11.5px;color:#9a9a9a;text-align:center;margin-top:34px;line-height:1.6}
@@ -94,10 +92,10 @@
 <header>
   <div class="inner">
     <p class="brand">Lexus &middot; 2026 Lineup Quiz</p>
-    <p class="sub">Models, trims &amp; powertrain naming</p>
+    <p class="sub" id="hsub">Models, trims &amp; powertrain naming</p>
     <div class="progress"><i id="bar"></i></div>
-    <div class="meta">
-      <span id="counter">Question 1</span>
+    <div class="meta hide" id="metaRow">
+      <span id="counter"></span>
       <span>Score <b id="liveScore">0</b></span>
     </div>
   </div>
@@ -112,7 +110,6 @@
 (function(){
   "use strict";
 
-  /* Fisher–Yates shuffle — fresh randomization every load */
   function shuffle(a){
     a = a.slice();
     for(let i=a.length-1;i>0;i--){
@@ -123,144 +120,187 @@
   }
 
   const SRC = (window.QUIZ_QUESTIONS||[]).slice();
-  // Build a randomized run: shuffle question order AND each question's options.
-  function buildRun(){
-    return shuffle(SRC).map(item=>{
-      const opts = shuffle([{t:item.correct, ok:true},
-                            ...item.options.map(o=>({t:o, ok:false}))]);
-      return {cat:item.cat, q:item.q, explain:item.explain, opts:opts};
-    });
-  }
+  const LETTERS = ['A','B','C','D','E','F'];
 
-  let run = buildRun();
-  let idx = 0;
-  let score = 0;
-  let answered = false;
-  const total = run.length;
-  const byCat = {};   // {cat:{right,total}}
+  const SCOPES = [
+    {id:'all',   nm:'Everything',           ds:'The whole 2026 lineup'},
+    {id:'suv',   nm:'SUVs',                 ds:'UX · NX · RX · TX · GX · LX · RZ'},
+    {id:'sedan', nm:'Sedans',               ds:'ES · IS · LS'},
+    {id:'coupe', nm:'Coupe & Convertible',  ds:'LC · LC Convertible'}
+  ];
+  // A scope shows its own body questions plus the foundational ('all') ones.
+  function poolFor(id){ return id==='all' ? SRC.slice() : SRC.filter(q=>q.seg==='all'||q.seg===id); }
+  function countFor(id){ return poolFor(id).length; }
+
+  const LENGTHS = [{n:0,label:'Full'},{n:50,label:'50'},{n:20,label:'20'}];
+
+  // session state
+  let sel = {scope:'all', len:0};
+  let run=[], idx=0, score=0, answered=false, byCat={};
 
   const area = document.getElementById('quizArea');
   const bar = document.getElementById('bar');
   const counter = document.getElementById('counter');
   const liveScore = document.getElementById('liveScore');
-  const LETTERS = ['A','B','C','D','E','F'];
+  const metaRow = document.getElementById('metaRow');
+  const hsub = document.getElementById('hsub');
+
+  /* ---------------- START MENU ---------------- */
+  function showMenu(){
+    metaRow.classList.add('hide');
+    bar.style.width='0%';
+    hsub.textContent='Choose your quiz';
+
+    let html='<div class="card">';
+    html+='<p class="lead">Build your quiz</p>';
+    html+='<p class="leadsub">Pick a part of the lineup, then how many questions. '+
+          'The naming &amp; powertrain fundamentals are always included.</p>';
+
+    html+='<div class="seclabel">1 · Focus</div><div class="scopes">';
+    SCOPES.forEach(s=>{
+      html+='<button class="scope'+(sel.scope===s.id?' sel':'')+'" data-scope="'+s.id+'">'+
+              '<span class="nm">'+esc(s.nm)+'<span class="ct">'+countFor(s.id)+' Q</span></span>'+
+              '<span class="ds">'+esc(s.ds)+'</span></button>';
+    });
+    html+='</div>';
+
+    html+='<div class="seclabel">2 · Length</div><div class="segctl" id="lenCtl">';
+    LENGTHS.forEach(l=>{
+      const avail = countFor(sel.scope);
+      const label = l.n===0 ? ('Full · '+avail) : String(l.n);
+      const dis = (l.n!==0 && l.n>avail);
+      html+='<button class="seg'+(sel.len===l.n?' sel':'')+'" data-len="'+l.n+'"'+(dis?' disabled style="opacity:.35"':'')+'>'+
+            esc(label)+'</button>';
+    });
+    html+='</div>';
+
+    html+='<button class="btn startbtn" id="go">Start quiz &nbsp;→</button>';
+    html+='</div>';
+    html+='<p class="note">Every quiz reshuffles its questions <b>and</b> each question’s '+
+          'answer order, so no two runs are the same.</p>';
+    area.innerHTML=html;
+
+    area.querySelectorAll('.scope').forEach(b=>b.addEventListener('click',()=>{
+      sel.scope=b.dataset.scope;
+      const avail=countFor(sel.scope);
+      if(sel.len!==0 && sel.len>avail) sel.len=0;   // length no longer valid
+      showMenu();
+    }));
+    area.querySelectorAll('.seg').forEach(b=>b.addEventListener('click',()=>{
+      if(b.disabled) return; sel.len=parseInt(b.dataset.len,10); showMenu();
+    }));
+    document.getElementById('go').addEventListener('click', start);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  /* ---------------- QUIZ ---------------- */
+  function start(){
+    const pool = poolFor(sel.scope);
+    let qs = shuffle(pool);
+    if(sel.len>0) qs = qs.slice(0, sel.len);
+    run = qs.map(item=>({
+      cat:item.cat, q:item.q, explain:item.explain,
+      opts: shuffle([{t:item.correct,ok:true}, ...item.options.map(o=>({t:o,ok:false}))])
+    }));
+    idx=0; score=0; byCat={};
+    const sc = SCOPES.find(s=>s.id===sel.scope);
+    hsub.textContent = sc.nm + (sel.len?(' · '+sel.len+' questions'):'');
+    metaRow.classList.remove('hide');
+    render();
+  }
 
   function render(){
     const item = run[idx];
-    counter.textContent = 'Question '+(idx+1)+' of '+total;
+    counter.textContent = 'Question '+(idx+1)+' of '+run.length;
     liveScore.textContent = score;
-    bar.style.width = ((idx)/total*100)+'%';
-    answered = false;
+    bar.style.width = (idx/run.length*100)+'%';
+    answered=false;
 
-    let html = '<div class="card">';
-    html += '<span class="tag">'+esc(item.cat)+'</span>';
-    html += '<h2 class="q">'+esc(item.q)+'</h2>';
-    html += '<div id="opts">';
+    let html='<div class="card">';
+    html+='<span class="tag">'+esc(item.cat)+'</span>';
+    html+='<h2 class="q">'+esc(item.q)+'</h2><div id="opts">';
     item.opts.forEach((o,i)=>{
-      html += '<button class="opt" data-i="'+i+'">'+
-              '<span class="mk">'+LETTERS[i]+'</span>'+esc(o.t)+'</button>';
+      html+='<button class="opt" data-i="'+i+'"><span class="mk">'+LETTERS[i]+'</span>'+esc(o.t)+'</button>';
     });
-    html += '</div>';
-    html += '<div class="explain" id="explain"></div>';
-    html += '<div class="row">'+
-              '<button class="btn ghost" id="restart">Restart &amp; reshuffle</button>'+
-              '<span class="spacer"></span>'+
-              '<button class="btn" id="next" disabled>'+
-                (idx===total-1?'See results':'Next')+'</button>'+
-            '</div>';
-    html += '</div>';
-    area.innerHTML = html;
+    html+='</div><div class="explain" id="explain"></div>';
+    html+='<div class="row">'+
+            '<button class="btn ghost" id="menu">Menu</button>'+
+            '<span class="spacer"></span>'+
+            '<button class="btn" id="next" disabled>'+(idx===run.length-1?'See results':'Next')+'</button>'+
+          '</div></div>';
+    area.innerHTML=html;
 
-    area.querySelectorAll('.opt').forEach(b=>{
-      b.addEventListener('click', ()=>choose(parseInt(b.dataset.i,10)));
-    });
+    area.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>choose(parseInt(b.dataset.i,10))));
     document.getElementById('next').addEventListener('click', nextQ);
-    document.getElementById('restart').addEventListener('click', restart);
+    document.getElementById('menu').addEventListener('click', showMenu);
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
   function choose(i){
-    if(answered) return;
-    answered = true;
-    const item = run[idx];
-    const buttons = area.querySelectorAll('.opt');
-    const correctIdx = item.opts.findIndex(o=>o.ok);
-    const isRight = item.opts[i].ok;
-
+    if(answered) return; answered=true;
+    const item=run[idx];
+    const buttons=area.querySelectorAll('.opt');
+    const correctIdx=item.opts.findIndex(o=>o.ok);
+    const isRight=item.opts[i].ok;
     buttons.forEach((b,bi)=>{
-      b.disabled = true;
+      b.disabled=true;
       if(bi===correctIdx) b.classList.add('correct');
       else if(bi===i) b.classList.add('wrong');
       else b.classList.add('dim');
     });
-
-    byCat[item.cat] = byCat[item.cat] || {right:0,total:0};
+    byCat[item.cat]=byCat[item.cat]||{right:0,total:0};
     byCat[item.cat].total++;
     if(isRight){ score++; byCat[item.cat].right++; }
-    liveScore.textContent = score;
-
-    const ex = document.getElementById('explain');
-    ex.innerHTML = '<span class="verdict '+(isRight?'ok':'no')+'">'+
-        (isRight?'✓ Correct':'✗ Not quite')+'</span>'+ esc(item.explain);
+    liveScore.textContent=score;
+    const ex=document.getElementById('explain');
+    ex.innerHTML='<span class="verdict '+(isRight?'ok':'no')+'">'+(isRight?'✓ Correct':'✗ Not quite')+'</span>'+esc(item.explain);
     ex.classList.add('show');
-    document.getElementById('next').disabled = false;
+    document.getElementById('next').disabled=false;
   }
 
-  function nextQ(){
-    if(idx < total-1){ idx++; render(); }
-    else showResult();
-  }
-
-  function restart(){
-    run = buildRun(); idx = 0; score = 0;
-    for(const k in byCat) delete byCat[k];
-    render();
-  }
+  function nextQ(){ if(idx<run.length-1){ idx++; render(); } else showResult(); }
 
   function showResult(){
-    bar.style.width = '100%';
-    counter.textContent = 'Complete';
-    const pct = Math.round(score/total*100);
+    bar.style.width='100%';
+    counter.textContent='Complete';
+    const pct=Math.round(score/run.length*100);
     let msg;
-    if(pct>=90) msg='Showroom-ready. You know the lineup cold.';
-    else if(pct>=75) msg='Strong. A quick review of the misses and you’re set.';
-    else if(pct>=55) msg='Good base — reshuffle and run it again to lock it in.';
+    if(pct>=90) msg='Showroom-ready. You know this cold.';
+    else if(pct>=75) msg='Strong. Review the misses and you’re set.';
+    else if(pct>=55) msg='Good base — run it again to lock it in.';
     else msg='Worth another lap — the explanations are the study guide.';
 
-    let html = '<div class="card result">';
-    html += '<div class="pct">You scored</div>';
-    html += '<div class="score">'+score+'<small> / '+total+'</small></div>';
-    html += '<div class="pct">'+pct+'%</div>';
-    html += '<div class="note" style="max-width:380px;margin:14px auto 0">'+esc(msg)+'</div>';
-
-    html += '<div class="breakdown">';
+    let html='<div class="card result">';
+    html+='<div class="pct">You scored</div>';
+    html+='<div class="score">'+score+'<small> / '+run.length+'</small></div>';
+    html+='<div class="pct">'+pct+'%</div>';
+    html+='<div class="note" style="max-width:380px;margin:14px auto 0">'+esc(msg)+'</div>';
+    html+='<div class="breakdown">';
     Object.keys(byCat).sort().forEach(c=>{
       const r=byCat[c];
-      html += '<div class="b"><span>'+esc(c)+'</span><b>'+r.right+' / '+r.total+'</b></div>';
+      html+='<div class="b"><span>'+esc(c)+'</span><b>'+r.right+' / '+r.total+'</b></div>';
     });
-    html += '</div>';
-
-    html += '<div class="row" style="justify-content:center;margin-top:26px">'+
-              '<button class="btn" id="again">New shuffled quiz</button>'+
-            '</div>';
-    html += '<p class="note">Every run reshuffles all '+total+
-            ' questions and every answer’s option order, so no two quizzes are the same.</p>';
-    html += '</div>';
-    area.innerHTML = html;
-    document.getElementById('again').addEventListener('click', restart);
+    html+='</div>';
+    html+='<div class="row" style="justify-content:center;margin-top:26px">'+
+            '<button class="btn ghost" id="menu2">Change focus</button>'+
+            '<button class="btn" id="again">New shuffled quiz</button>'+
+          '</div>';
+    html+='<p class="note">Same focus, freshly reshuffled every time.</p></div>';
+    area.innerHTML=html;
+    document.getElementById('again').addEventListener('click', start);
+    document.getElementById('menu2').addEventListener('click', showMenu);
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
   function esc(s){
-    return String(s).replace(/[&<>"']/g,m=>(
-      {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   }
 
   if(!SRC.length){
-    area.innerHTML = '<div class="card"><h2 class="q">No questions loaded.</h2>'+
+    area.innerHTML='<div class="card"><h2 class="q">No questions loaded.</h2>'+
       '<p>Make sure <code>quiz-data.js</code> is in the same folder.</p></div>';
   } else {
-    render();
+    showMenu();
   }
 })();
 </script>
