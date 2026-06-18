@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lexus 2026 Lineup Quiz — Sales Knowledge</title>
+<style>
+  @font-face{font-family:'Nobel';src:url('fonts/NobelBook.woff2') format('woff2'),url('fonts/NobelBook.woff') format('woff');font-weight:400;font-display:swap}
+  @font-face{font-family:'Nobel';src:url('fonts/NobelBold.woff2') format('woff2'),url('fonts/NobelBold.woff') format('woff');font-weight:700;font-display:swap}
+  @font-face{font-family:'Source Sans Pro';src:url('fonts/SourceSansPro-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Source Sans Pro';src:url('fonts/SourceSansPro-Semibold.woff2') format('woff2');font-weight:600;font-display:swap}
+  @font-face{font-family:'Source Sans Pro';src:url('fonts/SourceSansPro-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+
+  :root{
+    --ink:#1a1a1a; --grey:#5b5b5b; --line:#e3e3e3; --bg:#f6f6f6;
+    --card:#ffffff; --accent:#cc0000; --good:#0a7d33; --goodbg:#eaf6ee;
+    --badbg:#fcecec; --black:#0b0b0b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Source Sans Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5;
+    -webkit-font-smoothing:antialiased; padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px 64px}
+
+  /* Header */
+  header{
+    background:var(--black); color:#fff; padding:22px 18px 20px;
+    position:sticky; top:0; z-index:10;
+  }
+  header .inner{max-width:680px;margin:0 auto}
+  .brand{font-family:'Nobel',sans-serif;font-weight:700;letter-spacing:.32em;
+    text-transform:uppercase;font-size:15px;margin:0}
+  .sub{font-size:12.5px;letter-spacing:.04em;color:#cfcfcf;margin:5px 0 0;text-transform:uppercase}
+  .progress{height:4px;background:#333;border-radius:3px;margin-top:14px;overflow:hidden}
+  .progress > i{display:block;height:100%;width:0;background:var(--accent);transition:width .35s ease}
+  .meta{display:flex;justify-content:space-between;font-size:12.5px;color:#cfcfcf;margin-top:8px;letter-spacing:.03em}
+  .meta b{color:#fff;font-weight:600}
+
+  /* Card */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:4px;
+    margin-top:20px;padding:22px 20px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--grey);border:1px solid var(--line);border-radius:2px;padding:3px 9px;margin-bottom:14px}
+  h2.q{font-family:'Nobel',sans-serif;font-weight:400;font-size:21px;line-height:1.32;
+    margin:0 0 18px;color:var(--ink)}
+
+  /* Options */
+  .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);
+    border-radius:4px;padding:13px 15px;margin:0 0 11px;font-size:16px;color:var(--ink);
+    cursor:pointer;font-family:inherit;transition:border-color .12s,background .12s;line-height:1.35}
+  .opt:hover:not(:disabled){border-color:#9a9a9a}
+  .opt:disabled{cursor:default}
+  .opt .mk{display:inline-block;width:22px;font-weight:700;color:var(--grey)}
+  .opt.correct{border-color:var(--good);background:var(--goodbg)}
+  .opt.correct .mk{color:var(--good)}
+  .opt.wrong{border-color:var(--accent);background:var(--badbg)}
+  .opt.wrong .mk{color:var(--accent)}
+  .opt.dim{opacity:.55}
+
+  /* Explanation */
+  .explain{border-left:3px solid var(--ink);background:#fafafa;padding:13px 15px;margin-top:6px;
+    font-size:15px;color:#333;border-radius:0 4px 4px 0;display:none}
+  .explain.show{display:block}
+  .explain b{font-weight:700}
+  .verdict{font-weight:700;display:block;margin-bottom:5px;letter-spacing:.02em}
+  .verdict.ok{color:var(--good)} .verdict.no{color:var(--accent)}
+
+  /* Controls */
+  .row{display:flex;gap:12px;margin-top:18px;align-items:center}
+  .btn{background:var(--black);color:#fff;border:none;border-radius:3px;padding:13px 22px;
+    font-size:14px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;cursor:pointer;
+    font-family:inherit}
+  .btn:disabled{opacity:.35;cursor:default}
+  .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+  .spacer{flex:1}
+
+  /* Result screen */
+  .result{text-align:center;padding:34px 20px}
+  .score{font-family:'Nobel',sans-serif;font-size:54px;line-height:1;margin:6px 0}
+  .score small{font-size:22px;color:var(--grey)}
+  .pct{font-size:17px;color:var(--grey);margin-bottom:6px}
+  .breakdown{text-align:left;margin:22px auto 0;max-width:430px}
+  .breakdown .b{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);
+    padding:9px 2px;font-size:14.5px}
+  .breakdown .b b{font-weight:600}
+  .note{font-size:13px;color:var(--grey);margin-top:22px;line-height:1.5}
+  footer{font-size:11.5px;color:#9a9a9a;text-align:center;margin-top:34px;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <p class="brand">Lexus &middot; 2026 Lineup Quiz</p>
+    <p class="sub">Models, trims &amp; powertrain naming</p>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="meta">
+      <span id="counter">Question 1</span>
+      <span>Score <b id="liveScore">0</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="quizArea"></div>
+</div>
+
+<script src="quiz-data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  /* Fisher–Yates shuffle — fresh randomization every load */
+  function shuffle(a){
+    a = a.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  const SRC = (window.QUIZ_QUESTIONS||[]).slice();
+  // Build a randomized run: shuffle question order AND each question's options.
+  function buildRun(){
+    return shuffle(SRC).map(item=>{
+      const opts = shuffle([{t:item.correct, ok:true},
+                            ...item.options.map(o=>({t:o, ok:false}))]);
+      return {cat:item.cat, q:item.q, explain:item.explain, opts:opts};
+    });
+  }
+
+  let run = buildRun();
+  let idx = 0;
+  let score = 0;
+  let answered = false;
+  const total = run.length;
+  const byCat = {};   // {cat:{right,total}}
+
+  const area = document.getElementById('quizArea');
+  const bar = document.getElementById('bar');
+  const counter = document.getElementById('counter');
+  const liveScore = document.getElementById('liveScore');
+  const LETTERS = ['A','B','C','D','E','F'];
+
+  function render(){
+    const item = run[idx];
+    counter.textContent = 'Question '+(idx+1)+' of '+total;
+    liveScore.textContent = score;
+    bar.style.width = ((idx)/total*100)+'%';
+    answered = false;
+
+    let html = '<div class="card">';
+    html += '<span class="tag">'+esc(item.cat)+'</span>';
+    html += '<h2 class="q">'+esc(item.q)+'</h2>';
+    html += '<div id="opts">';
+    item.opts.forEach((o,i)=>{
+      html += '<button class="opt" data-i="'+i+'">'+
+              '<span class="mk">'+LETTERS[i]+'</span>'+esc(o.t)+'</button>';
+    });
+    html += '</div>';
+    html += '<div class="explain" id="explain"></div>';
+    html += '<div class="row">'+
+              '<button class="btn ghost" id="restart">Restart &amp; reshuffle</button>'+
+              '<span class="spacer"></span>'+
+              '<button class="btn" id="next" disabled>'+
+                (idx===total-1?'See results':'Next')+'</button>'+
+            '</div>';
+    html += '</div>';
+    area.innerHTML = html;
+
+    area.querySelectorAll('.opt').forEach(b=>{
+      b.addEventListener('click', ()=>choose(parseInt(b.dataset.i,10)));
+    });
+    document.getElementById('next').addEventListener('click', nextQ);
+    document.getElementById('restart').addEventListener('click', restart);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function choose(i){
+    if(answered) return;
+    answered = true;
+    const item = run[idx];
+    const buttons = area.querySelectorAll('.opt');
+    const correctIdx = item.opts.findIndex(o=>o.ok);
+    const isRight = item.opts[i].ok;
+
+    buttons.forEach((b,bi)=>{
+      b.disabled = true;
+      if(bi===correctIdx) b.classList.add('correct');
+      else if(bi===i) b.classList.add('wrong');
+      else b.classList.add('dim');
+    });
+
+    byCat[item.cat] = byCat[item.cat] || {right:0,total:0};
+    byCat[item.cat].total++;
+    if(isRight){ score++; byCat[item.cat].right++; }
+    liveScore.textContent = score;
+
+    const ex = document.getElementById('explain');
+    ex.innerHTML = '<span class="verdict '+(isRight?'ok':'no')+'">'+
+        (isRight?'✓ Correct':'✗ Not quite')+'</span>'+ esc(item.explain);
+    ex.classList.add('show');
+    document.getElementById('next').disabled = false;
+  }
+
+  function nextQ(){
+    if(idx < total-1){ idx++; render(); }
+    else showResult();
+  }
+
+  function restart(){
+    run = buildRun(); idx = 0; score = 0;
+    for(const k in byCat) delete byCat[k];
+    render();
+  }
+
+  function showResult(){
+    bar.style.width = '100%';
+    counter.textContent = 'Complete';
+    const pct = Math.round(score/total*100);
+    let msg;
+    if(pct>=90) msg='Showroom-ready. You know the lineup cold.';
+    else if(pct>=75) msg='Strong. A quick review of the misses and you’re set.';
+    else if(pct>=55) msg='Good base — reshuffle and run it again to lock it in.';
+    else msg='Worth another lap — the explanations are the study guide.';
+
+    let html = '<div class="card result">';
+    html += '<div class="pct">You scored</div>';
+    html += '<div class="score">'+score+'<small> / '+total+'</small></div>';
+    html += '<div class="pct">'+pct+'%</div>';
+    html += '<div class="note" style="max-width:380px;margin:14px auto 0">'+esc(msg)+'</div>';
+
+    html += '<div class="breakdown">';
+    Object.keys(byCat).sort().forEach(c=>{
+      const r=byCat[c];
+      html += '<div class="b"><span>'+esc(c)+'</span><b>'+r.right+' / '+r.total+'</b></div>';
+    });
+    html += '</div>';
+
+    html += '<div class="row" style="justify-content:center;margin-top:26px">'+
+              '<button class="btn" id="again">New shuffled quiz</button>'+
+            '</div>';
+    html += '<p class="note">Every run reshuffles all '+total+
+            ' questions and every answer’s option order, so no two quizzes are the same.</p>';
+    html += '</div>';
+    area.innerHTML = html;
+    document.getElementById('again').addEventListener('click', restart);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g,m=>(
+      {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  if(!SRC.length){
+    area.innerHTML = '<div class="card"><h2 class="q">No questions loaded.</h2>'+
+      '<p>Make sure <code>quiz-data.js</code> is in the same folder.</p></div>';
+  } else {
+    render();
+  }
+})();
+</script>
+<footer>
+  Internal study tool &middot; 2026 model year (Canada) &middot; data from lexus.ca.<br>
+  Powertrain rule of thumb: <b>no letter</b> = gas &middot; <b>h</b> = hybrid &middot;
+  <b>h+</b> = plug-in hybrid &middot; <b>e</b> = electric.
+</footer>
+</body>
+</html>

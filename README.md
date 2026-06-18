@@ -92,6 +92,35 @@ https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/index.html
    python3 scripts/scrape_inventory.py --sample
    ```
 
+## Knowledge quiz (`app/quiz.html`)
+
+A self-contained study quiz for learning the **general** differences across the
+2026 lineup — built straight from the same lexus.ca data baked into this repo.
+It targets the things a sales exec actually needs to explain, not per-trim spec
+memorization:
+
+- **What the powertrain suffixes mean** — `(no letter)` = gas, `h` = self-charging
+  hybrid, `h+` = plug-in hybrid, `e` = fully electric (the RZ).
+- **What the numbers signify** (e.g. decoding `RX 350h+`) — historically engine
+  displacement, now a performance/output tier on turbo + electrified models.
+- **Model vs model** — size/segment ladder (UX → NX → RX → TX → GX → LX), sedans
+  (ES/IS/LS), coupe (LC), and which are body-on-frame vs car-based.
+- **Trim families** — F SPORT (sporty look/handling) vs full "F", F SPORT Design
+  vs F SPORT Performance, Luxury / Executive / Ultra Luxury, Overtrail off-road.
+
+97 multiple-choice questions, each with an explanation. **Every load reshuffles
+the question order *and* each question's answer options** (Fisher–Yates), so no
+two runs are alike. One question at a time with instant feedback, a live score,
+and a per-topic breakdown at the end. Open it like the main app:
+
+```
+open app/quiz.html
+# or via CDN: https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/app/quiz.html
+```
+
+Questions live in `app/quiz-data.js` (the correct answer is stored separately
+from the distractors so it's never "always A").
+
 ## Run it
 
 The app is a static site with the dataset baked into `app/data.js`, so it works by
