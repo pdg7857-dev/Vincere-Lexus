@@ -3,7 +3,12 @@ import { requireUser } from "@/lib/auth";
 import { StagesManager } from "@/components/settings/StagesManager";
 import { LeadSourcesManager } from "@/components/settings/LeadSourcesManager";
 import { SecurityPanel } from "@/components/settings/SecurityPanel";
-import { card } from "@/lib/ui";
+import { SubmitButton } from "@/components/SubmitButton";
+import { pollEmailNow } from "@/lib/actions/intake";
+import { getLastPolled, imapConfigured } from "@/lib/imap";
+import { aiEnabled } from "@/lib/ai";
+import { formatDateTime } from "@/lib/format";
+import { card, btnGhost } from "@/lib/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +36,12 @@ export default async function SettingsPage() {
     isWon: s.isWon,
     dealCount: countMap[s.id] ?? 0,
   }));
+
+  const lastPolled = await getLastPolled();
+  const imapOn = imapConfigured();
+  const aiOn = aiEnabled();
+  const bridgeOn = Boolean(process.env.INTAKE_API_TOKEN);
+  const baseUrl = process.env.CRM_BASE_URL || "http://localhost:3000";
 
   return (
     <div className="space-y-8">
@@ -78,14 +89,60 @@ export default async function SettingsPage() {
         </div>
       </section>
 
-      <section className={card + " opacity-70"}>
-        <h2 className="mb-2 font-semibold text-slate-800">
-          Email &amp; Claude intake <span className="text-xs text-slate-400">(Phase 2)</span>
-        </h2>
-        <p className="text-sm text-slate-500">
-          IMAP inbox connection, forwarded-address intake, AI signature parsing, and
-          the local Claude bridge (text updates → CRM) land in Phase 2.
+      <section className={card}>
+        <h2 className="mb-2 font-semibold text-slate-800">AI &amp; intake status</h2>
+        <ul className="space-y-1 text-sm text-slate-600">
+          <li>
+            Anthropic API (signature parsing + summaries):{" "}
+            <strong>{aiOn ? "configured ✓" : "not configured"}</strong>
+            {!aiOn && " — set ANTHROPIC_API_KEY in .env"}
+          </li>
+          <li>
+            Claude bridge token:{" "}
+            <strong>{bridgeOn ? "set ✓" : "not set"}</strong>
+            {!bridgeOn && " — set INTAKE_API_TOKEN in .env"}
+          </li>
+        </ul>
+      </section>
+
+      <section className={card}>
+        <h2 className="mb-1 font-semibold text-slate-800">Email intake (IMAP)</h2>
+        <p className="mb-3 text-sm text-slate-500">
+          {imapOn
+            ? "Inbox connection configured in .env."
+            : "Set IMAP_HOST / IMAP_USER / IMAP_PASSWORD in .env to enable."}{" "}
+          Last polled: {lastPolled ? formatDateTime(lastPolled) : "never"}.
         </p>
+        <form action={pollEmailNow}>
+          <SubmitButton className={btnGhost} pendingLabel="Polling…">
+            Poll inbox now
+          </SubmitButton>
+        </form>
+        <p className="mt-2 text-xs text-slate-400">
+          For automatic polling, run <code>npm run worker</code> alongside the app.
+        </p>
+      </section>
+
+      <section className={card}>
+        <h2 className="mb-1 font-semibold text-slate-800">Claude bridge (text updates)</h2>
+        <p className="mb-3 text-sm text-slate-500">
+          Add this to Claude Desktop’s <code>claude_desktop_config.json</code>, then tell
+          Claude things like “log a call with Mr. Tan — wants a white RX 350 under $80k”.
+        </p>
+        <pre className="overflow-x-auto rounded-lg bg-slate-900 p-3 text-xs text-slate-100">
+          {`{
+  "mcpServers": {
+    "vincere-crm": {
+      "command": "npx",
+      "args": ["tsx", "/absolute/path/to/crm/mcp/server.ts"],
+      "env": {
+        "INTAKE_API_TOKEN": "<copy from .env>",
+        "CRM_BASE_URL": "${baseUrl}"
+      }
+    }
+  }
+}`}
+        </pre>
       </section>
     </div>
   );

@@ -1,4 +1,5 @@
 import { requireUser } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 import { NavLink } from "@/components/NavLink";
 import { logoutAction } from "@/lib/actions/auth";
 
@@ -7,6 +8,7 @@ const NAV = [
   { href: "/customers", label: "Customers", icon: "👥" },
   { href: "/inventory", label: "Inventory", icon: "🚗" },
   { href: "/pipeline", label: "Pipeline", icon: "📋" },
+  { href: "/intake", label: "Intake", icon: "📥" },
   { href: "/settings", label: "Settings", icon: "⚙️" },
 ];
 
@@ -16,6 +18,9 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   const user = await requireUser();
+  const pendingIntake = await prisma.intakeEvent.count({
+    where: { status: "PENDING" },
+  });
 
   return (
     <div className="flex min-h-screen">
@@ -29,6 +34,11 @@ export default async function AppLayout({
             <NavLink key={n.href} href={n.href}>
               <span aria-hidden>{n.icon}</span>
               {n.label}
+              {n.href === "/intake" && pendingIntake > 0 && (
+                <span className="ml-auto rounded-full bg-violet-600 px-2 py-0.5 text-xs font-semibold text-white">
+                  {pendingIntake}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

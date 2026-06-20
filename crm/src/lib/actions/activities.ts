@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { activitySchema } from "@/lib/validation";
+import { summarize, aiEnabled } from "@/lib/ai";
 import { str, zodError, type FormState } from "@/lib/forms";
 
 export async function addActivity(
@@ -20,14 +21,17 @@ export async function addActivity(
   if (!parsed.success) return zodError(parsed.error);
   const d = parsed.data;
 
+  // Best-effort AI summary when a key is configured (no-op otherwise).
+  const summary = aiEnabled() ? await summarize(d.body) : null;
+
   await prisma.activity.create({
     data: {
       customerId: d.customerId,
       type: d.type,
       body: d.body,
+      summary: summary ?? null,
       occurredAt: d.occurredAt ?? new Date(),
       source: "MANUAL",
-      // Phase 2 will populate `summary` via the Anthropic API.
     },
   });
 

@@ -46,7 +46,12 @@ npm run import:inventory      # imports ../data/inventory.json (upserts by VIN)
 - **Compliance surfacing** — export-restriction flag for exporters/new vehicles, and
   AML reminders on CASH/WIRE customers.
 
-Phases 2 (email + Claude intake) and 3 (vehicle matching) are scaffolded but not built.
+**Phase 2 (built):** email intake (forwarded address + IMAP polling), the intake
+pipeline (match → attach or create), AI signature parsing & note summaries
+(Anthropic), an **Intake-review queue**, and the **Claude bridge** — a local MCP
+server so you can text updates to Claude and have it file them into the CRM.
+
+Phase 3 (vehicle-matching engine + match inbox + daily digest) is next.
 
 ## Scripts
 
@@ -60,6 +65,52 @@ Phases 2 (email + Claude intake) and 3 (vehicle matching) are scaffolded but not
 | `npm run db:studio` | Prisma Studio (DB browser) |
 | `npm run import:inventory` | Load `../data/inventory.json` into Vehicle |
 | `npm run backup` | **Encrypted** DB dump → `backups/` |
+| `npm run worker` | Background IMAP poll (every 5 min) → intake pipeline |
+| `npm run mcp` | Local MCP server for the Claude text-update bridge |
+
+## Email & Claude intake (Phase 2)
+
+All intake runs through one pipeline: match the sender → attach the message as an
+activity (with an AI summary), or create a new lead with AI signature autofill
+(flagged *unverified*). New / AI-touched records land in **Intake review** for you
+to confirm. Intake is read/record only — nothing is ever auto-replied.
+
+**AI bits** (set in `.env`):
+
+- `ANTHROPIC_API_KEY` — signature parsing + summaries. Without it, intake still
+  works, just without AI enrichment.
+- `ANTHROPIC_MODEL` — defaults to `claude-sonnet-4-6`.
+- `INTAKE_API_TOKEN` — bearer token guarding the local intake API.
+
+**Email (IMAP)** — set `IMAP_HOST` / `IMAP_PORT` / `IMAP_USER` / `IMAP_PASSWORD`
+(an app password is fine), then run the poller (or use **Settings → Poll inbox now**):
+
+```bash
+npm run worker        # polls the inbox on POLL_CRON (default every 5 min)
+```
+
+Forward mail to that inbox — or a dedicated `crm-intake@` address that lands there —
+to capture it.
+
+**Claude bridge (text updates)** — run the bundled MCP server and add it to Claude
+Desktop, then tell Claude things like *“log a call with Mr. Tan — wants a white
+RX 350 under $80k”*:
+
+```jsonc
+// claude_desktop_config.json
+{
+  "mcpServers": {
+    "vincere-crm": {
+      "command": "npx",
+      "args": ["tsx", "/absolute/path/to/crm/mcp/server.ts"],
+      "env": { "INTAKE_API_TOKEN": "<from .env>", "CRM_BASE_URL": "http://localhost:3000" }
+    }
+  }
+}
+```
+
+The CRM must be running (`npm run dev`) for the bridge to write. Everything stays on
+localhost.
 
 ## Backups & restore
 
