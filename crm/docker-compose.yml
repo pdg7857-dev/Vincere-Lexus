@@ -1,0 +1,31 @@
+# Local PostgreSQL for the CRM.
+#
+# Security: the port is published ONLY on 127.0.0.1, so the database is never
+# reachable from the network / public internet (see brief §9). Remote access
+# later goes through Tailscale, not by opening this port.
+#
+# Portability: all data lives in the named volume `crm_pgdata`. Moving machines
+# is a dump + restore (see scripts/backup.sh and the README), so you do NOT copy
+# this volume directly.
+
+services:
+  db:
+    image: postgres:16
+    container_name: vincere-crm-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-crm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-crm_local_dev_pw}
+      POSTGRES_DB: ${POSTGRES_DB:-crm}
+    ports:
+      - "127.0.0.1:5432:5432" # localhost only — do NOT change to 0.0.0.0
+    volumes:
+      - crm_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-crm} -d ${POSTGRES_DB:-crm}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  crm_pgdata:

@@ -1,0 +1,375 @@
+// Personal Sales CRM — Prisma schema
+// PostgreSQL (native enums + string arrays + JSON). Soft-delete via `archivedAt`
+// on the main records instead of hard deletes. Timestamps on everything.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───────────────────────────── Enums (stable) ─────────────────────────────
+// The two EDITABLE picklists — pipeline Stages and Lead sources — are tables
+// (Stage, LeadSource) so they can be renamed/reordered from Settings without a
+// code change. Everything else below is a stable enum.
+
+enum CustomerType {
+  EXPORTER
+  DEALER
+  FLIPPER
+  FLEET
+  PERSONAL
+}
+
+enum CustomerStatus {
+  LEAD
+  ACTIVE
+  VIP
+  DORMANT
+}
+
+enum PaymentMethod {
+  CASH
+  FINANCE
+  WIRE
+}
+
+enum Condition {
+  NEW
+  USED
+  CPO
+  ANY
+}
+
+enum VehicleStatus {
+  ON_ORDER
+  IN_TRANSIT
+  ARRIVED
+  IN_STOCK
+  ALLOCATED
+  SOLD
+}
+
+enum VehicleSource {
+  TRADE
+  ALLOCATION
+  AUCTION
+  TRANSFER
+}
+
+enum MatchStatus {
+  NEW
+  NOTIFIED
+  INTERESTED
+  PASSED
+  SOLD
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  NOTE
+  MEETING
+  TEXT
+}
+
+// Where a record/activity originated. CLAUDE = the "text updates via Claude"
+// bridge (local intake API). EMAIL_INTAKE = forwarded address or IMAP poll.
+enum ActivitySource {
+  MANUAL
+  EMAIL_INTAKE
+  FORM
+  CLAUDE
+}
+
+enum IntakeStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ───────────────────────────── Auth ───────────────────────────────────────
+// Single user for now, but modeled as tables so adding users later needs no
+// rework (no hardcoded "the one user").
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String?
+  passwordHash String // bcrypt
+  totpSecret   String? // base32 secret (set when 2FA enabled)
+  totpEnabled  Boolean   @default(false)
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  // The cookie holds a random token; we store only its SHA-256 hash.
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ──────────────────────── Editable picklists ──────────────────────────────
+
+model Stage {
+  id         String    @id @default(cuid())
+  name       String    @unique
+  order      Int // display / pipeline order
+  isTerminal Boolean   @default(false) // Lost / Dormant — closes the deal
+  isWon      Boolean   @default(false) // Delivered — closed-won
+  deals      Deal[]
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model LeadSource {
+  id         String     @id @default(cuid())
+  name       String     @unique
+  order      Int        @default(0)
+  customers  Customer[]
+  archivedAt DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+// ───────────────────────────── Core CRM ───────────────────────────────────
+
+model Customer {
+  id               String         @id @default(cuid())
+  name             String
+  businessName     String?
+  type             CustomerType   @default(PERSONAL)
+  phone            String?
+  email            String?
+  preferredChannel String? // e.g. "phone", "email", "text", "whatsapp"
+  language         String?
+  leadSourceId     String?
+  leadSource       LeadSource?    @relation(fields: [leadSourceId], references: [id])
+  status           CustomerStatus @default(LEAD)
+  tags             String[]       @default([])
+
+  // Business intel
+  whatTheyDoWithCars String?
+  exportDestination  String?
+  typicalVolume      String?
+  buyingCadence      String?
+  paymentMethod      PaymentMethod?
+
+  // PIPEDA: consent to contact + when it was given
+  consentToContact Boolean   @default(false)
+  consentDate      DateTime?
+
+  // Intake / AI provenance: where this record came from, which fields the AI
+  // filled (so they can be flagged "unverified" until confirmed), and whether
+  // the whole record still needs human review.
+  source             ActivitySource @default(MANUAL)
+  aiUnverifiedFields String[]       @default([])
+  needsReview        Boolean        @default(false)
+
+  wants      Want[]
+  vehicles   Vehicle[]  @relation("PurchasedVehicles") // vehicles purchased
+  activities Activity[]
+  deals      Deal[]
+
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([email])
+  @@index([phone])
+  @@index([status])
+}
+
+// Standing order: "tell me when a vehicle like this comes in." A customer has many.
+model Want {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  make       String?
+  model      String?
+  trim       String?
+  yearMin    Int?
+  yearMax    Int?
+  body       String?
+  drivetrain String?
+
+  colorExterior String[] @default([])
+  colorInterior String[] @default([])
+
+  mileageMax Int?
+  condition  Condition @default(ANY)
+  priceMax   Decimal?  @db.Decimal(12, 2)
+  currency   String    @default("CAD")
+
+  optionsRequired   String[] @default([])
+  optionsNiceToHave String[] @default([])
+
+  quantity            Int     @default(1)
+  recurring           Boolean @default(false) // re-arms after a match is sold
+  priority            Int     @default(0) // higher = more urgent
+  active              Boolean @default(true)
+  destinationSpecNotes String? // for exporters (left-hand drive, spec, etc.)
+
+  matches Match[]
+
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([customerId])
+  @@index([active])
+}
+
+// Inventory / incoming units.
+model Vehicle {
+  id          String  @id @default(cuid())
+  vin         String? @unique
+  stockNumber String?
+  make        String
+  model       String
+  trim        String?
+  year        Int?
+  body        String?
+  drivetrain  String?
+
+  colorExterior String?
+  colorInterior String?
+  mileage       Int?
+  condition     Condition     @default(USED)
+  price         Decimal?      @db.Decimal(12, 2)
+  cost          Decimal?      @db.Decimal(12, 2)
+  status        VehicleStatus @default(IN_STOCK)
+  source        VehicleSource?
+  etaDate       DateTime?
+  location      String?
+
+  // OEM export-restriction window flag (see brief §10). Surfaced prominently on
+  // new vehicles and exporter customers. Informational, not a hard blocker.
+  newExportRestricted Boolean @default(false)
+
+  purchasedById String?
+  purchasedBy   Customer? @relation("PurchasedVehicles", fields: [purchasedById], references: [id])
+
+  matches Match[]
+  deals   Deal[]
+
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([make, model])
+  @@index([status])
+  @@index([vin])
+}
+
+// System-generated Want ↔ Vehicle match.
+model Match {
+  id            String      @id @default(cuid())
+  wantId        String
+  want          Want        @relation(fields: [wantId], references: [id], onDelete: Cascade)
+  vehicleId     String
+  vehicle       Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  score         Float
+  matchedFields Json // { hardPassed: [...], soft: { color: true, ... } }
+  status        MatchStatus @default(NEW)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([wantId, vehicleId]) // one match row per pair
+  @@index([status])
+}
+
+// Interaction log entry.
+model Activity {
+  id         String         @id @default(cuid())
+  customerId String
+  customer   Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  type       ActivityType
+  body       String? // raw content (e.g. full email body / note text)
+  summary    String? // AI-generated summary (Phase 2)
+  occurredAt DateTime       @default(now())
+  source     ActivitySource @default(MANUAL)
+
+  // Email-intake extras (Phase 2) — used to dedupe pulled messages.
+  emailMessageId String? @unique
+  emailFrom      String?
+  emailSubject   String?
+
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([customerId])
+  @@index([occurredAt])
+}
+
+// Pipeline entry.
+model Deal {
+  id            String   @id @default(cuid())
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vehicleId     String?
+  vehicle       Vehicle? @relation(fields: [vehicleId], references: [id])
+  stageId       String
+  stage         Stage    @relation(fields: [stageId], references: [id])
+  title         String? // short label, optional
+  value         Decimal? @db.Decimal(12, 2)
+  depositAmount Decimal? @db.Decimal(12, 2)
+  notes         String?
+
+  // When the deal last changed stage, plus a full audit trail for OMVIC-style
+  // record-keeping: [{ stageId, name, at }].
+  stageChangedAt DateTime @default(now())
+  stageHistory   Json     @default("[]")
+
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([customerId])
+  @@index([stageId])
+}
+
+// ──────────────────── Phase 2: email intake + review ──────────────────────
+
+model EmailAccount {
+  id           String    @id @default(cuid())
+  label        String // "Main inbox" / "crm-intake@…"
+  kind         String // IMAP_INBOX | FORWARD_ADDRESS
+  host         String?
+  port         Int?
+  username     String? // password/secret lives in .env, never stored here
+  lastPolledAt DateTime?
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+// Queue backing the "Intake review" screen: AI-created/updated records and the
+// raw payloads they came from, pending human confirmation.
+model IntakeEvent {
+  id          String       @id @default(cuid())
+  source      ActivitySource
+  rawPayload  Json
+  aiExtracted Json? // parsed signature fields, etc.
+  status      IntakeStatus @default(PENDING)
+  customerId  String? // record created/updated
+  activityId  String?
+  notes       String?
+  resolvedAt  DateTime?
+  createdAt   DateTime     @default(now())
+
+  @@index([status])
+}
