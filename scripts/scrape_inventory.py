@@ -2,7 +2,7 @@
 """
 Build the dealer inventory snapshot used by the cart / stock cross-reference.
 
-  data/inventory.json   (canonical)   +   app/inventory.js   (window.LEXUS_INVENTORY)
+  data/inventory.json   (canonical)   +   showroom/inventory.js   (window.LEXUS_INVENTORY)
 
 Two modes:
 
@@ -43,7 +43,7 @@ HEADERS = {
 }
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 OUT_JSON = os.path.join(ROOT, "data", "inventory.json")
-OUT_JS = os.path.join(ROOT, "app", "inventory.js")
+OUT_JS = os.path.join(ROOT, "showroom", "inventory.js")
 
 
 def fetch(url, tries=3, timeout=30):

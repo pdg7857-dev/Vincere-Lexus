@@ -476,7 +476,7 @@ def build():
     }
     json.dump(dataset, open(OUT, "w"), separators=(",", ":"), ensure_ascii=False)
     # Also emit as a JS file so the app can be opened directly (file://) without a server.
-    app_data = os.path.join(os.path.dirname(__file__), "..", "app", "data.js")
+    app_data = os.path.join(os.path.dirname(__file__), "..", "showroom", "data.js")
     os.makedirs(os.path.dirname(app_data), exist_ok=True)
     with open(app_data, "w") as fh:
         fh.write("window.LEXUS_DATA=")
