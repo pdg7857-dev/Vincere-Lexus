@@ -8,6 +8,7 @@ const NAV = [
   { href: "/customers", label: "Customers", icon: "👥" },
   { href: "/inventory", label: "Inventory", icon: "🚗" },
   { href: "/pipeline", label: "Pipeline", icon: "📋" },
+  { href: "/matches", label: "Matches", icon: "✨" },
   { href: "/intake", label: "Intake", icon: "📥" },
   { href: "/settings", label: "Settings", icon: "⚙️" },
 ];
@@ -21,6 +22,7 @@ export default async function AppLayout({
   const pendingIntake = await prisma.intakeEvent.count({
     where: { status: "PENDING" },
   });
+  const newMatches = await prisma.match.count({ where: { status: "NEW" } });
 
   return (
     <div className="flex min-h-screen">
@@ -30,17 +32,25 @@ export default async function AppLayout({
           <p className="text-xs text-slate-400">Sales CRM</p>
         </div>
         <nav className="flex-1 space-y-1 px-3">
-          {NAV.map((n) => (
-            <NavLink key={n.href} href={n.href}>
-              <span aria-hidden>{n.icon}</span>
-              {n.label}
-              {n.href === "/intake" && pendingIntake > 0 && (
-                <span className="ml-auto rounded-full bg-violet-600 px-2 py-0.5 text-xs font-semibold text-white">
-                  {pendingIntake}
-                </span>
-              )}
-            </NavLink>
-          ))}
+          {NAV.map((n) => {
+            const count =
+              n.href === "/intake"
+                ? pendingIntake
+                : n.href === "/matches"
+                  ? newMatches
+                  : 0;
+            return (
+              <NavLink key={n.href} href={n.href}>
+                <span aria-hidden>{n.icon}</span>
+                {n.label}
+                {count > 0 && (
+                  <span className="ml-auto rounded-full bg-violet-600 px-2 py-0.5 text-xs font-semibold text-white">
+                    {count}
+                  </span>
+                )}
+              </NavLink>
+            );
+          })}
         </nav>
         <div className="border-t border-slate-200 p-3">
           <p className="truncate px-2 pb-2 text-xs text-slate-400" title={user.email}>

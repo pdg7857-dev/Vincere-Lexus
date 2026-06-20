@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
+import { matchVehicleSafe } from "@/lib/matching";
 import { vehicleSchema } from "@/lib/validation";
 import { str, num, bool, zodError, type FormState } from "@/lib/forms";
 
@@ -64,15 +65,18 @@ export async function createVehicle(
   const parsed = vehicleSchema.safeParse(extract(fd));
   if (!parsed.success) return zodError(parsed.error);
 
+  let created;
   try {
-    await prisma.vehicle.create({ data: toData(parsed.data) });
+    created = await prisma.vehicle.create({ data: toData(parsed.data) });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002")
       return { error: "A vehicle with that VIN already exists." };
     throw e;
   }
 
+  await matchVehicleSafe(created.id);
   revalidatePath("/inventory");
+  revalidatePath("/matches");
   redirect("/inventory");
 }
 
@@ -95,7 +99,9 @@ export async function updateVehicle(
     throw e;
   }
 
+  await matchVehicleSafe(id);
   revalidatePath("/inventory");
+  revalidatePath("/matches");
   redirect("/inventory");
 }
 
@@ -105,6 +111,8 @@ export async function archiveVehicle(id: string) {
     where: { id },
     data: { archivedAt: new Date() },
   });
+  await matchVehicleSafe(id);
   revalidatePath("/inventory");
+  revalidatePath("/matches");
   redirect("/inventory");
 }

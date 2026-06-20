@@ -39,11 +39,20 @@ export default async function DashboardPage() {
       prisma.deal.findMany({ where: { archivedAt: null }, include: { stage: true } }),
     ]);
 
+  const newMatches = await prisma.match.count({ where: { status: "NEW" } });
+  const recentMatches = await prisma.match.findMany({
+    where: { status: "NEW" },
+    include: { want: { include: { customer: true } }, vehicle: true },
+    orderBy: { score: "desc" },
+    take: 6,
+  });
+
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <Stat label="New matches" value={newMatches} href="/matches" />
         <Stat label="Customers" value={customers} href="/customers" />
         <Stat label="Active wants" value={activeWants} href="/customers" />
         <Stat label="Vehicles available" value={inStock} href="/inventory" />
@@ -93,6 +102,34 @@ export default async function DashboardPage() {
       </div>
 
       <section className={card}>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-semibold text-slate-800">New vehicle matches</h2>
+          <Link href="/matches" className="text-sm text-slate-600 hover:underline">
+            View all
+          </Link>
+        </div>
+        <ul className="space-y-2">
+          {recentMatches.map((m) => (
+            <li key={m.id} className="flex items-center justify-between text-sm">
+              <Link
+                href={`/customers/${m.want.customerId}`}
+                className="text-slate-700 hover:underline"
+              >
+                {m.want.customer.name}
+              </Link>
+              <span className="text-slate-500">
+                {[m.vehicle.year, m.vehicle.make, m.vehicle.model].filter(Boolean).join(" ")}
+                <span className="ml-2 text-xs text-slate-400">score {Math.round(m.score)}</span>
+              </span>
+            </li>
+          ))}
+          {recentMatches.length === 0 && (
+            <li className="text-sm text-slate-400">No new matches yet.</li>
+          )}
+        </ul>
+      </section>
+
+      <section className={card}>
         <h2 className="mb-3 font-semibold text-slate-800">Recent activity</h2>
         <ul className="space-y-3">
           {recentActivities.map((a) => (
@@ -114,9 +151,6 @@ export default async function DashboardPage() {
         </ul>
       </section>
 
-      <p className="text-xs text-slate-400">
-        Vehicle-match alerts and follow-up reminders arrive in Phase 3 (matching engine).
-      </p>
     </div>
   );
 }

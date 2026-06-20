@@ -51,7 +51,9 @@ pipeline (match → attach or create), AI signature parsing & note summaries
 (Anthropic), an **Intake-review queue**, and the **Claude bridge** — a local MCP
 server so you can text updates to Claude and have it file them into the CRM.
 
-Phase 3 (vehicle-matching engine + match inbox + daily digest) is next.
+**Phase 3 (built):** the matching engine (hard filters + soft scoring), the
+**Match inbox**, dashboard + nav alerts, and a daily digest in the worker.
+Matches recompute when a vehicle or want changes, plus a scheduled re-scan.
 
 ## Scripts
 

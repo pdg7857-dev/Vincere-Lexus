@@ -1,8 +1,10 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
+import { matchWantSafe } from "@/lib/matching";
 import { wantSchema } from "@/lib/validation";
 import { str, num, bool, list, zodError, type FormState } from "@/lib/forms";
 
@@ -43,7 +45,7 @@ export async function createWant(
   if (!parsed.success) return zodError(parsed.error);
   const d = parsed.data;
 
-  await prisma.want.create({
+  const created = await prisma.want.create({
     data: {
       customerId,
       make: d.make ?? null,
@@ -69,6 +71,8 @@ export async function createWant(
     },
   });
 
+  await matchWantSafe(created.id);
+  revalidatePath("/matches");
   redirect(`/customers/${customerId}`);
 }
 
@@ -78,11 +82,15 @@ export async function archiveWant(id: string, customerId: string) {
     where: { id },
     data: { archivedAt: new Date(), active: false },
   });
+  await matchWantSafe(id);
+  revalidatePath("/matches");
   redirect(`/customers/${customerId}`);
 }
 
 export async function toggleWantActive(id: string, customerId: string, active: boolean) {
   await requireUser();
   await prisma.want.update({ where: { id }, data: { active } });
+  await matchWantSafe(id);
+  revalidatePath("/matches");
   redirect(`/customers/${customerId}`);
 }
