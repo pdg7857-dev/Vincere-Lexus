@@ -71,6 +71,7 @@ Matches recompute when a vehicle or want changes, plus a scheduled re-scan.
 | `npm run backup` | **Encrypted** DB dump → `backups/` |
 | `npm run worker` | Background IMAP poll + match re-scan + **inventory feed** |
 | `npm run mcp` | Local MCP server for the Claude text-update bridge |
+| `npm run go-remote` | Set up phone access: detect tailnet name → `.env` + Tailscale Serve |
 
 ## Email & Claude intake (Phase 2)
 
@@ -198,6 +199,17 @@ Use the CRM from your phone while it stays **private** — no public internet ex
 Tailscale puts your phone and this machine on one small encrypted network (your
 "tailnet"); **Tailscale Serve** then shares the local app over that network with real
 HTTPS, so the app keeps binding to `localhost` and nothing is opened to the world.
+
+**Easiest:** once Tailscale is installed + signed in on both devices, run this on the
+machine that hosts the CRM — it auto-detects your tailnet name, writes it into `.env`,
+and starts Tailscale Serve:
+
+```bash
+npm run go-remote     # does steps 2–3 below for you
+npm run dev           # restart so REMOTE_HOSTNAMES takes effect
+```
+
+Then open `https://<your-machine>.ts.net` on your phone. The manual equivalent:
 
 1. **Install Tailscale** on this machine *and* your phone; sign both into the same
    account. On the machine: `tailscale up` (note its MagicDNS name, e.g.

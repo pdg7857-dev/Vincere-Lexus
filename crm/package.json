@@ -17,7 +17,8 @@
     "feed": "tsx scripts/run-feed.ts",
     "backup": "bash scripts/backup.sh",
     "worker": "tsx worker.ts",
-    "mcp": "tsx mcp/server.ts"
+    "mcp": "tsx mcp/server.ts",
+    "go-remote": "tsx scripts/go-remote.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
