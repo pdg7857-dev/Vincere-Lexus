@@ -37,6 +37,9 @@ yarn-error.log*
 # encrypted DB backups (contain customer data — never commit)
 /backups
 
+# inventory feed drop folder (customer/dealer CSVs — processed in place)
+/inventory-feed
+
 # vercel
 .vercel
 

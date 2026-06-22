@@ -66,8 +66,9 @@ Matches recompute when a vehicle or want changes, plus a scheduled re-scan.
 | `npm run db:seed` | Seed stages, lead sources, login |
 | `npm run db:studio` | Prisma Studio (DB browser) |
 | `npm run import:inventory` | Load `../data/inventory.json` into Vehicle |
+| `npm run feed` | Import any inventory CSVs dropped in `inventory-feed/` (one-shot) |
 | `npm run backup` | **Encrypted** DB dump → `backups/` |
-| `npm run worker` | Background IMAP poll (every 5 min) → intake pipeline |
+| `npm run worker` | Background IMAP poll + match re-scan + **inventory feed** |
 | `npm run mcp` | Local MCP server for the Claude text-update bridge |
 
 ## Email & Claude intake (Phase 2)
@@ -113,6 +114,30 @@ RX 350 under $80k”*:
 
 The CRM must be running (`npm run dev`) for the bridge to write. Everything stays on
 localhost.
+
+## Auto inventory feed
+
+Instead of importing inventory by hand each time, drop CSV exports into a watched
+folder and they import themselves (same column mapping as the manual import):
+
+```bash
+# create the folder (or click Settings → "Run import now" once)
+mkdir inventory-feed
+cp ~/Downloads/lexus-stock-2026-06-22.csv inventory-feed/
+npm run worker        # picks up new CSVs on FEED_CRON (default every 10 min)
+# or run it once, on demand:
+npm run feed
+```
+
+- New stock is **created**, existing stock is **updated** (matched by VIN), and
+  every import **recomputes matches** so fresh arrivals show up in the Match inbox.
+- Processed files are archived to `inventory-feed/processed/`; unparseable files go
+  to `inventory-feed/failed/`. Each run is logged under **Settings → Inventory feed**.
+- Files modified in the last few seconds are skipped (so half-copied files aren't
+  imported). Point `INVENTORY_FEED_DIR` at any folder — e.g. where your DMS writes
+  its nightly export — to wire up a real feed.
+
+The feed folder holds dealer/customer data, so it's **gitignored** and never committed.
 
 ## Backups & restore
 

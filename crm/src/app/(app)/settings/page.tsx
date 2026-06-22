@@ -5,7 +5,9 @@ import { LeadSourcesManager } from "@/components/settings/LeadSourcesManager";
 import { SecurityPanel } from "@/components/settings/SecurityPanel";
 import { SubmitButton } from "@/components/SubmitButton";
 import { pollEmailNow } from "@/lib/actions/intake";
+import { runFeedNow } from "@/lib/actions/feed";
 import { getLastPolled, imapConfigured } from "@/lib/imap";
+import { feedDir, feedConfigured } from "@/lib/inventoryFeed";
 import { aiEnabled } from "@/lib/ai";
 import { formatDateTime } from "@/lib/format";
 import { card, btnGhost } from "@/lib/ui";
@@ -42,6 +44,14 @@ export default async function SettingsPage() {
   const aiOn = aiEnabled();
   const bridgeOn = Boolean(process.env.INTAKE_API_TOKEN);
   const baseUrl = process.env.CRM_BASE_URL || "http://localhost:3000";
+
+  const feedPath = feedDir();
+  const feedOn = feedConfigured();
+  const feedCron = process.env.FEED_CRON || "*/10 * * * *";
+  const feedRuns = await prisma.feedRun.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 5,
+  });
 
   return (
     <div className="space-y-8">
@@ -120,6 +130,46 @@ export default async function SettingsPage() {
         </form>
         <p className="mt-2 text-xs text-slate-400">
           For automatic polling, run <code>npm run worker</code> alongside the app.
+        </p>
+      </section>
+
+      <section className={card}>
+        <h2 className="mb-1 font-semibold text-slate-800">Inventory feed (auto-import)</h2>
+        <p className="mb-3 text-sm text-slate-500">
+          Drop inventory <code>.csv</code> exports (or point your DMS export) into{" "}
+          <code className="rounded bg-slate-100 px-1.5 py-0.5 break-all">{feedPath}</code>{" "}
+          and they import automatically — same columns as the manual import.
+          Processed files move to <code>processed/</code>; parse failures to{" "}
+          <code>failed/</code>.{" "}
+          {feedOn ? (
+            <span className="text-emerald-700">Folder ready ✓</span>
+          ) : (
+            <span>Click “Run import now” once to create the folder.</span>
+          )}
+        </p>
+        <form action={runFeedNow}>
+          <SubmitButton className={btnGhost} pendingLabel="Importing…">
+            Run import now
+          </SubmitButton>
+        </form>
+        {feedRuns.length > 0 && (
+          <ul className="mt-3 space-y-1 text-xs text-slate-500">
+            {feedRuns.map((f) => (
+              <li key={f.id} className="flex items-center justify-between gap-3">
+                <span className="min-w-0 truncate">
+                  {f.status === "OK" ? "✓" : "✗"} <span className="font-medium">{f.source}</span>
+                  {f.status === "OK"
+                    ? ` — ${f.created} new, ${f.updated} updated${f.skipped ? `, ${f.skipped} skipped` : ""}`
+                    : ` — ${f.message ?? "failed"}`}
+                </span>
+                <span className="shrink-0 text-slate-400">{formatDateTime(f.createdAt)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="mt-2 text-xs text-slate-400">
+          For automatic pickup, run <code>npm run worker</code> (scans on{" "}
+          <code>{feedCron}</code>).
         </p>
       </section>
 

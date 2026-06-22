@@ -357,6 +357,23 @@ model EmailAccount {
   updatedAt    DateTime  @updatedAt
 }
 
+// ──────────────────── Auto inventory feed (backlog) ───────────────────────
+// One row per inventory file processed — whether a manual upload or a CSV
+// dropped in the watched feed folder. Backs the import history in Settings.
+model FeedRun {
+  id        String   @id @default(cuid())
+  source    String // file name, or "pasted CSV"
+  status    String // "OK" | "FAILED"
+  total     Int      @default(0)
+  created   Int      @default(0)
+  updated   Int      @default(0)
+  skipped   Int      @default(0)
+  message   String? // parse/read error when FAILED
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 // Queue backing the "Intake review" screen: AI-created/updated records and the
 // raw payloads they came from, pending human confirmation.
 model IntakeEvent {

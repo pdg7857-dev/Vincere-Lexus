@@ -3,8 +3,9 @@
 A private, **single-user** workspace for a Lexus sales executive. Two tools share one repo:
 
 - **[`crm/`](crm/)** — **Personal Sales CRM** (Next.js + Prisma + PostgreSQL).
-  Customers, standing "wants", inventory, a configurable sales pipeline, email intake,
-  and Want↔Vehicle matching. Runs **locally** on `localhost`, private by design.
+  Customers, standing "wants", inventory (manual + auto-import feed), a configurable
+  sales pipeline, email intake, and Want↔Vehicle matching. Runs **locally** on
+  `localhost`, private by design.
   See [`crm/README.md`](crm/README.md) for setup, backups, and the Mac-mini move.
 - **[`showroom/`](showroom/)** — the original **Lexus Trim Matcher** static app
   (no build step): match a client's priorities against the full lineup and live dealer
