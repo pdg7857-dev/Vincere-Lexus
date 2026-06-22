@@ -56,6 +56,27 @@ function toNum(s?: string) {
   return Number.isFinite(n) ? n : undefined;
 }
 
+export type VehicleCondition = "NEW" | "USED" | "CPO" | "ANY";
+export type VehicleStatusValue =
+  | "ON_ORDER"
+  | "IN_TRANSIT"
+  | "ARRIVED"
+  | "IN_STOCK"
+  | "ALLOCATED"
+  | "SOLD";
+
+/** Free-text condition (+ a certified flag) → our Condition enum. Shared by the
+ *  CSV upload and the dealer JSON snapshot so both map identically. */
+export function toCondition(raw?: string | null, certified?: boolean): VehicleCondition {
+  if (certified) return "CPO";
+  return (CONDITION_MAP[(raw ?? "").trim().toLowerCase()] ?? "USED") as VehicleCondition;
+}
+
+/** Free-text status → our VehicleStatus enum (defaults to IN_STOCK). */
+export function toStatus(raw?: string | null): VehicleStatusValue {
+  return (STATUS_MAP[(raw ?? "").trim().toLowerCase()] ?? "IN_STOCK") as VehicleStatusValue;
+}
+
 export type ImportResult = {
   total: number;
   created: number;
@@ -113,18 +134,8 @@ export async function importInventoryCsv(text: string): Promise<ImportResult> {
       mileage: toInt(pick(r, "mileage", "odometer", "km")) ?? null,
       price: toNum(pick(r, "price")) ?? null,
       cost: toNum(pick(r, "cost")) ?? null,
-      condition: (certified ? "CPO" : CONDITION_MAP[conditionRaw] ?? "USED") as
-        | "NEW"
-        | "USED"
-        | "CPO"
-        | "ANY",
-      status: (STATUS_MAP[statusRaw] ?? "IN_STOCK") as
-        | "ON_ORDER"
-        | "IN_TRANSIT"
-        | "ARRIVED"
-        | "IN_STOCK"
-        | "ALLOCATED"
-        | "SOLD",
+      condition: toCondition(conditionRaw, certified),
+      status: toStatus(statusRaw),
       location: pick(r, "location", "dealer") ?? null,
       newExportRestricted: /^(y|yes|true|1)$/i.test(
         pick(r, "newexportrestricted", "exportrestricted") ?? "",

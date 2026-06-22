@@ -6,11 +6,13 @@ import { SecurityPanel } from "@/components/settings/SecurityPanel";
 import { SubmitButton } from "@/components/SubmitButton";
 import { pollEmailNow } from "@/lib/actions/intake";
 import { runFeedNow } from "@/lib/actions/feed";
+import { syncDealerNow, reimportSnapshotNow } from "@/lib/actions/dealer";
 import { getLastPolled, imapConfigured } from "@/lib/imap";
 import { feedDir, feedConfigured } from "@/lib/inventoryFeed";
+import { scraperAvailable } from "@/lib/dealerSync";
 import { aiEnabled } from "@/lib/ai";
 import { formatDateTime } from "@/lib/format";
-import { card, btnGhost } from "@/lib/ui";
+import { card, btnGhost, btnPrimary } from "@/lib/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +54,19 @@ export default async function SettingsPage() {
     orderBy: { createdAt: "desc" },
     take: 5,
   });
+
+  const scraperOn = scraperAvailable();
+  const dealerSyncCron = process.env.DEALER_SYNC_CRON || "";
+  const dealerRuns = await prisma.feedRun.findMany({
+    where: { source: { startsWith: "Northwest" } },
+    orderBy: { createdAt: "desc" },
+    take: 3,
+  });
+
+  const remoteHosts = (process.env.REMOTE_HOSTNAMES || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   return (
     <div className="space-y-8">
@@ -174,6 +189,50 @@ export default async function SettingsPage() {
       </section>
 
       <section className={card}>
+        <h2 className="mb-1 font-semibold text-slate-800">Dealer inventory (Northwest Lexus)</h2>
+        <p className="mb-3 text-sm text-slate-500">
+          Pull live new &amp; pre-owned stock from northwestlexus.com, then import it
+          and refresh matches. The dealer site is behind Cloudflare, so this only
+          works from your <strong>home network</strong> (not a datacentre/VPN) and needs{" "}
+          <code>python3</code>. A scrape takes a few minutes; a blocked run leaves your
+          current snapshot untouched.{" "}
+          {scraperOn ? "" : <span className="text-amber-700">Scraper script not found.</span>}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <form action={syncDealerNow}>
+            <SubmitButton className={btnPrimary} pendingLabel="Syncing… (a few min)">
+              Sync from Northwest Lexus
+            </SubmitButton>
+          </form>
+          <form action={reimportSnapshotNow}>
+            <SubmitButton className={btnGhost} pendingLabel="Importing…">
+              Re-import latest snapshot
+            </SubmitButton>
+          </form>
+        </div>
+        {dealerRuns.length > 0 && (
+          <ul className="mt-3 space-y-1 text-xs text-slate-500">
+            {dealerRuns.map((f) => (
+              <li key={f.id} className="flex items-center justify-between gap-3">
+                <span className="min-w-0 truncate">
+                  {f.status === "OK" ? "✓" : "✗"} <span className="font-medium">{f.source}</span>
+                  {f.status === "OK"
+                    ? ` — ${f.created} new, ${f.updated} updated${f.skipped ? `, ${f.skipped} skipped` : ""}`
+                    : ` — ${f.message ?? "failed"}`}
+                </span>
+                <span className="shrink-0 text-slate-400">{formatDateTime(f.createdAt)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="mt-2 text-xs text-slate-400">
+          {dealerSyncCron
+            ? `Auto-sync scheduled in the worker (${dealerSyncCron}).`
+            : "To auto-sync, set DEALER_SYNC_CRON in .env and run npm run worker — or npm run sync:inventory from a cron."}
+        </p>
+      </section>
+
+      <section className={card}>
         <h2 className="mb-1 font-semibold text-slate-800">Claude bridge (text updates)</h2>
         <p className="mb-3 text-sm text-slate-500">
           Add this to Claude Desktop’s <code>claude_desktop_config.json</code>, then tell
@@ -193,6 +252,45 @@ export default async function SettingsPage() {
   }
 }`}
         </pre>
+      </section>
+
+      <section className={card}>
+        <h2 className="mb-1 font-semibold text-slate-800">Remote access (Tailscale)</h2>
+        <p className="mb-2 text-sm text-slate-500">
+          Use the CRM from your phone while it stays private. Tailscale puts your phone
+          and this machine on one encrypted network — nothing is exposed to the public
+          internet, and the app keeps binding to <code>localhost</code>.
+        </p>
+        <ol className="mb-2 list-decimal space-y-1 pl-5 text-sm text-slate-600">
+          <li>
+            Install Tailscale on this machine and your phone, sign into the same account
+            (<code>tailscale up</code>).
+          </li>
+          <li>
+            Share the app over your tailnet (HTTPS, stays local):{" "}
+            <code className="rounded bg-slate-100 px-1.5 py-0.5">tailscale serve 3000</code>
+          </li>
+          <li>
+            Put that MagicDNS name in <code>.env</code> as{" "}
+            <code>REMOTE_HOSTNAMES</code> and restart, so logins/forms work remotely.
+          </li>
+          <li>
+            On your phone, open <code>https://&lt;your-machine&gt;.ts.net</code>.
+          </li>
+        </ol>
+        <p className="text-sm">
+          {remoteHosts.length > 0 ? (
+            <span className="text-emerald-700">
+              Configured for: {remoteHosts.join(", ")} ✓
+            </span>
+          ) : (
+            <span className="text-slate-500">
+              <code>REMOTE_HOSTNAMES</code> not set — Server Actions (login, forms) will be
+              rejected from a remote hostname until you set it. See{" "}
+              <code>crm/README.md</code> → “Remote access”.
+            </span>
+          )}
+        </p>
       </section>
     </div>
   );

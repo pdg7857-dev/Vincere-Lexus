@@ -6,11 +6,13 @@ import * as cron from "node-cron";
 import { pollInbox, imapConfigured } from "./src/lib/imap";
 import { rescanAll, buildDigest } from "./src/lib/matching";
 import { runFeed, feedConfigured, feedDir } from "./src/lib/inventoryFeed";
+import { syncDealer } from "./src/lib/dealerSync";
 
 const POLL = process.env.POLL_CRON || "*/5 * * * *"; // email poll
 const RESCAN = process.env.RESCAN_CRON || "*/15 * * * *"; // match re-scan
 const DIGEST = process.env.DIGEST_CRON || "0 8 * * *"; // daily 08:00
 const FEED = process.env.FEED_CRON || "*/10 * * * *"; // inventory CSV feed
+const DEALER_SYNC = process.env.DEALER_SYNC_CRON || ""; // dealer web scrape; "" = off
 
 async function poll() {
   try {
@@ -46,6 +48,19 @@ async function feed() {
   }
 }
 
+async function dealerSync() {
+  try {
+    const r = await syncDealer({ scrape: true });
+    if (r.error) console.error(`[worker] dealer sync failed: ${r.error}`);
+    else if (r.imported)
+      console.log(
+        `[worker] dealer sync — ${r.imported.created} new, ${r.imported.updated} updated`,
+      );
+  } catch (e) {
+    console.error("[worker] dealer sync crashed", e);
+  }
+}
+
 async function digest() {
   try {
     const d = await buildDigest();
@@ -60,12 +75,16 @@ async function digest() {
 console.log(
   `[worker] starting — IMAP ${imapConfigured() ? "configured" : "NOT configured (idle)"}; ` +
     `inventory feed ${feedConfigured() ? `watching ${feedDir()}` : `idle (no ${feedDir()})`}; ` +
+    `dealer sync ${DEALER_SYNC ? `"${DEALER_SYNC}"` : "off"}; ` +
     `poll "${POLL}", rescan "${RESCAN}", feed "${FEED}", digest "${DIGEST}"`,
 );
 cron.schedule(POLL, poll);
 cron.schedule(RESCAN, rescan);
 cron.schedule(FEED, feed);
 cron.schedule(DIGEST, digest);
+// Dealer web scrape is opt-in (only if DEALER_SYNC_CRON is set) and never runs on
+// startup — it hits the dealer site and only works from your home network.
+if (DEALER_SYNC) cron.schedule(DEALER_SYNC, dealerSync);
 
 // Run once on startup.
 void poll();

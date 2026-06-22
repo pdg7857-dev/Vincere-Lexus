@@ -66,6 +66,7 @@ Matches recompute when a vehicle or want changes, plus a scheduled re-scan.
 | `npm run db:seed` | Seed stages, lead sources, login |
 | `npm run db:studio` | Prisma Studio (DB browser) |
 | `npm run import:inventory` | Load `../data/inventory.json` into Vehicle |
+| `npm run sync:inventory` | Scrape Northwest Lexus → import + match (`-- --no-scrape` to skip the web) |
 | `npm run feed` | Import any inventory CSVs dropped in `inventory-feed/` (one-shot) |
 | `npm run backup` | **Encrypted** DB dump → `backups/` |
 | `npm run worker` | Background IMAP poll + match re-scan + **inventory feed** |
@@ -139,6 +140,28 @@ npm run feed
 
 The feed folder holds dealer/customer data, so it's **gitignored** and never committed.
 
+## Dealer inventory sync (Northwest Lexus)
+
+Pull live **new + pre-owned** stock straight from northwestlexus.com — at the click of
+a button (**Settings → Dealer inventory → "Sync from Northwest Lexus"**), or on a
+schedule. It runs the bundled scraper (`scripts/scrape_inventory.py`, which reads the
+dealer's sitemap + per-vehicle JSON-LD), then imports the result and recomputes matches.
+
+```bash
+npm run sync:inventory              # scrape the web, then import + match
+npm run sync:inventory -- --no-scrape   # just re-import the snapshot already on disk
+```
+
+Schedule it in the worker with `DEALER_SYNC_CRON` (e.g. `0 7 * * *`; empty = off), or
+from an OS cron calling `npm run sync:inventory`.
+
+> ⚠️ **Two requirements:** the dealer site is behind **Cloudflare**, so the scrape only
+> works from your **home network** (a datacentre/VPN IP gets a 403), and you need
+> **`python3`** installed. A blocked or empty scrape **leaves your current snapshot
+> untouched** (it's backed up and restored automatically) — so it's safe to click.
+
+The snapshot is point-in-time; re-run to refresh. Imports are idempotent (upsert by VIN).
+
 ## Backups & restore
 
 ```bash
@@ -166,8 +189,39 @@ gpg -d backups/crm-YYYYMMDD-HHMMSS.sql.gpg \
 5. Restore your latest encrypted backup (above).
 6. `npm run dev`.
 
-Remote access (from your phone, etc.) should go through **Tailscale** — never by
-exposing the port. The app binds to `localhost` by design.
+Remote access (from your phone, etc.) goes through **Tailscale** — never by exposing
+the port. See below.
+
+## Remote access from your phone (Tailscale)
+
+Use the CRM from your phone while it stays **private** — no public internet exposure.
+Tailscale puts your phone and this machine on one small encrypted network (your
+"tailnet"); **Tailscale Serve** then shares the local app over that network with real
+HTTPS, so the app keeps binding to `localhost` and nothing is opened to the world.
+
+1. **Install Tailscale** on this machine *and* your phone; sign both into the same
+   account. On the machine: `tailscale up` (note its MagicDNS name, e.g.
+   `macmini.tailXXXX.ts.net`).
+2. **Share the app over the tailnet** (HTTPS, localhost-only origin):
+   ```bash
+   tailscale serve 3000        # proxies https://<your-machine>.ts.net → localhost:3000
+   ```
+3. **Tell the CRM its remote hostname** so logins/forms work. In `.env`:
+   ```bash
+   REMOTE_HOSTNAMES="macmini.tailXXXX.ts.net"
+   ```
+   then restart the app. (Next.js rejects cross-origin Server Action posts by default —
+   this allowlists your tailnet name for `allowedDevOrigins` + `serverActions.allowedOrigins`,
+   otherwise even **login** would fail from the phone.)
+4. On your phone (with Tailscale on), open **`https://macmini.tailXXXX.ts.net`**.
+
+Notes:
+- **Stays local.** Traffic only flows between your devices over the encrypted tailnet;
+  the app is never bound to `0.0.0.0` or the public internet.
+- **HTTPS matters for the cookie.** Tailscale Serve gives you a valid HTTPS cert, so the
+  session cookie works in production mode (`npm start`). Prefer Serve over hitting the
+  raw `100.x.y.z:3000` address.
+- Lock down further with tailnet ACLs if you ever add devices.
 
 ## Privacy note (AI)
 
