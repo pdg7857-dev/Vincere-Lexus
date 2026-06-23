@@ -123,25 +123,24 @@
     });
   }
 
-  /* ---------- Marquee loop (logo set; clone for seamless scroll) ---------- */
-  function initMarquee() {
-    var track = document.querySelector('[data-marquee]');
-    if (!track) return;
+  /* ---------- Marquee loops (clone each track for a seamless scroll) ---------- */
+  function runMarquee(track) {
+    var speed = parseFloat(track.getAttribute('data-speed')) || 0.4;
+    var parent = track.parentElement;
     function start() {
       var base = track.innerHTML;
-      // widen the base set until it comfortably exceeds the viewport
+      var ref = (parent && parent.clientWidth) || window.innerWidth;
       var guard = 0;
-      while (track.scrollWidth < window.innerWidth * 1.3 && guard++ < 12) { track.innerHTML += base; }
-      var unit = track.scrollWidth;     // width of one repeating unit
-      track.innerHTML += track.innerHTML; // duplicate so the loop never shows a gap
+      while (track.scrollWidth < ref * 1.3 && guard++ < 12) { track.innerHTML += base; }
+      var unit = track.scrollWidth;        // width of one repeating unit
+      track.innerHTML += track.innerHTML;  // duplicate so the loop never gaps
       var x = 0;
       (function move() {
-        x -= 0.4; if (Math.abs(x) >= unit) x = 0;
+        x -= speed; if (Math.abs(x) >= unit) x = 0;
         track.style.transform = 'translateX(' + x + 'px)';
         requestAnimationFrame(move);
       })();
     }
-    // wait for logo images to have dimensions before measuring
     var imgs = track.querySelectorAll('img');
     var pending = imgs.length;
     if (!pending) return start();
@@ -150,6 +149,9 @@
       else { im.addEventListener('load', function () { if (--pending === 0) start(); });
              im.addEventListener('error', function () { if (--pending === 0) start(); }); }
     });
+  }
+  function initMarquee() {
+    document.querySelectorAll('[data-marquee]').forEach(runMarquee);
   }
 
   /* ---------- Hero parallax + video ---------- */

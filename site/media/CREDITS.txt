@@ -16,8 +16,10 @@ Photography
 Logos (media/logos/, rendered greyscale)
 ----------------------------------------
 Brand and company names/logos are trademarks of their respective owners and are
-shown for identification/reference only. SVGs sourced from Wikimedia Commons:
-Mercedes-Benz, Audi, Porsche, Lexus, Lamborghini, McLaren, Bell, Rogers, Google,
-Purolator, Acer, RBC (Royal Bank of Canada, 2024 mark).
-BMW, Ferrari and CIBC are set as typeset wordmarks (no clean free logo available)
-— drop official SVGs into media/logos/ to replace them.
+shown for identification/reference only.
+- From Wikimedia Commons: Mercedes-Benz, Audi, Porsche, Lexus, Lamborghini,
+  McLaren, Bell, Rogers, Google, Purolator, Acer, RBC (Royal Bank of Canada,
+  2024 mark).
+- From Simple Icons (CC0): BMW, Ferrari.
+- CIBC is set as a typeset wordmark (no clean free logo available) — drop an
+  official SVG at media/logos/cibc.svg to replace it.
