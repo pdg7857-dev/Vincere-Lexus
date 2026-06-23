@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Phil Dave — Private Automotive Concierge</title>
-<meta name="description" content="Phil Dave — private automotive concierge. Tell me the car you want, any make, any model, and I source it, vet it and deliver it. A focus on the exceptional." />
+<title>Phil Dave — Private Automotive Procurement</title>
+<meta name="description" content="Phil Dave — private automotive procurement. A procurement specialist's discipline applied to cars: tell me what you want, any make, any model, and I source it, vet it and deliver it." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -42,15 +42,15 @@
     <div class="hero__backdrop" aria-hidden="true"></div>
     <div class="hero__veil" aria-hidden="true"></div>
     <div class="hero__inner">
-      <p class="hero__eyebrow" data-reveal>Private Automotive Concierge</p>
+      <p class="hero__eyebrow" data-reveal>Private Automotive Procurement</p>
       <h1 class="hero__title">
         <span class="line" data-reveal-line>Any car.</span>
         <span class="line" data-reveal-line>Sourced</span>
         <span class="line line--accent" data-reveal-line>for you.</span>
       </h1>
       <p class="hero__lede" data-reveal>
-        You tell me what you want. I find it, vet it, negotiate it and deliver it —
-        any make on earth, with an eye for the exceptional.
+        The market shows you everything. I show you the one worth buying — then vet it,
+        negotiate it and deliver it. Any make on earth, with an eye for the exceptional.
       </p>
       <div class="hero__actions" data-reveal>
         <a href="#contact" class="btn btn--solid" data-magnetic>Tell me what you want</a>
@@ -107,49 +107,50 @@
     </ol>
   </section>
 
-  <!-- GALLERY: Phil with cars (full-bleed, no prices) -->
+  <!-- GALLERY: cars sourced (full car shown, no prices) -->
   <section class="gallery" id="gallery">
     <div class="section-head section-head--split">
       <div>
-        <span class="section-head__kicker" data-reveal>On location</span>
+        <span class="section-head__kicker" data-reveal>Sourced</span>
         <h2 class="section-head__title" data-reveal>The work.</h2>
       </div>
       <p class="section-head__note" data-reveal>
-        Cars I've placed and the clients behind the wheel. Yours is the next frame.
+        A sample of what's passed through my hands. Yours is the next one I track down.
       </p>
     </div>
 
-    <div class="gallery__grid">
-      <!-- Frames load site/media/gallery-N.jpg; a placeholder fills any missing frame.
-           gallery-1 + the About portrait are Phil's own photos. Edit captions freely. -->
-      <figure class="shot shot--lead" data-reveal data-shot>
-        <img src="media/gallery-1.jpg" alt="Phil Dave on location with a client's car" loading="lazy" data-img />
-        <figcaption class="shot__cap"><span>01</span> On location</figcaption>
-      </figure>
-      <figure class="shot" data-reveal data-shot>
-        <img src="media/gallery-2.jpg" alt="Audi R8 sourced for a client" loading="lazy" data-img />
-        <figcaption class="shot__cap"><span>02</span> Audi R8</figcaption>
-      </figure>
-      <figure class="shot" data-reveal data-shot>
-        <img src="media/gallery-3.jpg" alt="BMW M8 sourced for a client" loading="lazy" data-img />
-        <figcaption class="shot__cap"><span>03</span> BMW M8</figcaption>
-      </figure>
-      <figure class="shot" data-reveal data-shot>
-        <img src="media/gallery-4.jpg" alt="Mercedes-AMG GT sourced for a client" loading="lazy" data-img />
-        <figcaption class="shot__cap"><span>04</span> Mercedes-AMG GT</figcaption>
-      </figure>
-      <figure class="shot" data-reveal data-shot>
-        <img src="media/gallery-5.jpg" alt="Audi RS Q8 sourced for a client" loading="lazy" data-img />
-        <figcaption class="shot__cap"><span>05</span> Audi RS Q8</figcaption>
-      </figure>
-      <figure class="shot shot--wide" data-reveal data-shot>
-        <img src="media/gallery-6.jpg" alt="Range Rover sourced for a client" loading="lazy" data-img />
-        <figcaption class="shot__cap"><span>06</span> Range Rover</figcaption>
-      </figure>
-      <figure class="shot" data-reveal data-shot>
-        <img src="media/gallery-7.jpg" alt="Lexus LX 600 sourced for a client" loading="lazy" data-img />
-        <figcaption class="shot__cap"><span>07</span> Lexus LX 600</figcaption>
-      </figure>
+    <!-- On-location lead (Phil's own photo) -->
+    <figure class="gallery__lead" data-reveal data-shot>
+      <img src="media/gallery-1.jpg" alt="Phil Dave on location with a sourced car" loading="lazy" data-img />
+      <figcaption class="gallery__lead-cap"><span>On location</span></figcaption>
+    </figure>
+
+    <!-- Car cards: full vehicle shown (no crop), labelled with model · year · power -->
+    <div class="fleet">
+      <article class="car" data-reveal data-shot>
+        <div class="car__media"><img src="media/gallery-2.jpg" alt="Audi R8 V10 plus" loading="lazy" data-img /></div>
+        <div class="car__info"><h3 class="car__name">Audi R8 V10 plus</h3><p class="car__spec"><span>2018</span><i></i><span>610 hp</span></p></div>
+      </article>
+      <article class="car" data-reveal data-shot>
+        <div class="car__media"><img src="media/gallery-3.jpg" alt="BMW M8 Competition" loading="lazy" data-img /></div>
+        <div class="car__info"><h3 class="car__name">BMW M8 Competition</h3><p class="car__spec"><span>2022</span><i></i><span>617 hp</span></p></div>
+      </article>
+      <article class="car" data-reveal data-shot>
+        <div class="car__media"><img src="media/gallery-4.jpg" alt="Mercedes-AMG GT Black Series" loading="lazy" data-img /></div>
+        <div class="car__info"><h3 class="car__name">Mercedes-AMG GT Black Series</h3><p class="car__spec"><span>2021</span><i></i><span>720 hp</span></p></div>
+      </article>
+      <article class="car" data-reveal data-shot>
+        <div class="car__media"><img src="media/gallery-5.jpg" alt="Audi RS Q8" loading="lazy" data-img /></div>
+        <div class="car__info"><h3 class="car__name">Audi RS Q8</h3><p class="car__spec"><span>2020</span><i></i><span>591 hp</span></p></div>
+      </article>
+      <article class="car" data-reveal data-shot>
+        <div class="car__media"><img src="media/gallery-6.jpg" alt="Range Rover P530" loading="lazy" data-img /></div>
+        <div class="car__info"><h3 class="car__name">Range Rover P530</h3><p class="car__spec"><span>2023</span><i></i><span>523 hp</span></p></div>
+      </article>
+      <article class="car" data-reveal data-shot>
+        <div class="car__media"><img src="media/gallery-7.jpg" alt="Lexus LX 600" loading="lazy" data-img /></div>
+        <div class="car__info"><h3 class="car__name">Lexus LX 600</h3><p class="car__spec"><span>2022</span><i></i><span>409 hp</span></p></div>
+      </article>
     </div>
   </section>
 
@@ -163,15 +164,19 @@
     </div>
     <div class="about__body">
       <span class="section-head__kicker" data-reveal>Who you're working with</span>
-      <h2 class="about__title" data-reveal>The go-to guy for the car you actually want.</h2>
+      <h2 class="about__title" data-reveal>Procurement is what I do. Cars are what I love.</h2>
       <p data-reveal>
-        I've built my name on one thing: finding people the right car without the runaround.
-        You tell me what you're after and I do the rest — the searching, the vetting, the
-        negotiating. The exceptional is my focus, but I'll source any make and any model.
+        My background is in procurement — years spent inside the e-procurement industry,
+        managing thousands of accounts and finding the opportunities worth acting on across
+        a noisy, fragmented market.
+        <a class="about__link" href="https://phildave.com" target="_blank" rel="noopener">(More on that&nbsp;→)</a>
       </p>
       <p data-reveal>
-        I keep it independent, so my only loyalty is to you. When the perfect car sits at a
-        partner dealer, you get it at the dealer's strength with my representation on your side.
+        I apply that same discipline to cars. You tell me what you're after and I do the rest —
+        the searching, the vetting, the negotiating. The exceptional is my focus, but I'll
+        source any make and any model. Independent, so my only loyalty is to you: when the
+        right car sits at a partner dealer, you get it at the dealer's strength with my
+        representation on your side.
       </p>
       <div class="about__stats" data-reveal>
         <div><strong>Any</strong><span>make &amp; model</span></div>
@@ -206,9 +211,9 @@
 </main>
 
 <footer class="footer">
-  <div class="footer__brand"><span class="nav__mark">PD</span><span>Phil Dave — Private Automotive Concierge</span></div>
+  <div class="footer__brand"><span class="nav__mark">PD</span><span>Phil Dave — Private Automotive Procurement</span></div>
   <p class="footer__legal">
-    Independent automotive concierge. Vehicles sourced and transacted through licensed dealer partners.
+    Independent automotive procurement. Vehicles sourced and transacted through licensed dealer partners.
     © <span data-year></span> Phil Dave. <a href="media/CREDITS.txt">Photography credits</a>.
   </p>
 </footer>

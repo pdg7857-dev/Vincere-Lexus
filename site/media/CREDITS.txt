@@ -1,15 +1,30 @@
-Photography credits — car images sourced from Wikimedia Commons.
-Phil Dave portrait & on-location shot: © Phil Dave.
+Photography credits
+===================
+Phil Dave portrait & on-location shot (gallery-1, phil-portrait): © Phil Dave.
 
-gallery-2.jpg: File:2018 Audi R8 Coupe V10 plus Front.jpg — Vauxford (CC BY-SA 4.0)
-  https://commons.wikimedia.org/wiki/File:2018_Audi_R8_Coupe_V10_plus_Front.jpg
-gallery-3.jpg: File:BMW M8 Gran Coupe Competition (Facelift) 1X7A6106.jpg — Alexander Migl (CC BY-SA 4.0)
+Vehicle photography sourced from Wikimedia Commons:
+
+gallery-2.jpg: File:2018 Audi R8 Coupe V10 plus Rear.jpg
+  by Vauxford — CC BY-SA 4.0
+  https://commons.wikimedia.org/wiki/File:2018_Audi_R8_Coupe_V10_plus_Rear.jpg
+
+gallery-3.jpg: File:BMW M8 Gran Coupe Competition (Facelift) 1X7A6106.jpg
+  by Alexander Migl — CC BY-SA 4.0
   https://commons.wikimedia.org/wiki/File:BMW_M8_Gran_Coupe_Competition_(Facelift)_1X7A6106.jpg
-gallery-4.jpg: File:Mercedes-AMG GT43 Coupe C192.jpg — TTTNIS (CC0)
-  https://commons.wikimedia.org/wiki/File:Mercedes-AMG_GT43_Coupe_C192.jpg
-gallery-5.jpg: File:Felicidade A very happy boy.jpg — Luis Miguel Bugallo Sánchez (Lmbuga Commons)(Lmbuga Galipedia) (CC BY-SA 4.0)
-  https://commons.wikimedia.org/wiki/File:Felicidade_A_very_happy_boy.jpg
-gallery-6.jpg: File:Land Rover Range Rover (5th generation) Auto Zuerich 2023 1X7A1237.jpg — Alexander-93 (CC BY-SA 4.0)
-  https://commons.wikimedia.org/wiki/File:Land_Rover_Range_Rover_(5th_generation)_Auto_Zuerich_2023_1X7A1237.jpg
-gallery-7.jpg: File:Lexus LX 600 VJA310 Atomic Silver (2).jpg — Damian B Oh (CC BY-SA 4.0)
-  https://commons.wikimedia.org/wiki/File:Lexus_LX_600_VJA310_Atomic_Silver_(2).jpg
+
+gallery-4.jpg: File:Mercedes-AMG GT Black Series IMG 0324.jpg
+  by Alexander-93 — CC BY-SA 4.0
+  https://commons.wikimedia.org/wiki/File:Mercedes-AMG_GT_Black_Series_IMG_0324.jpg
+
+gallery-5.jpg: File:2020 Audi RS Q8 Front End.jpg
+  by Vauxford — CC BY-SA 4.0
+  https://commons.wikimedia.org/wiki/File:2020_Audi_RS_Q8_Front_End.jpg
+
+gallery-6.jpg: File:Land Rover Range Rover (5th generation) 1X7A6039.jpg
+  by Alexander Migl — CC BY-SA 4.0
+  https://commons.wikimedia.org/wiki/File:Land_Rover_Range_Rover_(5th_generation)_1X7A6039.jpg
+
+gallery-7.jpg: File:Lexus LX 600 VJA310 F Sport White Nova 02.jpg
+  by Ethan Llamas — CC BY-SA 4.0
+  https://commons.wikimedia.org/wiki/File:Lexus_LX_600_VJA310_F_Sport_White_Nova_02.jpg
+

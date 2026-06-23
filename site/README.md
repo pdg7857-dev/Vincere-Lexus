@@ -1,7 +1,9 @@
 # Phil Dave — Private Automotive Concierge (website)
 
-A self-contained, Lamborghini-inspired luxury concierge site: full-bleed
-imagery, stark high-contrast, bold uppercase display type. No prices anywhere.
+A self-contained, Lamborghini-inspired site for **Phil Dave — Private Automotive
+Procurement**: full-bleed imagery, stark high-contrast, bold uppercase display
+type. No prices anywhere. The positioning ties to Phil's real background in
+procurement (see phildave.com), applied to sourcing cars.
 No build step, no server, no dependencies — just open `index.html`.
 
 ```
@@ -25,7 +27,7 @@ All images live in `site/media/`:
 | File | What it is |
 |------|------------|
 | `gallery-1.jpg` | Phil on location (his own photo) |
-| `gallery-2..7.jpg` | Audi R8 · BMW M8 · Mercedes-AMG GT · Audi RS Q8 · Range Rover · Lexus LX 600 |
+| `gallery-2..7.jpg` | Fleet cards (whole car shown, no crop), labelled model · year · hp: Audi R8 V10 plus · BMW M8 Competition · Mercedes-AMG GT Black Series · Audi RS Q8 · Range Rover P530 · Lexus LX 600 |
 | `phil-portrait.jpg` | Phil portrait, used in the About section |
 
 - **Phil's two photos** (portrait + on-location) are his own.

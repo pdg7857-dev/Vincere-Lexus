@@ -161,32 +161,46 @@ em { font-style: normal; color: var(--accent-2); }
 
 /* ---------- Gallery ---------- */
 .gallery { padding: clamp(60px, 10vh, 120px) clamp(20px, 5vw, 70px); max-width: 1480px; margin: 0 auto; }
-.gallery__grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; grid-auto-flow: dense; }
-.shot { position: relative; overflow: hidden; background: var(--panel); border: 1px solid var(--line);
-  grid-column: span 2; aspect-ratio: 4/5; }
-.shot--lead { grid-column: span 4; aspect-ratio: 16/10; }
-.shot--wide { grid-column: span 4; aspect-ratio: 16/9; }
-.shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-  transition: transform 1.1s var(--ease), opacity .8s; }
-.shot:hover img { transform: scale(1.05); }
-.shot__cap { position: absolute; left: 18px; bottom: 16px; z-index: 2; display: flex; align-items: center; gap: 12px;
-  font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink);
-  text-shadow: 0 1px 14px rgba(0,0,0,0.6); }
-.shot__cap span { color: var(--accent); font-family: var(--display); font-weight: 800; }
-.shot::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%); }
-/* placeholder state (no photo yet) */
-.shot.is-empty img { opacity: 0; }
-.shot.is-empty { background:
-  repeating-linear-gradient(135deg, rgba(255,255,255,0.015) 0 14px, transparent 14px 28px),
-  radial-gradient(120% 100% at 30% 10%, #1a1a20, #0c0c0e); }
-.shot.is-empty::before { content: "PHOTO"; position: absolute; inset: 0; z-index: 1; display: grid; place-items: center;
-  font-family: var(--display); font-weight: 800; letter-spacing: .4em; font-size: clamp(.8rem, 2vw, 1.2rem);
-  color: rgba(201,169,106,0.35); }
-@media (max-width: 760px) {
-  .gallery__grid { grid-template-columns: repeat(2, 1fr); }
-  .shot, .shot--lead, .shot--wide { grid-column: span 2; aspect-ratio: 4/3; }
-}
+
+/* On-location lead (atmospheric — full-bleed cover is intentional here) */
+.gallery__lead { position: relative; overflow: hidden; border: 1px solid var(--line);
+  aspect-ratio: 21/9; background: var(--panel); margin-bottom: 18px; }
+.gallery__lead img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  object-position: center 30%; transition: transform 1.2s var(--ease); }
+.gallery__lead:hover img { transform: scale(1.04); }
+.gallery__lead::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%); }
+.gallery__lead-cap { position: absolute; left: 22px; bottom: 18px; z-index: 2;
+  font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink); text-shadow: 0 1px 14px rgba(0,0,0,.6); }
+.gallery__lead-cap span { border-left: 2px solid var(--accent); padding-left: 12px; }
+@media (max-width: 760px) { .gallery__lead { aspect-ratio: 4/3; } }
+
+/* Fleet cards — whole car always shown (object-fit: contain), labelled */
+.fleet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 980px) { .fleet { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .fleet { grid-template-columns: 1fr; } }
+.car { border: 1px solid var(--line); background: var(--panel); overflow: hidden;
+  transition: transform .55s var(--ease), border-color .55s; }
+.car:hover { transform: translateY(-6px); border-color: rgba(201,169,106,0.45); }
+.car__media { position: relative; aspect-ratio: 16/10; overflow: hidden;
+  background: radial-gradient(120% 120% at 50% 20%, #1a1a1f, #0c0c0e); }
+.car__media img { position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; padding: 14px; transition: transform .8s var(--ease); }
+.car:hover .car__media img { transform: scale(1.04); }
+.car__info { display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+  padding: 18px 20px 20px; border-top: 1px solid var(--line); }
+.car__name { font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .02em;
+  font-size: 1rem; line-height: 1.15; }
+.car__spec { display: flex; align-items: center; gap: 10px; white-space: nowrap;
+  font-size: 12px; letter-spacing: .08em; color: var(--ink-soft); }
+.car__spec i { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); display: inline-block; }
+.car__spec span:last-child { color: var(--accent-2); }
+/* placeholder state (no photo) */
+.car__media.is-empty img, .gallery__lead.is-empty img { opacity: 0; }
+.car__media.is-empty::after, .gallery__lead.is-empty::before {
+  content: "PHOTO"; position: absolute; inset: 0; z-index: 1; display: grid; place-items: center;
+  font-family: var(--display); font-weight: 800; letter-spacing: .4em; font-size: clamp(.8rem, 2vw, 1.1rem);
+  color: rgba(201,169,106,0.32); }
 
 /* ---------- About ---------- */
 .about { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(40px, 6vw, 90px); align-items: center;
@@ -200,6 +214,8 @@ em { font-style: normal; color: var(--accent-2); }
 .about__frame:not(.is-empty) .about__initials { display: none; }
 .about__title { font-weight: 900; text-transform: uppercase; font-size: clamp(1.8rem, 4.6vw, 3.4rem); line-height: 0.96; letter-spacing: -0.015em; margin: 16px 0 26px; }
 .about__body p { color: var(--ink-soft); font-weight: 300; margin-bottom: 18px; max-width: 56ch; }
+.about__link { color: var(--accent); white-space: nowrap; border-bottom: 1px solid transparent; transition: border-color .3s; }
+.about__link:hover { border-color: var(--accent); }
 .about__stats { display: flex; gap: 44px; margin-top: 38px; flex-wrap: wrap; }
 .about__stats strong { font-family: var(--display); font-weight: 800; font-size: 2.4rem; color: var(--accent); display: block; line-height: 1; }
 .about__stats span { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }

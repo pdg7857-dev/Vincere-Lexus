@@ -9,7 +9,7 @@
        image loads. Works for the gallery shots and the About portrait. ---------- */
   function initFrames() {
     document.querySelectorAll('[data-img]').forEach(function (img) {
-      var frame = img.closest('[data-shot]') || img.parentElement;
+      var frame = img.parentElement;  // .car__media / .gallery__lead / .about__frame
       function empty() { frame.classList.add('is-empty'); }
       function filled() { frame.classList.remove('is-empty'); }
       // no source set, or it fails to load -> placeholder
