@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Phil Dave — Private Automotive Concierge</title>
+<meta name="description" content="Phil Dave is a private automotive concierge. Tell me the car you want — any make, any model — and I source it, vet it, and deliver it. A focus on luxury." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<!-- Custom cursor -->
+<div class="cursor" data-cursor></div>
+<div class="cursor-dot" data-cursor-dot></div>
+
+<!-- Grain overlay -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- Progress bar -->
+<div class="scroll-progress" data-progress></div>
+
+<!-- Nav -->
+<header class="nav" data-nav>
+  <a href="#top" class="nav__brand" data-magnetic>
+    <span class="nav__mark">PD</span>
+    <span class="nav__name">Phil&nbsp;Dave</span>
+  </a>
+  <nav class="nav__links">
+    <a href="#how" data-link>Process</a>
+    <a href="#collection" data-link>Collection</a>
+    <a href="#about" data-link>About</a>
+    <a href="#contact" class="nav__cta" data-magnetic>Start a search</a>
+  </nav>
+  <button class="nav__burger" data-burger aria-label="Menu"><span></span><span></span></button>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" data-hero>
+    <!-- Drop a Higgsfield/stock clip at site/media/hero.mp4 and it plays automatically.
+         Until then, the cinematic CSS backdrop below carries the hero. -->
+    <video class="hero__video" autoplay muted loop playsinline preload="none" poster="">
+      <source src="media/hero.mp4" type="video/mp4" />
+    </video>
+    <div class="hero__backdrop" aria-hidden="true">
+      <span class="hero__glow hero__glow--a"></span>
+      <span class="hero__glow hero__glow--b"></span>
+    </div>
+    <div class="hero__inner">
+      <p class="hero__eyebrow" data-reveal>Private Automotive Concierge</p>
+      <h1 class="hero__title">
+        <span class="line" data-reveal-line>Any car.</span>
+        <span class="line line--accent" data-reveal-line>Sourced for you.</span>
+      </h1>
+      <p class="hero__lede" data-reveal>
+        You tell me what you want. I find it, vet it, negotiate it and deliver it —
+        any make on earth, with an eye for the exceptional.
+      </p>
+      <div class="hero__actions" data-reveal>
+        <a href="#contact" class="btn btn--solid" data-magnetic>Tell me what you want</a>
+        <a href="#collection" class="btn btn--ghost" data-magnetic>See current finds</a>
+      </div>
+    </div>
+    <a href="#how" class="hero__scroll" data-magnetic>
+      <span>Scroll</span><i></i>
+    </a>
+  </section>
+
+  <!-- MARQUEE -->
+  <section class="marquee" aria-label="Makes I source">
+    <div class="marquee__track" data-marquee>
+      <span>Lexus</span><span>•</span><span>Porsche</span><span>•</span><span>Mercedes-Benz</span><span>•</span>
+      <span>Range Rover</span><span>•</span><span>BMW</span><span>•</span><span>Audi</span><span>•</span>
+      <span>Bentley</span><span>•</span><span>Aston Martin</span><span>•</span><span>Ferrari</span><span>•</span>
+      <span>Maserati</span><span>•</span><span>Cadillac</span><span>•</span><span>Genesis</span><span>•</span>
+      <span>Lexus</span><span>•</span><span>Porsche</span><span>•</span><span>Mercedes-Benz</span><span>•</span>
+      <span>Range Rover</span><span>•</span><span>BMW</span><span>•</span><span>Audi</span><span>•</span>
+      <span>Bentley</span><span>•</span><span>Aston Martin</span><span>•</span><span>Ferrari</span><span>•</span>
+      <span>Maserati</span><span>•</span><span>Cadillac</span><span>•</span><span>Genesis</span><span>•</span>
+    </div>
+  </section>
+
+  <!-- POSITIONING -->
+  <section class="intro" id="intro">
+    <p class="intro__text" data-reveal-words>
+      Buying a car should feel like being handed the keys, not chasing a salesperson.
+      I work for <em>you</em> — independent, discreet, and relentless about getting the
+      right car at the right number.
+    </p>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="section-head">
+      <span class="section-head__kicker" data-reveal>The process</span>
+      <h2 class="section-head__title" data-reveal>Three steps. Zero hassle.</h2>
+    </div>
+    <ol class="steps">
+      <li class="step" data-reveal>
+        <span class="step__num">01</span>
+        <h3 class="step__title">Tell me the brief</h3>
+        <p class="step__body">Make, model, budget, colour, must-haves — or just the feeling you're after. The more specific, the better the hunt.</p>
+      </li>
+      <li class="step" data-reveal>
+        <span class="step__num">02</span>
+        <h3 class="step__title">I source &amp; vet</h3>
+        <p class="step__body">I work my dealer and auction network to find the exact car, verify history and condition, and negotiate the number on your behalf.</p>
+      </li>
+      <li class="step" data-reveal>
+        <span class="step__num">03</span>
+        <h3 class="step__title">You take delivery</h3>
+        <p class="step__body">Paperwork handled, financing arranged if you want it, delivered to your door. You just drive.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- COLLECTION -->
+  <section class="collection" id="collection">
+    <div class="section-head section-head--split">
+      <div>
+        <span class="section-head__kicker" data-reveal>Currently sourced</span>
+        <h2 class="section-head__title" data-reveal>A few in the stable.</h2>
+      </div>
+      <p class="section-head__note" data-reveal>
+        A rotating selection of vehicles I can place this week — across makes.
+        Don't see it? It's the one I'll find for you next.
+      </p>
+    </div>
+    <div class="cards" data-cards><!-- injected by JS --></div>
+    <p class="collection__disclaimer" data-reveal>
+      Vehicles sourced through my licensed dealer network. Pricing and availability confirmed on request.
+    </p>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about__media" data-reveal>
+      <div class="about__frame">
+        <span class="about__initials">PD</span>
+        <!-- Swap this block for a portrait: <img src="media/phil.jpg" alt="Phil Dave" /> -->
+      </div>
+    </div>
+    <div class="about__body">
+      <span class="section-head__kicker" data-reveal>Who you're working with</span>
+      <h2 class="about__title" data-reveal>I'm Phil Dave — the go-to guy for the car you actually want.</h2>
+      <p data-reveal>
+        I've built my name on one thing: finding people the right car without the runaround.
+        Clients tell me what they're after and I do the rest — the searching, the vetting,
+        the negotiating. Luxury is my focus, but I'll source any make and any model.
+      </p>
+      <p data-reveal>
+        I keep it independent so my only loyalty is to you. When the perfect car is at a
+        partner dealer, you get it at the dealer's strength with my representation on your side.
+      </p>
+      <div class="about__stats" data-reveal>
+        <div><strong>Any</strong><span>make &amp; model</span></div>
+        <div><strong>1:1</strong><span>personal service</span></div>
+        <div><strong>0</strong><span>showroom pressure</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="contact__inner">
+      <div class="section-head">
+        <span class="section-head__kicker" data-reveal>Start the search</span>
+        <h2 class="section-head__title" data-reveal>Tell me what you want.</h2>
+      </div>
+      <form class="form" data-form action="mailto:pdg7857@gmail.com" method="post" enctype="text/plain">
+        <div class="form__row">
+          <label class="field">
+            <span>Your name</span>
+            <input type="text" name="name" required placeholder="Jane Doe" />
+          </label>
+          <label class="field">
+            <span>Email or phone</span>
+            <input type="text" name="contact" required placeholder="So I can reach you" />
+          </label>
+        </div>
+        <div class="form__row">
+          <label class="field">
+            <span>The car you're after</span>
+            <input type="text" name="car" placeholder="e.g. Porsche 911 Carrera, white" />
+          </label>
+          <label class="field">
+            <span>Budget</span>
+            <input type="text" name="budget" placeholder="e.g. up to $120k" />
+          </label>
+        </div>
+        <label class="field">
+          <span>Anything else</span>
+          <textarea name="details" rows="3" placeholder="Timeline, must-haves, trade-in, financing…"></textarea>
+        </label>
+        <button type="submit" class="btn btn--solid btn--block" data-magnetic>Send my brief</button>
+        <p class="form__fineprint">Prefer to talk? Email <a href="mailto:pdg7857@gmail.com">pdg7857@gmail.com</a>.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__brand">
+    <span class="nav__mark">PD</span>
+    <span>Phil Dave — Private Automotive Concierge</span>
+  </div>
+  <p class="footer__legal">
+    Independent automotive concierge. Vehicles sourced and transacted through licensed dealer partners.
+    © <span data-year></span> Phil Dave.
+  </p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
