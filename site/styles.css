@@ -216,6 +216,12 @@ em { font-style: normal; color: var(--accent-2); }
 .about__body p { color: var(--ink-soft); font-weight: 300; margin-bottom: 18px; max-width: 56ch; }
 .about__link { color: var(--accent); white-space: nowrap; border-bottom: 1px solid transparent; transition: border-color .3s; }
 .about__link:hover { border-color: var(--accent); }
+.about__trust { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px;
+  margin: 22px 0 0; padding-top: 22px; border-top: 1px solid var(--line);
+  font-family: var(--display); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .14em; font-size: .82rem; color: var(--ink-soft); }
+.about__trust span { font-family: var(--sans); font-weight: 400; letter-spacing: .2em;
+  font-size: .66rem; color: var(--ink-faint); width: 100%; margin-bottom: -4px; }
 .about__stats { display: flex; gap: 44px; margin-top: 38px; flex-wrap: wrap; }
 .about__stats strong { font-family: var(--display); font-weight: 800; font-size: 2.4rem; color: var(--accent); display: block; line-height: 1; }
 .about__stats span { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }
