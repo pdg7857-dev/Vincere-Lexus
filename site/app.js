@@ -1,5 +1,5 @@
 /* ============================================================
-   Phil Dave — concierge site interactions
+   Phil Dave · site interactions
    Vanilla JS. No dependencies, no build step.
    ============================================================ */
 (function () {
