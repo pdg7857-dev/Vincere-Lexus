@@ -193,9 +193,14 @@
       <div class="modal-box settings">
         <h3>Settings</h3>
         <p class="muted">
-          Add your Anthropic API key to generate with Claude. The key is stored only in this
-          browser (localStorage) and sent directly to the Anthropic API. Leave blank to use the
-          built-in offline template generator.
+          <strong>Best option:</strong> run the bundled server
+          (<code>node carousel/server/server.js</code>) with your Claude subscription or an API
+          key — then generation routes through it automatically and no key is needed here.
+        </p>
+        <p class="muted">
+          Otherwise, add an Anthropic API key below. It's stored only in this browser
+          (localStorage) and sent directly to the Anthropic API. Leave blank to use the built-in
+          offline template generator.
         </p>
         <label for="apiKey">Anthropic API key</label>
         <input id="apiKey" type="password" placeholder="sk-ant-…" autocomplete="off" />

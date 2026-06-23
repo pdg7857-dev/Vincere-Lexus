@@ -33,6 +33,31 @@
     return !!getKey();
   }
 
+  // ---- server / subscription detection ------------------------------------
+  // When the bundled server (carousel/server/server.js) runs with a host
+  // credential, the browser routes through it (/api/messages) and no per-user
+  // key is needed. _server is the cached auth mode: 'api' | 'subscription' |
+  // 'none' | null (no server reachable).
+  var _server; // undefined until first probe
+  function probeServer() {
+    if (_server !== undefined) return Promise.resolve(_server);
+    return fetch("/api/health", { method: "GET" })
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (j) {
+        _server = j && j.server ? j.auth || "none" : null;
+        return _server;
+      })
+      .catch(function () {
+        _server = null;
+        return _server;
+      });
+  }
+  function serverActive() {
+    return _server && _server !== "none";
+  }
+
   // ---- Anthropic call ------------------------------------------------------
 
   function modeGuidance(mode) {
@@ -77,14 +102,19 @@
   }
 
   async function callAnthropic(body) {
-    var res = await fetch(API, {
+    var useServer = serverActive();
+    var url = useServer ? "/api/messages" : API;
+    var headers = useServer
+      ? { "content-type": "application/json" }
+      : {
+          "content-type": "application/json",
+          "x-api-key": getKey(),
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        };
+    var res = await fetch(url, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": getKey(),
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true",
-      },
+      headers: headers,
       body: JSON.stringify(body),
     });
     if (!res.ok) {
@@ -104,7 +134,8 @@
 
   async function generateDeck(opts) {
     var bodyCount = Math.max(3, (opts.slideCount || 8) - 2); // minus hook + outro
-    if (!hasKey()) return fallbackDeck(opts, bodyCount);
+    await probeServer();
+    if (!serverActive() && !hasKey()) return fallbackDeck(opts, bodyCount);
 
     var system =
       "You are a world-class social media ghostwriter who writes viral image carousels. " +
@@ -135,7 +166,8 @@
 
   async function regenerateSlide(opts) {
     // opts: { title, context, mode, kind, current, instruction }
-    if (!hasKey()) return fallbackRegen(opts);
+    await probeServer();
+    if (!serverActive() && !hasKey()) return fallbackRegen(opts);
     var schema = {
       type: "object",
       properties: { body: { type: "string" } },
@@ -215,6 +247,8 @@
   window.CarouselAI = {
     generateDeck: generateDeck,
     regenerateSlide: regenerateSlide,
+    refreshServer: probeServer, // -> Promise<'api'|'subscription'|'none'|null>
+    serverActive: serverActive,
     hasKey: hasKey,
     getKey: getKey,
     setKey: setKey,

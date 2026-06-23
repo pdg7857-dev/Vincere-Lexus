@@ -174,19 +174,28 @@
 
   function updateKeynote() {
     var note = $("#keynote");
-    if (AI.hasKey()) {
-      note.innerHTML = "Generating with <strong>" + AI.getModel() + "</strong>.";
-    } else {
+    AI.refreshServer().then(function (mode) {
+      if (mode && mode !== "none") {
+        note.innerHTML =
+          mode === "subscription"
+            ? "Generating through the host <strong>Claude subscription</strong> — no key needed."
+            : "Generating through the host server credential — no key needed.";
+        return;
+      }
+      if (AI.hasKey()) {
+        note.innerHTML = "Generating with <strong>" + AI.getModel() + "</strong>.";
+        return;
+      }
       note.innerHTML =
-        "No API key set — using the built-in offline writer. " +
-        '<a href="#" id="addKeyLink">Add an Anthropic key</a> for AI-written copy.';
+        "No credentials — using the built-in offline writer. " +
+        '<a href="#" id="addKeyLink">Add an Anthropic key</a>, or run the bundled server with your subscription.';
       var link = $("#addKeyLink");
       if (link)
         link.addEventListener("click", function (e) {
           e.preventDefault();
           openSettings();
         });
-    }
+    });
   }
 
   async function onGenerate() {
