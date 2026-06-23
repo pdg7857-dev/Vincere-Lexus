@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Carousel — AI carousel generator</title>
+    <meta
+      name="description"
+      content="Type a topic, get a finished, post-ready image carousel. AI writes the hook and copy; the app renders each slide to a downloadable PNG."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brandmark">
+        <span class="logo">◳</span>
+        <div>
+          <strong>Carousel</strong>
+          <small>type a topic → get a carousel</small>
+        </div>
+      </div>
+      <button id="settingsBtn" class="ghost" title="Settings" aria-label="Settings">⚙</button>
+    </header>
+
+    <!-- Stepper -->
+    <nav class="stepper" id="stepper" aria-label="Progress">
+      <button class="step" data-step="topic"><span>1</span>Topic</button>
+      <button class="step" data-step="hook"><span>2</span>Hook</button>
+      <button class="step" data-step="copy"><span>3</span>Copy</button>
+      <button class="step" data-step="review"><span>4</span>Review</button>
+      <button class="step" data-step="done"><span>5</span>Export</button>
+    </nav>
+
+    <main id="main">
+      <!-- STEP 1: TOPIC -->
+      <section class="screen" data-screen="topic">
+        <h1>What's your carousel about?</h1>
+        <p class="sub">Give it a title — the AI will suggest the rest.</p>
+
+        <div class="field">
+          <label>Mode</label>
+          <div class="modes" id="modeSel">
+            <button class="mode" data-mode="screenshot">
+              <strong>Screenshot</strong><small>Faux-tweet cards</small>
+            </button>
+            <button class="mode" data-mode="creative">
+              <strong>Creative</strong><small>Bold typographic</small>
+            </button>
+            <button class="mode" data-mode="custom">
+              <strong>Custom</strong><small>Your branding</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="title">Carousel title</label>
+          <input id="title" type="text" placeholder="e.g. How to be a morning person" autocomplete="off" />
+        </div>
+
+        <div class="field">
+          <label>Topic ideas <small class="hint">suggestions to get you started</small></label>
+          <div class="chips" id="ideaChips"></div>
+        </div>
+
+        <details class="field advanced">
+          <summary>Additional context &amp; options</summary>
+          <div class="advanced-body">
+            <label for="context">Additional context (optional)</label>
+            <textarea id="context" rows="3" placeholder="Tone, target audience, 'focus on actionable tips'…"></textarea>
+
+            <div class="row">
+              <div>
+                <label for="slideCount">Slides</label>
+                <input id="slideCount" type="number" min="4" max="10" value="8" />
+              </div>
+              <div>
+                <label for="format">Format</label>
+                <select id="format">
+                  <option value="portrait">Portrait 4:5 (1080×1350)</option>
+                  <option value="square">Square 1:1 (1080×1080)</option>
+                </select>
+              </div>
+            </div>
+
+            <label class="check"><input type="checkbox" id="includeImages" /> Include image placeholders under body text</label>
+          </div>
+        </details>
+
+        <details class="field advanced">
+          <summary>Brand</summary>
+          <div class="advanced-body brandgrid">
+            <div>
+              <label for="bName">Display name</label>
+              <input id="bName" type="text" value="Your Name" />
+            </div>
+            <div>
+              <label for="bHandle">@handle</label>
+              <input id="bHandle" type="text" value="@yourhandle" />
+            </div>
+            <div>
+              <label for="bAccent">Accent</label>
+              <input id="bAccent" type="color" value="#1d9bf0" />
+            </div>
+            <div>
+              <label for="bAvatar">Avatar</label>
+              <input id="bAvatar" type="file" accept="image/*" />
+            </div>
+            <label class="check"><input type="checkbox" id="bVerified" checked /> Verified badge</label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button id="generateBtn" class="primary big">Generate carousel →</button>
+        </div>
+        <p class="keynote" id="keynote"></p>
+      </section>
+
+      <!-- STEP 2: HOOK -->
+      <section class="screen" data-screen="hook" hidden>
+        <h1>Pick your hook</h1>
+        <p class="sub">This becomes slide 1 — the scroll-stopper. Edit it or choose an alternative.</p>
+        <div class="hookwrap">
+          <textarea id="hookText" rows="3"></textarea>
+          <div class="chips" id="altHooks"></div>
+        </div>
+        <div class="actions split">
+          <button class="ghost" data-goto="topic">← Back</button>
+          <button class="primary" data-goto="copy">Continue to copy →</button>
+        </div>
+      </section>
+
+      <!-- STEP 3: COPY -->
+      <section class="screen" data-screen="copy" hidden>
+        <h1>Edit your slides</h1>
+        <p class="sub">Tweak the copy, reorder, add or remove slides.</p>
+        <div id="copyList" class="copylist"></div>
+        <button id="addSlide" class="ghost add">+ Add slide</button>
+        <div class="actions split">
+          <button class="ghost" data-goto="hook">← Back</button>
+          <button class="primary" data-goto="review">Review slides →</button>
+        </div>
+      </section>
+
+      <!-- STEP 4: REVIEW -->
+      <section class="screen" data-screen="review" hidden>
+        <h1>Review your slides</h1>
+        <p class="sub">Click any slide to edit or regenerate it — or approve all.</p>
+        <div id="reviewGrid" class="grid"></div>
+        <div class="actions split">
+          <button class="ghost" data-goto="copy">← Back</button>
+          <button class="primary" data-goto="done">Approve all →</button>
+        </div>
+      </section>
+
+      <!-- STEP 5: DONE / EXPORT -->
+      <section class="screen" data-screen="done" hidden>
+        <h1>Your carousel is ready 🎉</h1>
+        <p class="sub">Download the images, then post.</p>
+        <div class="exportbar">
+          <button id="dlAll" class="primary">⬇ Download all PNGs</button>
+          <button id="dlPdf" class="ghost">⬇ Download PDF</button>
+          <button class="ghost" data-goto="review">← Back to review</button>
+        </div>
+        <div class="caption-card">
+          <label>Suggested caption</label>
+          <textarea id="captionText" rows="3"></textarea>
+          <button id="copyCaption" class="ghost small">Copy caption</button>
+        </div>
+        <div id="exportGrid" class="grid"></div>
+      </section>
+    </main>
+
+    <!-- Slide editor modal -->
+    <div class="modal" id="editorModal" hidden>
+      <div class="modal-box">
+        <div class="modal-preview"><canvas id="editorCanvas"></canvas></div>
+        <div class="modal-edit">
+          <h3 id="editorTitle">Edit slide</h3>
+          <textarea id="editorText" rows="6"></textarea>
+          <input id="editorInstruction" type="text" placeholder="Regenerate instruction (e.g. 'make it punchier')" />
+          <div class="modal-actions">
+            <button id="editorRegen" class="ghost">↻ Regenerate</button>
+            <span class="spacer"></span>
+            <button id="editorCancel" class="ghost">Cancel</button>
+            <button id="editorSave" class="primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings modal -->
+    <div class="modal" id="settingsModal" hidden>
+      <div class="modal-box settings">
+        <h3>Settings</h3>
+        <p class="muted">
+          <strong>Best option:</strong> run the bundled server
+          (<code>node carousel/server/server.js</code>) with your Claude subscription or an API
+          key — then generation routes through it automatically and no key is needed here.
+        </p>
+        <p class="muted">
+          Otherwise, add an Anthropic API key below. It's stored only in this browser
+          (localStorage) and sent directly to the Anthropic API. Leave blank to use the built-in
+          offline template generator.
+        </p>
+        <label for="apiKey">Anthropic API key</label>
+        <input id="apiKey" type="password" placeholder="sk-ant-…" autocomplete="off" />
+        <label for="modelSel">Model</label>
+        <select id="modelSel">
+          <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (recommended)</option>
+          <option value="claude-opus-4-8">Claude Opus 4.8</option>
+          <option value="claude-haiku-4-5">Claude Haiku 4.5 (fastest)</option>
+        </select>
+        <div class="modal-actions">
+          <span class="spacer"></span>
+          <button id="settingsCancel" class="ghost">Cancel</button>
+          <button id="settingsSave" class="primary">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+
+    <script src="render.js"></script>
+    <script src="generate.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
