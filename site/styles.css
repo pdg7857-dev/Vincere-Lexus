@@ -127,12 +127,13 @@ em { font-style: normal; color: var(--accent-2); }
 .btn--ghost:hover { border-color: var(--accent); color: var(--accent-2); }
 .btn--block { width: 100%; padding: 19px; margin-top: 10px; }
 
-/* ---------- Marquee ---------- */
-.marquee { border-block: 1px solid var(--line); padding: 24px 0; overflow: hidden; background: var(--bg-soft); }
-.marquee__track { display: inline-flex; align-items: center; gap: 30px; white-space: nowrap; will-change: transform;
-  font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
-  font-size: clamp(1.1rem, 2.4vw, 1.9rem); color: var(--ink-faint); }
-.marquee__track .dot { color: var(--accent); font-weight: 400; }
+/* ---------- Marquee (brand logos) ---------- */
+.marquee { border-block: 1px solid var(--line); padding: 26px 0; overflow: hidden; background: var(--bg-soft); }
+.marquee__track { display: inline-flex; align-items: center; gap: clamp(38px, 6vw, 80px); white-space: nowrap; will-change: transform; }
+.brand__logo { height: clamp(20px, 2.6vw, 28px); width: auto; flex: 0 0 auto;
+  filter: brightness(0) invert(0.66); opacity: .82; }
+.brand__word { flex: 0 0 auto; font-family: var(--display); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; font-size: clamp(1.05rem, 2.2vw, 1.5rem); color: rgba(246,244,239,0.6); }
 
 /* ---------- Intro ---------- */
 .intro { padding: clamp(90px, 16vh, 200px) clamp(20px, 5vw, 70px); max-width: 1180px; margin: 0 auto; }
@@ -175,29 +176,33 @@ em { font-style: normal; color: var(--accent-2); }
 .gallery__lead-cap span { border-left: 2px solid var(--accent); padding-left: 12px; }
 @media (max-width: 760px) { .gallery__lead { aspect-ratio: 4/3; } }
 
-/* Fleet cards — whole car always shown (object-fit: contain), labelled */
+/* Fleet cards — scenic shots, label overlaid */
 .fleet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 @media (max-width: 980px) { .fleet { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .fleet { grid-template-columns: 1fr; } }
 .car { border: 1px solid var(--line); background: var(--panel); overflow: hidden;
   transition: transform .55s var(--ease), border-color .55s; }
 .car:hover { transform: translateY(-6px); border-color: rgba(201,169,106,0.45); }
-.car__media { position: relative; aspect-ratio: 16/10; overflow: hidden;
+.car__media { position: relative; aspect-ratio: 3/2; overflow: hidden;
   background: radial-gradient(120% 120% at 50% 20%, #1a1a1f, #0c0c0e); }
 .car__media img { position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: contain; padding: 14px; transition: transform .8s var(--ease); }
-.car:hover .car__media img { transform: scale(1.04); }
-.car__info { display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
-  padding: 18px 20px 20px; border-top: 1px solid var(--line); }
+  object-fit: cover; transition: transform .9s var(--ease); }
+.car:hover .car__media img { transform: scale(1.05); }
+.car__media::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.78) 100%); }
+.car__label { position: absolute; left: 18px; right: 18px; bottom: 16px; z-index: 2;
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .car__name { font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .02em;
-  font-size: 1rem; line-height: 1.15; }
-.car__spec { display: flex; align-items: center; gap: 10px; white-space: nowrap;
-  font-size: 12px; letter-spacing: .08em; color: var(--ink-soft); }
+  font-size: 1rem; line-height: 1.12; text-shadow: 0 1px 12px rgba(0,0,0,.7); }
+.car__spec { display: flex; align-items: center; gap: 9px; white-space: nowrap;
+  font-size: 12px; letter-spacing: .08em; color: var(--ink); text-shadow: 0 1px 12px rgba(0,0,0,.7); }
 .car__spec i { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); display: inline-block; }
 .car__spec span:last-child { color: var(--accent-2); }
+/* portrait/cover focus tuning per image */
+.car:nth-child(6) .car__media img { object-position: center 42%; }
 /* placeholder state (no photo) */
-.car__media.is-empty img, .gallery__lead.is-empty img { opacity: 0; }
-.car__media.is-empty::after, .gallery__lead.is-empty::before {
+.car__media.is-empty img { opacity: 0; }
+.car__media.is-empty::before {
   content: "PHOTO"; position: absolute; inset: 0; z-index: 1; display: grid; place-items: center;
   font-family: var(--display); font-weight: 800; letter-spacing: .4em; font-size: clamp(.8rem, 2vw, 1.1rem);
   color: rgba(201,169,106,0.32); }
@@ -216,12 +221,16 @@ em { font-style: normal; color: var(--accent-2); }
 .about__body p { color: var(--ink-soft); font-weight: 300; margin-bottom: 18px; max-width: 56ch; }
 .about__link { color: var(--accent); white-space: nowrap; border-bottom: 1px solid transparent; transition: border-color .3s; }
 .about__link:hover { border-color: var(--accent); }
-.about__trust { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px;
-  margin: 22px 0 0; padding-top: 22px; border-top: 1px solid var(--line);
-  font-family: var(--display); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .14em; font-size: .82rem; color: var(--ink-soft); }
-.about__trust span { font-family: var(--sans); font-weight: 400; letter-spacing: .2em;
-  font-size: .66rem; color: var(--ink-faint); width: 100%; margin-bottom: -4px; }
+.about__trust { margin: 24px 0 0; padding-top: 22px; border-top: 1px solid var(--line); }
+.about__trust-label { display: block; font-family: var(--sans); font-weight: 400; letter-spacing: .2em;
+  text-transform: uppercase; font-size: .66rem; color: var(--ink-faint); margin-bottom: 16px; }
+.about__trust-row { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 26px; }
+.trust__logo { height: 20px; width: auto; max-width: 110px; flex: 0 0 auto;
+  filter: brightness(0) invert(0.62); opacity: .8; transition: opacity .3s, filter .3s; }
+.trust__logo:hover { opacity: 1; filter: brightness(0) invert(0.9); }
+.trust__logo--rbc { height: 26px; }
+.trust__word { flex: 0 0 auto; font-family: var(--display); font-weight: 700; letter-spacing: .04em;
+  font-size: 1.05rem; color: rgba(246,244,239,0.62); }
 .about__stats { display: flex; gap: 44px; margin-top: 38px; flex-wrap: wrap; }
 .about__stats strong { font-family: var(--display); font-weight: 800; font-size: 2.4rem; color: var(--accent); display: block; line-height: 1; }
 .about__stats span { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }

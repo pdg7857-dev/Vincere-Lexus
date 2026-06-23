@@ -123,16 +123,33 @@
     });
   }
 
-  /* ---------- Marquee loop ---------- */
+  /* ---------- Marquee loop (logo set; clone for seamless scroll) ---------- */
   function initMarquee() {
     var track = document.querySelector('[data-marquee]');
     if (!track) return;
-    var x = 0, half = track.scrollWidth / 2;
-    (function move() {
-      x -= 0.4; if (Math.abs(x) >= half) x = 0;
-      track.style.transform = 'translateX(' + x + 'px)';
-      requestAnimationFrame(move);
-    })();
+    function start() {
+      var base = track.innerHTML;
+      // widen the base set until it comfortably exceeds the viewport
+      var guard = 0;
+      while (track.scrollWidth < window.innerWidth * 1.3 && guard++ < 12) { track.innerHTML += base; }
+      var unit = track.scrollWidth;     // width of one repeating unit
+      track.innerHTML += track.innerHTML; // duplicate so the loop never shows a gap
+      var x = 0;
+      (function move() {
+        x -= 0.4; if (Math.abs(x) >= unit) x = 0;
+        track.style.transform = 'translateX(' + x + 'px)';
+        requestAnimationFrame(move);
+      })();
+    }
+    // wait for logo images to have dimensions before measuring
+    var imgs = track.querySelectorAll('img');
+    var pending = imgs.length;
+    if (!pending) return start();
+    imgs.forEach(function (im) {
+      if (im.complete) { if (--pending === 0) start(); }
+      else { im.addEventListener('load', function () { if (--pending === 0) start(); });
+             im.addEventListener('error', function () { if (--pending === 0) start(); }); }
+    });
   }
 
   /* ---------- Hero parallax + video ---------- */

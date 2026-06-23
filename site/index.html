@@ -60,17 +60,17 @@
     <a href="#process" class="hero__scroll" data-magnetic><span>Scroll</span><i></i></a>
   </section>
 
-  <!-- MARQUEE -->
+  <!-- MARQUEE: brand logos (greyscale). JS clones this set for a seamless loop. -->
   <section class="marquee" aria-label="Makes I source">
     <div class="marquee__track" data-marquee>
-      <span>Lamborghini</span><span class="dot">/</span><span>Ferrari</span><span class="dot">/</span><span>Porsche</span><span class="dot">/</span>
-      <span>Bentley</span><span class="dot">/</span><span>Rolls-Royce</span><span class="dot">/</span><span>Aston Martin</span><span class="dot">/</span>
-      <span>Mercedes-AMG</span><span class="dot">/</span><span>Range Rover</span><span class="dot">/</span><span>Lexus</span><span class="dot">/</span>
-      <span>McLaren</span><span class="dot">/</span><span>Maserati</span><span class="dot">/</span><span>BMW M</span><span class="dot">/</span>
-      <span>Lamborghini</span><span class="dot">/</span><span>Ferrari</span><span class="dot">/</span><span>Porsche</span><span class="dot">/</span>
-      <span>Bentley</span><span class="dot">/</span><span>Rolls-Royce</span><span class="dot">/</span><span>Aston Martin</span><span class="dot">/</span>
-      <span>Mercedes-AMG</span><span class="dot">/</span><span>Range Rover</span><span class="dot">/</span><span>Lexus</span><span class="dot">/</span>
-      <span>McLaren</span><span class="dot">/</span><span>Maserati</span><span class="dot">/</span><span>BMW M</span><span class="dot">/</span>
+      <span class="brand__word">BMW</span>
+      <img class="brand__logo" src="media/logos/mercedes.svg" alt="Mercedes-Benz" />
+      <img class="brand__logo" src="media/logos/audi.svg" alt="Audi" />
+      <img class="brand__logo" src="media/logos/porsche.svg" alt="Porsche" />
+      <img class="brand__logo" src="media/logos/lexus.svg" alt="Lexus" />
+      <img class="brand__logo" src="media/logos/lamborghini.svg" alt="Lamborghini" />
+      <img class="brand__logo" src="media/logos/mclaren.svg" alt="McLaren" />
+      <span class="brand__word">Ferrari</span>
     </div>
   </section>
 
@@ -125,31 +125,31 @@
       <figcaption class="gallery__lead-cap"><span>On location</span></figcaption>
     </figure>
 
-    <!-- Car cards: full vehicle shown (no crop), labelled with model · year · power -->
+    <!-- Car cards: scenic shots, labelled model · year · power -->
     <div class="fleet">
-      <article class="car" data-reveal data-shot>
-        <div class="car__media"><img src="media/gallery-2.jpg" alt="Audi R8 V10 plus" loading="lazy" data-img /></div>
-        <div class="car__info"><h3 class="car__name">Audi R8 V10 plus</h3><p class="car__spec"><span>2018</span><i></i><span>610 hp</span></p></div>
+      <article class="car" data-reveal>
+        <div class="car__media"><img src="media/gallery-2.jpg" alt="Audi R8 Spyder" loading="lazy" data-img />
+          <div class="car__label"><h3 class="car__name">Audi R8 Spyder</h3><p class="car__spec"><span>2022</span><i></i><span>612 hp</span></p></div></div>
       </article>
-      <article class="car" data-reveal data-shot>
-        <div class="car__media"><img src="media/gallery-3.jpg" alt="BMW M8 Competition" loading="lazy" data-img /></div>
-        <div class="car__info"><h3 class="car__name">BMW M8 Competition</h3><p class="car__spec"><span>2022</span><i></i><span>617 hp</span></p></div>
+      <article class="car" data-reveal>
+        <div class="car__media"><img src="media/gallery-3.jpg" alt="Porsche 911 GT3" loading="lazy" data-img />
+          <div class="car__label"><h3 class="car__name">Porsche 911 GT3</h3><p class="car__spec"><span>2022</span><i></i><span>502 hp</span></p></div></div>
       </article>
-      <article class="car" data-reveal data-shot>
-        <div class="car__media"><img src="media/gallery-4.jpg" alt="Mercedes-AMG GT Black Series" loading="lazy" data-img /></div>
-        <div class="car__info"><h3 class="car__name">Mercedes-AMG GT Black Series</h3><p class="car__spec"><span>2021</span><i></i><span>720 hp</span></p></div>
+      <article class="car" data-reveal>
+        <div class="car__media"><img src="media/gallery-4.jpg" alt="Lamborghini Huracán" loading="lazy" data-img />
+          <div class="car__label"><h3 class="car__name">Lamborghini Huracán</h3><p class="car__spec"><span>2021</span><i></i><span>631 hp</span></p></div></div>
       </article>
-      <article class="car" data-reveal data-shot>
-        <div class="car__media"><img src="media/gallery-5.jpg" alt="Audi RS Q8" loading="lazy" data-img /></div>
-        <div class="car__info"><h3 class="car__name">Audi RS Q8</h3><p class="car__spec"><span>2020</span><i></i><span>591 hp</span></p></div>
+      <article class="car" data-reveal>
+        <div class="car__media"><img src="media/gallery-5.jpg" alt="Mercedes-AMG G 63" loading="lazy" data-img />
+          <div class="car__label"><h3 class="car__name">Mercedes-AMG G 63</h3><p class="car__spec"><span>2023</span><i></i><span>577 hp</span></p></div></div>
       </article>
-      <article class="car" data-reveal data-shot>
-        <div class="car__media"><img src="media/gallery-6.jpg" alt="Range Rover P530" loading="lazy" data-img /></div>
-        <div class="car__info"><h3 class="car__name">Range Rover P530</h3><p class="car__spec"><span>2023</span><i></i><span>523 hp</span></p></div>
+      <article class="car" data-reveal>
+        <div class="car__media"><img src="media/gallery-6.jpg" alt="Lexus LC 500" loading="lazy" data-img />
+          <div class="car__label"><h3 class="car__name">Lexus LC 500</h3><p class="car__spec"><span>2021</span><i></i><span>471 hp</span></p></div></div>
       </article>
-      <article class="car" data-reveal data-shot>
-        <div class="car__media"><img src="media/gallery-7.jpg" alt="Lexus LX 600" loading="lazy" data-img /></div>
-        <div class="car__info"><h3 class="car__name">Lexus LX 600</h3><p class="car__spec"><span>2022</span><i></i><span>409 hp</span></p></div>
+      <article class="car" data-reveal>
+        <div class="car__media"><img src="media/gallery-7.jpg" alt="BMW X5 M" loading="lazy" data-img />
+          <div class="car__label"><h3 class="car__name">BMW X5 M</h3><p class="car__spec"><span>2021</span><i></i><span>617 hp</span></p></div></div>
       </article>
     </div>
   </section>
@@ -172,9 +172,18 @@
         that actually mattered.
         <a class="about__link" href="https://phildave.com" target="_blank" rel="noopener">(More on that&nbsp;→)</a>
       </p>
-      <p class="about__trust" data-reveal>
-        <span>Worked with</span> Bell · Rogers · Google · Purolator · Acer · RBC · CIBC
-      </p>
+      <div class="about__trust" data-reveal>
+        <span class="about__trust-label">Worked with</span>
+        <div class="about__trust-row">
+          <img class="trust__logo" src="media/logos/bell.svg" alt="Bell" />
+          <img class="trust__logo" src="media/logos/rogers.svg" alt="Rogers" />
+          <img class="trust__logo" src="media/logos/google.svg" alt="Google" />
+          <img class="trust__logo" src="media/logos/purolator.svg" alt="Purolator" />
+          <img class="trust__logo" src="media/logos/acer.svg" alt="Acer" />
+          <img class="trust__logo trust__logo--rbc" src="media/logos/rbc.svg" alt="RBC — Royal Bank of Canada" />
+          <span class="trust__word">CIBC</span>
+        </div>
+      </div>
       <p data-reveal>
         I apply that same discipline to cars. You tell me what you're after and I do the rest —
         the searching, the vetting, the negotiating. The exceptional is my focus, but I'll

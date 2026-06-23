@@ -1,30 +1,23 @@
-Photography credits
-===================
-Phil Dave portrait & on-location shot (gallery-1, phil-portrait): © Phil Dave.
+Credits & attribution
+=====================
 
-Vehicle photography sourced from Wikimedia Commons:
+Photography
+-----------
+- Phil Dave portrait (phil-portrait.jpg) and on-location lead (gallery-1.jpg):
+  © Phil Dave.
+- Vehicle scenic photography (gallery-2..7.jpg): supplied by Phil Dave.
+  NOTE: confirm you hold the rights/licence to each supplied image before the
+  site goes public.
 
-gallery-2.jpg: File:2018 Audi R8 Coupe V10 plus Rear.jpg
-  by Vauxford — CC BY-SA 4.0
-  https://commons.wikimedia.org/wiki/File:2018_Audi_R8_Coupe_V10_plus_Rear.jpg
+  gallery-2  Audi R8 Spyder        gallery-5  Mercedes-AMG G 63
+  gallery-3  Porsche 911 GT3       gallery-6  Lexus LC 500
+  gallery-4  Lamborghini Huracan   gallery-7  BMW X5 M
 
-gallery-3.jpg: File:BMW M8 Gran Coupe Competition (Facelift) 1X7A6106.jpg
-  by Alexander Migl — CC BY-SA 4.0
-  https://commons.wikimedia.org/wiki/File:BMW_M8_Gran_Coupe_Competition_(Facelift)_1X7A6106.jpg
-
-gallery-4.jpg: File:Mercedes-AMG GT Black Series IMG 0324.jpg
-  by Alexander-93 — CC BY-SA 4.0
-  https://commons.wikimedia.org/wiki/File:Mercedes-AMG_GT_Black_Series_IMG_0324.jpg
-
-gallery-5.jpg: File:2020 Audi RS Q8 Front End.jpg
-  by Vauxford — CC BY-SA 4.0
-  https://commons.wikimedia.org/wiki/File:2020_Audi_RS_Q8_Front_End.jpg
-
-gallery-6.jpg: File:Land Rover Range Rover (5th generation) 1X7A6039.jpg
-  by Alexander Migl — CC BY-SA 4.0
-  https://commons.wikimedia.org/wiki/File:Land_Rover_Range_Rover_(5th_generation)_1X7A6039.jpg
-
-gallery-7.jpg: File:Lexus LX 600 VJA310 F Sport White Nova 02.jpg
-  by Ethan Llamas — CC BY-SA 4.0
-  https://commons.wikimedia.org/wiki/File:Lexus_LX_600_VJA310_F_Sport_White_Nova_02.jpg
-
+Logos (media/logos/, rendered greyscale)
+----------------------------------------
+Brand and company names/logos are trademarks of their respective owners and are
+shown for identification/reference only. SVGs sourced from Wikimedia Commons:
+Mercedes-Benz, Audi, Porsche, Lexus, Lamborghini, McLaren, Bell, Rogers, Google,
+Purolator, Acer, RBC (Royal Bank of Canada, 2024 mark).
+BMW, Ferrari and CIBC are set as typeset wordmarks (no clean free logo available)
+— drop official SVGs into media/logos/ to replace them.
