@@ -1,7 +1,8 @@
 # Phil Dave — Private Automotive Concierge (website)
 
-A self-contained, luxury concierge landing site. No build step, no server, no
-dependencies — just open `index.html`.
+A self-contained, Lamborghini-inspired luxury concierge site: full-bleed
+imagery, stark high-contrast, bold uppercase display type. No prices anywhere.
+No build step, no server, no dependencies — just open `index.html`.
 
 ```
 open site/index.html
@@ -14,32 +15,31 @@ Hosted from this repo via CDN:
 https://raw.githack.com/pdg7857-dev/vincere-lexus/<commit-sha>/site/index.html
 ```
 
-## What it is
-A marketing + lead-capture site that positions Phil Dave as an independent
-"go-to" automotive concierge — any make, any model, luxury focus — with a few
-hand-picked real vehicles from the Northwest Lexus dealer network shown under
-Phil's own brand so he stays independent.
+## Sections
+Hero · makes marquee · positioning · 3-step process · **gallery** · About ·
+"Tell me what you want" brief form · footer.
 
-Sections: Hero · Makes marquee · Positioning · 3-step process · Featured
-collection · About · "Tell me what you want" brief form · Footer.
+## Photos
+All images live in `site/media/`:
 
-## Adding a Higgsfield (or any) hero video later — $0 today
-The hero already looks finished with a cinematic CSS backdrop. To drop in a
-real clip:
+| File | What it is |
+|------|------------|
+| `gallery-1.jpg` | Phil on location (his own photo) |
+| `gallery-2..7.jpg` | Audi R8 · BMW M8 · Mercedes-AMG GT · Audi RS Q8 · Range Rover · Lexus LX 600 |
+| `phil-portrait.jpg` | Phil portrait, used in the About section |
 
-1. Generate / export a short, silent, looping clip (1080p, ~6–12s, mp4/H.264).
-2. Save it as `site/media/hero.mp4`.
-3. That's it — it auto-plays behind the hero (semi-transparent over the backdrop).
-   Optionally add a `poster` image on the `<video>` tag in `index.html`.
+- **Phil's two photos** (portrait + on-location) are his own.
+- **Car photos** are sourced from Wikimedia Commons (CC-BY-SA). Attribution is
+  recorded in `media/CREDITS.txt` and linked from the footer. Swap any of them
+  for Phil's own photography anytime — just keep the same filename.
+- Any missing/failed image shows a tasteful "PHOTO" placeholder automatically.
 
-A still portrait of Phil can replace the "PD" monogram in the About section —
-see the comment in `index.html` (`media/phil.jpg`).
+### Hero video (optional, $0 today)
+The hero looks finished with a cinematic CSS backdrop. To drop in a real clip
+(Higgsfield, stock, or filmed): save a short silent looping mp4 (H.264, ~6–12s)
+as `site/media/hero.mp4` — it auto-plays full-bleed. No code change needed.
 
-## Updating the featured cars
-Edit the `CARS` array at the top of `app.js` (make, name, year, price,
-condition, color, odo, url). Pull fresh picks from `../data/inventory.json`.
-
-## Effects under the hood (all front-end code, not AI)
+## Effects (all front-end code, not AI)
 Custom cursor + magnetic buttons, scroll progress, scroll/word reveals,
-hero parallax glow, infinite makes marquee, smooth section transitions.
-Respects `prefers-reduced-motion`.
+animated hero, infinite makes marquee, image hover-zoom. Respects
+`prefers-reduced-motion`.
