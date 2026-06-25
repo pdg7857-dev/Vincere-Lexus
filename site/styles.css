@@ -259,7 +259,11 @@ em { font-style: normal; color: var(--accent-2); }
   transition: border-color .3s, background .3s; }
 .field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); background: rgba(0,0,0,0.4); }
 .field input::placeholder, .field textarea::placeholder { color: var(--ink-faint); }
-.form__fineprint { text-align: center; margin-top: 20px; color: var(--ink-faint); font-size: .85rem; font-weight: 300; }
+.form__hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form__status { text-align: center; margin-top: 16px; font-size: .92rem; min-height: 1.2em; }
+.form__status.is-ok { color: var(--accent-2); }
+.form__status.is-err { color: #e3a4a4; }
+.form__fineprint { text-align: center; margin-top: 12px; color: var(--ink-faint); font-size: .85rem; font-weight: 300; }
 .form__fineprint a { color: var(--accent); }
 
 /* ---------- Footer ---------- */

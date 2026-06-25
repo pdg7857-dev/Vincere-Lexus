@@ -211,7 +211,12 @@
         <h2 class="section-head__title" data-reveal>Tell me what you want.</h2>
         <p class="contact__sub" data-reveal>Based in Toronto. Leave your details and let's get you into the right car.</p>
       </div>
-      <form class="form" data-form action="mailto:pdg7857@gmail.com" method="post" enctype="text/plain">
+      <form class="form" data-form>
+        <!-- Web3Forms: paste your access key below (get one free at web3forms.com using pdg7857@gmail.com). -->
+        <input type="hidden" name="access_key" value="REPLACE_WITH_WEB3FORMS_ACCESS_KEY" />
+        <input type="hidden" name="subject" value="New car brief from phildave.com" />
+        <input type="hidden" name="from_name" value="phildave.com" />
+        <input type="checkbox" name="botcheck" class="form__hp" tabindex="-1" autocomplete="off" />
         <div class="form__row">
           <label class="field"><span>Full name or business *</span><input type="text" name="name" required placeholder="Jane Doe" /></label>
           <label class="field"><span>Email *</span><input type="email" name="email" required placeholder="you@email.com" /></label>
@@ -223,6 +228,7 @@
         <label class="field"><span>The car you're after</span><input type="text" name="car" placeholder="e.g. Lamborghini Urus, Nero" /></label>
         <label class="field"><span>Anything else</span><textarea name="details" rows="3" placeholder="Timeline, must-haves, trade-in, financing…"></textarea></label>
         <button type="submit" class="btn btn--solid btn--block" data-magnetic>Send my brief</button>
+        <p class="form__status" data-form-status aria-live="polite"></p>
         <p class="form__fineprint">* Required. Prefer to talk? Email <a href="mailto:pdg7857@gmail.com">pdg7857@gmail.com</a>.</p>
       </form>
     </div>

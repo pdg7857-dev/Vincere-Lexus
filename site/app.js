@@ -163,6 +163,44 @@
     }
   }
 
+  /* ---------- Contact form (Web3Forms, AJAX, no page reload) ---------- */
+  function initForm() {
+    var form = document.querySelector('[data-form]');
+    if (!form) return;
+    var status = form.querySelector('[data-form-status]');
+    var btn = form.querySelector('button[type="submit"]');
+    function setStatus(msg, state) {
+      if (!status) return;
+      status.textContent = msg || '';
+      status.className = 'form__status' + (state ? ' is-' + state : '');
+    }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      var keyField = form.querySelector('[name="access_key"]');
+      if (!keyField || keyField.value.indexOf('REPLACE_WITH') === 0) {
+        setStatus('Form not connected yet. Add your Web3Forms access key.', 'err'); return;
+      }
+      var data = {};
+      var fd = new FormData(form);
+      fd.forEach(function (v, k) { data[k] = v; });
+      var label = btn ? btn.textContent : '';
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+      setStatus('', null);
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (j && j.success) { form.reset(); setStatus("Thank you. Your brief is on its way and I'll be in touch shortly.", 'ok'); }
+          else { setStatus('Something went wrong. Please email pdg7857@gmail.com.', 'err'); }
+        })
+        .catch(function () { setStatus('Network error. Please email pdg7857@gmail.com.', 'err'); })
+        .then(function () { if (btn) { btn.disabled = false; btn.textContent = label; } });
+    });
+  }
+
   /* ---------- Year ---------- */
   function initYear() {
     var y = document.querySelector('[data-year]');
@@ -178,6 +216,7 @@
     initMenu();
     initCursor();
     initMarquee();
+    initForm();
     initHero();
     initYear();
   });
