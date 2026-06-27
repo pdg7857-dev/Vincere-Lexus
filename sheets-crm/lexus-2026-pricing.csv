@@ -1,0 +1,87 @@
+Model Year,Series,Model,Suffix,MSRP,Trim Notes
+2026,ES,ES 350e FWD,Signature,65915,gas · base · pkg A
+2026,ES,ES 350e FWD,Premium,67380,gas · pkg P
+2026,ES,ES 350e FWD,Luxury,74955,gas · pkg L
+2026,ES,ES 350e FWD,Luxury+,77330,gas · pkg M
+2026,ES,ES 350e FWD,Executive VIP,81360,gas · pkg E
+2026,ES,ES 350h AWD,Signature,63297,hybrid · base · pkg A
+2026,ES,ES 350h AWD,Premium,65987,hybrid · pkg P
+2026,ES,ES 350h AWD,Premium+,69957,hybrid · pkg Q
+2026,ES,ES 500e AWD,Signature,68915,gas · base · pkg A
+2026,ES,ES 500e AWD,Premium,70380,gas · pkg P
+2026,ES,ES 500e AWD,Luxury,77955,gas · pkg L
+2026,ES,ES 500e AWD,Luxury+,80525,gas · pkg M
+2026,GX,GX 550,Signature,90787,gas · base · pkg A
+2026,GX,GX 550,Premium,99525,gas · pkg P
+2026,GX,GX 550,Overtrail,100644,gas · pkg N
+2026,GX,GX 550,Luxury,112084,gas · pkg L
+2026,GX,GX 550,Overtrail+,115974,gas · pkg K
+2026,GX,GX 550,Executive,116620,gas · pkg E
+2026,IS,IS 350 AWD,F SPORT DESIGN,60252,gas · base · pkg D
+2026,IS,IS 350 AWD,F SPORT 2,62345,gas · pkg G
+2026,IS,IS 350 AWD,F SPORT 3,67445,gas · pkg H
+2026,IS,IS 350 AWD,SPECIAL APPEARANCE PACKAGE,72964,gas · pkg S
+2026,LC,LC 500,Standard Package,125892,gas · base · pkg A
+2026,LC,LC 500,Performance Package,141258,gas · pkg B
+2026,LC,LC Convertible,Standard Package,146136,gas · base · pkg B
+2026,LS,LS 500 AWD,Heritage Edition,136236,gas · base · pkg S
+2026,LX,LX 600,Premium,133236,gas · base · pkg P
+2026,LX,LX 600,F SPORT,152070,gas · pkg F
+2026,LX,LX 600,Luxury,157536,gas · pkg L
+2026,LX,LX 700h,Overtrail+ (2ROW),150326,hybrid · base · pkg N
+2026,LX,LX 700h,Overtrail+ (3 ROW),152840,hybrid · pkg K
+2026,LX,LX 700h,Luxury,164298,hybrid · pkg L
+2026,LX,LX 700h,Executive VIP,192402,hybrid · pkg E
+2026,NX,NX 350,Premium,58477,gas · base · pkg P
+2026,NX,NX 350,Luxury,62616,gas · pkg L
+2026,NX,NX 350,F SPORT 2,65659,gas · pkg G
+2026,NX,NX 350,Ultra Luxury,66584,gas · pkg M
+2026,NX,NX 350,Executive,71850,gas · pkg E
+2026,NX,NX 350,F SPORT 3,72050,gas · pkg H
+2026,NX,NX 350h,Premium,61422,hybrid · base · pkg P
+2026,NX,NX 350h,Luxury,65562,hybrid · pkg L
+2026,NX,NX 350h,F SPORT 2,68939,hybrid · pkg G
+2026,NX,NX 350h,Ultra Luxury,69529,hybrid · pkg M
+2026,NX,NX 350h,Executive,74275,hybrid · pkg E
+2026,NX,NX 350h,F SPORT 3,75130,hybrid · pkg H
+2026,NX,NX 450h+,Ultra Premium,63387,gas · base · pkg Q
+2026,NX,NX 450h+,Luxury,73387,gas · pkg L
+2026,NX,NX 450h+,F SPORT 2,76487,gas · pkg G
+2026,NX,NX 450h+,Executive,80002,gas · pkg E
+2026,NX,NX 450h+,F SPORT 3,80122,gas · pkg H
+2026,RX,RX 350,Premium,64282,gas · base · pkg P
+2026,RX,RX 350,Luxury,71696,gas · pkg L
+2026,RX,RX 350,F SPORT 2,74196,gas · pkg G
+2026,RX,RX 350,Ultra Luxury,75201,gas · pkg M
+2026,RX,RX 350,Executive,79701,gas · pkg E
+2026,RX,RX 350,F SPORT 3,79701,gas · pkg H
+2026,RX,RX 350,F SPORT Black Line,82561,gas · pkg S
+2026,RX,RX 350h,Premium,67042,hybrid · base · pkg P
+2026,RX,RX 350h,F SPORT Design,69557,hybrid · pkg D
+2026,RX,RX 350h,Luxury,74456,hybrid · pkg L
+2026,RX,RX 350h,Ultra Luxury,77961,hybrid · pkg M
+2026,RX,RX 350h,Executive,82461,hybrid · pkg E
+2026,RX,RX 450h+,Ultra Premium,81892,gas · base · pkg Q
+2026,RX,RX 450h+,Executive,90782,gas · pkg E
+2026,RX,RX 500h,F SPORT Performance 2,86611,hybrid · base · pkg G
+2026,RX,RX 500h,F SPORT Performance 3,92411,hybrid · pkg H
+2026,RX,RX 500h,F SPORT Black Line,93201,hybrid · pkg S
+2026,RZ,RZ 350e,Signature,63380,gas · base · pkg A
+2026,RZ,RZ 450e AWD,Signature,70380,gas · base · pkg A
+2026,RZ,RZ 450e AWD,Luxury,76381,gas · pkg L
+2026,RZ,RZ 450e AWD,Executive,86350,gas · pkg E
+2026,RZ,RZ 550e AWD,F SPORT,81380,gas · base · pkg F
+2026,TX,TX 350,Luxury,73252,gas · base · pkg A
+2026,TX,TX 350,Ultra Luxury,76005,gas · pkg M
+2026,TX,TX 350,Executive 7-Pass,84258,gas · pkg E
+2026,TX,TX 350,F SPORT 3,84881,gas · pkg H
+2026,TX,TX 350,Executive 6-Pass,85008,gas · pkg V
+2026,TX,TX 350,F SPORT 3 + Towing Hitch,86028,gas · pkg R
+2026,TX,TX 500h,F SPORT Performance 2,88797,hybrid · base · pkg G
+2026,TX,TX 500h,F SPORT Performance 2 + Towing Hitch,89943,hybrid · pkg N
+2026,TX,TX 500h,F SPORT Performance 3,94796,hybrid · pkg H
+2026,TX,TX 500h,F SPORT Performance 3 + Towing Hitch,95943,hybrid · pkg R
+2026,UX,UX 300h,Premium,48442,hybrid · base · pkg P
+2026,UX,UX 300h,F SPORT  Design,49512,hybrid · pkg D
+2026,UX,UX 300h,Luxury,53906,hybrid · pkg L
+2026,UX,UX 300h,FSPORT 2,56181,hybrid · pkg G
