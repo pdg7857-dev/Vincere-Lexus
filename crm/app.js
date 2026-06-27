@@ -1,0 +1,672 @@
+/* Vincere — local single-user Lexus CRM. Plain JS, no dependencies, works offline (file://). */
+(function () {
+'use strict';
+
+/* ---------- bundled 2026 pricing (lexus.ca Build & Price, ON incl. freight/PDI, captured 2026-06-16) ---------- */
+const PRICING_CSV = `Model Year,Series,Model,Suffix,MSRP,Trim Notes
+2026,ES,ES 350e FWD,Signature,65915,gas
+2026,ES,ES 350e FWD,Premium,67380,gas
+2026,ES,ES 350e FWD,Luxury,74955,gas
+2026,ES,ES 350e FWD,Luxury+,77330,gas
+2026,ES,ES 350e FWD,Executive VIP,81360,gas
+2026,ES,ES 350h AWD,Signature,63297,hybrid
+2026,ES,ES 350h AWD,Premium,65987,hybrid
+2026,ES,ES 350h AWD,Premium+,69957,hybrid
+2026,ES,ES 500e AWD,Signature,68915,gas
+2026,ES,ES 500e AWD,Premium,70380,gas
+2026,ES,ES 500e AWD,Luxury,77955,gas
+2026,ES,ES 500e AWD,Luxury+,80525,gas
+2026,GX,GX 550,Signature,90787,gas
+2026,GX,GX 550,Premium,99525,gas
+2026,GX,GX 550,Overtrail,100644,gas
+2026,GX,GX 550,Luxury,112084,gas
+2026,GX,GX 550,Overtrail+,115974,gas
+2026,GX,GX 550,Executive,116620,gas
+2026,IS,IS 350 AWD,F SPORT DESIGN,60252,gas
+2026,IS,IS 350 AWD,F SPORT 2,62345,gas
+2026,IS,IS 350 AWD,F SPORT 3,67445,gas
+2026,IS,IS 350 AWD,SPECIAL APPEARANCE PACKAGE,72964,gas
+2026,LC,LC 500,Standard Package,125892,gas
+2026,LC,LC 500,Performance Package,141258,gas
+2026,LC,LC Convertible,Standard Package,146136,gas
+2026,LS,LS 500 AWD,Heritage Edition,136236,gas
+2026,LX,LX 600,Premium,133236,gas
+2026,LX,LX 600,F SPORT,152070,gas
+2026,LX,LX 600,Luxury,157536,gas
+2026,LX,LX 700h,Overtrail+ (2ROW),150326,hybrid
+2026,LX,LX 700h,Overtrail+ (3 ROW),152840,hybrid
+2026,LX,LX 700h,Luxury,164298,hybrid
+2026,LX,LX 700h,Executive VIP,192402,hybrid
+2026,NX,NX 350,Premium,58477,gas
+2026,NX,NX 350,Luxury,62616,gas
+2026,NX,NX 350,F SPORT 2,65659,gas
+2026,NX,NX 350,Ultra Luxury,66584,gas
+2026,NX,NX 350,Executive,71850,gas
+2026,NX,NX 350,F SPORT 3,72050,gas
+2026,NX,NX 350h,Premium,61422,hybrid
+2026,NX,NX 350h,Luxury,65562,hybrid
+2026,NX,NX 350h,F SPORT 2,68939,hybrid
+2026,NX,NX 350h,Ultra Luxury,69529,hybrid
+2026,NX,NX 350h,Executive,74275,hybrid
+2026,NX,NX 350h,F SPORT 3,75130,hybrid
+2026,NX,NX 450h+,Ultra Premium,63387,phev
+2026,NX,NX 450h+,Luxury,73387,phev
+2026,NX,NX 450h+,F SPORT 2,76487,phev
+2026,NX,NX 450h+,Executive,80002,phev
+2026,NX,NX 450h+,F SPORT 3,80122,phev
+2026,RX,RX 350,Premium,64282,gas
+2026,RX,RX 350,Luxury,71696,gas
+2026,RX,RX 350,F SPORT 2,74196,gas
+2026,RX,RX 350,Ultra Luxury,75201,gas
+2026,RX,RX 350,Executive,79701,gas
+2026,RX,RX 350,F SPORT 3,79701,gas
+2026,RX,RX 350,F SPORT Black Line,82561,gas
+2026,RX,RX 350h,Premium,67042,hybrid
+2026,RX,RX 350h,F SPORT Design,69557,hybrid
+2026,RX,RX 350h,Luxury,74456,hybrid
+2026,RX,RX 350h,Ultra Luxury,77961,hybrid
+2026,RX,RX 350h,Executive,82461,hybrid
+2026,RX,RX 450h+,Ultra Premium,81892,phev
+2026,RX,RX 450h+,Executive,90782,phev
+2026,RX,RX 500h,F SPORT Performance 2,86611,hybrid
+2026,RX,RX 500h,F SPORT Performance 3,92411,hybrid
+2026,RX,RX 500h,F SPORT Black Line,93201,hybrid
+2026,RZ,RZ 350e,Signature,63380,ev
+2026,RZ,RZ 450e AWD,Signature,70380,ev
+2026,RZ,RZ 450e AWD,Luxury,76381,ev
+2026,RZ,RZ 450e AWD,Executive,86350,ev
+2026,RZ,RZ 550e AWD,F SPORT,81380,ev
+2026,TX,TX 350,Luxury,73252,gas
+2026,TX,TX 350,Ultra Luxury,76005,gas
+2026,TX,TX 350,Executive 7-Pass,84258,gas
+2026,TX,TX 350,F SPORT 3,84881,gas
+2026,TX,TX 350,Executive 6-Pass,85008,gas
+2026,TX,TX 350,F SPORT 3 + Towing Hitch,86028,gas
+2026,TX,TX 500h,F SPORT Performance 2,88797,hybrid
+2026,TX,TX 500h,F SPORT Performance 2 + Towing Hitch,89943,hybrid
+2026,TX,TX 500h,F SPORT Performance 3,94796,hybrid
+2026,TX,TX 500h,F SPORT Performance 3 + Towing Hitch,95943,hybrid
+2026,UX,UX 300h,Premium,48442,hybrid
+2026,UX,UX 300h,F SPORT Design,49512,hybrid
+2026,UX,UX 300h,Luxury,53906,hybrid
+2026,UX,UX 300h,FSPORT 2,56181,hybrid`;
+
+/* ---------- storage ---------- */
+const KEY = 'vincere_crm_v1';
+let DB = null;
+function save() { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) { toast('⚠ Could not save (storage blocked). See README to run via local server.'); } }
+function load() { try { DB = JSON.parse(localStorage.getItem(KEY)); } catch (e) { DB = null; } if (!DB || !DB.clients) seed(); }
+
+/* ---------- utils ---------- */
+const uid = (p) => (p || 'id') + '_' + Math.random().toString(36).slice(2, 9);
+const norm = (s) => String(s == null ? '' : s).trim().toLowerCase();
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function money(n) { if (n === '' || n == null || isNaN(n)) return ''; return '$' + Number(n).toLocaleString('en-CA'); }
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function fmtDate(ts) { if (!ts) return ''; const d = new Date(ts); return isNaN(d) ? '' : d.toISOString().slice(0, 10); }
+function fmtWhen(ts) { const d = new Date(ts); return isNaN(d) ? '' : d.toLocaleString('en-CA', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }); }
+function daysSince(ts) { if (!ts) return Infinity; return Math.floor((Date.now() - ts) / 86400000); }
+function num(v) { if (v === '' || v == null) return null; const n = Number(String(v).replace(/[^0-9.\-]/g, '')); return isNaN(n) ? null : n; }
+function parseCSV(text) {
+  const rows = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(cur); cur = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && text[i + 1] === '\n') i++; row.push(cur); rows.push(row); row = []; cur = ''; }
+    else cur += c;
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  return rows.filter(r => r.length && r.some(x => x !== ''));
+}
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2600); }
+function download(name, text, type) {
+  const b = new Blob([text], { type: type || 'application/json' }); const u = URL.createObjectURL(b);
+  const a = document.createElement('a'); a.href = u; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(u), 1000);
+}
+
+/* ---------- config ---------- */
+function defaultConfig() {
+  return {
+    repostDays: 10, newMake: 'Lexus',
+    usedUnavail: 'sold|pend|deposit|hold|wholesale|deliver|apprais|service',
+    seriesRank: { UX: 1, IS: 2, NX: 3, ES: 4, RZ: 4, RC: 5, RX: 6, GX: 7, LC: 8, LS: 9, LX: 10 }
+  };
+}
+
+/* ---------- seed ---------- */
+function loadPricingFromCSV(text) {
+  const rows = parseCSV(text); const out = [];
+  for (let i = 1; i < rows.length; i++) { const r = rows[i]; if (!r[1]) continue; out.push({ year: r[0], series: r[1], model: r[2], suffix: r[3], msrp: num(r[4]), notes: r[5] || '' }); }
+  return out;
+}
+function seed() {
+  DB = { clients: [], activities: [], vehicles: [], pricing: [], tasks: [], config: defaultConfig(), meta: { createdAt: Date.now(), lastBackupAt: 0 } };
+  DB.pricing = loadPricingFromCSV(PRICING_CSV);
+  sampleData();
+  save();
+}
+function sampleData() {
+  const c1 = { id: uid('c'), name: 'Jane Prospect', phone: '555-0101', email: 'jane@example.com', status: 'Hot', budget: 70000, make: '', year: '', series: 'RX', model: '', color: 'Caviar', maxKm: '', ownYear: '', ownSeries: '', ownModel: '', notes: 'Referred by service dept. Wants a caviar RX, no rush but ready to buy.', lastContact: Date.now() - 2 * 86400000, createdAt: Date.now() };
+  const c2 = { id: uid('c'), name: 'Marcus Webb', phone: '555-0102', email: 'marcus@example.com', status: 'Warm', budget: 60000, make: '', year: '', series: 'NX', model: '', color: '', maxKm: '', ownYear: '', ownSeries: '', ownModel: '', notes: 'Comparing NX vs competitors.', lastContact: Date.now() - 9 * 86400000, createdAt: Date.now() };
+  const c3 = { id: uid('c'), name: 'Bob Shopper', phone: '555-0103', email: 'bob@example.com', status: 'Cold', budget: 35000, make: 'Toyota', year: 2022, model: 'RAV4', series: '', color: '', maxKm: 60000, ownYear: '', ownSeries: '', ownModel: '', notes: 'Budget used SUV shopper.', lastContact: Date.now() - 30 * 86400000, createdAt: Date.now() };
+  const c4 = { id: uid('c'), name: 'Diane Clark', phone: '555-0104', email: 'diane@example.com', status: 'Customer', budget: 90000, make: '', year: '', series: '', model: '', color: '', maxKm: '', ownYear: 2021, ownSeries: 'ES', ownModel: 'ES 300h', notes: 'Existing customer since 2021. Lease up next spring — upgrade candidate.', lastContact: Date.now() - 5 * 86400000, createdAt: Date.now() };
+  DB.clients = [c1, c2, c3, c4];
+  DB.vehicles = [
+    { id: uid('v'), kind: 'New', stage: 'Inventory', ref: 'ORD1001', vin: 'JTX1A0001', year: 2026, series: 'RX', make: 'Lexus', model: 'RX 350', suffix: 'Premium', color: 'Caviar', km: '', price: '', status: 'Available', etaFrom: '', etaTo: '', customer: '', comments: '' },
+    { id: uid('v'), kind: 'New', stage: 'Pipeline', ref: 'ORD1002', vin: '', year: 2026, series: 'NX', make: 'Lexus', model: 'NX 350', suffix: 'Premium', color: 'Nori Green', km: '', price: '', status: 'Ordered', etaFrom: todayStr(), etaTo: fmtDate(Date.now() + 5 * 86400000), customer: '', comments: '' },
+    { id: uid('v'), kind: 'New', stage: 'Delivery', ref: 'ORD1003', vin: 'JTX1A0003', year: 2026, series: 'ES', make: 'Lexus', model: 'ES 350h AWD', suffix: 'Premium', color: 'Sonic', km: '', price: '', status: 'Sold', etaFrom: todayStr(), etaTo: fmtDate(Date.now() + 2 * 86400000), customer: 'Diane Clark', comments: '' },
+    { id: uid('v'), kind: 'Used', stage: '', ref: 'U500', vin: '', year: 2022, make: 'Toyota', series: '', model: 'RAV4', suffix: '', color: 'Blue / Black', km: 45000, price: 32000, status: 'Available', etaFrom: '', etaTo: '', customer: '', comments: 'Carfax clean / 1 owner', lastPostedAt: Date.now() - 12 * 86400000 },
+    { id: uid('v'), kind: 'Used', stage: '', ref: 'U501', vin: '', year: 2023, make: 'Lexus', series: '', model: 'RX 350', suffix: '', color: 'Caviar / Black', km: 20000, price: 58000, status: 'Available', etaFrom: '', etaTo: '', customer: '', comments: 'Carfax clean / 2 owners', lastPostedAt: 0 }
+  ];
+  ['Contacted', 'New Lead', 'New Lead', 'Won'].forEach((s, i) => { DB.clients[i].stage = s; DB.clients[i].interested = []; });
+  c1.interested = [DB.vehicles[0].id, DB.vehicles[4].id];
+  DB.activities = [
+    { id: uid('a'), clientId: c1.id, type: 'Call', body: 'Left voicemail about incoming Caviar RX 350.', at: Date.now() - 2 * 86400000 },
+    { id: uid('a'), clientId: c1.id, type: 'Note', body: 'Prefers AWD, wants heated wheel. Trade-in possible (2019 RX).', at: Date.now() - 6 * 86400000 }
+  ];
+  DB.tasks = [
+    { id: uid('t'), clientId: c1.id, title: 'Follow up with Jane on RX 350 availability', due: todayStr(), done: false, createdAt: Date.now() }
+  ];
+}
+
+/* ---------- domain logic ---------- */
+function client(id) { return DB.clients.find(c => c.id === id); }
+function vehicle(id) { return DB.vehicles.find(v => v.id === id); }
+function pricingLookup(year, series, model, suffix) {
+  const row = DB.pricing.find(p => norm(p.year) === norm(year) && norm(p.series) === norm(series) && norm(p.model) === norm(model) && norm(p.suffix) === norm(suffix));
+  return row ? row.msrp : null;
+}
+function usedAvailable(v) { let re; try { re = new RegExp(DB.config.usedUnavail, 'i'); } catch (e) { re = /sold|pend/i; } return !re.test(String(v.status || '')); }
+function budgetFit(price, budget) {
+  if (budget === '' || budget == null || isNaN(budget)) return { t: 'No budget set', cls: '' };
+  if (price == null || price === '' || isNaN(price)) return { t: 'No price', cls: '' };
+  if (Number(price) <= Number(budget)) return { t: 'In budget', cls: 'fit-in' };
+  return { t: 'Over by ' + money(Number(price) - Number(budget)), cls: 'fit-over' };
+}
+const wild = (cv, vv) => cv === '' || cv == null || norm(cv) === norm(vv);
+const has = (cv, vv) => cv === '' || cv == null || norm(vv).includes(norm(cv));
+function matchesForClient(c) {
+  const out = [];
+  DB.vehicles.forEach(v => {
+    if (v.kind === 'New') {
+      if (!(wild(c.year, v.year) && wild(c.series, v.series) && has(c.model, v.model) && has(c.color, v.color))) return;
+      const price = pricingLookup(v.year, v.series, v.model, v.suffix);
+      out.push({ v, type: 'New', price, fit: budgetFit(price, c.budget) });
+    } else {
+      if (!usedAvailable(v)) return;
+      if (!(wild(c.make, v.make) && wild(c.year, v.year) && has(c.model, v.model) && has(c.color, v.color))) return;
+      if (c.maxKm && num(v.km) != null && num(v.km) > Number(c.maxKm)) return;
+      out.push({ v, type: 'Used', price: num(v.price), fit: budgetFit(num(v.price), c.budget) });
+    }
+  });
+  return out;
+}
+function seriesRank(s) { return DB.config.seriesRank[String(s || '').toUpperCase()] || 0; }
+function upsellForClient(c) {
+  if (!c.ownYear && !c.ownSeries) return [];
+  const cy = Number(c.ownYear) || 0, cr = seriesRank(c.ownSeries), out = [];
+  DB.vehicles.forEach(v => {
+    if (v.kind === 'Used' && !usedAvailable(v)) return;
+    if (norm(v.customer) === norm(c.name)) return;
+    const vy = Number(v.year) || 0, vr = v.kind === 'New' ? seriesRank(v.series) : 0;
+    if (vy > cy || vr > cr) {
+      const price = v.kind === 'New' ? pricingLookup(v.year, v.series, v.model, v.suffix) : num(v.price);
+      out.push({ v, type: v.kind, price });
+    }
+  });
+  return out;
+}
+function repostDue(v) {
+  if (v.kind !== 'Used' || !usedAvailable(v)) return null;
+  const due = v.lastPostedAt ? v.lastPostedAt + DB.config.repostDays * 86400000 : Date.now();
+  return { due, never: !v.lastPostedAt, over: due <= Date.now() };
+}
+function openTasksDue() { return DB.tasks.filter(t => !t.done && (!t.due || Date.parse(t.due) <= Date.now() + 86400000)); }
+function addActivity(clientId, type, body) {
+  if (!body || !body.trim()) return;
+  DB.activities.push({ id: uid('a'), clientId, type, body: body.trim(), at: Date.now() });
+  const c = client(clientId); if (c) c.lastContact = Date.now();
+  save();
+}
+function badge(status) {
+  const m = { Hot: 'b-hot', Warm: 'b-warm', Cold: 'b-cold', Customer: 'b-cust' };
+  return `<span class="badge2 ${m[status] || 'b-cold'}">${esc(status || '—')}</span>`;
+}
+function outlookLink(subject, dateStr) {
+  return 'https://outlook.office.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&allday=true&subject=' + encodeURIComponent(subject) + '&startdt=' + dateStr;
+}
+
+/* ---------- cross-reference helpers ---------- */
+function interestedVehicles(c) { return (c.interested || []).map(vehicle).filter(Boolean); }
+function interestedClients(vid) { return DB.clients.filter(c => (c.interested || []).indexOf(vid) >= 0); }
+function toggleInterest(cid, vid) {
+  const c = client(cid); if (!c) return; c.interested = c.interested || [];
+  const i = c.interested.indexOf(vid);
+  if (i >= 0) c.interested.splice(i, 1);
+  else { c.interested.push(vid); const v = vehicle(vid); if (v) addActivity(cid, 'Note', 'Tagged interest: ' + vehLabel(v)); }
+  save();
+}
+function stockByTrim() {
+  const map = {};
+  DB.vehicles.filter(v => v.kind === 'New').forEach(v => {
+    const key = [v.series, v.model, v.suffix].filter(Boolean).join(' ') || '(unspecified)';
+    if (!map[key]) map[key] = { trim: key, count: 0, Inventory: 0, Pipeline: 0, Delivery: 0 };
+    map[key].count++; if (map[key][v.stage] != null) map[key][v.stage]++;
+  });
+  return Object.values(map).sort((a, b) => b.count - a.count);
+}
+function followUps() {
+  const today = Date.now();
+  return DB.clients.filter(c => {
+    const st = norm(c.stage); if (st === 'lost' || st === 'won') return false;
+    const overdue = DB.tasks.some(t => t.clientId === c.id && !t.done && t.due && Date.parse(t.due) <= today);
+    const ds = daysSince(c.lastContact);
+    const stale = (norm(c.status) === 'hot' && ds >= 5) || (norm(c.status) === 'warm' && ds >= 10) || (norm(c.status) === 'customer' && ds >= 30);
+    return overdue || stale;
+  }).sort((a, b) => (a.lastContact || 0) - (b.lastContact || 0));
+}
+function pipelineCounts() { const m = {}; STAGES.forEach(s => m[s] = 0); DB.clients.forEach(c => { const s = c.stage || 'New Lead'; if (m[s] != null) m[s]++; }); return m; }
+
+/* ---------- router ---------- */
+const NAV = [
+  { k: 'dashboard', ico: '▦', lbl: 'Dashboard' },
+  { k: 'clients', ico: '☺', lbl: 'Clients' },
+  { k: 'pipeline', ico: '⇉', lbl: 'Pipeline' },
+  { k: 'inventory', ico: '▤', lbl: 'Inventory' },
+  { k: 'matches', ico: '⇄', lbl: 'Matches' },
+  { k: 'upsell', ico: '↑', lbl: 'Upsell' },
+  { k: 'tasks', ico: '✓', lbl: 'Tasks' },
+  { k: 'settings', ico: '⚙', lbl: 'Settings' }
+];
+function renderNav(active) {
+  const due = openTasksDue().length + DB.vehicles.filter(v => { const r = repostDue(v); return r && r.over; }).length;
+  $('#nav').innerHTML = NAV.map(n => {
+    const b = n.k === 'tasks' && due ? `<span class="badge">${due}</span>` : '';
+    return `<a href="#/${n.k}" class="${active === n.k ? 'active' : ''}"><span class="ico">${n.ico}</span><span class="lbl">${n.lbl}</span>${b}</a>`;
+  }).join('');
+}
+function backupBanner() {
+  const d = daysSince(DB.meta.lastBackupAt);
+  if (d <= 7) return '';
+  const when = DB.meta.lastBackupAt ? d + ' days ago' : 'never';
+  return `<div class="backupbar">⏳ Last backup: <b>${when}</b>. <button class="btn sm" data-act="backup">Export backup now</button></div>`;
+}
+function route() {
+  const h = (location.hash.slice(1) || '/dashboard').split('/').filter(Boolean);
+  const view = h[0] || 'dashboard';
+  renderNav(view === 'client' ? 'clients' : view);
+  $('#modalRoot').innerHTML = '';
+  const v = $('#view'); v.scrollTop = 0;
+  let html = backupBanner();
+  if (view === 'dashboard') html += viewDashboard();
+  else if (view === 'clients') html += viewClients();
+  else if (view === 'client') html += viewClient(h[1]);
+  else if (view === 'pipeline') html += viewPipeline();
+  else if (view === 'inventory') html += viewInventory();
+  else if (view === 'matches') html += viewMatches();
+  else if (view === 'upsell') html += viewUpsell();
+  else if (view === 'tasks') html += viewTasks();
+  else if (view === 'settings') html += viewSettings();
+  else if (view === 'search') html += viewSearch(decodeURIComponent(h[1] || ''));
+  else html += '<div class="empty">Not found</div>';
+  v.innerHTML = html;
+  bindView(view, h[1]);
+}
+
+/* ---------- views ---------- */
+function kpi(n, l) { return `<div class="card kpi"><div class="n">${n}</div><div class="l">${l}</div></div>`; }
+function countStatus(s) { return DB.clients.filter(c => norm(c.status) === norm(s)).length; }
+
+function viewDashboard() {
+  const nv = DB.vehicles.filter(v => v.kind === 'New');
+  const newC = { Inventory: 0, Pipeline: 0, Delivery: 0 };
+  nv.forEach(v => { if (newC[v.stage] != null) newC[v.stage]++; });
+  const used = DB.vehicles.filter(v => v.kind === 'Used');
+  const usedAvail = used.filter(usedAvailable).length;
+  const fups = followUps();
+  const trims = stockByTrim();
+  const pc = pipelineCounts();
+  const hotMatch = DB.clients.filter(c => norm(c.status) === 'hot').map(c => ({ c, ms: matchesForClient(c).filter(m => m.fit.cls === 'fit-in' || m.fit.t === 'No budget set') })).filter(x => x.ms.length);
+  const reposts = DB.vehicles.map(v => ({ v, r: repostDue(v) })).filter(x => x.r && x.r.over);
+  const tasks = openTasksDue();
+
+  return `<h1>Dashboard</h1><p class="sub">${new Date().toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+  <div class="grid cards">
+    ${kpi(DB.clients.length, 'Clients')}
+    ${kpi('<span style="color:var(--hot)">' + countStatus('Hot') + '</span>', 'Hot')}
+    ${kpi(countStatus('Warm'), 'Warm')}
+    ${kpi(countStatus('Customer'), 'Customers')}
+    ${kpi(nv.length, 'New in stock')}
+    ${kpi(usedAvail + '/' + used.length, 'Used avail')}
+    ${kpi('<span style="color:var(--accent)">' + fups.length + '</span>', 'Need follow-up')}
+    ${kpi('<span style="color:var(--accent)">' + reposts.length + '</span>', 'Reposts due')}
+  </div>
+  <div class="panel" style="margin-top:16px"><div class="hd">Pipeline — clients by stage</div><div class="bd"><div class="row">
+    ${STAGES.map(s => `<a href="#/pipeline" class="card" style="flex:1;min-width:84px;text-align:center"><div style="font-size:22px;font-weight:700">${pc[s]}</div><div style="font-size:11px;color:var(--muted)">${esc(s)}</div></a>`).join('')}
+  </div></div></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:16px">
+    <div class="panel"><div class="hd">📞 Follow up with (${fups.length})</div><div class="bd">
+      ${fups.length ? `<table><thead><tr><th>Client</th><th>Status</th><th>Last contact</th></tr></thead><tbody>${fups.map(c => `<tr class="clk" data-go="#/client/${c.id}"><td><b>${esc(c.name)}</b> <span class="pill">${esc(c.stage || 'New Lead')}</span></td><td>${badge(c.status)}</td><td style="color:var(--accent)">${c.lastContact ? daysSince(c.lastContact) + 'd ago' : 'never'}</td></tr>`).join('')}</tbody></table>` : `<div class="empty">Everyone's been contacted recently. 👏</div>`}
+    </div></div>
+    <div class="panel"><div class="hd">🚗 New cars in stock — by trim</div><div class="bd">
+      ${trims.length ? `<table><thead><tr><th>Series / Model / Trim</th><th>Inv</th><th>Pipe</th><th>Del</th><th>Total</th></tr></thead><tbody>${trims.map(t => `<tr><td>${esc(t.trim)}</td><td>${t.Inventory || ''}</td><td>${t.Pipeline || ''}</td><td>${t.Delivery || ''}</td><td><b>${t.count}</b></td></tr>`).join('')}<tr style="border-top:2px solid var(--line)"><td><b>Total</b></td><td><b>${newC.Inventory}</b></td><td><b>${newC.Pipeline}</b></td><td><b>${newC.Delivery}</b></td><td><b>${nv.length}</b></td></tr></tbody></table>` : `<div class="empty">No new vehicles — add them in Inventory.</div>`}
+    </div></div>
+    <div class="panel"><div class="hd">🔥 Hot clients with matches</div><div class="bd">
+      ${hotMatch.length ? `<table><tbody>${hotMatch.map(x => { const m = x.ms[0]; return `<tr class="clk" data-go="#/client/${x.c.id}"><td><b>${esc(x.c.name)}</b></td><td>${x.ms.length} match${x.ms.length > 1 ? 'es' : ''}</td><td>${esc(vehLabel(m.v))} · <span class="${m.fit.cls}">${m.fit.t}</span></td></tr>`; }).join('')}</tbody></table>` : `<div class="empty">No hot clients with in-budget matches yet.</div>`}
+    </div></div>
+    <div class="panel"><div class="hd">✓ Tasks & 🔁 reposts due</div><div class="bd">
+      ${(tasks.length || reposts.length) ? `<table><tbody>${tasks.map(t => `<tr><td>✓ ${esc(t.title)}${t.clientId ? ' · <a href="#/client/' + t.clientId + '">' + esc((client(t.clientId) || {}).name || '') + '</a>' : ''}</td><td style="color:var(--muted)">${esc(t.due || '')}</td></tr>`).join('')}${reposts.map(x => `<tr><td>🔁 Repost ${esc(x.v.ref)} · ${esc(vehLabel(x.v))}</td><td><button class="btn sm" data-post="${x.v.id}">Posted</button></td></tr>`).join('')}</tbody></table>` : `<div class="empty">Nothing due. 🎉</div>`}
+    </div></div>
+  </div>`;
+}
+function vehLabel(v) { return [v.year, (v.kind === 'Used' ? v.make : v.series), v.model, v.suffix].filter(Boolean).join(' '); }
+
+function viewClients() {
+  const rows = DB.clients.slice().sort((a, b) => (b.lastContact || 0) - (a.lastContact || 0));
+  return `<div class="row" style="align-items:center"><h1>Clients</h1><button class="btn primary right" data-add="client">+ New client</button></div>
+  <p class="sub">${rows.length} clients · click a row to open the record</p>
+  <div class="panel"><div class="bd">
+  <table><thead><tr><th>Name</th><th>Status</th><th>Looking for</th><th>Budget</th><th>Matches</th><th>Last contact</th></tr></thead><tbody>
+  ${rows.map(c => {
+    const want = [c.year, c.series || c.make, c.model, c.color].filter(Boolean).join(' ') || '—';
+    const mc = matchesForClient(c).length;
+    return `<tr class="clk" data-go="#/client/${c.id}"><td><b>${esc(c.name)}</b><div style="color:var(--muted);font-size:12px">${esc(c.phone || '')}</div></td><td>${badge(c.status)}</td><td>${esc(want)}</td><td>${money(c.budget)}</td><td>${mc ? mc : '<span style="color:var(--muted)">0</span>'}</td><td style="color:var(--muted)">${c.lastContact ? fmtDate(c.lastContact) : '—'}</td></tr>`;
+  }).join('') || `<tr><td colspan="6" class="empty">No clients yet.</td></tr>`}
+  </tbody></table></div></div>`;
+}
+
+function viewClient(id) {
+  const c = client(id); if (!c) return '<div class="empty">Client not found. <a href="#/clients">Back</a></div>';
+  const acts = DB.activities.filter(a => a.clientId === id).sort((a, b) => b.at - a.at);
+  const ms = matchesForClient(c);
+  const iv = interestedVehicles(c);
+  const tasks = DB.tasks.filter(t => t.clientId === id);
+  return `<div class="row" style="align-items:center">
+    <a href="#/clients" class="btn ghost sm">← Clients</a>
+    <h1 style="margin:0 8px">${esc(c.name)}</h1> ${badge(c.status)} <span class="pill">${esc(c.stage || 'New Lead')}</span>
+    <button class="btn right" data-edit="${c.id}">Edit</button>
+  </div>
+  <div class="detail" style="margin-top:14px">
+    <div>
+      <div class="panel"><div class="hd">Profile</div><div class="bd">
+        ${field('Phone', c.phone)}${field('Email', c.email)}${field('Budget', money(c.budget))}
+        ${field('Looking for', [c.year, c.series, c.model, c.color].filter(Boolean).join(' ') || '—')}
+        ${field('Make (used)', c.make)}${field('Max Km', c.maxKm)}
+        ${(c.ownYear || c.ownSeries) ? field('Currently drives', [c.ownYear, c.ownSeries, c.ownModel].filter(Boolean).join(' ')) : ''}
+        ${field('Last contact', c.lastContact ? fmtDate(c.lastContact) : '—')}
+      </div></div>
+      <div class="panel" style="margin-top:14px"><div class="hd">Notes</div><div class="bd">${esc(c.notes || '') || '<span style="color:var(--muted)">No notes.</span>'}</div></div>
+      ${tasks.length ? `<div class="panel" style="margin-top:14px"><div class="hd">Tasks</div><div class="bd"><table><tbody>${tasks.map(t => `<tr><td>${t.done ? '✅' : '⬜'} ${esc(t.title)}</td><td style="color:var(--muted)">${esc(t.due || '')}</td><td><button class="btn sm" data-task-done="${t.id}">${t.done ? 'Reopen' : 'Done'}</button></td></tr>`).join('')}</tbody></table></div></div>` : ''}
+    </div>
+    <div>
+      <div class="panel"><div class="hd">Activity & history</div><div class="bd">
+        <div class="row" style="margin-bottom:10px">
+          <select id="actType" style="padding:8px;border:1px solid var(--line);border-radius:8px">
+            <option>Note</option><option>Call</option><option>Email</option><option>Meeting</option><option>Text</option>
+          </select>
+          <input id="actBody" placeholder="Log a note, call, email…" style="flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:8px">
+          <button class="btn primary" id="actAdd">Log</button>
+          <button class="btn" data-add-task="${c.id}">+ Task</button>
+        </div>
+        <ul class="timeline">
+          ${acts.map(a => `<li class="tl-${a.type}"><b>${esc(a.type)}</b> — ${esc(a.body)}<div class="meta">${fmtWhen(a.at)} <button class="btn ghost sm" data-del-act="${a.id}">delete</button></div></li>`).join('') || '<div class="empty">No activity yet — log your first note above.</div>'}
+        </ul>
+      </div></div>
+      <div class="panel" style="margin-top:14px"><div class="hd">★ Interested in (${iv.length})</div><div class="bd">
+        <div class="row" style="margin-bottom:8px"><select id="interestPick" style="flex:1;padding:8px;border:1px solid var(--line);border-radius:8px"><option value="">+ tag a vehicle they like…</option>${DB.vehicles.map(v => `<option value="${v.id}">${esc(vehLabel(v))} ${esc(v.color || '')} · ${esc(v.ref || v.vin || '')}</option>`).join('')}</select><button class="btn" id="interestAdd">Tag</button></div>
+        ${iv.length ? `<table><tbody>${iv.map(v => `<tr><td><span class="pill">${v.kind}</span> ${esc(vehLabel(v))} ${esc(v.color || '')}</td><td>${esc(v.ref || v.vin || '')}</td><td>${money(v.kind === 'New' ? pricingLookup(v.year, v.series, v.model, v.suffix) : num(v.price))}</td><td><button class="btn ghost sm" data-untag="${v.id}">remove</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty">Nothing tagged yet — tag from suggestions below or the picker.</div>'}
+      </div></div>
+      <div class="panel" style="margin-top:14px"><div class="hd">⇄ Vehicle suggestions (${ms.length})</div><div class="bd">
+        ${ms.length ? `<table><thead><tr><th>Type</th><th>Vehicle</th><th>Ref</th><th>Price</th><th>Fit</th><th></th></tr></thead><tbody>${ms.map(m => `<tr><td><span class="pill">${m.type}</span></td><td>${esc(vehLabel(m.v))} ${esc(m.v.color || '')}</td><td>${esc(m.v.ref || m.v.vin || '')}</td><td>${money(m.price)}</td><td><span class="${m.fit.cls}">${m.fit.t}</span></td><td><button class="btn ghost sm" data-tag="${m.v.id}">${(c.interested || []).indexOf(m.v.id) >= 0 ? '★ tagged' : '☆ tag'}</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty">No matching vehicles in stock.</div>'}
+      </div></div>
+    </div>
+  </div>`;
+}
+function field(l, v) { return `<div class="field"><label>${esc(l)}</label><div>${esc(v || '—') || '—'}</div></div>`; }
+
+function viewInventory() {
+  const nv = DB.vehicles.filter(v => v.kind === 'New'), uv = DB.vehicles.filter(v => v.kind === 'Used');
+  const nrow = v => `<tr class="clk" data-veh="${v.id}"><td><span class="pill">${esc(v.stage)}</span></td><td>${esc(v.ref)}</td><td>${esc(vehLabel(v))}</td><td>${esc(v.color)}</td><td>${esc(v.status)}</td><td>${esc(v.customer || '')}</td><td style="color:var(--muted)">${esc(v.etaTo || '')}</td></tr>`;
+  const urow = v => { const r = repostDue(v); return `<tr class="clk" data-veh="${v.id}"><td>${esc(v.ref)}</td><td>${esc(vehLabel(v))}</td><td>${esc(v.color)}</td><td>${v.km ? Number(v.km).toLocaleString() : ''}</td><td>${money(v.price)}</td><td>${esc(v.status)}</td><td>${r ? (r.over ? '<span style="color:var(--accent)">repost</span>' : 'ok') : ''}</td></tr>`; };
+  return `<div class="row" style="align-items:center"><h1>Inventory</h1><button class="btn primary right" data-add="vehicle">+ Vehicle</button></div>
+  <div class="panel" style="margin-top:6px"><div class="hd">New (${nv.length})</div><div class="bd"><table><thead><tr><th>Stage</th><th>Order#</th><th>Vehicle</th><th>Color</th><th>Status</th><th>Customer</th><th>ETA</th></tr></thead><tbody>${nv.map(nrow).join('') || '<tr><td colspan="7" class="empty">No new vehicles.</td></tr>'}</tbody></table></div></div>
+  <div class="panel" style="margin-top:14px"><div class="hd">Used (${uv.length})</div><div class="bd"><table><thead><tr><th>Stk#</th><th>Vehicle</th><th>Colour</th><th>Km</th><th>Retail</th><th>Status</th><th>Repost</th></tr></thead><tbody>${uv.map(urow).join('') || '<tr><td colspan="7" class="empty">No used vehicles.</td></tr>'}</tbody></table></div></div>`;
+}
+
+function viewMatches() {
+  let rows = [];
+  DB.clients.forEach(c => matchesForClient(c).forEach(m => rows.push({ c, m })));
+  rows.sort((a, b) => a.c.name.localeCompare(b.c.name));
+  return `<div class="row" style="align-items:center"><h1>Matches</h1><label class="right" style="color:var(--muted)"><input type="checkbox" id="inBudgetOnly"> in-budget only</label></div>
+  <p class="sub">${rows.length} client↔vehicle matches across your lineup</p>
+  <div class="panel"><div class="bd"><table id="matchTbl"><thead><tr><th>Client</th><th>Status</th><th>Type</th><th>Vehicle</th><th>Ref</th><th>Price</th><th>Fit</th></tr></thead><tbody>
+  ${rows.map(r => `<tr data-fit="${r.m.fit.cls}"><td class="clk" data-go="#/client/${r.c.id}"><b>${esc(r.c.name)}</b></td><td>${badge(r.c.status)}</td><td><span class="pill">${r.m.type}</span></td><td>${esc(vehLabel(r.m.v))} ${esc(r.m.v.color || '')}</td><td>${esc(r.m.v.ref || r.m.v.vin || '')}</td><td>${money(r.m.price)}</td><td><span class="${r.m.fit.cls}">${r.m.fit.t}</span></td></tr>`).join('') || '<tr><td colspan="7" class="empty">No matches yet.</td></tr>'}
+  </tbody></table></div></div>`;
+}
+
+function viewUpsell() {
+  let rows = [];
+  DB.clients.forEach(c => upsellForClient(c).forEach(u => rows.push({ c, u })));
+  rows.sort((a, b) => (b.u.price || 0) - (a.u.price || 0));
+  return `<h1>Upsell</h1><p class="sub">Existing customers → newer / higher-series vehicles in stock. Set a client's <b>“Currently drives”</b> (year + series) to surface upgrades.</p>
+  <div class="panel"><div class="bd"><table><thead><tr><th>Customer</th><th>Currently drives</th><th>Suggested</th><th>Type</th><th>Price</th><th>Ref</th></tr></thead><tbody>
+  ${rows.map(r => `<tr><td class="clk" data-go="#/client/${r.c.id}"><b>${esc(r.c.name)}</b></td><td style="color:var(--muted)">${esc([r.c.ownYear, r.c.ownSeries, r.c.ownModel].filter(Boolean).join(' '))}</td><td>${esc(vehLabel(r.u.v))} ${esc(r.u.v.color || '')}</td><td><span class="pill">${r.u.type}</span></td><td>${money(r.u.price)}</td><td>${esc(r.u.v.ref || r.u.v.vin || '')}</td></tr>`).join('') || '<tr><td colspan="6" class="empty">No upsell opportunities. Add “Currently drives” to your Customer-status clients.</td></tr>'}
+  </tbody></table></div></div>`;
+}
+
+function viewPipeline() {
+  return `<div class="row" style="align-items:center"><h1>Pipeline</h1><button class="btn primary right" data-add="client">+ New client</button></div>
+  <p class="sub">Drag a card between stages (or use its dropdown). Each card shows interest tags + live match count. Tag vehicles on the client's page.</p>
+  <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px">
+  ${STAGES.map(stage => {
+    const list = DB.clients.filter(c => (c.stage || 'New Lead') === stage);
+    return `<div class="kcol" data-stage="${esc(stage)}" style="min-width:228px;flex:1 0 228px">
+      <div class="panel"><div class="hd">${esc(stage)}<span class="right pill">${list.length}</span></div>
+      <div class="bd" style="min-height:80px">
+      ${list.map(c => { const iv = interestedVehicles(c); const mc = matchesForClient(c).length;
+        return `<div class="kcard card" draggable="true" data-client="${c.id}" style="margin-bottom:8px;cursor:grab">
+          <div class="row" style="justify-content:space-between;align-items:center"><b class="clk" data-go="#/client/${c.id}">${esc(c.name)}</b>${badge(c.status)}</div>
+          <div style="color:var(--muted);font-size:12px;margin:4px 0">${c.budget ? money(c.budget) + ' budget' : 'no budget'} · ${mc} match${mc === 1 ? '' : 'es'}</div>
+          ${iv.length ? `<div>${iv.map(v => `<span class="pill" style="margin:2px 2px 0 0">${esc(vehLabel(v))}</span>`).join('')}</div>` : '<div style="color:var(--muted);font-size:12px">no interest tagged</div>'}
+          <select data-stage-sel="${c.id}" style="margin-top:6px;width:100%;padding:5px;border:1px solid var(--line);border-radius:6px">${STAGES.map(s => `<option ${s === stage ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>
+        </div>`;
+      }).join('') || '<div class="empty" style="padding:8px">—</div>'}
+      </div></div></div>`;
+  }).join('')}
+  </div>`;
+}
+
+function viewTasks() {
+  const open = DB.tasks.filter(t => !t.done).sort((a, b) => (Date.parse(a.due) || 9e15) - (Date.parse(b.due) || 9e15));
+  const done = DB.tasks.filter(t => t.done);
+  const reposts = DB.vehicles.map(v => ({ v, r: repostDue(v) })).filter(x => x.r && x.r.over);
+  return `<div class="row" style="align-items:center"><h1>Tasks</h1><button class="btn primary right" data-add-task="">+ Task</button></div>
+  <div class="panel" style="margin-top:6px"><div class="hd">Open (${open.length})</div><div class="bd"><table><tbody>
+  ${open.map(t => `<tr><td><button class="btn sm" data-task-done="${t.id}">⬜</button></td><td>${esc(t.title)}${t.clientId ? ' · <a href="#/client/' + t.clientId + '">' + esc((client(t.clientId) || {}).name || '') + '</a>' : ''}</td><td style="color:var(--muted)">${esc(t.due || '')}</td><td><button class="btn ghost sm" data-task-del="${t.id}">✕</button></td></tr>`).join('') || '<tr><td class="empty">No open tasks.</td></tr>'}
+  </tbody></table></div></div>
+  <div class="panel" style="margin-top:14px"><div class="hd">🔁 Facebook reposts due (${reposts.length})</div><div class="bd"><table><tbody>
+  ${reposts.map(x => `<tr><td>${esc(x.v.ref)} · ${esc(vehLabel(x.v))}</td><td>${x.r.never ? 'Never posted' : 'Due'}</td><td><button class="btn sm" data-post="${x.v.id}">Mark posted today</button> <a class="btn sm" target="_blank" href="${outlookLink('Repost ' + vehLabel(x.v) + ' on FB Marketplace', todayStr())}">📅 Add</a></td></tr>`).join('') || '<tr><td class="empty">No reposts due.</td></tr>'}
+  </tbody></table></div></div>
+  ${done.length ? `<div class="panel" style="margin-top:14px"><div class="hd">Done (${done.length})</div><div class="bd"><table><tbody>${done.map(t => `<tr><td>✅ ${esc(t.title)}</td><td><button class="btn sm" data-task-done="${t.id}">Reopen</button></td></tr>`).join('')}</tbody></table></div></div>` : ''}`;
+}
+
+function viewSearch(q) {
+  const n = norm(q);
+  const cl = DB.clients.filter(c => [c.name, c.phone, c.email, c.notes].some(x => norm(x).includes(n)));
+  const ve = DB.vehicles.filter(v => [v.ref, v.vin, v.model, v.series, v.make, v.color, v.customer].some(x => norm(x).includes(n)));
+  return `<h1>Search “${esc(q)}”</h1>
+  <div class="panel" style="margin-top:6px"><div class="hd">Clients (${cl.length})</div><div class="bd"><table><tbody>${cl.map(c => `<tr class="clk" data-go="#/client/${c.id}"><td><b>${esc(c.name)}</b></td><td>${badge(c.status)}</td><td style="color:var(--muted)">${esc(c.phone || '')} ${esc(c.email || '')}</td></tr>`).join('') || '<tr><td class="empty">No clients.</td></tr>'}</tbody></table></div></div>
+  <div class="panel" style="margin-top:14px"><div class="hd">Vehicles (${ve.length})</div><div class="bd"><table><tbody>${ve.map(v => `<tr class="clk" data-veh="${v.id}"><td>${esc(v.ref || v.vin)}</td><td>${esc(vehLabel(v))} ${esc(v.color || '')}</td><td><span class="pill">${v.kind}</span></td></tr>`).join('') || '<tr><td class="empty">No vehicles.</td></tr>'}</tbody></table></div></div>`;
+}
+
+function viewSettings() {
+  const cfg = DB.config;
+  return `<h1>Settings</h1>
+  <div class="panel"><div class="hd">Backup & restore</div><div class="bd">
+    <p class="sub">Your data lives only on this device. Export weekly and keep the file in Google Drive.</p>
+    <button class="btn primary" data-act="backup">⬇ Export backup (.json)</button>
+    <label class="btn">⬆ Restore from backup<input type="file" id="restoreFile" accept=".json" hidden></label>
+    <span style="color:var(--muted);margin-left:8px">Last backup: ${DB.meta.lastBackupAt ? fmtWhen(DB.meta.lastBackupAt) : 'never'}</span>
+  </div></div>
+  <div class="panel" style="margin-top:14px"><div class="hd">Import CSV</div><div class="bd">
+    <p class="sub">Bring in data from your Google Sheet (download a tab as CSV first) or the 2026 pricing file.</p>
+    <select id="impType" style="padding:8px;border:1px solid var(--line);border-radius:8px">
+      <option value="clients">Clients</option><option value="new">New vehicles (Inventory/Pipeline/Delivery)</option>
+      <option value="used">Used vehicles</option><option value="pricing">Pricing (2026)</option>
+    </select>
+    <label class="btn">Choose CSV…<input type="file" id="impFile" accept=".csv" hidden></label>
+    <div style="color:var(--muted);font-size:12px;margin-top:8px">Clients cols: Name,Phone,Email,Budget,Make,Year,Series,Model,Color,MaxKm,Status,Notes · New cols: Stage,Order#,VIN,Year,Series,Model,Suffix,Color,Status,ETA From,ETA To,Customer · Used cols: In-Stock,Stk#,Year,Make,Model,Colour,Km,Retail,Status</div>
+  </div></div>
+  <div class="panel" style="margin-top:14px"><div class="hd">Rules</div><div class="bd">
+    <div class="field"><label>Repost interval (days)</label><input id="cfgRepost" type="number" value="${cfg.repostDays}"></div>
+    <div class="field"><label>Default new make</label><input id="cfgMake" value="${esc(cfg.newMake)}"></div>
+    <div class="field"><label>Used “unavailable” status keywords (regex)</label><input id="cfgUnavail" value="${esc(cfg.usedUnavail)}"></div>
+    <div class="field"><label>Series ladder (JSON: higher = more premium)</label><input id="cfgRank" value='${esc(JSON.stringify(cfg.seriesRank))}'></div>
+    <button class="btn primary" id="cfgSave">Save rules</button>
+  </div></div>
+  <div class="panel" style="margin-top:14px"><div class="hd">Data</div><div class="bd">
+    <button class="btn" id="loadSample">Reload sample data</button>
+    <button class="btn" id="clearAll" style="color:var(--accent)">Clear all data</button>
+    <span style="color:var(--muted);margin-left:8px">Clients ${DB.clients.length} · Vehicles ${DB.vehicles.length} · Pricing ${DB.pricing.length} · Activities ${DB.activities.length}</span>
+  </div></div>`;
+}
+
+/* ---------- forms / modals ---------- */
+function modal(title, bodyHTML, onSave, saveLabel) {
+  const root = $('#modalRoot');
+  root.innerHTML = `<div class="modal-bg"><div class="modal"><div class="hd">${esc(title)}<button class="btn ghost right" data-close>✕</button></div><div class="bd">${bodyHTML}</div><div class="ft"><button class="btn" data-close>Cancel</button>${onSave ? `<button class="btn primary" data-save>${saveLabel || 'Save'}</button>` : ''}</div></div></div>`;
+  const close = () => root.innerHTML = '';
+  $$('[data-close]', root).forEach(b => b.onclick = close);
+  $('.modal-bg', root).onclick = e => { if (e.target.classList.contains('modal-bg')) close(); };
+  if (onSave) $('[data-save]', root).onclick = () => { if (onSave() !== false) close(); };
+  return root;
+}
+function inp(k, label, val, type) { return `<div class="field"><label>${esc(label)}</label><input data-k="${k}" type="${type || 'text'}" value="${val == null ? '' : esc(val)}"></div>`; }
+function sel(k, label, val, opts) { return `<div class="field"><label>${esc(label)}</label><select data-k="${k}">${opts.map(o => `<option ${norm(o) === norm(val) ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select></div>`; }
+function gather(root) { const o = {}; $$('[data-k]', root).forEach(e => o[e.dataset.k] = e.value.trim()); return o; }
+
+function clientForm(existing) {
+  const c = existing || {};
+  const body = `<div class="row"><div style="flex:1">${inp('name', 'Name', c.name)}${inp('phone', 'Phone', c.phone)}${inp('email', 'Email', c.email)}${sel('status', 'Status', c.status || 'Warm', ['Hot', 'Warm', 'Cold', 'Customer'])}${sel('stage', 'Pipeline stage', c.stage || 'New Lead', STAGES)}${inp('budget', 'Budget', c.budget, 'number')}</div>
+  <div style="flex:1"><div class="field"><label>Looking for (blank = any)</label></div>${inp('year', 'Year', c.year)}${inp('series', 'Series (e.g. RX)', c.series)}${inp('model', 'Model', c.model)}${inp('color', 'Color', c.color)}${inp('make', 'Make (used)', c.make)}${inp('maxKm', 'Max Km (used)', c.maxKm, 'number')}</div></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:6px 0"><div class="row"><div style="flex:1">${inp('ownYear', 'Currently drives — year', c.ownYear)}${inp('ownSeries', '— series', c.ownSeries)}</div><div style="flex:1">${inp('ownModel', '— model', c.ownModel)}</div></div>
+  <div class="field"><label>Notes</label><textarea data-k="notes" rows="3">${esc(c.notes || '')}</textarea></div>`;
+  modal(existing ? 'Edit client' : 'New client', body, () => {
+    const root = $('#modalRoot'); const o = gather(root); o.notes = $('[data-k=notes]', root).value.trim();
+    if (!o.name) { toast('Name required'); return false; }
+    ['budget', 'maxKm'].forEach(k => o[k] = o[k] === '' ? '' : num(o[k]));
+    if (existing) { const prev = existing.status; Object.assign(existing, o); if (norm(prev) !== norm(o.status)) addActivity(existing.id, 'Note', 'Status changed: ' + prev + ' → ' + o.status); }
+    else { o.id = uid('c'); o.createdAt = Date.now(); o.lastContact = Date.now(); o.interested = []; if (!o.stage) o.stage = 'New Lead'; DB.clients.push(o); }
+    save(); toast('Saved'); route();
+  }, 'Save client');
+}
+
+function vehicleForm(existing) {
+  const v = existing || { kind: 'New', status: 'Available' };
+  const ic = existing ? interestedClients(existing.id) : [];
+  const body = `${ic.length ? `<div style="margin-bottom:10px;color:var(--muted)">★ Interested clients: ${ic.map(c => `<a href="#/client/${c.id}">${esc(c.name)}</a>`).join(', ')}</div>` : ''}${sel('kind', 'Type', v.kind, ['New', 'Used'])}
+  <div class="row"><div style="flex:1">${sel('stage', 'Stage (new)', v.stage || 'Inventory', ['Inventory', 'Pipeline', 'Delivery', ''])}${inp('ref', 'Stock # / Order #', v.ref)}${inp('vin', 'VIN', v.vin)}${inp('year', 'Year', v.year)}${inp('make', 'Make (used)', v.make)}${inp('series', 'Series (new)', v.series)}</div>
+  <div style="flex:1">${inp('model', 'Model', v.model)}${inp('suffix', 'Suffix/Trim (new)', v.suffix)}${inp('color', 'Color', v.color)}${inp('km', 'Km (used)', v.km, 'number')}${inp('price', 'Retail price (used)', v.price, 'number')}${inp('status', 'Status', v.status)}</div></div>
+  <div class="row"><div style="flex:1">${inp('etaFrom', 'ETA from', v.etaFrom)}${inp('inStock', 'In-stock date (used)', v.inStock)}</div><div style="flex:1">${inp('etaTo', 'ETA to', v.etaTo)}${inp('customer', 'Customer (new)', v.customer)}</div></div>
+  ${inp('comments', 'Comments / description', v.comments)}`;
+  modal(existing ? 'Edit vehicle' : 'New vehicle', body, () => {
+    const o = gather($('#modalRoot'));
+    ['km', 'price'].forEach(k => o[k] = o[k] === '' ? '' : num(o[k]));
+    if (existing) Object.assign(existing, o); else { o.id = uid('v'); DB.vehicles.push(o); }
+    save(); toast('Saved'); route();
+  }, 'Save vehicle');
+}
+
+function taskForm(clientId) {
+  const body = inp('title', 'Task', '') + inp('due', 'Due date', todayStr(), 'date') + (clientId ? '' : sel('clientId', 'Link to client (optional)', '', ['', ...DB.clients.map(c => c.name)]));
+  modal('New task', body, () => {
+    const o = gather($('#modalRoot')); if (!o.title) { toast('Task text required'); return false; }
+    let cid = clientId || null;
+    if (!cid && o.clientId) { const c = DB.clients.find(x => x.name === o.clientId); cid = c ? c.id : null; }
+    DB.tasks.push({ id: uid('t'), clientId: cid, title: o.title, due: o.due, done: false, createdAt: Date.now() });
+    save(); toast('Task added'); route();
+  }, 'Add task');
+}
+
+/* ---------- import ---------- */
+function importCSV(kind, text) {
+  const rows = parseCSV(text); if (rows.length < 2) { toast('Empty CSV'); return; }
+  const body = rows.slice(1); let n = 0;
+  if (kind === 'clients') body.forEach(r => { if (!r[0]) return; DB.clients.push({ id: uid('c'), name: r[0], phone: r[1] || '', email: r[2] || '', budget: num(r[3]) ?? '', make: r[4] || '', year: r[5] || '', series: r[6] || '', model: r[7] || '', color: r[8] || '', maxKm: num(r[9]) ?? '', status: r[10] || 'Warm', notes: r[11] || '', ownYear: '', ownSeries: '', ownModel: '', stage: 'New Lead', interested: [], createdAt: Date.now(), lastContact: Date.now() }); n++; });
+  else if (kind === 'new') body.forEach(r => { if (!r[1] && !r[2]) return; DB.vehicles.push({ id: uid('v'), kind: 'New', stage: r[0] || 'Inventory', ref: r[1] || '', vin: r[2] || '', year: r[3] || '', series: r[4] || '', make: DB.config.newMake, model: r[5] || '', suffix: r[6] || '', color: r[7] || '', status: r[8] || '', etaFrom: r[9] || '', etaTo: r[10] || '', customer: r[11] || '', comments: r[12] || '' }); n++; });
+  else if (kind === 'used') body.forEach(r => { if (!r[1]) return; DB.vehicles.push({ id: uid('v'), kind: 'Used', stage: '', inStock: r[0] || '', ref: r[1] || '', year: r[2] || '', make: r[3] || '', model: r[4] || '', color: r[5] || '', km: num(r[6]) ?? '', price: num(r[7]) ?? '', status: r[8] || 'Available', comments: r[9] || '', lastPostedAt: 0 }); n++; });
+  else if (kind === 'pricing') { DB.pricing = loadPricingFromCSV(text); n = DB.pricing.length; }
+  save(); toast(n + ' rows imported'); route();
+}
+
+/* ---------- backup ---------- */
+function exportBackup() {
+  download('vincere-crm-backup-' + todayStr() + '.json', JSON.stringify(DB, null, 2));
+  DB.meta.lastBackupAt = Date.now(); save(); renderNav((location.hash.slice(1) || '/dashboard').split('/')[1]); route();
+  toast('Backup downloaded — save it to Google Drive');
+}
+function restoreBackup(text) {
+  try { const d = JSON.parse(text); if (!d.clients) throw 0; DB = d; if (!DB.config) DB.config = defaultConfig(); if (!DB.meta) DB.meta = {}; save(); toast('Restored'); location.hash = '#/dashboard'; route(); }
+  catch (e) { toast('That file is not a valid backup'); }
+}
+
+/* ---------- event binding ---------- */
+function bindView(view, arg) {
+  $$('[data-go]').forEach(e => e.onclick = () => location.hash = e.dataset.go);
+  $$('[data-veh]').forEach(e => e.onclick = () => vehicleForm(vehicle(e.dataset.veh)));
+  $$('[data-act=backup]').forEach(e => e.onclick = exportBackup);
+  $$('[data-add=client]').forEach(e => e.onclick = () => clientForm(null));
+  $$('[data-add=vehicle]').forEach(e => e.onclick = () => vehicleForm(null));
+  $$('[data-edit]').forEach(e => e.onclick = () => clientForm(client(e.dataset.edit)));
+  $$('[data-add-task]').forEach(e => e.onclick = () => taskForm(e.dataset.addTask || null));
+  $$('[data-post]').forEach(e => e.onclick = () => { const v = vehicle(e.dataset.post); v.lastPostedAt = Date.now(); save(); toast('Marked posted today'); route(); });
+  $$('[data-task-done]').forEach(e => e.onclick = () => { const t = DB.tasks.find(x => x.id === e.dataset.taskDone); t.done = !t.done; save(); route(); });
+  $$('[data-task-del]').forEach(e => e.onclick = () => { DB.tasks = DB.tasks.filter(x => x.id !== e.dataset.taskDel); save(); route(); });
+  $$('[data-del-act]').forEach(e => e.onclick = () => { DB.activities = DB.activities.filter(x => x.id !== e.dataset.delAct); save(); route(); });
+
+  if (view === 'client') {
+    const add = $('#actAdd'); if (add) add.onclick = () => { addActivity(arg, $('#actType').value, $('#actBody').value); route(); };
+    const body = $('#actBody'); if (body) body.onkeydown = e => { if (e.key === 'Enter') { addActivity(arg, $('#actType').value, body.value); route(); } };
+    const ia = $('#interestAdd'); if (ia) ia.onclick = () => { const id = $('#interestPick').value; if (id) { toggleInterest(arg, id); route(); } };
+    $$('[data-untag]').forEach(e => e.onclick = () => { toggleInterest(arg, e.dataset.untag); route(); });
+    $$('[data-tag]').forEach(e => e.onclick = () => { toggleInterest(arg, e.dataset.tag); route(); });
+  }
+  if (view === 'pipeline') {
+    $$('[data-stage-sel]').forEach(s => s.onchange = () => { const c = client(s.dataset.stageSel); if (c) { c.stage = s.value; save(); route(); } });
+    $$('.kcard').forEach(card => { card.ondragstart = e => e.dataTransfer.setData('id', card.dataset.client); });
+    $$('.kcol').forEach(col => { col.ondragover = e => e.preventDefault(); col.ondrop = e => { e.preventDefault(); const c = client(e.dataTransfer.getData('id')); if (c) { c.stage = col.dataset.stage; save(); route(); } }; });
+  }
+  if (view === 'matches') {
+    const cb = $('#inBudgetOnly'); if (cb) cb.onchange = () => { $$('#matchTbl tbody tr').forEach(tr => { tr.style.display = (!cb.checked || tr.dataset.fit === 'fit-in') ? '' : 'none'; }); };
+  }
+  if (view === 'settings') {
+    $('#restoreFile') && ($('#restoreFile').onchange = e => readFile(e, restoreBackup));
+    $('#impFile') && ($('#impFile').onchange = e => readFile(e, t => importCSV($('#impType').value, t)));
+    $('#cfgSave') && ($('#cfgSave').onclick = () => {
+      DB.config.repostDays = num($('#cfgRepost').value) || 10; DB.config.newMake = $('#cfgMake').value.trim();
+      DB.config.usedUnavail = $('#cfgUnavail').value.trim();
+      try { DB.config.seriesRank = JSON.parse($('#cfgRank').value); } catch (e) { toast('Series ladder must be valid JSON'); return; }
+      save(); toast('Rules saved'); route();
+    });
+    $('#loadSample') && ($('#loadSample').onclick = () => { if (confirm('Replace current data with sample data?')) { seed(); location.hash = '#/dashboard'; route(); } });
+    $('#clearAll') && ($('#clearAll').onclick = () => { if (confirm('Erase ALL data on this device? Make sure you have a backup.')) { DB = { clients: [], activities: [], vehicles: [], pricing: loadPricingFromCSV(PRICING_CSV), tasks: [], config: defaultConfig(), meta: { createdAt: Date.now(), lastBackupAt: 0 } }; save(); location.hash = '#/dashboard'; route(); } });
+  }
+}
+function readFile(e, cb) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => cb(r.result); r.readAsText(f); e.target.value = ''; }
+
+/* ---------- init ---------- */
+function init() {
+  load();
+  $('#globalSearch').onkeydown = e => { if (e.key === 'Enter' && e.target.value.trim()) location.hash = '#/search/' + encodeURIComponent(e.target.value.trim()); };
+  $('#quickAddClient').onclick = () => clientForm(null);
+  $('#quickBackup').onclick = exportBackup;
+  window.addEventListener('hashchange', route);
+  if (!location.hash) location.hash = '#/dashboard'; else route();
+  route();
+}
+init();
+})();
