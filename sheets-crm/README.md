@@ -5,11 +5,25 @@ It auto-matches prospects to new/used vehicles, surfaces upsell opportunities fo
 and drives a one-screen daily dashboard. Everything recalculates live — no manual refresh, no
 maintained output tabs.
 
-- **[CRM-DESIGN.md](./CRM-DESIGN.md)** — the full build: tab map, every formula and the exact cell it
+- **[BuildCRM.gs](./BuildCRM.gs)** — ⭐ **fastest start.** One Apps Script that builds the *entire*
+  workbook for you: every tab, header, formula, named range, formatting, and demo rows. Paste it once
+  and run `buildCRM`. (A `.xlsx`/`.csv` import can't carry `QUERY`/`ARRAYFORMULA`/`LAMBDA`/named ranges
+  into Sheets — a script can, which is why this is the "drop-in" file.)
+- **[CRM-DESIGN.md](./CRM-DESIGN.md)** — the full reference: tab map, every formula and the exact cell it
   goes in, the hidden helper tabs and why they exist, the editable `Config` rules, plus
-  *how to use* / *how to extend* / *troubleshooting*.
-- **[Snapshot.gs](./Snapshot.gs)** — the single **optional** Apps Script (daily history snapshot +
-  a one-click helper-tab hider). The CRM needs none of it; install only if you want trend history.
+  *how to use* / *how to extend* / *troubleshooting*. Read this if you'd rather build by hand or want to
+  understand/extend what `BuildCRM.gs` generates.
+- **[Snapshot.gs](./Snapshot.gs)** — **optional** add-ons (daily history snapshot, helper-tab hider,
+  hands-free Google Calendar repost reminders). The CRM needs none of it.
+
+## Fastest setup (2 minutes)
+
+1. Create a blank sheet → [sheets.new](https://sheets.new).
+2. **Extensions → Apps Script**, delete the stub, paste all of **`BuildCRM.gs`**, **Save**.
+3. Run `buildCRM`, approve the permission prompt.
+4. Reload the sheet → open the **Dashboard** tab. Done. (Demo rows are included; clear them and paste
+   your real exports into `Inventory`/`Pipeline`/`Delivery`/`Used`. Set `INCLUDE_SAMPLE = false` in the
+   script to skip demo rows.)
 
 ## At a glance
 

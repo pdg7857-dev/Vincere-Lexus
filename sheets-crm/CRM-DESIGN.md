@@ -327,7 +327,7 @@ Notes:
 =LET(
   all, VSTACK(IFERROR(_NewMatches!A2:R, IF(SEQUENCE(1,18),"")),
               IFERROR(_UsedMatches!A2:R, IF(SEQUENCE(1,18),""))),
-  f,   FILTER(all, LEN(INDEX(all,0,1)) > 0),
+  f,   FILTER(all, ARRAYFORMULA(LEN(INDEX(all,0,1)) > 0)),
   IFERROR(SORT(f, 1, TRUE, 3, TRUE), IF(SEQUENCE(1,18),""))
 )
 ```
@@ -518,7 +518,15 @@ was never posted), soonest first, each row ending in a one‑click **➕ Outlook
 
 ---
 
-## 10. How to use (one‑time setup, ~15 min)
+## 10. How to use (one‑time setup)
+
+> **Fastest path — let the builder do it.** Paste [`BuildCRM.gs`](./BuildCRM.gs) into **Extensions →
+> Apps Script** of a blank sheet and run `buildCRM`. It creates every tab, header, formula, named range,
+> format, and demo rows in one shot (a `.xlsx`/`.csv` import can't carry these Google‑only functions, but
+> a script writes them natively). The manual steps below are for building by hand or understanding what
+> the script generates.
+
+**Manual build:**
 
 1. **Create the tabs** (exact names): `Inventory`, `Pipeline`, `Delivery`, `Used`, `Clients`, `Pricing`,
    `Config`, `FB_Log`, `Matches`, `Upsell`, `Reposting`, `Dashboard`, `_AllVehicles`, `_NewMatches`,
