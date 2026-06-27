@@ -17,7 +17,8 @@ maintained output tabs.
 |---|---|
 | `Matches` | Every prospect ↔ available vehicle match (New + Used unified), MSRP/Retail, budget fit |
 | `Upsell` | Existing customers ↔ newer/higher-series upgrade vehicles |
-| `Dashboard` | Counts, Hot-clients-with-matches, unmatched-Hot sourcing list, aging pipeline/used, mix views, upsell $ |
+| `Reposting` | Facebook Marketplace repost tracker: last-posted date, next-due (+10d), 1-click "add to calendar" (§14) |
+| `Dashboard` | Counts, Hot-clients-with-matches, unmatched-Hot sourcing list, aging pipeline/used, reposts-due-today, mix views, upsell $ |
 
 Built with `ARRAYFORMULA` / `QUERY` / `FILTER` / `XLOOKUP` and modern `LET` · `LAMBDA` · `REDUCE` ·
 `VSTACK` / `HSTACK`. Start at **CRM-DESIGN.md §10 (How to use)**.

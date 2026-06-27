@@ -21,10 +21,12 @@ clients to vehicles, surfaces upsell opportunities, and drives a one‑screen da
 | `Used` | raw input (given) | paste | Used multi‑brand — cols A–P |
 | `Clients` | reference | edit | Prospects actively looking |
 | `Pricing` | reference | edit | MSRP table for NEW vehicles |
-| `Config` | reference | edit rules | Editable rules: availability regex, series ranking, upsell rule |
+| `Config` | reference | edit rules | Editable rules: availability regex, series ranking, upsell rule, repost interval |
+| `FB_Log` | input | add 1 row/post | Facebook Marketplace post log: `Stk#` + date posted (see §14) |
 | **`Matches`** | **output** | never | Unified client↔vehicle matches (New + Used) |
 | **`Upsell`** | **output** | never | Existing customers ↔ upgrade vehicles |
-| **`Dashboard`** | **output** | never | One‑screen daily view |
+| **`Reposting`** | **output** | never | Used repost tracker: last post, next‑due (+N days), 1‑click "add to calendar" (§14) |
+| **`Dashboard`** | **output** | never | One‑screen daily view (incl. "reposts due today") |
 | `_AllVehicles` | hidden helper | never | The 3 NEW sheets stacked + a `Stage` column |
 | `_NewMatches` | hidden helper | never | NEW matching engine output |
 | `_UsedMatches` | hidden helper | never | USED matching engine output |
@@ -75,6 +77,8 @@ Lay it out exactly like this, then create the **named ranges** in the last colum
 | `B3` | `Lexus` | **`NewMakeDefault`** | Make shown for NEW rows (new sheets have no Make column). |
 | `A4` | `Upsell rule` | — | label |
 | `B4` | `OR` | **`UpsellMode`** | `OR` = newer **year** *or* higher **series** qualifies; `AND` = must be both. |
+| `A5` | `Repost interval (days)` | — | label |
+| `B5` | `10` | **`RepostDays`** | Days after a Facebook Marketplace post before it's due to repost (§14). |
 
 Series ranking table (anywhere to the right, e.g. D:E):
 
@@ -98,7 +102,7 @@ Higher rank = "more premium" for the upsell rule. **Edit these numbers** to matc
 the ladder — they are the entire definition of "higher series". Rows you don't list rank as `0`.
 
 > **Create named ranges:** Data → Named ranges. Name them exactly `UsedUnavailRegex`, `NewMakeDefault`,
-> `UpsellMode`, `SeriesRankTbl`. The formulas below reference these names directly.
+> `UpsellMode`, `RepostDays`, `SeriesRankTbl`. The formulas below reference these names directly.
 
 ---
 
@@ -441,6 +445,9 @@ with vertical gaps. Move blocks freely — only the anchor cell holds a formula.
 | `D10` | `UPSELL` (label) |
 | `D11` | `Opportunities` · `E11` `=COUNTA(Upsell!A2:A)` |
 | `D12` | `Top suggested $` · `E12` `=IFERROR(MAX(Upsell!F2:F),0)` |
+| `G4` | `FB MARKETPLACE` (label) |
+| `G5` | `Reposts due now` · `H5` `=SUMPRODUCT((LEN(Reposting!A2:A)>0)*(N(Reposting!F2:F)>0)*(N(Reposting!F2:F)<=TODAY()))` |
+| `G6` | `Never posted` · `H6` `=COUNTIF(Reposting!H2:H,"NEVER POSTED")` |
 
 ### List band 1 (headers in row 16, formulas in row 17)
 
@@ -494,6 +501,16 @@ with vertical gaps. Move blocks freely — only the anchor cell holds a formula.
   "None")
 ```
 
+### List band 3 — Facebook Marketplace reposts (anchor row 56)
+
+**`A56`** `FB MARKETPLACE — REPOST DUE (Stk# · Year · Make · Model · Next Due · Status · ➕ add)` — **`A57`:**
+```
+=IFERROR(SORT(FILTER({Reposting!A2:A, Reposting!B2:B, Reposting!C2:C, Reposting!D2:D, Reposting!F2:F, Reposting!H2:H, Reposting!I2:I},
+  ARRAYFORMULA((LEN(Reposting!A2:A)>0) * (N(Reposting!F2:F)>0) * (N(Reposting!F2:F)<=TODAY()))), 5, TRUE), "Nothing due")
+```
+This is your daily repost worklist — every available used unit whose 10‑day timer has elapsed (or that
+was never posted), soonest first, each row ending in a one‑click **➕ Outlook** link (§14).
+
 > **Dates:** the aging blocks use `TODAY()`, which rolls over automatically each day the sheet is open
 > (and on any edit). For ETA/In‑Stock filters to work, those columns must hold **real dates**, not text —
 > if a pasted column shows left‑aligned, select it → Format → Number → Date, or wrap the source in
@@ -504,7 +521,9 @@ with vertical gaps. Move blocks freely — only the anchor cell holds a formula.
 ## 10. How to use (one‑time setup, ~15 min)
 
 1. **Create the tabs** (exact names): `Inventory`, `Pipeline`, `Delivery`, `Used`, `Clients`, `Pricing`,
-   `Config`, `Matches`, `Upsell`, `Dashboard`, `_AllVehicles`, `_NewMatches`, `_UsedMatches`.
+   `Config`, `FB_Log`, `Matches`, `Upsell`, `Reposting`, `Dashboard`, `_AllVehicles`, `_NewMatches`,
+   `_UsedMatches`. *(`FB_Log` + `Reposting` are only for the Facebook Marketplace tracker, §14 — skip
+   them if you don't need it.)*
 2. **Paste raw data** into `Inventory` / `Pipeline` / `Delivery` / `Used` (headers row 1, data row 2+).
    Never reformat their columns — the formulas address them positionally.
 3. **Fill `Config`** (§3) and create the 4 **named ranges** (`UsedUnavailRegex`, `NewMakeDefault`,
@@ -559,8 +578,121 @@ in‑budget matches, your sourcing list, aging units, and upsell $ are all curre
 thing a formula genuinely *cannot* do is **append‑and‑freeze a daily history** (formulas always reflect
 *current* data; they can't keep yesterday's numbers once the source changes). If you want trend history
 — "how many Hot‑with‑match did I have each day", lot‑age trends — use the optional, clearly‑isolated
-script in [`Snapshot.gs`](./Snapshot.gs). It also includes a convenience function to auto‑hide the `_`
-helper tabs. Install only if you want history; the CRM works fully without it.
+script in [`Snapshot.gs`](./Snapshot.gs). That file holds three **optional** functions: `snapshotDashboard`
+(daily history), `hideHelperTabs` (one‑click tab hider), and `createRepostEvents` (hands‑free Google
+Calendar repost reminders — see §14 Option C). Install only what you want; the CRM works fully without any
+of them.
 
 See `Snapshot.gs` for the code and install steps.
+
+---
+
+## 14. Facebook Marketplace reposting + calendar reminders
+
+Goal: know the **date you last posted** each used unit, and get a reminder to **repost after N days**
+(default 10, editable in `Config!B5` / `RepostDays`). Plus a privacy‑safe way to push those reminders to
+your calendar.
+
+### 14.1 `FB_Log` — your post log (tiny input tab)
+
+Headers row 1, then **append one row every time you post or repost** a unit:
+
+| Col | Header | Notes |
+|---|---|---|
+| A | Stk# | must match the Used `Stk#` (col B) |
+| B | Posted Date | the date you posted. Shortcut: select the cell and press **Ctrl + ;** to drop in today's date |
+| C | Notes | optional (price, which photos, etc.) |
+
+Append‑style (a new row per post) keeps your full posting history; the tracker always uses the **most
+recent** date per unit. No script needed to log — just type the date (or Ctrl + ;).
+
+### 14.2 `Reposting` — the auto tracker (one formula)
+
+**Row 1 headers:** `Stk# | Year | Make | Model | Last Posted | Next Due | Days Over | Status | Add to Calendar`.
+**`Reposting!A2`:**
+
+```
+=LET(
+  norm,  LAMBDA(x, LOWER(TRIM(""&x))),
+  U,     Used!A2:P,
+  avail, ARRAYFORMULA( (LEN(INDEX(U,0,2))+LEN(INDEX(U,0,9))>0) * NOT(REGEXMATCH(norm(INDEX(U,0,11)), UsedUnavailRegex)) ),
+  A,     IFERROR(FILTER(U, avail), ""),
+  stk,   INDEX(A,0,2),
+  last,  MAP(stk, LAMBDA(s, IF(LEN(s)=0, "", IFERROR(MAXIFS(FB_Log!B:B, FB_Log!A:A, s), 0)))),
+  due,   ARRAYFORMULA(IF(last="", "", IF(last=0, TODAY(), last + RepostDays))),
+  over,  ARRAYFORMULA(IF(last="", "", TODAY() - due)),
+  stat,  ARRAYFORMULA(IF(last="", "", IF(last=0, "NEVER POSTED", IF(TODAY()>=due, "REPOST DUE", "OK")))),
+  subj,  ARRAYFORMULA("Repost "&stk&" "&INDEX(A,0,3)&" "&INDEX(A,0,4)&" "&INDEX(A,0,5)&" on FB Marketplace"),
+  link,  MAP(stk, due, subj, LAMBDA(s,d,t, IF(LEN(s)=0, "",
+            HYPERLINK("https://outlook.office.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&allday=true&subject="
+                      & ENCODEURL(t) & "&startdt=" & TEXT(d,"yyyy-mm-dd"), "➕ Outlook")))),
+  lastD, ARRAYFORMULA(IF(last="", "", IF(last=0, "—", last))),
+  out,   HSTACK(stk, INDEX(A,0,3), INDEX(A,0,4), INDEX(A,0,5), lastD, due, over, stat, link),
+  IFERROR(SORT(FILTER(out, ARRAYFORMULA(LEN(stk)>0)), 6, TRUE), IF(SEQUENCE(1,9),""))
+)
+```
+
+What it does, per **available** used unit:
+- `last` = most recent post date from `FB_Log` (`MAXIFS`), `0` if never posted.
+- `Next Due` = `last + RepostDays`; never‑posted → due **today**.
+- `Status` = `NEVER POSTED` / `REPOST DUE` (today ≥ due) / `OK`.
+- `Add to Calendar` = a one‑click **➕ Outlook** link (see 14.3).
+- Sorted by `Next Due` ascending, so overdue/never sit at the top.
+
+Format column **E** and **F** as dates (Format → Number → Date). The Dashboard's *List band 3* (§9) shows
+just the due ones, and the top band shows the **reposts‑due‑now** and **never‑posted** counts.
+
+### 14.3 Calendar — three options, and the privacy point
+
+First, the important clarification: **putting events on your calendar from the sheet does *not* require
+giving me (Claude) access to your Outlook work account.** Any script you install runs as *you*, under
+*your* login. I never touch your account. That said, here are three paths, easiest/safest first:
+
+**Option A — One‑click "Add to Calendar" link (recommended, zero access, already built above).**
+The `Add to Calendar` column is a formula that builds an Outlook "compose event" web link, pre‑filled with
+the unit and the due date. You click it → Outlook opens with the event already filled in → you press
+**Save**. No API, no permissions, no script, nothing connected to anyone. It works with your existing
+Outlook session in the browser. This is the privacy‑safe "directly from the sheet" answer.
+- Prefer Google Calendar? Swap the URL for:
+  `HYPERLINK("https://calendar.google.com/calendar/render?action=TEMPLATE&text="&ENCODEURL(t)&"&dates="&TEXT(d,"yyyymmdd")&"/"&TEXT(d+1,"yyyymmdd"), "➕ Google")`.
+
+**Option B — Daily in‑sheet reminders only (zero tech).** Don't link a calendar at all. The Dashboard's
+*FB MARKETPLACE — REPOST DUE* block **is** your daily reminder: open the sheet each morning, work the
+list, log the new date in `FB_Log`. This is exactly the "remind me in the daily view" fallback you
+described — and it needs no scripts and no accounts.
+
+**Option C — Fully automatic event creation (optional, needs a script under *your* account).** If you want
+events to appear with **no clicking**:
+- **Google Calendar:** a tiny Apps Script (`createRepostEvents`, included in `Snapshot.gs`) reads the
+  `Reposting` tab and creates all‑day reminders for due units. Runs as you; I don't see it.
+- **Outlook / Microsoft 365:** Google Apps Script can't write to Outlook. You'd use **Office Scripts +
+  Power Automate** (a "When a row… create event" flow) — but corporate M365 tenants often disable these,
+  and it's more setup. Given you'd rather not wire up the work account, **Option A is the better fit**:
+  same end result (event on your Outlook calendar), one extra click, nothing connected.
+
+> **Bottom line for your situation:** stay on **Option A** (one‑click ➕ Outlook links) backed by
+> **Option B** (the daily Dashboard list). You get reminders with real due dates pushed onto your Outlook
+> calendar on demand, you keep full control, and nothing is ever granted access to your work account.
+
+### 14.4 Excel or Google Sheets for this?
+
+**Recommendation: stay in Google Sheets.** Reasons specific to this project:
+
+- **It's already built and working here.** The engine uses Sheets‑native `QUERY`, `ARRAYFORMULA`, and the
+  modern `LET`/`LAMBDA`/`REDUCE`/`VSTACK` stack. Excel (Microsoft 365) *does* now have `LET`/`LAMBDA`/
+  `REDUCE`/`VSTACK`/`XLOOKUP`/`FILTER`/`SORT`/`UNIQUE`, so ~80% would port — but you'd rewrite every
+  `QUERY` (use `FILTER`/`SORT`/`GROUPBY`), drop `ARRAYFORMULA` (Excel spills natively), and swap
+  `REGEXMATCH` for Excel's newer `REGEXTEST`. That's real rework for no functional gain.
+- **"Big project" here means logic complexity, not row count.** A dealership's inventory + clients is a
+  few thousand rows — trivial for Sheets (limit ~10M cells). You're nowhere near needing Excel's larger
+  grid. The only real performance factor is the `REDUCE` match engine scanning vehicles per client, and
+  that's identical in both tools (mitigation in §12).
+- **Calendar + sharing favor Sheets.** One‑click calendar links work the same, but *automatic* event
+  creation is a 10‑line Apps Script in Google vs. Office Scripts + Power Automate (often blocked on work
+  tenants) in Excel. And sharing a live link with your desk/manager is simpler in Sheets.
+
+**When Excel would win:** your dealership standardizes on Excel/SharePoint, you need Power BI dashboards,
+or you must keep everything inside the Microsoft tenant for IT policy. None of those are blocking here —
+and notably, **keeping the CRM in Google Sheets actually helps your privacy goal**, because the calendar
+piece never has to touch your Microsoft work account at all.
 
