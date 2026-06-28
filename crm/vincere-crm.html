@@ -147,99 +147,36 @@ tr.clk:hover{background:rgba(127,127,127,.08);cursor:pointer}
 'use strict';
 
 /* ---------- bundled 2026 pricing (lexus.ca Build & Price, ON incl. freight/PDI, captured 2026-06-16) ---------- */
-const PRICING_CSV = `Model Year,Series,Model,Suffix,MSRP,Trim Notes
-2026,ES,ES 350e FWD,Signature,65915,gas
-2026,ES,ES 350e FWD,Premium,67380,gas
-2026,ES,ES 350e FWD,Luxury,74955,gas
-2026,ES,ES 350e FWD,Luxury+,77330,gas
-2026,ES,ES 350e FWD,Executive VIP,81360,gas
-2026,ES,ES 350h AWD,Signature,63297,hybrid
-2026,ES,ES 350h AWD,Premium,65987,hybrid
-2026,ES,ES 350h AWD,Premium+,69957,hybrid
-2026,ES,ES 500e AWD,Signature,68915,gas
-2026,ES,ES 500e AWD,Premium,70380,gas
-2026,ES,ES 500e AWD,Luxury,77955,gas
-2026,ES,ES 500e AWD,Luxury+,80525,gas
-2026,GX,GX 550,Signature,90787,gas
-2026,GX,GX 550,Premium,99525,gas
-2026,GX,GX 550,Overtrail,100644,gas
-2026,GX,GX 550,Luxury,112084,gas
-2026,GX,GX 550,Overtrail+,115974,gas
-2026,GX,GX 550,Executive,116620,gas
-2026,IS,IS 350 AWD,F SPORT DESIGN,60252,gas
-2026,IS,IS 350 AWD,F SPORT 2,62345,gas
-2026,IS,IS 350 AWD,F SPORT 3,67445,gas
-2026,IS,IS 350 AWD,SPECIAL APPEARANCE PACKAGE,72964,gas
-2026,LC,LC 500,Standard Package,125892,gas
-2026,LC,LC 500,Performance Package,141258,gas
-2026,LC,LC Convertible,Standard Package,146136,gas
-2026,LS,LS 500 AWD,Heritage Edition,136236,gas
-2026,LX,LX 600,Premium,133236,gas
-2026,LX,LX 600,F SPORT,152070,gas
-2026,LX,LX 600,Luxury,157536,gas
-2026,LX,LX 700h,Overtrail+ (2ROW),150326,hybrid
-2026,LX,LX 700h,Overtrail+ (3 ROW),152840,hybrid
-2026,LX,LX 700h,Luxury,164298,hybrid
-2026,LX,LX 700h,Executive VIP,192402,hybrid
-2026,NX,NX 350,Premium,58477,gas
-2026,NX,NX 350,Luxury,62616,gas
-2026,NX,NX 350,F SPORT 2,65659,gas
-2026,NX,NX 350,Ultra Luxury,66584,gas
-2026,NX,NX 350,Executive,71850,gas
-2026,NX,NX 350,F SPORT 3,72050,gas
-2026,NX,NX 350h,Premium,61422,hybrid
-2026,NX,NX 350h,Luxury,65562,hybrid
-2026,NX,NX 350h,F SPORT 2,68939,hybrid
-2026,NX,NX 350h,Ultra Luxury,69529,hybrid
-2026,NX,NX 350h,Executive,74275,hybrid
-2026,NX,NX 350h,F SPORT 3,75130,hybrid
-2026,NX,NX 450h+,Ultra Premium,63387,phev
-2026,NX,NX 450h+,Luxury,73387,phev
-2026,NX,NX 450h+,F SPORT 2,76487,phev
-2026,NX,NX 450h+,Executive,80002,phev
-2026,NX,NX 450h+,F SPORT 3,80122,phev
-2026,RX,RX 350,Premium,64282,gas
-2026,RX,RX 350,Luxury,71696,gas
-2026,RX,RX 350,F SPORT 2,74196,gas
-2026,RX,RX 350,Ultra Luxury,75201,gas
-2026,RX,RX 350,Executive,79701,gas
-2026,RX,RX 350,F SPORT 3,79701,gas
-2026,RX,RX 350,F SPORT Black Line,82561,gas
-2026,RX,RX 350h,Premium,67042,hybrid
-2026,RX,RX 350h,F SPORT Design,69557,hybrid
-2026,RX,RX 350h,Luxury,74456,hybrid
-2026,RX,RX 350h,Ultra Luxury,77961,hybrid
-2026,RX,RX 350h,Executive,82461,hybrid
-2026,RX,RX 450h+,Ultra Premium,81892,phev
-2026,RX,RX 450h+,Executive,90782,phev
-2026,RX,RX 500h,F SPORT Performance 2,86611,hybrid
-2026,RX,RX 500h,F SPORT Performance 3,92411,hybrid
-2026,RX,RX 500h,F SPORT Black Line,93201,hybrid
-2026,RZ,RZ 350e,Signature,63380,ev
-2026,RZ,RZ 450e AWD,Signature,70380,ev
-2026,RZ,RZ 450e AWD,Luxury,76381,ev
-2026,RZ,RZ 450e AWD,Executive,86350,ev
-2026,RZ,RZ 550e AWD,F SPORT,81380,ev
-2026,TX,TX 350,Luxury,73252,gas
-2026,TX,TX 350,Ultra Luxury,76005,gas
-2026,TX,TX 350,Executive 7-Pass,84258,gas
-2026,TX,TX 350,F SPORT 3,84881,gas
-2026,TX,TX 350,Executive 6-Pass,85008,gas
-2026,TX,TX 350,F SPORT 3 + Towing Hitch,86028,gas
-2026,TX,TX 500h,F SPORT Performance 2,88797,hybrid
-2026,TX,TX 500h,F SPORT Performance 2 + Towing Hitch,89943,hybrid
-2026,TX,TX 500h,F SPORT Performance 3,94796,hybrid
-2026,TX,TX 500h,F SPORT Performance 3 + Towing Hitch,95943,hybrid
-2026,UX,UX 300h,Premium,48442,hybrid
-2026,UX,UX 300h,F SPORT Design,49512,hybrid
-2026,UX,UX 300h,Luxury,53906,hybrid
-2026,UX,UX 300h,FSPORT 2,56181,hybrid`;
+const PRICING = [{"year":"2026","series":"GX","model":"GX 550","suffix":"Signature","msrp":90787,"leasePayment":1385,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"GX","model":"GX 550","suffix":"Premium","msrp":99525,"leasePayment":1532,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"GX","model":"GX 550","suffix":"Overtrail","msrp":100644,"leasePayment":1568,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"GX","model":"GX 550","suffix":"Luxury","msrp":112084,"leasePayment":1759,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"GX","model":"GX 550","suffix":"Overtrail+","msrp":115974,"leasePayment":1844,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"GX","model":"GX 550","suffix":"Executive","msrp":116620,"leasePayment":1854,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"LX","model":"LX 600","suffix":"Premium","msrp":133236,"leasePayment":2134,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"LX","model":"LX 600","suffix":"F SPORT","msrp":152070,"leasePayment":2502,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"LX","model":"LX 600","suffix":"Luxury","msrp":157536,"leasePayment":2596,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"LX","model":"LX 700h","suffix":"Overtrail+ (2ROW)","msrp":150326,"leasePayment":2447,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"LX","model":"LX 700h","suffix":"Overtrail+ (3 ROW)","msrp":152840,"leasePayment":2465,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"LX","model":"LX 700h","suffix":"Luxury","msrp":164298,"leasePayment":2685,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"LX","model":"LX 700h","suffix":"Executive VIP","msrp":192402,"leasePayment":3256,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350","suffix":"Premium","msrp":58477,"leasePayment":816,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"NX","model":"NX 350","suffix":"Luxury","msrp":62616,"leasePayment":883,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350","suffix":"F SPORT 2","msrp":65659,"leasePayment":924,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350","suffix":"Ultra Luxury","msrp":66584,"leasePayment":949,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350","suffix":"Executive","msrp":71850,"leasePayment":1022,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350","suffix":"F SPORT 3","msrp":72050,"leasePayment":1024,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350h","suffix":"Premium","msrp":61422,"leasePayment":904,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"NX","model":"NX 350h","suffix":"Luxury","msrp":65562,"leasePayment":975,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350h","suffix":"F SPORT 2","msrp":68939,"leasePayment":1023,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350h","suffix":"Ultra Luxury","msrp":69529,"leasePayment":1044,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350h","suffix":"Executive","msrp":74275,"leasePayment":1113,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 350h","suffix":"F SPORT 3","msrp":75130,"leasePayment":1126,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 450h+","suffix":"Ultra Premium","msrp":63387,"leasePayment":932,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"NX","model":"NX 450h+","suffix":"Luxury","msrp":73387,"leasePayment":1114,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 450h+","suffix":"F SPORT 2","msrp":76487,"leasePayment":1159,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 450h+","suffix":"Executive","msrp":80002,"leasePayment":1211,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"NX","model":"NX 450h+","suffix":"F SPORT 3","msrp":80122,"leasePayment":1227,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350","suffix":"Premium","msrp":64282,"leasePayment":870,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"RX","model":"RX 350","suffix":"Luxury","msrp":71696,"leasePayment":993,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350","suffix":"F SPORT 2","msrp":74196,"leasePayment":1027,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350","suffix":"Ultra Luxury","msrp":75201,"leasePayment":1054,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350","suffix":"Executive","msrp":79701,"leasePayment":1130,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350","suffix":"F SPORT 3","msrp":79701,"leasePayment":1130,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350","suffix":"F SPORT Black Line","msrp":82561,"leasePayment":1154,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350h","suffix":"Premium","msrp":67042,"leasePayment":961,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"RX","model":"RX 350h","suffix":"F SPORT Design","msrp":69557,"leasePayment":1008,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350h","suffix":"Luxury","msrp":74456,"leasePayment":1090,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350h","suffix":"Ultra Luxury","msrp":77961,"leasePayment":1153,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 350h","suffix":"Executive","msrp":82461,"leasePayment":1233,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 500h","suffix":"F SPORT Performance 2","msrp":86611,"leasePayment":1309,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"RX","model":"RX 500h","suffix":"F SPORT Performance 3","msrp":92411,"leasePayment":1411,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 500h","suffix":"F SPORT Black Line","msrp":93201,"leasePayment":1440,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RX","model":"RX 450h+","suffix":"Ultra Premium","msrp":81892,"leasePayment":1206,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"RX","model":"RX 450h+","suffix":"Executive","msrp":90782,"leasePayment":1334,"leaseRate":3.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RZ","model":"RZ 350e","suffix":"Signature","msrp":63380,"leasePayment":953,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"RZ","model":"RZ 450e AWD","suffix":"Signature","msrp":70380,"leasePayment":1060,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"RZ","model":"RZ 450e AWD","suffix":"Luxury","msrp":76381,"leasePayment":1178,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RZ","model":"RZ 450e AWD","suffix":"Executive","msrp":86350,"leasePayment":1349,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"RZ","model":"RZ 550e AWD","suffix":"F SPORT","msrp":81380,"leasePayment":1271,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"TX","model":"TX 350","suffix":"Luxury","msrp":73252,"leasePayment":1046,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"TX","model":"TX 350","suffix":"Ultra Luxury","msrp":76005,"leasePayment":1084,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"TX","model":"TX 350","suffix":"Executive 7-Pass","msrp":84258,"leasePayment":1229,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"TX","model":"TX 350","suffix":"F SPORT 3","msrp":84881,"leasePayment":1237,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"TX","model":"TX 350","suffix":"Executive 6-Pass","msrp":85008,"leasePayment":1239,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"TX","model":"TX 350","suffix":"F SPORT 3 + Towing Hitch","msrp":86028,"leasePayment":1254,"leaseRate":4.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"TX","model":"TX 500h","suffix":"F SPORT Performance 2","msrp":88797,"leasePayment":1390,"leaseRate":6.7,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"TX","model":"TX 500h","suffix":"F SPORT Performance 2 + Towing Hitch","msrp":89943,"leasePayment":1408,"leaseRate":6.7,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"TX","model":"TX 500h","suffix":"F SPORT Performance 3","msrp":94796,"leasePayment":1499,"leaseRate":6.7,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"TX","model":"TX 500h","suffix":"F SPORT Performance 3 + Towing Hitch","msrp":95943,"leasePayment":1517,"leaseRate":6.7,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"UX","model":"UX 300h","suffix":"Premium","msrp":48442,"leasePayment":703,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"UX","model":"UX 300h","suffix":"F SPORT  Design","msrp":49512,"leasePayment":726,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"UX","model":"UX 300h","suffix":"Luxury","msrp":53906,"leasePayment":797,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"UX","model":"UX 300h","suffix":"FSPORT 2","msrp":56181,"leasePayment":849,"leaseRate":5.5,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"ES","model":"ES 350h AWD","suffix":"Signature","msrp":63297,"leasePayment":980,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"ES","model":"ES 350h AWD","suffix":"Premium","msrp":65987,"leasePayment":1020,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"ES","model":"ES 350h AWD","suffix":"Premium+","msrp":69957,"leasePayment":1092,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"ES","model":"ES 350e FWD","suffix":"Signature","msrp":65915,"leasePayment":1042,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"ES","model":"ES 350e FWD","suffix":"Premium","msrp":67380,"leasePayment":1064,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"ES","model":"ES 350e FWD","suffix":"Luxury","msrp":74955,"leasePayment":1207,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"ES","model":"ES 350e FWD","suffix":"Luxury+","msrp":77330,"leasePayment":1259,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"ES","model":"ES 350e FWD","suffix":"Executive VIP","msrp":81360,"leasePayment":1337,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"ES","model":"ES 500e AWD","suffix":"Signature","msrp":68915,"leasePayment":1076,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"ES","model":"ES 500e AWD","suffix":"Premium","msrp":70380,"leasePayment":1098,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"ES","model":"ES 500e AWD","suffix":"Luxury","msrp":77955,"leasePayment":1241,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"ES","model":"ES 500e AWD","suffix":"Luxury+","msrp":80525,"leasePayment":1295,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"IS","model":"IS 350 AWD","suffix":"F SPORT DESIGN","msrp":60252,"leasePayment":905,"leaseRate":6.8,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"IS","model":"IS 350 AWD","suffix":"F SPORT 2","msrp":62345,"leasePayment":998,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"IS","model":"IS 350 AWD","suffix":"F SPORT 3","msrp":67445,"leasePayment":1101,"leaseRate":5.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"IS","model":"IS 350 AWD","suffix":"SPECIAL APPEARANCE PACKAGE","msrp":72964,"leasePayment":1127,"leaseRate":6.8,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"LS","model":"LS 500 AWD","suffix":"Heritage Edition","msrp":136236,"leasePayment":2322,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"LC","model":"LC 500","suffix":"Standard Package","msrp":125892,"leasePayment":2053,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":true},{"year":"2026","series":"LC","model":"LC 500","suffix":"Performance Package","msrp":141258,"leasePayment":2364,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":false},{"year":"2026","series":"LC","model":"LC Convertible","suffix":"Standard Package","msrp":146136,"leasePayment":2449,"leaseRate":6.9,"leaseTerm":48,"leaseKm":16000,"base":true}];
 
-/* ---------- storage ---------- */
+/* ---------- storage (optionally passcode-encrypted at rest) ---------- */
 const KEY = 'vincere_crm_v1';
-let DB = null;
-function save() { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) { toast('⚠ Could not save (storage blocked). See README to run via local server.'); } }
-function load() { try { DB = JSON.parse(localStorage.getItem(KEY)); } catch (e) { DB = null; } if (!DB || !DB.clients) seed(); }
+let DB = null, CKEY = null, CSALT = null, _persisting = false, _dirty = false;
+function cryptoOK() { return !!(window.crypto && window.crypto.subtle); }
+function _b64(buf) { var b = new Uint8Array(buf), s = ''; for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s); }
+function _ub64(str) { var bin = atob(str), a = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
+async function _deriveKey(pass, salt) { var km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']); return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: 120000, hash: 'SHA-256' }, km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']); }
+async function _encEnvelope() { var iv = crypto.getRandomValues(new Uint8Array(12)); var ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, CKEY, new TextEncoder().encode(JSON.stringify(DB))); return JSON.stringify({ enc: 1, salt: _b64(CSALT), iv: _b64(iv), ct: _b64(ct) }); }
+async function _decEnvelope(key, env) { var pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: _ub64(env.iv) }, key, _ub64(env.ct)); return JSON.parse(new TextDecoder().decode(pt)); }
+function save() { schedulePersist(); }
+function schedulePersist() { if (_persisting) { _dirty = true; return; } _persisting = true; persist().then(function () { _persisting = false; if (_dirty) { _dirty = false; schedulePersist(); } }); }
+async function persist() { try { if (CKEY) localStorage.setItem(KEY, await _encEnvelope()); else localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) { toast('⚠ Could not save (storage blocked).'); } }
+async function loadDB() {
+  var raw = localStorage.getItem(KEY);
+  if (!raw) { seed(); return; }
+  var env = null; try { env = JSON.parse(raw); } catch (e) {}
+  if (env && env.enc) {
+    if (!cryptoOK()) { alert('This data is passcode-encrypted, but this browser blocks encryption on file://. Open via the local-server method in the README.'); DB = { clients: [], activities: [], vehicles: [], pricing: PRICING.map(function (p) { return Object.assign({}, p); }), tasks: [], config: defaultConfig(), meta: {} }; return; }
+    while (true) {
+      var pass = prompt('🔒 Enter your CRM passcode:');
+      if (pass == null) { if (confirm('Without the passcode the CRM cannot open. Try again?')) continue; DB = { clients: [], activities: [], vehicles: [], pricing: [], tasks: [], config: defaultConfig(), meta: {} }; return; }
+      try { var salt = _ub64(env.salt); var k = await _deriveKey(pass, salt); var d = await _decEnvelope(k, env); DB = d; CKEY = k; CSALT = salt; ensureData(); return; }
+      catch (e) { alert('Wrong passcode — try again.'); }
+    }
+  } else { try { DB = JSON.parse(raw); } catch (e) { DB = null; } if (!DB || !DB.clients) seed(); else ensureData(); }
+}
+async function setPasscode() { if (!cryptoOK()) { toast('Encryption needs a secure context — use the local-server method.'); return; } var p = prompt('Set a passcode. Youll need it every time you open the CRM. There is NO recovery — keep a backup.'); if (!p) return; var p2 = prompt('Re-enter passcode:'); if (p !== p2) { toast('Passcodes did not match'); return; } CSALT = crypto.getRandomValues(new Uint8Array(16)); CKEY = await _deriveKey(p, CSALT); await persist(); toast('🔒 Passcode set — data encrypted'); route(); }
+async function removePasscode() { if (!CKEY) { toast('No passcode set'); return; } if (!confirm('Remove passcode and store data unencrypted on this device?')) return; CKEY = null; CSALT = null; await persist(); toast('Passcode removed'); route(); }
 
 /* ---------- utils ---------- */
 const uid = (p) => (p || 'id') + '_' + Math.random().toString(36).slice(2, 9);
@@ -273,10 +210,12 @@ function download(name, text, type) {
 }
 
 /* ---------- config ---------- */
+function ensureData() { if (!DB.config) DB.config = defaultConfig(); if (!DB.pricing || !DB.pricing.length) DB.pricing = PRICING.map(function (p) { return Object.assign({}, p); }); }
 function defaultConfig() {
   return {
     repostDays: 10, newMake: 'Lexus',
     usedUnavail: 'sold|pend|deposit|hold|wholesale|deliver|apprais|service',
+    taxRate: 13, defaultApr: 6.99, defaultTerm: 60, defaultDown: 0, fees: 0,
     seriesRank: { UX: 1, IS: 2, NX: 3, ES: 4, RZ: 4, RC: 5, RX: 6, GX: 7, LC: 8, LS: 9, LX: 10 }
   };
 }
@@ -289,7 +228,7 @@ function loadPricingFromCSV(text) {
 }
 function seed() {
   DB = { clients: [], activities: [], vehicles: [], pricing: [], tasks: [], config: defaultConfig(), meta: { createdAt: Date.now(), lastBackupAt: 0 } };
-  DB.pricing = loadPricingFromCSV(PRICING_CSV);
+  DB.pricing = PRICING.map(function(p){return Object.assign({},p);});
   sampleData();
   save();
 }
@@ -320,10 +259,40 @@ function sampleData() {
 /* ---------- domain logic ---------- */
 function client(id) { return DB.clients.find(c => c.id === id); }
 function vehicle(id) { return DB.vehicles.find(v => v.id === id); }
-function pricingLookup(year, series, model, suffix) {
-  const row = DB.pricing.find(p => norm(p.year) === norm(year) && norm(p.series) === norm(series) && norm(p.model) === norm(model) && norm(p.suffix) === norm(suffix));
-  return row ? row.msrp : null;
+function _nser(x){ var t=(norm(x).split(' ')[0]||''); return (t.length===3 && 'hep'.indexOf(t[2])>=0)? t.slice(0,2): t; }
+function _core(x){ return norm(x).replace(/\b(awd|fwd|4wd|rwd)\b/g,'').replace(/[^a-z0-9]/g,''); }
+function _nsuf(x){ return norm(x).replace(/\s*-\s*premium (paint|colour)/g,'').replace(/ package/g,'').trim(); }
+function _tscore(a,b){ a=_nsuf(a); b=_nsuf(b); if(a===b) return 100; if(a&&b&&(a.indexOf(b)>=0||b.indexOf(a)>=0)) return 85; var ta=a.split(' '),tb=b.split(' '),set={},i=0,u={}; ta.forEach(function(x){set[x]=1;u[x]=1;}); tb.forEach(function(x){ if(set[x])i++; u[x]=1;}); var un=Object.keys(u).length; return un? Math.round(70*i/un):0; }
+function pricingRow(year, series, model, suffix){
+  var g=DB.pricing.filter(function(p){ return _nser(p.series)===_nser(series) && _core(p.model)===_core(model); });
+  if(!g.length) g=DB.pricing.filter(function(p){ return _nser(p.series)===_nser(series) && (_core(p.model).indexOf(_core(model))>=0 || _core(model).indexOf(_core(p.model))>=0); });
+  if(!g.length) return null;
+  var best=g[0], bs=-1; g.forEach(function(p){ var sc=_tscore(suffix,p.suffix); if(sc>bs){ bs=sc; best=p; } });
+  if(bs<40){ var base=g.filter(function(p){return p.base;}); return base[0]|| g.reduce(function(a,b){return (a.msrp||9e9)<(b.msrp||9e9)?a:b;}); }
+  return best;
 }
+function pricingLookup(year, series, model, suffix){ var r=pricingRow(year,series,model,suffix); return r? r.msrp : null; }
+function financeMonthly(principal, apr, term){ if(!principal||principal<=0||!term) return 0; var r=(apr||0)/100/12; return r? principal*r/(1-Math.pow(1+r,-term)) : principal/term; }
+function buildQuote(v, c, o){
+  o=o||{}; c=c||{};
+  var price=(o.price!=null&&o.price!=='')? num(o.price) : (v.kind==='New'? pricingLookup(v.year,v.series,v.model,v.suffix) : num(v.price));
+  if(price==null) return null;
+  var cfg=DB.config;
+  var pick=function(k,d){ return (o[k]!=null&&o[k]!=='')? num(o[k]) : (c[k]!=null&&c[k]!=='' ? num(c[k]) : d); };
+  var trade=pick('trade', num(c.tradeValue)||0)||0, lien=pick('lien', num(c.lienOwing)||0)||0;
+  var down=(o.down!=null&&o.down!=='')?num(o.down):(num(cfg.defaultDown)||0);
+  var apr=(o.apr!=null&&o.apr!=='')?num(o.apr):(num(cfg.defaultApr)||0);
+  var term=(o.term!=null&&o.term!=='')?num(o.term):(num(cfg.defaultTerm)||60);
+  var taxRate=((o.taxRate!=null&&o.taxRate!=='')?num(o.taxRate):(num(cfg.taxRate)||0))/100;
+  var fees=(o.fees!=null&&o.fees!=='')?num(o.fees):(num(cfg.fees)||0);
+  var taxable=Math.max(price+fees-trade,0), tax=taxable*taxRate;
+  var financed=Math.max(price+fees+tax-down-(trade-lien),0);
+  var finMo=financeMonthly(financed,apr,term);
+  var row=v.kind==='New'? pricingRow(v.year,v.series,v.model,v.suffix):null, leaseMo=null, lease=null;
+  if(row && row.leasePayment){ var cap=down+Math.max(trade-lien,0), mf=(row.leaseRate||0)/2400; leaseMo=Math.max(row.leasePayment-cap*(1/(row.leaseTerm||48)+mf),0); lease={term:row.leaseTerm,km:row.leaseKm,rate:row.leaseRate,base:row.leasePayment}; }
+  return {price:price,trade:trade,lien:lien,down:down,apr:apr,term:term,taxRate:taxRate*100,fees:fees,taxable:taxable,tax:tax,financed:financed,finMo:finMo,leaseMo:leaseMo,lease:lease};
+}
+function mo(n){ return (n==null)?'—':'$'+Math.round(n).toLocaleString('en-CA')+'/mo'; }
 function usedAvailable(v) { let re; try { re = new RegExp(DB.config.usedUnavail, 'i'); } catch (e) { re = /sold|pend/i; } return !re.test(String(v.status || '')); }
 function budgetFit(price, budget) {
   if (budget === '' || budget == null || isNaN(budget)) return { t: 'No budget set', cls: '' };
@@ -416,6 +385,7 @@ function followUps() {
 function pipelineCounts() { const m = {}; STAGES.forEach(s => m[s] = 0); DB.clients.forEach(c => { const s = c.stage || 'New Lead'; if (m[s] != null) m[s]++; }); return m; }
 
 /* ---------- router ---------- */
+const STAGES = ['New Lead', 'Contacted', 'Test Drive', 'Quoted', 'Negotiation', 'Won', 'Lost'];
 const NAV = [
   { k: 'dashboard', ico: '▦', lbl: 'Dashboard' },
   { k: 'clients', ico: '☺', lbl: 'Clients' },
@@ -502,6 +472,9 @@ function viewDashboard() {
     <div class="panel"><div class="hd">🔥 Hot clients with matches</div><div class="bd">
       ${hotMatch.length ? `<table><tbody>${hotMatch.map(x => { const m = x.ms[0]; return `<tr class="clk" data-go="#/client/${x.c.id}"><td><b>${esc(x.c.name)}</b></td><td>${x.ms.length} match${x.ms.length > 1 ? 'es' : ''}</td><td>${esc(vehLabel(m.v))} · <span class="${m.fit.cls}">${m.fit.t}</span></td></tr>`; }).join('')}</tbody></table>` : `<div class="empty">No hot clients with in-budget matches yet.</div>`}
     </div></div>
+    <div class="panel"><div class="hd">🔔 Build matches — in stock / incoming</div><div class="bd">
+      ${(function(){ var a = buildAlerts(); return a.length ? `<table><tbody>${a.map(function(z){ return `<tr class="clk" data-go="#/client/${z.c.id}"><td><b>${esc(z.c.name)}</b></td><td>${esc(vehLabel(z.x.v))} ${esc(z.x.v.color || '')}</td><td>${z.x.avail === 'In stock' ? '<span class="fit-in">In stock</span>' : '<span style="color:var(--warm)">' + esc(z.x.avail) + '</span>'}</td></tr>`; }).join('')}</tbody></table>` : `<div class="empty">No build-spec clients match current/incoming stock yet.</div>`; })()}
+    </div></div>
     <div class="panel"><div class="hd">✓ Tasks & 🔁 reposts due</div><div class="bd">
       ${(tasks.length || reposts.length) ? `<table><tbody>${tasks.map(t => `<tr><td>✓ ${esc(t.title)}${t.clientId ? ' · <a href="#/client/' + t.clientId + '">' + esc((client(t.clientId) || {}).name || '') + '</a>' : ''}</td><td style="color:var(--muted)">${esc(t.due || '')}</td></tr>`).join('')}${reposts.map(x => `<tr><td>🔁 Repost ${esc(x.v.ref)} · ${esc(vehLabel(x.v))}</td><td><button class="btn sm" data-post="${x.v.id}">Posted</button></td></tr>`).join('')}</tbody></table>` : `<div class="empty">Nothing due. 🎉</div>`}
     </div></div>
@@ -532,7 +505,7 @@ function viewClient(id) {
   return `<div class="row" style="align-items:center">
     <a href="#/clients" class="btn ghost sm">← Clients</a>
     <h1 style="margin:0 8px">${esc(c.name)}</h1> ${badge(c.status)} <span class="pill">${esc(c.stage || 'New Lead')}</span>
-    <button class="btn right" data-edit="${c.id}">Edit</button>
+    <span class="right"><button class="btn" data-build="${c.id}">🔧 Build a car</button> <button class="btn" data-edit="${c.id}">Edit</button></span>
   </div>
   <div class="detail" style="margin-top:14px">
     <div>
@@ -541,9 +514,11 @@ function viewClient(id) {
         ${field('Looking for', [c.year, c.series, c.model, c.color].filter(Boolean).join(' ') || '—')}
         ${field('Make (used)', c.make)}${field('Max Km', c.maxKm)}
         ${(c.ownYear || c.ownSeries) ? field('Currently drives', [c.ownYear, c.ownSeries, c.ownModel].filter(Boolean).join(' ')) : ''}
+        ${c.tradeValue ? field('Trade-in', money(c.tradeValue) + (c.lienOwing ? ' (lien ' + money(c.lienOwing) + ')' : '')) : ''}
         ${field('Last contact', c.lastContact ? fmtDate(c.lastContact) : '—')}
       </div></div>
       <div class="panel" style="margin-top:14px"><div class="hd">Notes</div><div class="bd">${esc(c.notes || '') || '<span style="color:var(--muted)">No notes.</span>'}</div></div>
+      ${(c.model || c.year || c.color || c.intColor || c.package || c.features) ? `<div class="panel" style="margin-top:14px"><div class="hd">🔧 Car build</div><div class="bd"><div>${esc([c.year, c.model].filter(Boolean).join(' '))}${c.color ? ' · ' + esc(c.color) : ''}${c.intColor ? ' / ' + esc(c.intColor) + ' int' : ''}${c.package ? ' · ' + esc(c.package) : ''}</div>${c.features ? `<div style="color:var(--muted);font-size:12px;margin-top:3px">${esc(c.features)}</div>` : ''}<div style="margin-top:6px">${(function(){ var r = rankBuild(c); var inh = r.filter(function(x){ return x.avail==='In stock'||x.avail==='Incoming'||x.avail==='Delivery'; }).length; return r.length ? `<b>${r.length}</b> close · <b>${inh}</b> in stock/incoming · <a href="#" data-build="${c.id}">open builder</a>` : 'No matches yet.'; })()}</div></div></div>` : ''}
       ${tasks.length ? `<div class="panel" style="margin-top:14px"><div class="hd">Tasks</div><div class="bd"><table><tbody>${tasks.map(t => `<tr><td>${t.done ? '✅' : '⬜'} ${esc(t.title)}</td><td style="color:var(--muted)">${esc(t.due || '')}</td><td><button class="btn sm" data-task-done="${t.id}">${t.done ? 'Reopen' : 'Done'}</button></td></tr>`).join('')}</tbody></table></div></div>` : ''}
     </div>
     <div>
@@ -564,8 +539,8 @@ function viewClient(id) {
         <div class="row" style="margin-bottom:8px"><select id="interestPick" style="flex:1;padding:8px;border:1px solid var(--line);border-radius:8px"><option value="">+ tag a vehicle they like…</option>${DB.vehicles.map(v => `<option value="${v.id}">${esc(vehLabel(v))} ${esc(v.color || '')} · ${esc(v.ref || v.vin || '')}</option>`).join('')}</select><button class="btn" id="interestAdd">Tag</button></div>
         ${iv.length ? `<table><tbody>${iv.map(v => `<tr><td><span class="pill">${v.kind}</span> ${esc(vehLabel(v))} ${esc(v.color || '')}</td><td>${esc(v.ref || v.vin || '')}</td><td>${money(v.kind === 'New' ? pricingLookup(v.year, v.series, v.model, v.suffix) : num(v.price))}</td><td><button class="btn ghost sm" data-untag="${v.id}">remove</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty">Nothing tagged yet — tag from suggestions below or the picker.</div>'}
       </div></div>
-      <div class="panel" style="margin-top:14px"><div class="hd">⇄ Vehicle suggestions (${ms.length})</div><div class="bd">
-        ${ms.length ? `<table><thead><tr><th>Type</th><th>Vehicle</th><th>Ref</th><th>Price</th><th>Fit</th><th></th></tr></thead><tbody>${ms.map(m => `<tr><td><span class="pill">${m.type}</span></td><td>${esc(vehLabel(m.v))} ${esc(m.v.color || '')}</td><td>${esc(m.v.ref || m.v.vin || '')}</td><td>${money(m.price)}</td><td><span class="${m.fit.cls}">${m.fit.t}</span></td><td><button class="btn ghost sm" data-tag="${m.v.id}">${(c.interested || []).indexOf(m.v.id) >= 0 ? '★ tagged' : '☆ tag'}</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty">No matching vehicles in stock.</div>'}
+      <div class="panel" style="margin-top:14px"><div class="hd">⇄ Vehicle suggestions + auto-quotes (${ms.length})</div><div class="bd">
+        ${ms.length ? `<table><thead><tr><th>Type</th><th>Vehicle</th><th>Price</th><th>Fit</th><th>Finance</th><th>Lease</th><th></th></tr></thead><tbody>${ms.map(m => { const q = buildQuote(m.v, c, {}); return `<tr><td><span class="pill">${m.type}</span></td><td>${esc(vehLabel(m.v))} ${esc(m.v.color || '')}<div style="color:var(--muted);font-size:12px">${esc(m.v.ref || m.v.vin || '')}</div></td><td>${money(m.price)}</td><td><span class="${m.fit.cls}">${m.fit.t}</span></td><td>${q ? mo(q.finMo) : '—'}</td><td>${q && q.leaseMo != null ? mo(q.leaseMo) : '—'}</td><td><button class="btn ghost sm" data-quote="${m.v.id}">Quote</button> <button class="btn ghost sm" data-tag="${m.v.id}">${(c.interested || []).indexOf(m.v.id) >= 0 ? '★' : '☆'}</button></td></tr>`; }).join('')}</tbody></table>` : '<div class="empty">No matching vehicles in stock.</div>'}
       </div></div>
     </div>
   </div>`;
@@ -585,10 +560,11 @@ function viewMatches() {
   let rows = [];
   DB.clients.forEach(c => matchesForClient(c).forEach(m => rows.push({ c, m })));
   rows.sort((a, b) => a.c.name.localeCompare(b.c.name));
+  const cap = 500, total = rows.length, shown = rows.slice(0, cap);
   return `<div class="row" style="align-items:center"><h1>Matches</h1><label class="right" style="color:var(--muted)"><input type="checkbox" id="inBudgetOnly"> in-budget only</label></div>
-  <p class="sub">${rows.length} client↔vehicle matches across your lineup</p>
+  <p class="sub">${total} client↔vehicle matches${total > cap ? ` · showing first ${cap} — fill in a client's wants to narrow` : ''}</p>
   <div class="panel"><div class="bd"><table id="matchTbl"><thead><tr><th>Client</th><th>Status</th><th>Type</th><th>Vehicle</th><th>Ref</th><th>Price</th><th>Fit</th></tr></thead><tbody>
-  ${rows.map(r => `<tr data-fit="${r.m.fit.cls}"><td class="clk" data-go="#/client/${r.c.id}"><b>${esc(r.c.name)}</b></td><td>${badge(r.c.status)}</td><td><span class="pill">${r.m.type}</span></td><td>${esc(vehLabel(r.m.v))} ${esc(r.m.v.color || '')}</td><td>${esc(r.m.v.ref || r.m.v.vin || '')}</td><td>${money(r.m.price)}</td><td><span class="${r.m.fit.cls}">${r.m.fit.t}</span></td></tr>`).join('') || '<tr><td colspan="7" class="empty">No matches yet.</td></tr>'}
+  ${shown.map(r => `<tr data-fit="${r.m.fit.cls}"><td class="clk" data-go="#/client/${r.c.id}"><b>${esc(r.c.name)}</b></td><td>${badge(r.c.status)}</td><td><span class="pill">${r.m.type}</span></td><td>${esc(vehLabel(r.m.v))} ${esc(r.m.v.color || '')}</td><td>${esc(r.m.v.ref || r.m.v.vin || '')}</td><td>${money(r.m.price)}</td><td><span class="${r.m.fit.cls}">${r.m.fit.t}</span></td></tr>`).join('') || '<tr><td colspan="7" class="empty">No matches yet.</td></tr>'}
   </tbody></table></div></div>`;
 }
 
@@ -596,9 +572,10 @@ function viewUpsell() {
   let rows = [];
   DB.clients.forEach(c => upsellForClient(c).forEach(u => rows.push({ c, u })));
   rows.sort((a, b) => (b.u.price || 0) - (a.u.price || 0));
-  return `<h1>Upsell</h1><p class="sub">Existing customers → newer / higher-series vehicles in stock. Set a client's <b>“Currently drives”</b> (year + series) to surface upgrades.</p>
-  <div class="panel"><div class="bd"><table><thead><tr><th>Customer</th><th>Currently drives</th><th>Suggested</th><th>Type</th><th>Price</th><th>Ref</th></tr></thead><tbody>
-  ${rows.map(r => `<tr><td class="clk" data-go="#/client/${r.c.id}"><b>${esc(r.c.name)}</b></td><td style="color:var(--muted)">${esc([r.c.ownYear, r.c.ownSeries, r.c.ownModel].filter(Boolean).join(' '))}</td><td>${esc(vehLabel(r.u.v))} ${esc(r.u.v.color || '')}</td><td><span class="pill">${r.u.type}</span></td><td>${money(r.u.price)}</td><td>${esc(r.u.v.ref || r.u.v.vin || '')}</td></tr>`).join('') || '<tr><td colspan="6" class="empty">No upsell opportunities. Add “Currently drives” to your Customer-status clients.</td></tr>'}
+  const cap = 500, total = rows.length, shown = rows.slice(0, cap);
+  return `<h1>Upsell</h1><p class="sub">${total} upgrade opportunities${total > cap ? ` · showing first ${cap}` : ''} — existing customers → newer / higher-series vehicles. Set a client's <b>“Currently drives”</b> to surface these.</p>
+  <div class="panel"><div class="bd"><table><thead><tr><th>Customer</th><th>Currently drives</th><th>Suggested</th><th>Type</th><th>Price</th><th>Finance</th><th></th></tr></thead><tbody>
+  ${shown.map(r => { const q = buildQuote(r.u.v, r.c, {}); return `<tr><td class="clk" data-go="#/client/${r.c.id}"><b>${esc(r.c.name)}</b></td><td style="color:var(--muted)">${esc([r.c.ownYear, r.c.ownSeries, r.c.ownModel].filter(Boolean).join(' '))}</td><td>${esc(vehLabel(r.u.v))} ${esc(r.u.v.color || '')}</td><td><span class="pill">${r.u.type}</span></td><td>${money(r.u.price)}</td><td>${q ? mo(q.finMo) : '—'}</td><td><button class="btn ghost sm" data-quote="${r.u.v.id}" data-qc="${r.c.id}">Quote</button></td></tr>`; }).join('') || '<tr><td colspan="7" class="empty">No upsell opportunities. Add “Currently drives” to your Customer-status clients.</td></tr>'}
   </tbody></table></div></div>`;
 }
 
@@ -670,7 +647,13 @@ function viewSettings() {
     <div class="field"><label>Default new make</label><input id="cfgMake" value="${esc(cfg.newMake)}"></div>
     <div class="field"><label>Used “unavailable” status keywords (regex)</label><input id="cfgUnavail" value="${esc(cfg.usedUnavail)}"></div>
     <div class="field"><label>Series ladder (JSON: higher = more premium)</label><input id="cfgRank" value='${esc(JSON.stringify(cfg.seriesRank))}'></div>
+    <div class="row"><div class="field" style="flex:1"><label>Tax %</label><input id="cfgTax" type="number" value="${cfg.taxRate}"></div><div class="field" style="flex:1"><label>Default APR %</label><input id="cfgApr" type="number" value="${cfg.defaultApr}"></div><div class="field" style="flex:1"><label>Default term (mo)</label><input id="cfgTerm" type="number" value="${cfg.defaultTerm}"></div><div class="field" style="flex:1"><label>Dealer fees $</label><input id="cfgFees" type="number" value="${cfg.fees || 0}"></div></div>
     <button class="btn primary" id="cfgSave">Save rules</button>
+  </div></div>
+  <div class="panel" style="margin-top:14px"><div class="hd">🔒 Security</div><div class="bd">
+    <p class="sub">${CKEY ? 'This device is <b>passcode-protected</b> — data is encrypted at rest (AES-GCM).' : 'No passcode set — data is stored unencrypted on this device.'}</p>
+    ${CKEY ? '<button class="btn" id="rmPass">Remove passcode</button>' : '<button class="btn primary" id="setPass">Set a passcode</button>'}
+    <div style="color:var(--muted);font-size:12px;margin-top:8px">Encrypts everything with your passcode. No recovery if forgotten — always keep a backup file.</div>
   </div></div>
   <div class="panel" style="margin-top:14px"><div class="hd">Data</div><div class="bd">
     <button class="btn" id="loadSample">Reload sample data</button>
@@ -696,8 +679,8 @@ function gather(root) { const o = {}; $$('[data-k]', root).forEach(e => o[e.data
 function clientForm(existing) {
   const c = existing || {};
   const body = `<div class="row"><div style="flex:1">${inp('name', 'Name', c.name)}${inp('phone', 'Phone', c.phone)}${inp('email', 'Email', c.email)}${sel('status', 'Status', c.status || 'Warm', ['Hot', 'Warm', 'Cold', 'Customer'])}${sel('stage', 'Pipeline stage', c.stage || 'New Lead', STAGES)}${inp('budget', 'Budget', c.budget, 'number')}</div>
-  <div style="flex:1"><div class="field"><label>Looking for (blank = any)</label></div>${inp('year', 'Year', c.year)}${inp('series', 'Series (e.g. RX)', c.series)}${inp('model', 'Model', c.model)}${inp('color', 'Color', c.color)}${inp('make', 'Make (used)', c.make)}${inp('maxKm', 'Max Km (used)', c.maxKm, 'number')}</div></div>
-  <hr style="border:0;border-top:1px solid var(--line);margin:6px 0"><div class="row"><div style="flex:1">${inp('ownYear', 'Currently drives — year', c.ownYear)}${inp('ownSeries', '— series', c.ownSeries)}</div><div style="flex:1">${inp('ownModel', '— model', c.ownModel)}</div></div>
+  <div style="flex:1"><div class="field"><label>Looking for (blank = any)</label></div>${inp('year', 'Year', c.year)}${inp('series', 'Series (e.g. RX)', c.series)}${inp('model', 'Model', c.model)}${inp('color', 'Exterior color', c.color)}${inp('intColor', 'Interior color', c.intColor)}${inp('package', 'Package / trim', c.package)}${inp('make', 'Make (used)', c.make)}${inp('maxKm', 'Max Km (used)', c.maxKm, 'number')}${inp('features', 'Must-have features', c.features)}</div></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:6px 0"><div class="row"><div style="flex:1">${inp('ownYear', 'Currently drives — year', c.ownYear)}${inp('ownSeries', '— series', c.ownSeries)}</div><div style="flex:1">${inp('ownModel', '— model', c.ownModel)}${inp('tradeValue', 'Trade-in value', c.tradeValue, 'number')}${inp('lienOwing', 'Lien owing', c.lienOwing, 'number')}</div></div>
   <div class="field"><label>Notes</label><textarea data-k="notes" rows="3">${esc(c.notes || '')}</textarea></div>`;
   modal(existing ? 'Edit client' : 'New client', body, () => {
     const root = $('#modalRoot'); const o = gather(root); o.notes = $('[data-k=notes]', root).value.trim();
@@ -736,6 +719,84 @@ function taskForm(clientId) {
   }, 'Add task');
 }
 
+function fld(id, label, val) { return '<div class="field" style="flex:1;min-width:88px"><label>' + esc(label) + '</label><input id="' + id + '" type="number" value="' + (val === '' || val == null ? '' : esc(val)) + '"></div>'; }
+function quoteModal(vid, cid) {
+  var v = vehicle(vid), c = cid ? client(cid) : null; if (!v) return;
+  var ids = ['q_price', 'q_apr', 'q_term', 'q_down', 'q_trade', 'q_lien', 'q_tax'];
+  function gatherO() { return { price: $('#q_price').value, apr: $('#q_apr').value, term: $('#q_term').value, down: $('#q_down').value, trade: $('#q_trade').value, lien: $('#q_lien').value, taxRate: $('#q_tax').value }; }
+  function render() {
+    var q = buildQuote(v, c, gatherO()), out = $('#q_out');
+    if (!q) { out.innerHTML = '<div class="empty">No price on file for this vehicle.</div>'; return; }
+    out.innerHTML = '<div class="row" style="gap:22px;margin:4px 0 8px">' +
+      '<div><div class="l">Finance</div><div style="font-size:24px;font-weight:700;color:var(--accent)">' + mo(q.finMo) + '</div><div style="color:var(--muted);font-size:12px">' + q.term + ' mo @ ' + q.apr + '% · tax in</div></div>' +
+      (q.leaseMo != null ? '<div><div class="l">Lease</div><div style="font-size:24px;font-weight:700">' + mo(q.leaseMo) + '</div><div style="color:var(--muted);font-size:12px">' + q.lease.term + ' mo · ' + (q.lease.km || 0).toLocaleString() + ' km/yr · +tax</div></div>' : '') +
+      '</div><table><tbody>' +
+      '<tr><td>Vehicle price</td><td>' + money(q.price) + '</td></tr>' +
+      '<tr><td>Trade-in − lien</td><td>' + money(q.trade) + ' − ' + money(q.lien) + '</td></tr>' +
+      '<tr><td>Taxable</td><td>' + money(q.taxable) + '</td></tr>' +
+      '<tr><td>Tax (' + q.taxRate + '%)</td><td>' + money(Math.round(q.tax)) + '</td></tr>' +
+      '<tr><td><b>Amount financed</b></td><td><b>' + money(Math.round(q.financed)) + '</b></td></tr></tbody></table>';
+  }
+  var cfg = DB.config, base = v.kind === 'New' ? pricingLookup(v.year, v.series, v.model, v.suffix) : num(v.price);
+  var body = '<div style="font-weight:600;margin-bottom:8px">' + esc(vehLabel(v)) + ' ' + esc(v.color || '') + (c ? ' — ' + esc(c.name) : '') + '</div>' +
+    '<div class="row">' + fld('q_price', 'Price', base || '') + fld('q_apr', 'APR %', cfg.defaultApr) + fld('q_term', 'Term (mo)', cfg.defaultTerm) + fld('q_down', 'Cash down', cfg.defaultDown || 0) +
+    fld('q_trade', 'Trade-in', (c && c.tradeValue) || 0) + fld('q_lien', 'Lien owing', (c && c.lienOwing) || 0) + fld('q_tax', 'Tax %', cfg.taxRate) + '</div><div id="q_out"></div>';
+  modal('Payment quote', body, function () {
+    if (c) { var q = buildQuote(v, c, gatherO()); addActivity(c.id, 'Note', 'Quote — ' + vehLabel(v) + ': ' + mo(q.finMo) + ' finance' + (q.leaseMo != null ? ' / ' + mo(q.leaseMo) + ' lease' : '')); toast('Quote saved to timeline'); }
+    return true;
+  }, c ? 'Save to timeline' : 'Close');
+  ids.forEach(function (id) { var e = $('#' + id); if (e) e.oninput = render; });
+  render();
+}
+
+function buildScore(c, v) {
+  var s = 0;
+  if (c.model && _core(v.model).indexOf(_core(c.model)) >= 0) s += 100;
+  else if (c.series && _nser(v.series || '') === _nser(c.series)) s += 50;
+  else if (c.series && _nser(v.make || '') === _nser(c.series)) s += 40;
+  if (c.year) { var dy = Math.abs((num(v.year) || 0) - (num(c.year) || 0)); if (dy === 0) s += 40; else if (dy === 1) s += 20; else if (dy === 2) s += 8; }
+  if (c.features) { var ft = norm(c.features).split(/[,;\/]+|\s+/).filter(Boolean); var hay = norm((v.comments || '') + ' ' + (v.suffix || '') + ' ' + (v.model || '') + ' ' + (v.color || '')); var h = 0; ft.forEach(function (t) { if (t.length > 1 && hay.indexOf(t) >= 0) h++; }); if (ft.length) s += Math.round(30 * h / ft.length); }
+  if (c.intColor && norm((v.color || '') + ' ' + (v.comments || '')).indexOf(norm(c.intColor)) >= 0) s += 20;
+  if (c.color && norm(v.color || '').indexOf(norm(c.color)) >= 0) s += 10;
+  return s;
+}
+function availTag(v) { if (v.kind === 'Used') return usedAvailable(v) ? 'In stock' : 'Sold'; return v.stage === 'Inventory' ? 'In stock' : (v.stage === 'Pipeline' ? 'Incoming' : (v.stage === 'Delivery' ? 'Delivery' : '')); }
+function rankBuild(c) {
+  if (!(c.model || c.series || c.year || c.color || c.intColor || c.features || c.package)) return [];
+  var arr = DB.vehicles.map(function (v) { return { v: v, score: buildScore(c, v), avail: availTag(v) }; }).filter(function (x) { return x.score > 0; });
+  var rk = { 'In stock': 0, 'Incoming': 1, 'Delivery': 2 };
+  arr.sort(function (a, b) { if (b.score !== a.score) return b.score - a.score; return (rk[a.avail] == null ? 9 : rk[a.avail]) - (rk[b.avail] == null ? 9 : rk[b.avail]); });
+  return arr;
+}
+function buildExact(x) { return x.score >= 100; }
+function buildAlerts() {
+  return DB.clients.map(function (c) { var r = rankBuild(c); for (var i = 0; i < r.length; i++) { if (buildExact(r[i]) && (r[i].avail === 'In stock' || r[i].avail === 'Incoming' || r[i].avail === 'Delivery')) return { c: c, x: r[i] }; } return null; }).filter(Boolean);
+}
+function uniqueModels() { var s = {}; DB.vehicles.forEach(function (v) { if (v.model) s[v.model] = 1; }); return Object.keys(s).sort(); }
+function uniqueTrims() { var s = {}; DB.pricing.forEach(function (p) { if (p.suffix) s[p.suffix] = 1; }); return Object.keys(s).sort(); }
+function seriesFromModel(m) { if (!m) return ''; var up = String(m).toUpperCase(); var L = ['RZ', 'RX', 'NX', 'UX', 'GX', 'LX', 'ES', 'IS', 'LS', 'LC', 'TX', 'RC']; for (var i = 0; i < L.length; i++) if (up.indexOf(L[i]) >= 0) return L[i]; return ''; }
+function bfld(id, label, val, list) { var dl = '', attr = ''; if (list) { dl = '<datalist id="' + id + '_l">' + list.map(function (x) { return '<option value="' + esc(x) + '">'; }).join('') + '</datalist>'; attr = ' list="' + id + '_l"'; } return '<div class="field" style="flex:1;min-width:130px"><label>' + esc(label) + '</label><input id="' + id + '"' + attr + ' value="' + (val == null ? '' : esc(val)) + '">' + dl + '</div>'; }
+function buildModal(cid) {
+  var c = client(cid); if (!c) return;
+  function spec() { return Object.assign({}, c, { model: $('#b_model').value.trim(), year: $('#b_year').value.trim(), color: $('#b_color').value.trim(), intColor: $('#b_intColor').value.trim(), package: $('#b_package').value.trim(), features: $('#b_features').value.trim(), series: seriesFromModel($('#b_model').value) || c.series || '' }); }
+  function render() {
+    var sp = spec(), r = rankBuild(sp).slice(0, 12), out = $('#b_out');
+    out.innerHTML = r.length ? '<table><thead><tr><th>Match</th><th>Vehicle</th><th>Avail</th><th>Finance</th><th></th></tr></thead><tbody>' + r.map(function (x) {
+      var q = buildQuote(x.v, c, {});
+      var av = x.avail === 'In stock' ? '<span class="fit-in">In stock</span>' : (x.avail ? '<span style="color:var(--warm)">' + esc(x.avail) + '</span>' : '—');
+      return '<tr><td>' + (buildExact(x) ? '<span class="badge2 b-cust">exact</span>' : '<span class="pill">' + x.score + '</span>') + '</td><td>' + esc(vehLabel(x.v)) + ' ' + esc(x.v.color || '') + '<div style="color:var(--muted);font-size:12px">' + esc(x.v.ref || x.v.vin || '') + '</div></td><td>' + av + '</td><td>' + (q ? mo(q.finMo) : '—') + '</td><td><button class="btn ghost sm" data-quote="' + x.v.id + '" data-qc="' + c.id + '">Quote</button> <button class="btn ghost sm" data-tag="' + x.v.id + '">' + ((c.interested || []).indexOf(x.v.id) >= 0 ? '★' : '☆') + '</button></td></tr>';
+    }).join('') + '</tbody></table>' : '<div class="empty">Fill the spec above to see closest in-stock & incoming matches.</div>';
+  }
+  var body = '<div class="row">' + bfld('b_model', 'Model', c.model, uniqueModels()) + bfld('b_year', 'Year', c.year) + bfld('b_color', 'Exterior color', c.color) + bfld('b_intColor', 'Interior color', c.intColor) + bfld('b_package', 'Package / trim', c.package, uniqueTrims()) + bfld('b_features', 'Must-have features', c.features) + '</div><div style="color:var(--muted);font-size:12px;margin:4px 0 8px">Ranked: model → year → features → interior → exterior, across in-stock + incoming. Exact = model matched.</div><div id="b_out"></div>';
+  modal('🔧 Car builder — ' + esc(c.name), body, function () {
+    ['model', 'year', 'color', 'intColor', 'package', 'features'].forEach(function (k) { c[k] = $('#b_' + k).value.trim(); });
+    c.series = seriesFromModel(c.model) || c.series;
+    save(); addActivity(c.id, 'Note', 'Car build saved: ' + [c.year, c.model, c.color, c.intColor, c.package, c.features].filter(Boolean).join(' / ')); toast('Build saved to profile'); route(); return true;
+  }, 'Save build to profile');
+  ['b_model', 'b_year', 'b_color', 'b_intColor', 'b_package', 'b_features'].forEach(function (id) { var e = $('#' + id); if (e) e.oninput = render; });
+  render();
+}
+
 /* ---------- import ---------- */
 function importCSV(kind, text) {
   const rows = parseCSV(text); if (rows.length < 2) { toast('Empty CSV'); return; }
@@ -754,7 +815,7 @@ function exportBackup() {
   toast('Backup downloaded — save it to Google Drive');
 }
 function restoreBackup(text) {
-  try { const d = JSON.parse(text); if (!d.clients) throw 0; DB = d; if (!DB.config) DB.config = defaultConfig(); if (!DB.meta) DB.meta = {}; save(); toast('Restored'); location.hash = '#/dashboard'; route(); }
+  try { const d = JSON.parse(text); if (!d.clients) throw 0; DB = d; if (!DB.meta) DB.meta = {}; ensureData(); save(); toast('Restored'); location.hash = '#/dashboard'; route(); }
   catch (e) { toast('That file is not a valid backup'); }
 }
 
@@ -762,6 +823,8 @@ function restoreBackup(text) {
 function bindView(view, arg) {
   $$('[data-go]').forEach(e => e.onclick = () => location.hash = e.dataset.go);
   $$('[data-veh]').forEach(e => e.onclick = () => vehicleForm(vehicle(e.dataset.veh)));
+  $$('[data-quote]').forEach(e => e.onclick = () => quoteModal(e.dataset.quote, e.dataset.qc || (view === 'client' ? arg : null)));
+  $$('[data-build]').forEach(e => e.onclick = (ev) => { if (ev && ev.preventDefault) ev.preventDefault(); buildModal(e.dataset.build); });
   $$('[data-act=backup]').forEach(e => e.onclick = exportBackup);
   $$('[data-add=client]').forEach(e => e.onclick = () => clientForm(null));
   $$('[data-add=vehicle]').forEach(e => e.onclick = () => vehicleForm(null));
@@ -794,17 +857,19 @@ function bindView(view, arg) {
       DB.config.repostDays = num($('#cfgRepost').value) || 10; DB.config.newMake = $('#cfgMake').value.trim();
       DB.config.usedUnavail = $('#cfgUnavail').value.trim();
       try { DB.config.seriesRank = JSON.parse($('#cfgRank').value); } catch (e) { toast('Series ladder must be valid JSON'); return; }
+      DB.config.taxRate = num($('#cfgTax').value) || 0; DB.config.defaultApr = num($('#cfgApr').value) || 0; DB.config.defaultTerm = num($('#cfgTerm').value) || 60; DB.config.fees = num($('#cfgFees').value) || 0;
       save(); toast('Rules saved'); route();
     });
+    $('#setPass') && ($('#setPass').onclick = setPasscode);
+    $('#rmPass') && ($('#rmPass').onclick = removePasscode);
     $('#loadSample') && ($('#loadSample').onclick = () => { if (confirm('Replace current data with sample data?')) { seed(); location.hash = '#/dashboard'; route(); } });
-    $('#clearAll') && ($('#clearAll').onclick = () => { if (confirm('Erase ALL data on this device? Make sure you have a backup.')) { DB = { clients: [], activities: [], vehicles: [], pricing: loadPricingFromCSV(PRICING_CSV), tasks: [], config: defaultConfig(), meta: { createdAt: Date.now(), lastBackupAt: 0 } }; save(); location.hash = '#/dashboard'; route(); } });
+    $('#clearAll') && ($('#clearAll').onclick = () => { if (confirm('Erase ALL data on this device? Make sure you have a backup.')) { DB = { clients: [], activities: [], vehicles: [], pricing: PRICING.map(function(p){return Object.assign({},p);}), tasks: [], config: defaultConfig(), meta: { createdAt: Date.now(), lastBackupAt: 0 } }; save(); location.hash = '#/dashboard'; route(); } });
   }
 }
 function readFile(e, cb) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => cb(r.result); r.readAsText(f); e.target.value = ''; }
 
 /* ---------- init ---------- */
-function init() {
-  load();
+async function init() {
   $('#globalSearch').onkeydown = e => { if (e.key === 'Enter' && e.target.value.trim()) location.hash = '#/search/' + encodeURIComponent(e.target.value.trim()); };
   $('#quickAddClient').onclick = () => clientForm(null);
   $('#quickBackup').onclick = exportBackup;
@@ -813,7 +878,8 @@ function init() {
   themeIcon();
   tt.onclick = () => { const nx = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', nx); try { localStorage.setItem('vincere_theme', nx); } catch (e) {} themeIcon(); };
   window.addEventListener('hashchange', route);
-  if (!location.hash) location.hash = '#/dashboard'; else route();
+  await loadDB();
+  if (!location.hash) location.hash = '#/dashboard';
   route();
 }
 init();
