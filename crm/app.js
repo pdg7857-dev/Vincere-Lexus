@@ -664,6 +664,10 @@ function init() {
   $('#globalSearch').onkeydown = e => { if (e.key === 'Enter' && e.target.value.trim()) location.hash = '#/search/' + encodeURIComponent(e.target.value.trim()); };
   $('#quickAddClient').onclick = () => clientForm(null);
   $('#quickBackup').onclick = exportBackup;
+  const tt = $('#themeToggle');
+  const themeIcon = () => { tt.textContent = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark' ? '☀️' : '🌙'; };
+  themeIcon();
+  tt.onclick = () => { const nx = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', nx); try { localStorage.setItem('vincere_theme', nx); } catch (e) {} themeIcon(); };
   window.addEventListener('hashchange', route);
   if (!location.hash) location.hash = '#/dashboard'; else route();
   route();
