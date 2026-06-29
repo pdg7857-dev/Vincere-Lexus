@@ -638,6 +638,7 @@ function viewSettings() {
     <select id="impType" style="padding:8px;border:1px solid var(--line);border-radius:8px">
       <option value="clients">Clients</option><option value="new">New vehicles (Inventory/Pipeline/Delivery)</option>
       <option value="used">Used vehicles</option><option value="pricing">Pricing (2026)</option>
+      <option value="form">Google Form leads</option>
     </select>
     <label class="btn">Choose CSV…<input type="file" id="impFile" accept=".csv" hidden></label>
     <div style="color:var(--muted);font-size:12px;margin-top:8px">Clients cols: Name,Phone,Email,Budget,Make,Year,Series,Model,Color,MaxKm,Status,Notes · New cols: Stage,Order#,VIN,Year,Series,Model,Suffix,Color,Status,ETA From,ETA To,Customer · Used cols: In-Stock,Stk#,Year,Make,Model,Colour,Km,Retail,Status</div>
@@ -799,6 +800,7 @@ function buildModal(cid) {
 
 /* ---------- import ---------- */
 function importCSV(kind, text) {
+  if (kind === 'form') { importFormResponses(text); return; }
   const rows = parseCSV(text); if (rows.length < 2) { toast('Empty CSV'); return; }
   const body = rows.slice(1); let n = 0;
   if (kind === 'clients') body.forEach(r => { if (!r[0]) return; DB.clients.push({ id: uid('c'), name: r[0], phone: r[1] || '', email: r[2] || '', budget: num(r[3]) ?? '', make: r[4] || '', year: r[5] || '', series: r[6] || '', model: r[7] || '', color: r[8] || '', maxKm: num(r[9]) ?? '', status: r[10] || 'Warm', notes: r[11] || '', ownYear: '', ownSeries: '', ownModel: '', stage: 'New Lead', interested: [], createdAt: Date.now(), lastContact: Date.now() }); n++; });
@@ -806,6 +808,32 @@ function importCSV(kind, text) {
   else if (kind === 'used') body.forEach(r => { if (!r[1]) return; DB.vehicles.push({ id: uid('v'), kind: 'Used', stage: '', inStock: r[0] || '', ref: r[1] || '', year: r[2] || '', make: r[3] || '', model: r[4] || '', color: r[5] || '', km: num(r[6]) ?? '', price: num(r[7]) ?? '', status: r[8] || 'Available', comments: r[9] || '', lastPostedAt: 0 }); n++; });
   else if (kind === 'pricing') { DB.pricing = loadPricingFromCSV(text); n = DB.pricing.length; }
   save(); toast(n + ' rows imported'); route();
+}
+
+function importFormResponses(text) {
+  var rows = parseCSV(text); if (rows.length < 2) { toast('Empty form CSV'); return; }
+  var hdr = rows[0].map(function (h) { return norm(h); });
+  function col() { var names = [].slice.call(arguments); for (var i = 0; i < hdr.length; i++) for (var j = 0; j < names.length; j++) if (hdr[i].indexOf(names[j]) >= 0) return i; return -1; }
+  var ix = { ts: col('timestamp'), name: col('client name', 'name'), phone: col('phone'), email: col('email'), status: col('interest', 'level', 'status'), buying: col('buying'), budget: col('budget'), make: col('make'), year: col('year'), series: col('series'), model: col('model'), color: col('exterior'), intColor: col('interior'), pkg: col('package', 'trim'), features: col('feature', 'must-have'), drives: col('currently drive', 'trade', 'currently own'), notes: col('notes', 'comment') };
+  DB.meta.formSeen = DB.meta.formSeen || {};
+  var add = 0, skip = 0;
+  for (var r = 1; r < rows.length; r++) {
+    var row = rows[r], get = function (i) { return (i >= 0 && i < row.length) ? String(row[i] == null ? '' : row[i]).trim() : ''; };
+    var name = get(ix.name); if (!name) continue;
+    var key = get(ix.ts) || (norm(name) + '|' + get(ix.phone));
+    if (DB.meta.formSeen[key]) { skip++; continue; }
+    var lvl = norm(get(ix.status));
+    var status = lvl.indexOf('hot') >= 0 ? 'Hot' : lvl.indexOf('warm') >= 0 ? 'Warm' : lvl.indexOf('cold') >= 0 ? 'Cold' : lvl.indexOf('custom') >= 0 ? 'Customer' : 'Warm';
+    var drives = get(ix.drives);
+    DB.clients.push({ id: uid('c'), name: name, phone: get(ix.phone), email: get(ix.email), status: status, stage: 'New Lead',
+      budget: num(get(ix.budget)) || '', make: get(ix.make), year: get(ix.year), series: get(ix.series), model: get(ix.model),
+      color: get(ix.color), intColor: get(ix.intColor), package: get(ix.pkg), features: get(ix.features), maxKm: '',
+      ownYear: '', ownSeries: seriesFromModel(drives), ownModel: drives, tradeValue: '', lienOwing: '',
+      notes: [get(ix.notes), get(ix.buying) ? ('Buying: ' + get(ix.buying)) : '', '(via Google Form)'].filter(Boolean).join(' | '),
+      interested: [], createdAt: Date.now(), lastContact: Date.now() });
+    DB.meta.formSeen[key] = 1; add++;
+  }
+  save(); toast(add + ' new lead' + (add === 1 ? '' : 's') + ' imported' + (skip ? ' · ' + skip + ' already in' : '')); route();
 }
 
 /* ---------- backup ---------- */
