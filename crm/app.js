@@ -244,23 +244,22 @@ function followUps() {
     return overdue || stale;
   }).sort((a, b) => (a.lastContact || 0) - (b.lastContact || 0));
 }
-function pipelineCounts() { const m = {}; STAGES.forEach(s => m[s] = 0); DB.clients.forEach(c => { const s = c.stage || 'New Lead'; if (m[s] != null) m[s]++; }); return m; }
+function pipelineCounts() { const m = {}; STAGES.forEach(s => m[s] = 0); DB.clients.forEach(c => { if (c.pool) return; const s = c.stage || 'New Lead'; if (m[s] != null) m[s]++; }); return m; }
 
 /* ---------- router ---------- */
-const STAGES = ['New Lead', 'Contacted', 'Test Drive', 'Quoted', 'Negotiation', 'Won', 'Lost'];
+const STAGES = ['New Lead', 'Walk in', 'Contacted', 'Searching', 'Test Drive', 'Quoted', 'Negotiation', 'Won', 'Lost'];
 const NAV = [
   { k: 'dashboard', ico: '▦', lbl: 'Dashboard' },
   { k: 'clients', ico: '☺', lbl: 'Clients' },
   { k: 'pipeline', ico: '⇉', lbl: 'Pipeline' },
   { k: 'inventory', ico: '▤', lbl: 'Inventory' },
   { k: 'matches', ico: '⇄', lbl: 'Matches' },
-  { k: 'upsell', ico: '↑', lbl: 'Upsell' },
   { k: 'upgrades', ico: '💎', lbl: 'Upgrades' },
   { k: 'tasks', ico: '✓', lbl: 'Tasks' },
   { k: 'settings', ico: '⚙', lbl: 'Settings' }
 ];
 function renderNav(active) {
-  const due = openTasksDue().length + DB.vehicles.filter(v => { const r = repostDue(v); return r && r.over; }).length;
+  const due = openTasksDue().length;
   $('#nav').innerHTML = NAV.map(n => {
     const b = n.k === 'tasks' && due ? `<span class="badge">${due}</span>` : '';
     return `<a href="#/${n.k}" class="${active === n.k ? 'active' : ''}"><span class="ico">${n.ico}</span><span class="lbl">${n.lbl}</span>${b}</a>`;
@@ -285,7 +284,6 @@ function route() {
   else if (view === 'pipeline') html += viewPipeline();
   else if (view === 'inventory') html += viewInventory(h[1]);
   else if (view === 'matches') html += viewMatches();
-  else if (view === 'upsell') html += viewUpsell();
   else if (view === 'upgrades') html += viewUpgrades();
   else if (view === 'tasks') html += viewTasks();
   else if (view === 'settings') html += viewSettings();
@@ -308,7 +306,7 @@ function viewDashboard() {
   const fups = followUps();
   const trims = stockByTrim();
   const pc = pipelineCounts();
-  const hotMatch = DB.clients.filter(c => norm(c.status) === 'hot').map(c => ({ c, ms: matchesForClient(c).filter(m => m.fit.cls === 'fit-in' || m.fit.t === 'No budget set') })).filter(x => x.ms.length);
+  const hotMatch = DB.clients.filter(c => norm(c.status) === 'hot' && c.build).map(c => ({ c, ms: buildResults(c.build).rows })).filter(x => x.ms.length);
   const reposts = DB.vehicles.map(v => ({ v, r: repostDue(v) })).filter(x => x.r && x.r.over);
   const tasks = openTasksDue();
 
@@ -334,7 +332,7 @@ function viewDashboard() {
       ${trims.length ? `<table><thead><tr><th>Series / Model / Trim</th><th>Inv</th><th>Pipe</th><th>Del</th><th>Total</th></tr></thead><tbody>${trims.map(t => `<tr><td>${esc(t.trim)}</td><td>${t.Inventory || ''}</td><td>${t.Pipeline || ''}</td><td>${t.Delivery || ''}</td><td><b>${t.count}</b></td></tr>`).join('')}<tr style="border-top:2px solid var(--line)"><td><b>Total</b></td><td><b>${newC.Inventory}</b></td><td><b>${newC.Pipeline}</b></td><td><b>${newC.Delivery}</b></td><td><b>${nv.length}</b></td></tr></tbody></table>` : `<div class="empty">No new vehicles — add them in Inventory.</div>`}
     </div></div>
     <div class="panel"><div class="hd">🔥 Hot clients with matches</div><div class="bd">
-      ${hotMatch.length ? `<table><tbody>${hotMatch.map(x => { const m = x.ms[0]; return `<tr class="clk" data-go="#/client/${x.c.id}"><td><b>${esc(x.c.name)}</b></td><td>${x.ms.length} match${x.ms.length > 1 ? 'es' : ''}</td><td>${esc(vehLabel(m.v))} · <span class="${m.fit.cls}">${m.fit.t}</span></td></tr>`; }).join('')}</tbody></table>` : `<div class="empty">No hot clients with in-budget matches yet.</div>`}
+      ${hotMatch.length ? `<table><tbody>${hotMatch.map(x => { const m = x.ms[0]; const fit = budgetFit(vehPrice(m), x.c.budget); return `<tr class="clk" data-go="#/client/${x.c.id}"><td><b>${esc(x.c.name)}</b></td><td>${x.ms.length} match${x.ms.length > 1 ? 'es' : ''}</td><td>${esc(vehLabel(m))} · <span class="${fit.cls}">${fit.t}</span></td></tr>`; }).join('')}</tbody></table>` : `<div class="empty">No tagged hot clients with matches yet.</div>`}
     </div></div>
     <div class="panel"><div class="hd">🔔 Saved-search matches — in stock / incoming</div><div class="bd">
       ${(function(){ var a = buildAlerts(); return a.length ? `<table><tbody>${a.map(function(z){ return `<tr class="clk" data-go="#/client/${z.c.id}"><td><b>${esc(z.c.name)}</b></td><td>${esc(vehLabel(z.v))} ${esc(z.v.color || '')}</td><td>${availTag(z.v) === 'In stock' ? '<span class="fit-in">In stock</span>' : '<span style="color:var(--warm)">' + esc(availTag(z.v)) + '</span>'}</td></tr>`; }).join('')}</tbody></table>` : `<div class="empty">No saved-search clients match current/incoming stock yet.</div>`; })()}
@@ -433,13 +431,13 @@ function viewInventory(sub) {
 
 function viewMatches() {
   let rows = [];
-  DB.clients.forEach(c => matchesForClient(c).forEach(m => rows.push({ c, m })));
+  DB.clients.forEach(c => { if (!c.build) return; buildResults(c.build).rows.forEach(v => rows.push({ c, v })); });
   rows.sort((a, b) => a.c.name.localeCompare(b.c.name));
-  const cap = 500, total = rows.length, shown = rows.slice(0, cap);
+  const cap = 500, total = rows.length, shown = rows.slice(0, cap), tagged = DB.clients.filter(c => c.build).length;
   return `<div class="row" style="align-items:center"><h1>Matches</h1><label class="right" style="color:var(--muted)"><input type="checkbox" id="inBudgetOnly"> in-budget only</label></div>
-  <p class="sub">${total} client↔vehicle matches${total > cap ? ` · showing first ${cap} — fill in a client's wants to narrow` : ''}</p>
+  <p class="sub">${total} matches across ${tagged} tagged client${tagged === 1 ? '' : 's'}${total > cap ? ` · showing first ${cap}` : ''}</p>
   <div class="panel"><div class="bd"><table id="matchTbl"><thead><tr><th>Client</th><th>Status</th><th>Type</th><th>Vehicle</th><th>Ref</th><th>Price</th><th>Fit</th></tr></thead><tbody>
-  ${shown.map(r => `<tr data-fit="${r.m.fit.cls}"><td class="clk" data-go="#/client/${r.c.id}"><b>${esc(r.c.name)}</b></td><td>${badge(r.c.status)}</td><td><span class="pill">${r.m.type}</span></td><td>${esc(vehLabel(r.m.v))} ${esc(r.m.v.color || '')}</td><td>${esc(r.m.v.ref || r.m.v.vin || '')}</td><td>${money(r.m.price)}</td><td><span class="${r.m.fit.cls}">${r.m.fit.t}</span></td></tr>`).join('') || '<tr><td colspan="7" class="empty">No matches yet.</td></tr>'}
+  ${shown.map(r => { const fit = budgetFit(vehPrice(r.v), r.c.budget); return `<tr data-fit="${fit.cls}"><td class="clk" data-go="#/client/${r.c.id}"><b>${esc(r.c.name)}</b></td><td>${badge(r.c.status)}</td><td><span class="pill">${r.v.kind}</span></td><td>${esc(vehLabel(r.v))} ${esc(r.v.color || '')}</td><td>${esc(r.v.ref || r.v.vin || '')}</td><td>${money(vehPrice(r.v))}</td><td><span class="${fit.cls}">${fit.t}</span></td></tr>`; }).join('') || '<tr><td colspan="7" class="empty">No matches — tag clients with a saved search (🏷️ Tag / match) to populate this.</td></tr>'}
   </tbody></table></div></div>`;
 }
 
@@ -459,7 +457,7 @@ function viewPipeline() {
   <p class="sub">Drag a card between stages (or use its dropdown). Each card shows interest tags + live match count. Tag vehicles on the client's page.</p>
   <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px">
   ${STAGES.map(stage => {
-    const list = DB.clients.filter(c => (c.stage || 'New Lead') === stage);
+    const list = DB.clients.filter(c => (c.stage || 'New Lead') === stage && !c.pool);
     return `<div class="kcol" data-stage="${esc(stage)}" style="min-width:228px;flex:1 0 228px">
       <div class="panel"><div class="hd">${esc(stage)}<span class="right pill">${list.length}</span></div>
       <div class="bd" style="min-height:80px">
