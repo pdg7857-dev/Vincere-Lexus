@@ -35,7 +35,12 @@ function createLeadForm() {
   form.addTextItem().setTitle('Interior colour');
   form.addTextItem().setTitle('Package / trim');
   form.addParagraphTextItem().setTitle('Must-have features');
-  form.addTextItem().setTitle('Currently drives (year make model)');   // for trade-in / upsell
+  form.addTextItem().setTitle('Current year');                         // current vehicle year (upsell)
+  form.addMultipleChoiceItem().setTitle('Current Lexus series')        // clean upsell ranking
+      .setChoiceValues(['UX', 'IS', 'NX', 'ES', 'RZ', 'RC', 'RX', 'GX', 'LC', 'LS', 'LX', 'Other / non-Lexus']);
+  form.addTextItem().setTitle('Current make and model');               // e.g. Lexus RX 350 / Honda CR-V
+  form.addTextItem().setTitle('Trade-in value (est. $)');              // enables auto-quotes
+  form.addTextItem().setTitle('Amount owing on trade / lien ($)');
   form.addParagraphTextItem().setTitle('Notes');
 
   var ss = SpreadsheetApp.create('Vincere — Lead Form responses');

@@ -814,7 +814,7 @@ function importFormResponses(text) {
   var rows = parseCSV(text); if (rows.length < 2) { toast('Empty form CSV'); return; }
   var hdr = rows[0].map(function (h) { return norm(h); });
   function col() { var names = [].slice.call(arguments); for (var i = 0; i < hdr.length; i++) for (var j = 0; j < names.length; j++) if (hdr[i].indexOf(names[j]) >= 0) return i; return -1; }
-  var ix = { ts: col('timestamp'), name: col('client name', 'name'), phone: col('phone'), email: col('email'), status: col('interest', 'level', 'status'), buying: col('buying'), budget: col('budget'), make: col('make'), year: col('year'), series: col('series'), model: col('model'), color: col('exterior'), intColor: col('interior'), pkg: col('package', 'trim'), features: col('feature', 'must-have'), drives: col('currently drive', 'trade', 'currently own'), notes: col('notes', 'comment') };
+  var ix = { ts: col('timestamp'), name: col('client name', 'name'), phone: col('phone'), email: col('email'), status: col('interest', 'level', 'status'), buying: col('buying'), budget: col('budget'), make: col('make'), year: col('year'), series: col('series'), model: col('model'), color: col('exterior'), intColor: col('interior'), pkg: col('package', 'trim'), features: col('feature', 'must-have'), ownYear: col('current year', 'currently drives'), ownSeries: col('current lexus series', 'current series'), ownModel: col('current make', 'current model', 'currently drive'), trade: col('trade-in value', 'trade in value', 'trade-in', 'trade'), lien: col('amount owing', 'owing on trade', '/ lien'), notes: col('notes', 'comment') };
   DB.meta.formSeen = DB.meta.formSeen || {};
   var add = 0, skip = 0;
   for (var r = 1; r < rows.length; r++) {
@@ -824,11 +824,11 @@ function importFormResponses(text) {
     if (DB.meta.formSeen[key]) { skip++; continue; }
     var lvl = norm(get(ix.status));
     var status = lvl.indexOf('hot') >= 0 ? 'Hot' : lvl.indexOf('warm') >= 0 ? 'Warm' : lvl.indexOf('cold') >= 0 ? 'Cold' : lvl.indexOf('custom') >= 0 ? 'Customer' : 'Warm';
-    var drives = get(ix.drives);
+    var ownModel = get(ix.ownModel), ownSeries = get(ix.ownSeries); if (norm(ownSeries).indexOf('other') >= 0 || !ownSeries) ownSeries = seriesFromModel(ownModel);
     DB.clients.push({ id: uid('c'), name: name, phone: get(ix.phone), email: get(ix.email), status: status, stage: 'New Lead',
       budget: num(get(ix.budget)) || '', make: get(ix.make), year: get(ix.year), series: get(ix.series), model: get(ix.model),
       color: get(ix.color), intColor: get(ix.intColor), package: get(ix.pkg), features: get(ix.features), maxKm: '',
-      ownYear: '', ownSeries: seriesFromModel(drives), ownModel: drives, tradeValue: '', lienOwing: '',
+      ownYear: num(get(ix.ownYear)) || '', ownSeries: ownSeries, ownModel: ownModel, tradeValue: num(get(ix.trade)) || '', lienOwing: num(get(ix.lien)) || '',
       notes: [get(ix.notes), get(ix.buying) ? ('Buying: ' + get(ix.buying)) : '', '(via Google Form)'].filter(Boolean).join(' | '),
       interested: [], createdAt: Date.now(), lastContact: Date.now() });
     DB.meta.formSeen[key] = 1; add++;
