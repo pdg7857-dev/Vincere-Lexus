@@ -719,43 +719,36 @@ function filterInventory(f) {
     return true;
   }).sort(function (a, b) { var rk = function (v) { var t = availTag(v); return t === 'In stock' ? 0 : t === 'Incoming' ? 1 : 2; }; return rk(a) - rk(b) || (Number(b.year) || 0) - (Number(a.year) || 0) || ((vehPrice(a) || 9e9) - (vehPrice(b) || 9e9)); });
 }
-function buildResults(f) {
-  var hard = filterInventory(f); if (hard.length) return { rows: hard, exact: true };
-  var soft = filterInventory({ kind: f.kind, make: f.make, model: f.model }); if (soft.length) return { rows: soft, exact: false };
-  return { rows: filterInventory({ kind: f.kind, make: f.make }), exact: false };
-}
+function buildResults(f) { return { rows: filterInventory(f), exact: true }; }
 function buildModal(cid) {
   var c = client(cid); if (!c) return; var f = getBuild(c);
-  var sel = { make: asArr(f.make), model: asArr(f.model), ext: asArr(f.extColor), int: asArr(f.intColor), pkg: asArr(f.pkg) };
-  var suggMap = { make: function () { return invMakes(); }, model: function () { return invModelsMulti(sel.make); }, ext: function () { return invExtColors(); }, int: function () { return invIntColors(); }, pkg: function () { return uniqueTrims(); } };
-  function optionsOf(arr) { return arr.map(function (x) { return '<option value="' + esc(x) + '">'; }).join(''); }
+  var sel = { kind: f.kind || '', make: asArr(f.make), model: asArr(f.model), ext: asArr(f.extColor), int: asArr(f.intColor), pkg: asArr(f.pkg), yearFrom: f.yearFrom || '', yearTo: f.yearTo || '', priceMax: f.priceMax || '', maxKm: f.maxKm || '' };
+  var FMAP = { make: 'make', model: 'model', ext: 'extColor', int: 'intColor', pkg: 'pkg' };
+  function gather() { return { kind: sel.kind, make: sel.make.slice(), model: sel.model.slice(), yearFrom: sel.yearFrom, yearTo: sel.yearTo, priceMax: sel.priceMax, maxKm: sel.maxKm, extColor: sel.ext.slice(), intColor: sel.int.slice(), pkg: sel.pkg.slice() }; }
+  function gatherExcept(field) { var g = gather(); g[FMAP[field]] = []; return g; }
+  function facet(field) { var vs = filterInventory(gatherExcept(field)); var o = {}; vs.forEach(function (v) { var val = field === 'make' ? (v.kind === 'New' ? 'Lexus' : (v.make || '')) : field === 'model' ? v.model : field === 'ext' ? vehColors(v).ext : field === 'int' ? vehColors(v).int : v.suffix; if (val && !o[norm(val)]) o[norm(val)] = val; }); asArr(sel[field]).forEach(function (x) { if (!o[norm(x)]) o[norm(x)] = x; }); return Object.keys(o).map(function (k) { return o[k]; }).sort(); }
   function yopts(val) { return '<option value="">Any</option>' + invYears().map(function (y) { return '<option ' + (String(y) === String(val) ? 'selected' : '') + '>' + y + '</option>'; }).join(''); }
-  function fieldHtml(field, label) { return '<div class="field" style="flex:1;min-width:175px"><label>' + label + '</label><div class="tokens" id="tk_' + field + '"></div><input id="in_' + field + '" list="dl_' + field + '" placeholder="type, e.g. lex…" autocomplete="off"><datalist id="dl_' + field + '"></datalist></div>'; }
-  function gather() { return { kind: $('#f_kind').value, make: sel.make.slice(), model: sel.model.slice(), yearFrom: $('#f_yf').value, yearTo: $('#f_yt').value, priceMax: $('#f_price').value, maxKm: $('#f_km').value, extColor: sel.ext.slice(), intColor: sel.int.slice(), pkg: sel.pkg.slice(), features: $('#f_feat').value }; }
-  function results() {
-    var R = buildResults(gather()), out = $('#f_out');
-    var head = R.exact ? (R.rows.length + ' matching — in stock / incoming') : (R.rows.length ? ('No exact match — closest ' + R.rows.length + ':') : 'Nothing close in inventory');
-    out.innerHTML = '<div style="margin:6px 0;font-weight:600;color:' + (R.exact ? 'var(--ok)' : 'var(--warm)') + '">' + head + '</div>' + (R.rows.length ? '<table><thead><tr><th>Vehicle</th><th>Avail</th><th>Price</th><th>Finance</th><th></th></tr></thead><tbody>' + R.rows.slice(0, 60).map(function (v) { var q = buildQuote(v, c, {}); var tg = (c.interested || []).indexOf(v.id) >= 0; var a = availTag(v); return '<tr><td>' + esc(vehLabel(v)) + ' ' + esc(v.color || '') + '<div style="color:var(--muted);font-size:12px">' + esc(v.ref || v.vin || '') + (v.kind === 'Used' && v.inStock ? ' · in stock ' + esc(inStockSince(v)) : '') + '</div></td><td>' + (a === 'In stock' ? '<span class="fit-in">In stock</span>' : (a ? '<span style="color:var(--warm)">' + esc(a) + '</span>' : '—')) + '</td><td>' + money(vehPrice(v)) + '</td><td>' + (q ? mo(q.finMo) : '—') + '</td><td><button class="btn ghost sm" data-q="' + v.id + '">Quote</button> <button class="btn ghost sm" data-tv="' + v.id + '">' + (tg ? '★ tagged' : '☆ tag') + '</button></td></tr>'; }).join('') + '</tbody></table>' : '');
-    $$('#f_out [data-q]').forEach(function (e) { e.onclick = function () { quoteModal(e.dataset.q, c.id); }; });
-    $$('#f_out [data-tv]').forEach(function (e) { e.onclick = function () { toggleInterest(c.id, e.dataset.tv); results(); }; });
+  function pillRow(field, label) { var opts = facet(field); if (!opts.length) return ''; var selv = asArr(sel[field]); return '<div class="fgroup"><label>' + label + (selv.length ? ' (' + selv.length + ' picked)' : '') + '</label><div class="pills">' + opts.map(function (o) { var on = selv.some(function (x) { return norm(x) === norm(o); }); return '<button class="pillbtn' + (on ? ' on' : '') + '" data-f="' + field + '" data-v="' + esc(o) + '">' + esc(o) + '</button>'; }).join('') + '</div></div>'; }
+  function rowHtml(v) { var q = buildQuote(v, c, {}); var tg = (c.interested || []).indexOf(v.id) >= 0; var a = availTag(v); return '<tr><td>' + esc(vehLabel(v)) + ' ' + esc(v.color || '') + '<div style="color:var(--muted);font-size:12px">' + esc(v.ref || v.vin || '') + (v.kind === 'Used' && v.inStock ? ' · in stock ' + esc(inStockSince(v)) : '') + '</div></td><td>' + (a === 'In stock' ? '<span class="fit-in">In stock</span>' : (a ? '<span style="color:var(--warm)">' + esc(a) + '</span>' : '—')) + '</td><td>' + money(vehPrice(v)) + '</td><td>' + (q ? mo(q.finMo) : '—') + '</td><td><button class="btn ghost sm" data-q="' + v.id + '">Quote</button> <button class="btn ghost sm" data-tv="' + v.id + '">' + (tg ? '★ tagged' : '☆ tag') + '</button></td></tr>'; }
+  function out() { var rows = filterInventory(gather()), o = $('#f_out'); o.innerHTML = '<div style="margin:8px 0;font-weight:600;color:' + (rows.length ? 'var(--ok)' : 'var(--muted)') + '">' + (rows.length ? rows.length + ' matching — in stock / incoming' : 'No matching vehicles in stock or incoming') + '</div>' + (rows.length ? '<table><thead><tr><th>Vehicle</th><th>Avail</th><th>Price</th><th>Finance</th><th></th></tr></thead><tbody>' + rows.slice(0, 80).map(rowHtml).join('') + '</tbody></table>' : ''); $$('#f_out [data-q]').forEach(function (e) { e.onclick = function () { quoteModal(e.dataset.q, c.id); }; }); $$('#f_out [data-tv]').forEach(function (e) { e.onclick = function () { toggleInterest(c.id, e.dataset.tv); render(); }; }); }
+  function render() {
+    var showCol = sel.make.length || sel.model.length;
+    $('#f_box').innerHTML =
+      '<div class="fgroup"><label>Type</label><div class="pills">' + ['Any', 'New', 'Used'].map(function (t) { var v = t === 'Any' ? '' : t; var on = (sel.kind || '') === v; return '<button class="pillbtn' + (on ? ' on' : '') + '" data-kind="' + v + '">' + t + '</button>'; }).join('') + '</div></div>'
+      + pillRow('make', 'Make') + pillRow('model', 'Model')
+      + (showCol ? pillRow('ext', 'Exterior colour') + pillRow('int', 'Interior colour') + pillRow('pkg', 'Trim') : '')
+      + '<div class="row"><div class="field" style="flex:1"><label>Year from</label><select id="f_yf">' + yopts(sel.yearFrom) + '</select></div><div class="field" style="flex:1"><label>Year to</label><select id="f_yt">' + yopts(sel.yearTo) + '</select></div><div class="field" style="flex:1"><label>Max price</label><input id="f_price" type="number" value="' + (sel.priceMax || '') + '"></div><div class="field" style="flex:1"><label>Max Km</label><input id="f_km" type="number" value="' + (sel.maxKm || '') + '"></div></div>'
+      + '<div id="f_out"></div>';
+    $$('#f_box [data-kind]').forEach(function (b) { b.onclick = function () { sel.kind = b.dataset.kind; render(); }; });
+    $$('#f_box [data-f]').forEach(function (b) { b.onclick = function () { var fl = b.dataset.f, v = b.dataset.v, arr = sel[fl], i = -1; for (var k = 0; k < arr.length; k++) if (norm(arr[k]) === norm(v)) i = k; if (i >= 0) arr.splice(i, 1); else arr.push(v); render(); }; });
+    $('#f_yf').onchange = function () { sel.yearFrom = this.value; render(); };
+    $('#f_yt').onchange = function () { sel.yearTo = this.value; render(); };
+    $('#f_price').oninput = function () { sel.priceMax = this.value; out(); };
+    $('#f_km').oninput = function () { sel.maxKm = this.value; out(); };
+    out();
   }
-  var body = '<div class="row">'
-    + '<div class="field" style="flex:1;min-width:100px"><label>Type</label><select id="f_kind"><option value="">Any</option><option ' + (f.kind === 'New' ? 'selected' : '') + '>New</option><option ' + (f.kind === 'Used' ? 'selected' : '') + '>Used</option></select></div>'
-    + fieldHtml('make', 'Make') + fieldHtml('model', 'Model')
-    + '<div class="field" style="flex:1;min-width:90px"><label>Year from</label><select id="f_yf">' + yopts(f.yearFrom) + '</select></div>'
-    + '<div class="field" style="flex:1;min-width:90px"><label>Year to</label><select id="f_yt">' + yopts(f.yearTo) + '</select></div>'
-    + '<div class="field" style="flex:1;min-width:100px"><label>Max price</label><input id="f_price" type="number" value="' + (f.priceMax || '') + '"></div>'
-    + '<div class="field" style="flex:1;min-width:90px"><label>Max Km</label><input id="f_km" type="number" value="' + (f.maxKm || '') + '"></div>'
-    + fieldHtml('ext', 'Exterior colour') + fieldHtml('int', 'Interior colour') + fieldHtml('pkg', 'Trim')
-    + '<div class="field" style="flex:2;min-width:160px"><label>Features</label><input id="f_feat" value="' + esc(f.features || '') + '"></div>'
-    + '</div><div style="color:var(--muted);font-size:12px;margin:4px 0">Type to search, pick a suggestion to add a chip — add as many makes / models / colours / trims as you like.</div><div id="f_out"></div>';
-  modal('🏷️ Tag / match — ' + esc(c.name), body, function () { c.build = gather(); save(); addActivity(c.id, 'Note', 'Tagged search: ' + [sel.make.join('/'), sel.model.join('/'), ((c.build.yearFrom || '') + (c.build.yearTo ? '-' + c.build.yearTo : '')), sel.ext.join('/'), sel.int.join('/'), sel.pkg.join('/')].filter(Boolean).join(' ')); toast('Tagged & saved to profile'); route(); return true; }, 'Save tag to profile');
-  function chips(field) { $('#tk_' + field).innerHTML = sel[field].map(function (v, i) { return '<span class="chip">' + esc(v) + ' <b data-rm="' + field + ':' + i + '">×</b></span>'; }).join(''); $$('#tk_' + field + ' [data-rm]').forEach(function (e) { e.onclick = function () { var pr = e.dataset.rm.split(':'); sel[pr[0]].splice(Number(pr[1]), 1); chips(pr[0]); results(); }; }); }
-  function dlist(field) { $('#dl_' + field).innerHTML = optionsOf(suggMap[field]()); }
-  function add(field, val) { val = (val || '').trim(); if (!val) return; var sug = suggMap[field](); var hit = sug.filter(function (x) { return norm(x) === norm(val); })[0] || sug.filter(function (x) { return norm(x).indexOf(norm(val)) === 0; })[0] || sug.filter(function (x) { return norm(x).indexOf(norm(val)) >= 0; })[0] || val; if (!sel[field].some(function (x) { return norm(x) === norm(hit); })) sel[field].push(hit); chips(field); if (field === 'make') dlist('model'); results(); }
-  ['make', 'model', 'ext', 'int', 'pkg'].forEach(function (field) { dlist(field); chips(field); var inp = $('#in_' + field); inp.onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); add(field, inp.value); inp.value = ''; } }; inp.onchange = function () { if (inp.value) { add(field, inp.value); inp.value = ''; } }; });
-  ['f_kind', 'f_yf', 'f_yt', 'f_price', 'f_km', 'f_feat'].forEach(function (id) { var e = $('#' + id); if (e) e.oninput = results; });
-  results();
+  modal('🏷️ Tag / match — ' + esc(c.name), '<div style="color:var(--muted);font-size:12px;margin-bottom:6px">Tap to pick. Add several models / colours / trims — results show only exact matches (nothing if none).</div><div id="f_box"></div>', function () { c.build = gather(); save(); addActivity(c.id, 'Note', 'Tagged search: ' + [sel.make.join('/'), sel.model.join('/'), ((sel.yearFrom || '') + (sel.yearTo ? '-' + sel.yearTo : '')), sel.ext.join('/'), sel.int.join('/'), sel.pkg.join('/')].filter(Boolean).join(' ')); toast('Tagged & saved to profile'); route(); return true; }, 'Save tag to profile');
+  render();
 }
 /* ---------- import ---------- */
 function importCSV(kind, text) {
