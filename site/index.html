@@ -212,10 +212,8 @@
         <p class="contact__sub" data-reveal>Based in Toronto. Leave your details and let's get you into the right car.</p>
       </div>
       <form class="form" data-form>
-        <!-- Web3Forms: paste your access key below (get one free at web3forms.com using pdg7857@gmail.com). -->
-        <input type="hidden" name="access_key" value="REPLACE_WITH_WEB3FORMS_ACCESS_KEY" />
-        <input type="hidden" name="subject" value="New car brief from phildave.com" />
-        <input type="hidden" name="from_name" value="phildave.com" />
+        <!-- Submissions POST to a Google Apps Script that appends to your Sheet.
+             Set the script URL in app.js (initForm: SCRIPT_URL). -->
         <input type="checkbox" name="botcheck" class="form__hp" tabindex="-1" autocomplete="off" />
         <div class="form__row">
           <label class="field"><span>Full name or business *</span><input type="text" name="name" required placeholder="Jane Doe" /></label>

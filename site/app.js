@@ -163,8 +163,11 @@
     }
   }
 
-  /* ---------- Contact form (Web3Forms, AJAX, no page reload) ---------- */
+  /* ---------- Contact form (Google Apps Script -> Google Sheet) ----------
+     Paste your deployed Web-app URL (ends with /exec) as SCRIPT_URL below.
+     See site/integrations/leads-apps-script.gs for the script + setup. */
   function initForm() {
+    var SCRIPT_URL = 'REPLACE_WITH_APPS_SCRIPT_URL';
     var form = document.querySelector('[data-form]');
     if (!form) return;
     var status = form.querySelector('[data-form-status]');
@@ -177,25 +180,17 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      var keyField = form.querySelector('[name="access_key"]');
-      if (!keyField || keyField.value.indexOf('REPLACE_WITH') === 0) {
-        setStatus('Form not connected yet. Add your Web3Forms access key.', 'err'); return;
+      var hp = form.querySelector('[name="botcheck"]');
+      if (hp && hp.checked) { return; } // honeypot: silently drop bots
+      if (SCRIPT_URL.indexOf('REPLACE_WITH') === 0) {
+        setStatus('Form not connected yet. Add your Google Apps Script URL.', 'err'); return;
       }
-      var data = {};
-      var fd = new FormData(form);
-      fd.forEach(function (v, k) { data[k] = v; });
       var label = btn ? btn.textContent : '';
       if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
       setStatus('', null);
-      fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(data)
-      }).then(function (r) { return r.json(); })
-        .then(function (j) {
-          if (j && j.success) { form.reset(); setStatus("Thank you. Your brief is on its way and I'll be in touch shortly.", 'ok'); }
-          else { setStatus('Something went wrong. Please email pdg7857@gmail.com.', 'err'); }
-        })
+      // no-cors: Apps Script accepts the multipart POST; response is opaque, so treat completion as success.
+      fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: new FormData(form) })
+        .then(function () { form.reset(); setStatus("Thank you. Your brief is in and I'll be in touch shortly.", 'ok'); })
         .catch(function () { setStatus('Network error. Please email pdg7857@gmail.com.', 'err'); })
         .then(function () { if (btn) { btn.disabled = false; btn.textContent = label; } });
     });
