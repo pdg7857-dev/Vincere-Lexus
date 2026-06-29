@@ -368,11 +368,12 @@ function viewClient(id) {
   const acts = DB.activities.filter(a => a.clientId === id).sort((a, b) => b.at - a.at);
   const ms = matchesForClient(c);
   const iv = interestedVehicles(c);
+  const suggV = c.build ? buildResults(c.build).rows : ms.map(function (m) { return m.v; });
   const tasks = DB.tasks.filter(t => t.clientId === id);
   return `<div class="row" style="align-items:center">
     <a href="#/clients" class="btn ghost sm">← Clients</a>
     <h1 style="margin:0 8px">${esc(c.name)}</h1> ${badge(c.status)} <span class="pill">${esc(c.stage || 'New Lead')}</span>
-    <span class="right"><button class="btn" data-build="${c.id}">🔎 Match inventory</button> <button class="btn" data-edit="${c.id}">Edit</button></span>
+    <span class="right"><button class="btn" data-build="${c.id}">🏷️ Tag / match</button> <button class="btn" data-edit="${c.id}">Edit</button></span>
   </div>
   <div class="detail" style="margin-top:14px">
     <div>
@@ -385,7 +386,7 @@ function viewClient(id) {
         ${field('Last contact', c.lastContact ? fmtDate(c.lastContact) : '—')}
       </div></div>
       <div class="panel" style="margin-top:14px"><div class="hd">Notes</div><div class="bd">${esc(c.notes || '') || '<span style="color:var(--muted)">No notes.</span>'}</div></div>
-      ${c.build ? `<div class="panel" style="margin-top:14px"><div class="hd">🔎 Saved search</div><div class="bd"><div>${esc([asArr(c.build.make).join('/'), asArr(c.build.model).join('/'), ((c.build.yearFrom || '') + (c.build.yearTo ? '–' + c.build.yearTo : '')), asArr(c.build.extColor).join('/'), asArr(c.build.pkg).join('/')].filter(Boolean).join(' · ')) || 'any vehicle'}</div>${c.build.features ? `<div style="color:var(--muted);font-size:12px;margin-top:3px">${esc(c.build.features)}</div>` : ''}<div style="margin-top:6px">${(function(){ var R = buildResults(c.build); var inh = R.rows.filter(function(v){ var a=availTag(v); return a==='In stock'||a==='Incoming'||a==='Delivery'; }).length; return R.rows.length ? `<b>${R.rows.length}</b> ${R.exact ? 'matches' : 'closest'} · <b>${inh}</b> in stock/incoming · <a href="#" data-build="${c.id}">refine search</a>` : `No matches · <a href="#" data-build="${c.id}">edit search</a>`; })()}</div></div></div>` : ''}
+      ${c.build ? `<div class="panel" style="margin-top:14px"><div class="hd">🔎 Saved search</div><div class="bd"><div>${esc([asArr(c.build.make).join('/'), asArr(c.build.model).join('/'), ((c.build.yearFrom || '') + (c.build.yearTo ? '–' + c.build.yearTo : '')), asArr(c.build.extColor).join('/'), asArr(c.build.intColor).join('/'), asArr(c.build.pkg).join('/')].filter(Boolean).join(' · ')) || 'any vehicle'}</div>${c.build.features ? `<div style="color:var(--muted);font-size:12px;margin-top:3px">${esc(c.build.features)}</div>` : ''}<div style="margin-top:6px">${(function(){ var R = buildResults(c.build); var inh = R.rows.filter(function(v){ var a=availTag(v); return a==='In stock'||a==='Incoming'||a==='Delivery'; }).length; return R.rows.length ? `<b>${R.rows.length}</b> ${R.exact ? 'matches' : 'closest'} · <b>${inh}</b> in stock/incoming · <a href="#" data-build="${c.id}">refine search</a>` : `No matches · <a href="#" data-build="${c.id}">edit search</a>`; })()}</div></div></div>` : ''}
       ${tasks.length ? `<div class="panel" style="margin-top:14px"><div class="hd">Tasks</div><div class="bd"><table><tbody>${tasks.map(t => `<tr><td>${t.done ? '✅' : '⬜'} ${esc(t.title)}</td><td style="color:var(--muted)">${esc(t.due || '')}</td><td><button class="btn sm" data-task-done="${t.id}">${t.done ? 'Reopen' : 'Done'}</button></td></tr>`).join('')}</tbody></table></div></div>` : ''}
     </div>
     <div>
@@ -406,8 +407,8 @@ function viewClient(id) {
         <div class="row" style="margin-bottom:8px"><select id="interestPick" style="flex:1;padding:8px;border:1px solid var(--line);border-radius:8px"><option value="">+ tag a vehicle they like…</option>${DB.vehicles.map(v => `<option value="${v.id}">${esc(vehLabel(v))} ${esc(v.color || '')} · ${esc(v.ref || v.vin || '')}</option>`).join('')}</select><button class="btn" id="interestAdd">Tag</button></div>
         ${iv.length ? `<table><tbody>${iv.map(v => `<tr><td><span class="pill">${v.kind}</span> ${esc(vehLabel(v))} ${esc(v.color || '')}</td><td>${esc(v.ref || v.vin || '')}</td><td>${money(v.kind === 'New' ? pricingLookup(v.year, v.series, v.model, v.suffix) : num(v.price))}</td><td><button class="btn ghost sm" data-untag="${v.id}">remove</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty">Nothing tagged yet — tag from suggestions below or the picker.</div>'}
       </div></div>
-      <div class="panel" style="margin-top:14px"><div class="hd">⇄ Vehicle suggestions + auto-quotes (${ms.length})</div><div class="bd">
-        ${ms.length ? `<table><thead><tr><th>Type</th><th>Vehicle</th><th>Price</th><th>Fit</th><th>Finance</th><th>Lease</th><th></th></tr></thead><tbody>${ms.map(m => { const q = buildQuote(m.v, c, {}); return `<tr><td><span class="pill">${m.type}</span></td><td>${esc(vehLabel(m.v))} ${esc(m.v.color || '')}<div style="color:var(--muted);font-size:12px">${esc(m.v.ref || m.v.vin || '')}</div></td><td>${money(m.price)}</td><td><span class="${m.fit.cls}">${m.fit.t}</span></td><td>${q ? mo(q.finMo) : '—'}</td><td>${q && q.leaseMo != null ? mo(q.leaseMo) : '—'}</td><td><button class="btn ghost sm" data-quote="${m.v.id}">Quote</button> <button class="btn ghost sm" data-tag="${m.v.id}">${(c.interested || []).indexOf(m.v.id) >= 0 ? '★' : '☆'}</button></td></tr>`; }).join('')}</tbody></table>` : '<div class="empty">No matching vehicles in stock.</div>'}
+      <div class="panel" style="margin-top:14px"><div class="hd">⇄ Vehicle suggestions${c.build ? ' (from saved tag)' : ''} (${suggV.length})</div><div class="bd">
+        ${suggV.length ? `<table><thead><tr><th>Type</th><th>Vehicle</th><th>Avail</th><th>Price</th><th>Fit</th><th>Finance</th><th></th></tr></thead><tbody>${suggV.slice(0, 50).map(v => { const q = buildQuote(v, c, {}); const fit = budgetFit(vehPrice(v), c.budget); const a = availTag(v); return `<tr><td><span class="pill">${v.kind}</span></td><td>${esc(vehLabel(v))} ${esc(v.color || '')}<div style="color:var(--muted);font-size:12px">${esc(v.ref || v.vin || '')}${v.kind === 'Used' && v.inStock ? ' · in stock ' + esc(inStockSince(v)) : ''}</div></td><td>${a === 'In stock' ? '<span class="fit-in">In stock</span>' : (a ? '<span style="color:var(--warm)">' + esc(a) + '</span>' : '—')}</td><td>${money(vehPrice(v))}</td><td><span class="${fit.cls}">${fit.t}</span></td><td>${q ? mo(q.finMo) : '—'}</td><td><button class="btn ghost sm" data-quote="${v.id}">Quote</button> <button class="btn ghost sm" data-tag="${v.id}">${(c.interested || []).indexOf(v.id) >= 0 ? '★' : '☆'}</button></td></tr>`; }).join('')}</tbody></table>` : '<div class="empty">No matches yet — use 🏷️ Tag / match to set what they want.</div>'}
       </div></div>
     </div>
   </div>`;
@@ -425,7 +426,7 @@ function viewInventory(sub) {
   if (tab === 'new') {
     body = `<table id="invTbl"><thead><tr><th>Stage</th><th>Order#</th><th>Vehicle</th><th>Colour</th><th>Status</th><th>Customer</th><th>ETA</th></tr></thead><tbody>${nv.map(v => { const a = availTag(v); return `<tr class="clk" data-veh="${v.id}" data-row="${esc(srch(v))}" data-stage="${a}"><td>${a === 'In stock' ? '<span class="fit-in">In stock</span>' : `<span style="color:var(--warm)">${esc(a || v.stage)}</span>`}</td><td>${esc(v.ref)}</td><td>${esc(vehLabel(v))}</td><td>${esc(v.color)}</td><td>${esc(v.status)}</td><td>${esc(v.customer || '')}</td><td style="color:var(--muted)">${esc(v.etaTo || '')}</td></tr>`; }).join('') || '<tr><td colspan="7" class="empty">No new vehicles.</td></tr>'}</tbody></table>`;
   } else {
-    body = `<table id="invTbl"><thead><tr><th>Stk#</th><th>Vehicle</th><th>Colour</th><th>Km</th><th>Retail</th><th>Status</th><th>Repost</th></tr></thead><tbody>${uv.map(v => { const a = availTag(v); const r = repostDue(v); return `<tr class="clk" data-veh="${v.id}" data-row="${esc(srch(v))}" data-stage="${a}"><td>${esc(v.ref)}</td><td>${esc(vehLabel(v))}</td><td>${esc(v.color)}</td><td>${v.km ? Number(v.km).toLocaleString() : ''}</td><td>${money(v.price)}</td><td>${esc(v.status)}</td><td>${r ? (r.over ? '<span style="color:var(--accent)">repost</span>' : 'ok') : ''}</td></tr>`; }).join('') || '<tr><td colspan="7" class="empty">No used vehicles.</td></tr>'}</tbody></table>`;
+    body = `<table id="invTbl"><thead><tr><th>Stk#</th><th>Vehicle</th><th>Colour</th><th>Km</th><th>Retail</th><th>In-stock</th><th>Status</th><th>Repost</th></tr></thead><tbody>${uv.map(v => { const a = availTag(v); const r = repostDue(v); return `<tr class="clk" data-veh="${v.id}" data-row="${esc(srch(v))}" data-stage="${a}"><td>${esc(v.ref)}</td><td>${esc(vehLabel(v))}</td><td>${esc(v.color)}</td><td>${v.km ? Number(v.km).toLocaleString() : ''}</td><td>${money(v.price)}</td><td style="color:var(--muted)">${v.inStock ? esc(fmtDate(Date.parse(v.inStock))) + ' (' + daysSince(Date.parse(v.inStock)) + 'd)' : ''}</td><td>${esc(v.status)}</td><td>${r ? (r.over ? '<span style="color:var(--accent)">repost</span>' : 'ok') : ''}</td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">No used vehicles.</td></tr>'}</tbody></table>`;
   }
   return `<div class="row" style="align-items:center"><h1>Inventory</h1><button class="btn primary right" data-add="vehicle">+ Vehicle</button></div>${tabs}${bar}<div class="panel"><div class="bd">${body}</div></div>`;
 }
@@ -690,7 +691,11 @@ function invModels(make) { var o = {}; DB.vehicles.forEach(function (v) { if (ma
 function invColors() { var o = {}; DB.vehicles.forEach(function (v) { if (v.color) o[v.color] = 1; }); return Object.keys(o).sort(); }
 function invYears() { var o = {}; DB.vehicles.forEach(function (v) { var y = Number(v.year); if (y) o[y] = 1; }); return Object.keys(o).map(Number).sort(function (a, b) { return b - a; }); }
 function vehPrice(v) { return v.kind === 'New' ? pricingLookup(v.year, v.series, v.model, v.suffix) : num(v.price); }
-function getBuild(c) { return c.build || { kind: '', make: asArr(c.make), model: asArr(c.model), yearFrom: c.year || '', yearTo: c.year || '', priceMax: c.budget || '', maxKm: c.maxKm || '', extColor: asArr(c.color), intColor: c.intColor || '', pkg: asArr(c.package), features: c.features || '' }; }
+function getBuild(c) { return c.build || { kind: '', make: asArr(c.make), model: asArr(c.model), yearFrom: c.year || '', yearTo: c.year || '', priceMax: c.budget || '', maxKm: c.maxKm || '', extColor: asArr(c.color), intColor: asArr(c.intColor), pkg: asArr(c.package), features: c.features || '' }; }
+function vehColors(v) { var s = String(v.color || ''); if (v.kind === 'Used' && s.indexOf('/') >= 0) { var i = s.indexOf('/'); return { ext: s.slice(0, i).trim(), int: s.slice(i + 1).trim() }; } return { ext: s.trim(), int: '' }; }
+function invExtColors() { var o = {}; DB.vehicles.forEach(function (v) { var c = vehColors(v).ext; if (c) o[c] = 1; }); return Object.keys(o).sort(); }
+function invIntColors() { var o = {}; DB.vehicles.forEach(function (v) { var c = vehColors(v).int; if (c) o[c] = 1; }); return Object.keys(o).sort(); }
+function inStockSince(v) { if (!v.inStock) return ''; var d = Date.parse(v.inStock); if (isNaN(d)) return ''; return fmtDate(d) + ' (' + daysSince(d) + 'd)'; }
 function asArr(x) { return Array.isArray(x) ? x.filter(Boolean) : (x ? [x] : []); }
 function inAny(vals, test) { for (var i = 0; i < vals.length; i++) if (test(vals[i])) return true; return false; }
 function invModelsMulti(makes) { makes = asArr(makes); var o = {}; DB.vehicles.forEach(function (v) { var mk = v.kind === 'New' ? 'Lexus' : (v.make || ''); if (makes.length && !makes.some(function (m) { return norm(m) === norm(mk); })) return; if (v.model) o[v.model] = 1; }); return Object.keys(o).sort(); }
@@ -706,8 +711,9 @@ function filterInventory(f) {
     if (f.yearTo && vy > Number(f.yearTo)) return false;
     if (f.priceMax) { var pr = vehPrice(v); if (pr != null && pr > Number(f.priceMax)) return false; }
     if (f.maxKm && num(v.km) != null && num(v.km) > Number(f.maxKm)) return false;
-    var _ex = asArr(f.extColor); if (_ex.length && !inAny(_ex, function (col) { return norm(v.color).indexOf(norm(col)) >= 0; })) return false;
-    if (f.intColor && norm((v.color || '') + ' ' + (v.comments || '')).indexOf(norm(f.intColor)) < 0) return false;
+    var _col = vehColors(v);
+    var _ex = asArr(f.extColor); if (_ex.length && !inAny(_ex, function (col) { return norm(_col.ext).indexOf(norm(col)) >= 0; })) return false;
+    var _in = asArr(f.intColor); if (_in.length && !inAny(_in, function (col) { return norm(_col.int).indexOf(norm(col)) >= 0; })) return false;
     var _pk = asArr(f.pkg); if (_pk.length && !inAny(_pk, function (pk) { return norm((v.suffix || '') + ' ' + (v.model || '')).indexOf(norm(pk)) >= 0; })) return false;
     if (f.features) { var ft = norm(f.features).split(/[,;\/]+|\s+/).filter(Boolean); var hay = norm((v.comments || '') + ' ' + (v.suffix || '') + ' ' + (v.model || '') + ' ' + (v.color || '')); for (var i = 0; i < ft.length; i++) if (ft[i].length > 1 && hay.indexOf(ft[i]) < 0) return false; }
     return true;
@@ -720,34 +726,35 @@ function buildResults(f) {
 }
 function buildModal(cid) {
   var c = client(cid); if (!c) return; var f = getBuild(c);
-  function mopts(arr, vals) { vals = asArr(vals); return arr.map(function (x) { return '<option ' + (vals.some(function (v) { return norm(v) === norm(x); }) ? 'selected' : '') + '>' + esc(x) + '</option>'; }).join(''); }
+  var sel = { make: asArr(f.make), model: asArr(f.model), ext: asArr(f.extColor), int: asArr(f.intColor), pkg: asArr(f.pkg) };
+  var suggMap = { make: function () { return invMakes(); }, model: function () { return invModelsMulti(sel.make); }, ext: function () { return invExtColors(); }, int: function () { return invIntColors(); }, pkg: function () { return uniqueTrims(); } };
+  function optionsOf(arr) { return arr.map(function (x) { return '<option value="' + esc(x) + '">'; }).join(''); }
   function yopts(val) { return '<option value="">Any</option>' + invYears().map(function (y) { return '<option ' + (String(y) === String(val) ? 'selected' : '') + '>' + y + '</option>'; }).join(''); }
-  function ms(id) { var e = $('#' + id); return e ? Array.from(e.selectedOptions).map(function (o) { return o.value; }).filter(Boolean) : []; }
-  function gather() { return { kind: $('#f_kind').value, make: ms('f_make'), model: ms('f_model'), yearFrom: $('#f_yf').value, yearTo: $('#f_yt').value, priceMax: $('#f_price').value, maxKm: $('#f_km').value, extColor: ms('f_ext'), intColor: $('#f_int').value, pkg: ms('f_pkg'), features: $('#f_feat').value }; }
+  function fieldHtml(field, label) { return '<div class="field" style="flex:1;min-width:175px"><label>' + label + '</label><div class="tokens" id="tk_' + field + '"></div><input id="in_' + field + '" list="dl_' + field + '" placeholder="type, e.g. lex…" autocomplete="off"><datalist id="dl_' + field + '"></datalist></div>'; }
+  function gather() { return { kind: $('#f_kind').value, make: sel.make.slice(), model: sel.model.slice(), yearFrom: $('#f_yf').value, yearTo: $('#f_yt').value, priceMax: $('#f_price').value, maxKm: $('#f_km').value, extColor: sel.ext.slice(), intColor: sel.int.slice(), pkg: sel.pkg.slice(), features: $('#f_feat').value }; }
   function results() {
     var R = buildResults(gather()), out = $('#f_out');
     var head = R.exact ? (R.rows.length + ' matching — in stock / incoming') : (R.rows.length ? ('No exact match — closest ' + R.rows.length + ':') : 'Nothing close in inventory');
-    out.innerHTML = '<div style="margin:6px 0;font-weight:600;color:' + (R.exact ? 'var(--ok)' : 'var(--warm)') + '">' + head + '</div>' + (R.rows.length ? '<table><thead><tr><th>Vehicle</th><th>Avail</th><th>Price</th><th>Finance</th><th></th></tr></thead><tbody>' + R.rows.slice(0, 60).map(function (v) { var q = buildQuote(v, c, {}); var tg = (c.interested || []).indexOf(v.id) >= 0; var a = availTag(v); return '<tr><td>' + esc(vehLabel(v)) + ' ' + esc(v.color || '') + '<div style="color:var(--muted);font-size:12px">' + esc(v.ref || v.vin || '') + '</div></td><td>' + (a === 'In stock' ? '<span class="fit-in">In stock</span>' : (a ? '<span style="color:var(--warm)">' + esc(a) + '</span>' : '—')) + '</td><td>' + money(vehPrice(v)) + '</td><td>' + (q ? mo(q.finMo) : '—') + '</td><td><button class="btn ghost sm" data-q="' + v.id + '">Quote</button> <button class="btn ghost sm" data-tv="' + v.id + '">' + (tg ? '★ tagged' : '☆ tag') + '</button></td></tr>'; }).join('') + '</tbody></table>' : '');
+    out.innerHTML = '<div style="margin:6px 0;font-weight:600;color:' + (R.exact ? 'var(--ok)' : 'var(--warm)') + '">' + head + '</div>' + (R.rows.length ? '<table><thead><tr><th>Vehicle</th><th>Avail</th><th>Price</th><th>Finance</th><th></th></tr></thead><tbody>' + R.rows.slice(0, 60).map(function (v) { var q = buildQuote(v, c, {}); var tg = (c.interested || []).indexOf(v.id) >= 0; var a = availTag(v); return '<tr><td>' + esc(vehLabel(v)) + ' ' + esc(v.color || '') + '<div style="color:var(--muted);font-size:12px">' + esc(v.ref || v.vin || '') + (v.kind === 'Used' && v.inStock ? ' · in stock ' + esc(inStockSince(v)) : '') + '</div></td><td>' + (a === 'In stock' ? '<span class="fit-in">In stock</span>' : (a ? '<span style="color:var(--warm)">' + esc(a) + '</span>' : '—')) + '</td><td>' + money(vehPrice(v)) + '</td><td>' + (q ? mo(q.finMo) : '—') + '</td><td><button class="btn ghost sm" data-q="' + v.id + '">Quote</button> <button class="btn ghost sm" data-tv="' + v.id + '">' + (tg ? '★ tagged' : '☆ tag') + '</button></td></tr>'; }).join('') + '</tbody></table>' : '');
     $$('#f_out [data-q]').forEach(function (e) { e.onclick = function () { quoteModal(e.dataset.q, c.id); }; });
     $$('#f_out [data-tv]').forEach(function (e) { e.onclick = function () { toggleInterest(c.id, e.dataset.tv); results(); }; });
   }
   var body = '<div class="row">'
     + '<div class="field" style="flex:1;min-width:100px"><label>Type</label><select id="f_kind"><option value="">Any</option><option ' + (f.kind === 'New' ? 'selected' : '') + '>New</option><option ' + (f.kind === 'Used' ? 'selected' : '') + '>Used</option></select></div>'
-    + '<div class="field" style="flex:1;min-width:120px"><label>Make (pick 1+)</label><select id="f_make" multiple size="4">' + mopts(invMakes(), f.make) + '</select></div>'
-    + '<div class="field" style="flex:1;min-width:150px"><label>Model (pick 1+)</label><select id="f_model" multiple size="4">' + mopts(invModelsMulti(asArr(f.make)), f.model) + '</select></div>'
+    + fieldHtml('make', 'Make') + fieldHtml('model', 'Model')
     + '<div class="field" style="flex:1;min-width:90px"><label>Year from</label><select id="f_yf">' + yopts(f.yearFrom) + '</select></div>'
     + '<div class="field" style="flex:1;min-width:90px"><label>Year to</label><select id="f_yt">' + yopts(f.yearTo) + '</select></div>'
     + '<div class="field" style="flex:1;min-width:100px"><label>Max price</label><input id="f_price" type="number" value="' + (f.priceMax || '') + '"></div>'
     + '<div class="field" style="flex:1;min-width:90px"><label>Max Km</label><input id="f_km" type="number" value="' + (f.maxKm || '') + '"></div>'
-    + '<div class="field" style="flex:1;min-width:150px"><label>Exterior colour (pick 1+)</label><select id="f_ext" multiple size="4">' + mopts(invColors(), f.extColor) + '</select></div>'
-    + '<div class="field" style="flex:1;min-width:120px"><label>Interior colour</label><input id="f_int" value="' + esc(f.intColor || '') + '"></div>'
-    + '<div class="field" style="flex:1;min-width:150px"><label>Trim (pick 1+)</label><select id="f_pkg" multiple size="4">' + mopts(uniqueTrims(), f.pkg) + '</select></div>'
+    + fieldHtml('ext', 'Exterior colour') + fieldHtml('int', 'Interior colour') + fieldHtml('pkg', 'Trim')
     + '<div class="field" style="flex:2;min-width:160px"><label>Features</label><input id="f_feat" value="' + esc(f.features || '') + '"></div>'
-    + '</div><div style="color:var(--muted);font-size:12px;margin:4px 0">Ctrl/Cmd-click (or tap) to choose multiple makes, models, colours, trims — results show every match.</div><div id="f_out"></div>';
-  modal('🔎 Match inventory — ' + esc(c.name), body, function () { c.build = gather(); save(); addActivity(c.id, 'Note', 'Saved vehicle search: ' + [asArr(c.build.make).join('/'), asArr(c.build.model).join('/'), ((c.build.yearFrom || '') + (c.build.yearTo ? '-' + c.build.yearTo : '')), asArr(c.build.extColor).join('/'), asArr(c.build.pkg).join('/')].filter(Boolean).join(' ')); toast('Search saved to profile'); route(); return true; }, 'Save to profile');
-  ['f_kind', 'f_yf', 'f_yt', 'f_price', 'f_km', 'f_int', 'f_feat'].forEach(function (id) { var e = $('#' + id); if (e) e.oninput = results; });
-  ['f_model', 'f_ext', 'f_pkg'].forEach(function (id) { var e = $('#' + id); if (e) e.onchange = results; });
-  $('#f_make').onchange = function () { $('#f_model').innerHTML = mopts(invModelsMulti(ms('f_make')), ms('f_model')); results(); };
+    + '</div><div style="color:var(--muted);font-size:12px;margin:4px 0">Type to search, pick a suggestion to add a chip — add as many makes / models / colours / trims as you like.</div><div id="f_out"></div>';
+  modal('🏷️ Tag / match — ' + esc(c.name), body, function () { c.build = gather(); save(); addActivity(c.id, 'Note', 'Tagged search: ' + [sel.make.join('/'), sel.model.join('/'), ((c.build.yearFrom || '') + (c.build.yearTo ? '-' + c.build.yearTo : '')), sel.ext.join('/'), sel.int.join('/'), sel.pkg.join('/')].filter(Boolean).join(' ')); toast('Tagged & saved to profile'); route(); return true; }, 'Save tag to profile');
+  function chips(field) { $('#tk_' + field).innerHTML = sel[field].map(function (v, i) { return '<span class="chip">' + esc(v) + ' <b data-rm="' + field + ':' + i + '">×</b></span>'; }).join(''); $$('#tk_' + field + ' [data-rm]').forEach(function (e) { e.onclick = function () { var pr = e.dataset.rm.split(':'); sel[pr[0]].splice(Number(pr[1]), 1); chips(pr[0]); results(); }; }); }
+  function dlist(field) { $('#dl_' + field).innerHTML = optionsOf(suggMap[field]()); }
+  function add(field, val) { val = (val || '').trim(); if (!val) return; var sug = suggMap[field](); var hit = sug.filter(function (x) { return norm(x) === norm(val); })[0] || sug.filter(function (x) { return norm(x).indexOf(norm(val)) === 0; })[0] || sug.filter(function (x) { return norm(x).indexOf(norm(val)) >= 0; })[0] || val; if (!sel[field].some(function (x) { return norm(x) === norm(hit); })) sel[field].push(hit); chips(field); if (field === 'make') dlist('model'); results(); }
+  ['make', 'model', 'ext', 'int', 'pkg'].forEach(function (field) { dlist(field); chips(field); var inp = $('#in_' + field); inp.onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); add(field, inp.value); inp.value = ''; } }; inp.onchange = function () { if (inp.value) { add(field, inp.value); inp.value = ''; } }; });
+  ['f_kind', 'f_yf', 'f_yt', 'f_price', 'f_km', 'f_feat'].forEach(function (id) { var e = $('#' + id); if (e) e.oninput = results; });
   results();
 }
 /* ---------- import ---------- */

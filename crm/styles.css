@@ -94,6 +94,12 @@ tr.clk:hover{background:rgba(127,127,127,.08);cursor:pointer}
 .tl-Email:before{background:#1d4ed8} .tl-Meeting:before{background:#7c3aed}
 .tl-Text:before{background:#0891b2} .tl-System:before{background:#9ca3af}
 
+/* token / chip multi-input */
+.tokens{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(96,165,250,.16);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:12px}
+.chip b{cursor:pointer;color:var(--muted);font-weight:700}
+.chip b:hover{color:var(--accent)}
+
 /* modal */
 .modal-bg{position:fixed;inset:0;background:rgba(17,19,26,.45);display:flex;align-items:center;
   justify-content:center;padding:18px;z-index:50}
