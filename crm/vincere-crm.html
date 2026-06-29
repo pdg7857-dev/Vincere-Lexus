@@ -158,7 +158,7 @@ function _ub64(str) { var bin = atob(str), a = new Uint8Array(bin.length); for (
 async function _deriveKey(pass, salt) { var km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']); return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: 120000, hash: 'SHA-256' }, km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']); }
 async function _encEnvelope() { var iv = crypto.getRandomValues(new Uint8Array(12)); var ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, CKEY, new TextEncoder().encode(JSON.stringify(DB))); return JSON.stringify({ enc: 1, salt: _b64(CSALT), iv: _b64(iv), ct: _b64(ct) }); }
 async function _decEnvelope(key, env) { var pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: _ub64(env.iv) }, key, _ub64(env.ct)); return JSON.parse(new TextDecoder().decode(pt)); }
-function save() { schedulePersist(); }
+function save() { _priceCache = {}; schedulePersist(); }
 function schedulePersist() { if (_persisting) { _dirty = true; return; } _persisting = true; persist().then(function () { _persisting = false; if (_dirty) { _dirty = false; schedulePersist(); } }); }
 async function persist() { try { if (CKEY) localStorage.setItem(KEY, await _encEnvelope()); else localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) { toast('⚠ Could not save (storage blocked).'); } }
 async function loadDB() {
@@ -263,7 +263,13 @@ function _nser(x){ var t=(norm(x).split(' ')[0]||''); return (t.length===3 && 'h
 function _core(x){ return norm(x).replace(/\b(awd|fwd|4wd|rwd)\b/g,'').replace(/[^a-z0-9]/g,''); }
 function _nsuf(x){ return norm(x).replace(/\s*-\s*premium (paint|colour)/g,'').replace(/ package/g,'').trim(); }
 function _tscore(a,b){ a=_nsuf(a); b=_nsuf(b); if(a===b) return 100; if(a&&b&&(a.indexOf(b)>=0||b.indexOf(a)>=0)) return 85; var ta=a.split(' '),tb=b.split(' '),set={},i=0,u={}; ta.forEach(function(x){set[x]=1;u[x]=1;}); tb.forEach(function(x){ if(set[x])i++; u[x]=1;}); var un=Object.keys(u).length; return un? Math.round(70*i/un):0; }
+var _priceCache = {};
 function pricingRow(year, series, model, suffix){
+  var ck = norm(year) + '|' + _nser(series) + '|' + _core(model) + '|' + _nsuf(suffix);
+  if (ck in _priceCache) return _priceCache[ck];
+  return (_priceCache[ck] = _pricingRowCompute(year, series, model, suffix));
+}
+function _pricingRowCompute(year, series, model, suffix){
   var g=DB.pricing.filter(function(p){ return _nser(p.series)===_nser(series) && _core(p.model)===_core(model); });
   if(!g.length) g=DB.pricing.filter(function(p){ return _nser(p.series)===_nser(series) && (_core(p.model).indexOf(_core(model))>=0 || _core(model).indexOf(_core(p.model))>=0); });
   if(!g.length) return null;
@@ -318,7 +324,7 @@ function matchesForClient(c) {
   });
   return out;
 }
-function seriesRank(s) { return DB.config.seriesRank[String(s || '').toUpperCase()] || 0; }
+function seriesRank(s) { return DB.config.seriesRank[_nser(s).toUpperCase()] || 0; }
 function upsellForClient(c) {
   if (!c.ownYear && !c.ownSeries) return [];
   const cy = Number(c.ownYear) || 0, cr = seriesRank(c.ownSeries), out = [];
@@ -393,6 +399,7 @@ const NAV = [
   { k: 'inventory', ico: '▤', lbl: 'Inventory' },
   { k: 'matches', ico: '⇄', lbl: 'Matches' },
   { k: 'upsell', ico: '↑', lbl: 'Upsell' },
+  { k: 'upgrades', ico: '💎', lbl: 'Upgrades' },
   { k: 'tasks', ico: '✓', lbl: 'Tasks' },
   { k: 'settings', ico: '⚙', lbl: 'Settings' }
 ];
@@ -423,6 +430,7 @@ function route() {
   else if (view === 'inventory') html += viewInventory();
   else if (view === 'matches') html += viewMatches();
   else if (view === 'upsell') html += viewUpsell();
+  else if (view === 'upgrades') html += viewUpgrades();
   else if (view === 'tasks') html += viewTasks();
   else if (view === 'settings') html += viewSettings();
   else if (view === 'search') html += viewSearch(decodeURIComponent(h[1] || ''));
@@ -474,6 +482,9 @@ function viewDashboard() {
     </div></div>
     <div class="panel"><div class="hd">🔔 Build matches — in stock / incoming</div><div class="bd">
       ${(function(){ var a = buildAlerts(); return a.length ? `<table><tbody>${a.map(function(z){ return `<tr class="clk" data-go="#/client/${z.c.id}"><td><b>${esc(z.c.name)}</b></td><td>${esc(vehLabel(z.x.v))} ${esc(z.x.v.color || '')}</td><td>${z.x.avail === 'In stock' ? '<span class="fit-in">In stock</span>' : '<span style="color:var(--warm)">' + esc(z.x.avail) + '</span>'}</td></tr>`; }).join('')}</tbody></table>` : `<div class="empty">No build-spec clients match current/incoming stock yet.</div>`; })()}
+    </div></div>
+    <div class="panel"><div class="hd">💎 Top upgrade offers (cheapest)</div><div class="bd">
+      ${(function(){ var u = bestUpgrades().slice(0,5); return u.length ? `<table><tbody>${u.map(function(r){ return `<tr class="clk" data-go="#/client/${r.c.id}"><td><b>${esc(r.c.name)}</b></td><td>${esc(vehLabel(r.v))}</td><td>${mo(r.q.finMo)}</td></tr>`; }).join('')}</tbody></table><div style="margin-top:6px"><a href="#/upgrades">all upgrade offers →</a></div>` : `<div class="empty">Add trade-in + current vehicle to customers to surface upgrade offers.</div>`; })()}
     </div></div>
     <div class="panel"><div class="hd">✓ Tasks & 🔁 reposts due</div><div class="bd">
       ${(tasks.length || reposts.length) ? `<table><tbody>${tasks.map(t => `<tr><td>✓ ${esc(t.title)}${t.clientId ? ' · <a href="#/client/' + t.clientId + '">' + esc((client(t.clientId) || {}).name || '') + '</a>' : ''}</td><td style="color:var(--muted)">${esc(t.due || '')}</td></tr>`).join('')}${reposts.map(x => `<tr><td>🔁 Repost ${esc(x.v.ref)} · ${esc(vehLabel(x.v))}</td><td><button class="btn sm" data-post="${x.v.id}">Posted</button></td></tr>`).join('')}</tbody></table>` : `<div class="empty">Nothing due. 🎉</div>`}
@@ -601,6 +612,40 @@ function viewPipeline() {
   </div>`;
 }
 
+function upgradeCandidates(c) {
+  var cy = Number(c.ownYear) || 0, cr = seriesRank(c.ownSeries), out = [];
+  DB.vehicles.forEach(function (v) {
+    if (v.kind !== 'New') return;
+    if (norm(v.customer) === norm(c.name)) return;
+    var vy = Number(v.year) || 0, vr = seriesRank(v.series);
+    if (vr < cr || vy < cy) return;                 // no series or year downgrade
+    if (!(vy > cy || vr > cr)) return;              // must be a genuine step up
+    var price = pricingLookup(v.year, v.series, v.model, v.suffix);
+    if (price == null) return;
+    out.push({ v: v, price: price });
+  });
+  return out;
+}
+function bestUpgrades() {
+  var out = [];
+  DB.clients.forEach(function (c) {
+    if (!(c.ownYear || c.ownSeries)) return;
+    var cands = upgradeCandidates(c);
+    if (!cands.length) return;
+    var pick = cands.reduce(function (a, b) { return (Number(a.price) <= Number(b.price)) ? a : b; });
+    var q = buildQuote(pick.v, c, {}); if (!q) return;
+    out.push({ c: c, v: pick.v, q: q, equity: (num(c.tradeValue) || 0) - (num(c.lienOwing) || 0), type: 'New' });
+  });
+  out.sort(function (a, b) { return a.q.finMo - b.q.finMo; });
+  return out;
+}
+function viewUpgrades() {
+  var rows = bestUpgrades(), cap = 300, total = rows.length, shown = rows.slice(0, cap);
+  return `<h1>Upgrade offers</h1><p class="sub">${total} customers you could move into something newer — cheapest monthly first, using their trade equity${total > cap ? ` · showing first ${cap}` : ''}.</p>
+  <div class="panel"><div class="bd"><table><thead><tr><th>Customer</th><th>Currently</th><th>Trade equity</th><th>Best upgrade</th><th>Price</th><th>Finance</th><th>Lease</th><th></th></tr></thead><tbody>
+  ${shown.map(function (r) { return `<tr><td class="clk" data-go="#/client/${r.c.id}"><b>${esc(r.c.name)}</b> ${badge(r.c.status)}</td><td style="color:var(--muted)">${esc([r.c.ownYear, r.c.ownSeries, r.c.ownModel].filter(Boolean).join(' ')) || '—'}</td><td>${r.equity ? money(r.equity) : '—'}</td><td>${esc(vehLabel(r.v))} ${esc(r.v.color || '')} <span class="pill">${availTag(r.v) || r.type}</span></td><td>${money(r.q.price)}</td><td><b>${mo(r.q.finMo)}</b></td><td>${r.q.leaseMo != null ? mo(r.q.leaseMo) : '—'}</td><td><button class="btn ghost sm" data-quote="${r.v.id}" data-qc="${r.c.id}">Quote</button></td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">No upgrade offers yet — add current vehicle + trade-in to customers (or import phone-form leads).</td></tr>'}
+  </tbody></table></div></div>`;
+}
 function viewTasks() {
   const open = DB.tasks.filter(t => !t.done).sort((a, b) => (Date.parse(a.due) || 9e15) - (Date.parse(b.due) || 9e15));
   const done = DB.tasks.filter(t => t.done);
