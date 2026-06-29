@@ -126,6 +126,15 @@ tr.clk:hover{background:rgba(127,127,127,.08);cursor:pointer}
   padding:10px 16px;border-radius:8px;box-shadow:var(--shadow);z-index:80;opacity:0;transition:opacity .2s}
 .toast.show{opacity:1}
 
+/* import dropzone */
+.dropzone{border:2px dashed var(--line);border-radius:var(--radius);padding:16px;text-align:center;color:var(--muted);margin:0 0 14px;background:var(--panel);font-weight:600;transition:border-color .15s,background .15s}
+.dropzone .dz-sub{font-weight:400;font-size:12px;margin-top:4px}
+.dropzone.drag{border-color:var(--accent);background:rgba(244,63,94,.08);color:var(--ink)}
+
+/* progress bar */
+.bar{height:8px;border-radius:999px;background:rgba(127,127,127,.18);overflow:hidden;margin:5px 0 2px}
+.bar>div{height:100%;background:var(--accent2);border-radius:999px;transition:width .2s}
+
 /* responsive */
 @media(max-width:820px){
   #app{grid-template-columns:1fr;grid-template-rows:52px auto 1fr;grid-template-areas:"brand" "nav" "main"}
@@ -177,10 +186,10 @@ async function loadDB() {
   if (!raw) { seed(); return; }
   var env = null; try { env = JSON.parse(raw); } catch (e) {}
   if (env && env.enc) {
-    if (!cryptoOK()) { alert('This data is passcode-encrypted, but this browser blocks encryption on file://. Open via the local-server method in the README.'); DB = { clients: [], activities: [], vehicles: [], pricing: PRICING.map(function (p) { return Object.assign({}, p); }), tasks: [], config: defaultConfig(), meta: {} }; return; }
+    if (!cryptoOK()) { alert('This data is passcode-encrypted, but this browser blocks encryption on file://. Open via the local-server method in the README.'); DB = { clients: [], activities: [], vehicles: [], pricing: PRICING.map(function (p) { return Object.assign({}, p); }), tasks: [], deals: [], commission: {}, config: defaultConfig(), meta: {} }; return; }
     while (true) {
       var pass = prompt('🔒 Enter your CRM passcode:');
-      if (pass == null) { if (confirm('Without the passcode the CRM cannot open. Try again?')) continue; DB = { clients: [], activities: [], vehicles: [], pricing: [], tasks: [], config: defaultConfig(), meta: {} }; return; }
+      if (pass == null) { if (confirm('Without the passcode the CRM cannot open. Try again?')) continue; DB = { clients: [], activities: [], vehicles: [], pricing: [], tasks: [], deals: [], commission: {}, config: defaultConfig(), meta: {} }; return; }
       try { var salt = _ub64(env.salt); var k = await _deriveKey(pass, salt); var d = await _decEnvelope(k, env); DB = d; CKEY = k; CSALT = salt; ensureData(); return; }
       catch (e) { alert('Wrong passcode — try again.'); }
     }
@@ -221,7 +230,7 @@ function download(name, text, type) {
 }
 
 /* ---------- config ---------- */
-function ensureData() { if (!DB.config) DB.config = defaultConfig(); if (!DB.pricing || !DB.pricing.length) DB.pricing = PRICING.map(function (p) { return Object.assign({}, p); }); }
+function ensureData() { if (!DB.config) DB.config = defaultConfig(); if (!DB.pricing || !DB.pricing.length) DB.pricing = PRICING.map(function (p) { return Object.assign({}, p); }); if (!DB.deals) DB.deals = []; if (!DB.commission) DB.commission = {}; }
 function defaultConfig() {
   return {
     repostDays: 10, newMake: 'Lexus',
@@ -238,7 +247,7 @@ function loadPricingFromCSV(text) {
   return out;
 }
 function seed() {
-  DB = { clients: [], activities: [], vehicles: [], pricing: [], tasks: [], config: defaultConfig(), meta: { createdAt: Date.now(), lastBackupAt: 0 } };
+  DB = { clients: [], activities: [], vehicles: [], pricing: [], tasks: [], deals: [], commission: {}, config: defaultConfig(), meta: { createdAt: Date.now(), lastBackupAt: 0 } };
   DB.pricing = PRICING.map(function(p){return Object.assign({},p);});
   sampleData();
   save();
@@ -410,6 +419,7 @@ const NAV = [
   { k: 'inventory', ico: '▤', lbl: 'Inventory' },
   { k: 'matches', ico: '⇄', lbl: 'Matches' },
   { k: 'upgrades', ico: '💎', lbl: 'Upgrades' },
+  { k: 'performance', ico: '📊', lbl: 'Performance' },
   { k: 'tasks', ico: '✓', lbl: 'Tasks' },
   { k: 'settings', ico: '⚙', lbl: 'Settings' }
 ];
@@ -440,6 +450,7 @@ function route() {
   else if (view === 'inventory') html += viewInventory(h[1]);
   else if (view === 'matches') html += viewMatches();
   else if (view === 'upgrades') html += viewUpgrades();
+  else if (view === 'performance') html += viewPerformance(h[1]);
   else if (view === 'tasks') html += viewTasks();
   else if (view === 'settings') html += viewSettings();
   else if (view === 'search') html += viewSearch(decodeURIComponent(h[1] || ''));
@@ -546,7 +557,7 @@ function viewClient(id) {
       <div class="panel"><div class="hd">Activity & history</div><div class="bd">
         <div class="row" style="margin-bottom:10px">
           <select id="actType" style="padding:8px;border:1px solid var(--line);border-radius:8px">
-            <option>Note</option><option>Call</option><option>Email</option><option>Meeting</option><option>Text</option>
+            <option>Note</option><option>Call</option><option>Text</option><option>Email</option><option>Meeting</option><option>Test Drive</option>
           </select>
           <input id="actBody" placeholder="Log a note, call, email…" style="flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:8px">
           <button class="btn primary" id="actAdd">Log</button>
@@ -581,7 +592,9 @@ function viewInventory(sub) {
   } else {
     body = `<table id="invTbl"><thead><tr><th>Stk#</th><th>Vehicle</th><th>Colour</th><th>Km</th><th>Retail</th><th>In-stock</th><th>Status</th><th>Repost</th></tr></thead><tbody>${uv.map(v => { const a = availTag(v); const r = repostDue(v); return `<tr class="clk" data-veh="${v.id}" data-row="${esc(srch(v))}" data-stage="${a}"><td>${esc(v.ref)}</td><td>${esc(vehLabel(v))}</td><td>${esc(v.color)}</td><td>${v.km ? Number(v.km).toLocaleString() : ''}</td><td>${money(v.price)}</td><td style="color:var(--muted)">${v.inStock ? esc(fmtDate(Date.parse(v.inStock))) + ' (' + daysSince(Date.parse(v.inStock)) + 'd)' : ''}</td><td>${esc(v.status)}</td><td>${r ? (r.over ? '<span style="color:var(--accent)">repost</span>' : 'ok') : ''}</td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">No used vehicles.</td></tr>'}</tbody></table>`;
   }
-  return `<div class="row" style="align-items:center"><h1>Inventory</h1><button class="btn primary right" data-add="vehicle">+ Vehicle</button></div>${tabs}${bar}<div class="panel"><div class="bd">${body}</div></div>`;
+  return `<div class="row" style="align-items:center"><h1>Inventory</h1><span class="right"><label class="btn">⬆ Import sheet<input type="file" id="invImport" accept=".xlsx,.csv" hidden></label> <button class="btn primary" data-add="vehicle">+ Vehicle</button></span></div>${tabs}${bar}
+  <div id="invDrop" class="dropzone">⬇ Drop an Excel (.xlsx) or CSV file here to import vehicles<div class="dz-sub">Duplicates (same <b>stock #</b> or <b>VIN</b>) are skipped — each car goes in once. Imports as <b>${tab === 'used' ? 'Used' : 'New'}</b> unless the sheet has a <i>Type</i> column.</div></div>
+  <div class="panel"><div class="bd">${body}</div></div>`;
 }
 
 function viewMatches() {
@@ -723,6 +736,173 @@ function viewSettings() {
     <button class="btn" id="clearAll" style="color:var(--accent)">Clear all data</button>
     <span style="color:var(--muted);margin-left:8px">Clients ${DB.clients.length} · Vehicles ${DB.vehicles.length} · Pricing ${DB.pricing.length} · Activities ${DB.activities.length}</span>
   </div></div>`;
+}
+
+/* ---------- performance & commission (Northwest Lexus structure) ---------- */
+const COMM = {
+  rate: 0.18,
+  flat: { new: 300, used: 300, asis: 300, demo: 500 },
+  deliveryFee: 60, cashFee: 30,
+  targets: { 8: [3, 3], 9: [4, 4], 10: [5, 5], 11: [5, 5], 12: [4, 4] },   // (new, used), begins August
+  vol: { newHit: 1000, usedHit: 500, accel: 500 },
+  kpi: { ecp: 250, wpwpp: 250, tirePerSet: 75, tradeWin: 500, csi: 500, fni: 1000, excellence: 250 },
+  reviewEach: 20,
+  allowance: { oem: 600, own: 500, none: 0 }
+};
+function dealTypes() { return [['new', 'New'], ['used', 'Used'], ['asis', 'As-is'], ['demo', 'Demo']]; }
+function typeLabel(t) { var f = dealTypes().filter(function (x) { return x[0] === norm(t); })[0]; return f ? f[1] : (t || ''); }
+function dealGross(d) { return (num(d.price) || 0) - (num(d.cost) || 0) - (num(d.expenses) || 0); }
+function dealCommission(d) {
+  var gross = dealGross(d);
+  var base = gross * COMM.rate;
+  var per = d.flat ? Math.max(base, COMM.flat[norm(d.type)] || 0) : base;
+  var fees = (d.delivered ? COMM.deliveryFee : 0) + (d.cash && norm(d.type) !== 'asis' ? COMM.cashFee : 0);
+  return { gross: gross, per: per, fees: fees, net: per - fees };
+}
+function monthCommission(ym) {
+  var deals = (DB.deals || []).filter(function (d) { return d.month === ym; });
+  var m = (DB.commission && DB.commission[ym]) || {};
+  var frontEnd = 0, unitsNew = 0, unitsUsed = 0, delivered = 0;
+  deals.forEach(function (d) { var r = dealCommission(d); frontEnd += r.net; if (d.delivered) delivered++; if (norm(d.type) === 'new') unitsNew++; else unitsUsed++; });
+  var mn = Number(ym.slice(5, 7)), tgt = COMM.targets[mn] || [0, 0];
+  var disqList = [];
+  if (m.dqTraining) disqList.push('training incomplete');
+  if (m.dqConnected) disqList.push('connected services below benchmark');
+  if (delivered < 10) disqList.push('units delivered < 10 (' + delivered + ')');
+  if (m.dqCrm) disqList.push('CRM not updated');
+  var disq = disqList.length > 0;
+  var newHit = tgt[0] > 0 && unitsNew >= tgt[0], usedHit = tgt[1] > 0 && unitsUsed >= tgt[1], accel = newHit && usedHit;
+  var tireSets = num(m.tireSets) || 0;
+  var kpiHit = { ecp: !!m.ecp, wpwpp: !!m.wpwpp, tire: !!(m.tirePenOK && tireSets > 0), tradeWin: !!m.tradeWin, csi: !!m.csi, fni: (num(m.fniAvg) || 0) >= 1500 };
+  kpiHit.excellence = kpiHit.ecp && kpiHit.wpwpp && kpiHit.tire && kpiHit.tradeWin && kpiHit.csi && kpiHit.fni;
+  var reviewsCount = num(m.reviews) || 0, volume = 0, kpi = 0, reviews = 0;
+  if (!disq) {
+    if (newHit) volume += COMM.vol.newHit; if (usedHit) volume += COMM.vol.usedHit; if (accel) volume += COMM.vol.accel;
+    if (kpiHit.ecp) kpi += COMM.kpi.ecp; if (kpiHit.wpwpp) kpi += COMM.kpi.wpwpp; if (kpiHit.tire) kpi += COMM.kpi.tirePerSet * tireSets;
+    if (kpiHit.tradeWin) kpi += COMM.kpi.tradeWin; if (kpiHit.csi) kpi += COMM.kpi.csi; if (kpiHit.fni) kpi += COMM.kpi.fni; if (kpiHit.excellence) kpi += COMM.kpi.excellence;
+    reviews = reviewsCount * COMM.reviewEach;
+  }
+  var allowance = COMM.allowance[m.allowance || 'none'] || 0;
+  return { deals: deals, m: m, frontEnd: frontEnd, unitsNew: unitsNew, unitsUsed: unitsUsed, delivered: delivered, tgt: tgt, disq: disq, disqList: disqList, newHit: newHit, usedHit: usedHit, accel: accel, kpiHit: kpiHit, tireSets: tireSets, reviewsCount: reviewsCount, volume: volume, kpi: kpi, reviews: reviews, allowance: allowance, total: frontEnd + volume + kpi + reviews + allowance };
+}
+function thisMonth() { return new Date().toISOString().slice(0, 7); }
+function fmtMonth(ts) { var d = new Date(ts); return isNaN(d) ? '' : d.toISOString().slice(0, 7); }
+function monthName(ym) { var d = new Date(ym + '-01T00:00:00'); return isNaN(d) ? ym : d.toLocaleDateString('en-CA', { month: 'long', year: 'numeric' }); }
+function monthOptions() {
+  var s = {}; (DB.activities || []).forEach(function (a) { var k = fmtMonth(a.at); if (k) s[k] = 1; }); (DB.deals || []).forEach(function (d) { if (d.month) s[d.month] = 1; });
+  s[thisMonth()] = 1; var yr = thisMonth().slice(0, 4); [8, 9, 10, 11, 12].forEach(function (mn) { s[yr + '-' + String(mn).padStart(2, '0')] = 1; });
+  return Object.keys(s).sort().reverse();
+}
+function actCounts(ym) {
+  var c = { Call: 0, Text: 0, Email: 0, Meeting: 0, 'Test Drive': 0, Note: 0 };
+  (DB.activities || []).forEach(function (a) { if (fmtMonth(a.at) !== ym) return; for (var k in c) if (norm(k) === norm(a.type)) { c[k]++; break; } });
+  return c;
+}
+var _perfMonth = null, _qlClient = '';
+function _ckbox(id, label, on) { return '<label style="display:inline-flex;align-items:center;gap:6px;margin:4px 14px 4px 0;font-size:13px"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + '> ' + esc(label) + '</label>'; }
+function viewPerformance(sub) {
+  if (!_perfMonth) _perfMonth = thisMonth();
+  var ym = _perfMonth, tab = sub === 'commission' ? 'commission' : 'scoreboard';
+  var msel = '<select id="perfMonth">' + monthOptions().map(function (mo) { return '<option value="' + mo + '"' + (mo === ym ? ' selected' : '') + '>' + esc(monthName(mo)) + '</option>'; }).join('') + '</select>';
+  var tabs = '<div class="tabs"><button class="' + (tab === 'scoreboard' ? 'active' : '') + '" data-go="#/performance">Scoreboard</button><button class="' + (tab === 'commission' ? 'active' : '') + '" data-go="#/performance/commission">Commission (pay)</button></div>';
+  return '<div class="row" style="align-items:center"><h1>Performance</h1><span class="right">' + msel + '</span></div>' + tabs + (tab === 'scoreboard' ? perfScoreboard(ym) : perfCommission(ym));
+}
+function perfScoreboard(ym) {
+  var a = actCounts(ym), cm = monthCommission(ym), closes = cm.deals.length, td = a['Test Drive'];
+  var rate = td ? Math.round(100 * closes / td) + '%' : '—';
+  function prog(have, want) { if (!want) return '<div style="color:var(--muted);font-size:12px">no target this month</div>'; var pct = Math.min(100, Math.round(100 * have / want)); return '<div class="bar"><div style="width:' + pct + '%' + (have >= want ? ';background:var(--ok)' : '') + '"></div></div><div style="font-size:12px;color:var(--muted)">' + have + ' / ' + want + (have >= want ? ' ✓' : '') + '</div>'; }
+  return '<div class="grid cards" style="margin-top:8px">'
+    + kpi(a.Call, 'Calls') + kpi(a.Text, 'Texts') + kpi(a.Email, 'Emails') + kpi(a.Meeting, 'Meetings') + kpi(a['Test Drive'], 'Test drives')
+    + kpi('<span style="color:var(--cust)">' + closes + '</span>', 'Closes') + kpi(rate, 'Close rate (vs test drives)') + '</div>'
+    + '<div class="row" style="margin-top:8px">'
+    + '<div class="panel" style="flex:1;min-width:260px"><div class="hd">🎯 Unit targets — ' + esc(monthName(ym)) + '</div><div class="bd"><div style="margin-bottom:12px"><b>New</b>' + prog(cm.unitsNew, cm.tgt[0]) + '</div><div><b>Used</b>' + prog(cm.unitsUsed, cm.tgt[1]) + '</div><div style="color:var(--muted);font-size:12px;margin-top:10px">Delivered this month: <b>' + cm.delivered + '</b>' + (cm.delivered < 10 ? ' · need 10 to keep bonuses' : ' ✓') + '</div></div></div>'
+    + '<div class="panel" style="flex:1;min-width:260px"><div class="hd">💵 Estimated pay — ' + esc(monthName(ym)) + '</div><div class="bd"><div style="font-size:30px;font-weight:700;color:var(--accent)">' + money(Math.round(cm.total)) + '</div><div style="color:var(--muted);font-size:13px;margin-top:4px">Front-end ' + money(Math.round(cm.frontEnd)) + ' · bonuses ' + money(cm.volume + cm.kpi + cm.reviews) + ' · allowance ' + money(cm.allowance) + '</div>' + (cm.disq ? '<div style="color:var(--accent);font-size:12px;margin-top:6px">⚠ bonuses voided: ' + esc(cm.disqList.join(', ')) + '</div>' : '') + '<div style="margin-top:8px"><a href="#/performance/commission">open commission breakdown →</a></div></div></div>'
+    + '</div>'
+    + '<div class="panel" style="margin-top:14px"><div class="hd">⚡ Quick log <span class="right" style="font-weight:400;color:var(--muted);font-size:12px">logs to selected client, if any</span></div><div class="bd"><div class="row" style="align-items:center;gap:8px">'
+    + '<select id="qlClient" style="flex:1;max-width:280px;padding:8px;border:1px solid var(--line);border-radius:8px"><option value="">— no client —</option>' + DB.clients.slice().sort(function (x, y) { return x.name.localeCompare(y.name); }).map(function (c) { return '<option value="' + c.id + '"' + (c.id === _qlClient ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('') + '</select>'
+    + '<button class="btn" data-ql="Call">📞 Call</button><button class="btn" data-ql="Text">💬 Text</button><button class="btn" data-ql="Email">✉ Email</button><button class="btn" data-ql="Meeting">🤝 Meeting</button><button class="btn" data-ql="Test Drive">🚗 Test drive</button><button class="btn primary" data-add-deal="1">✓ Log a close…</button>'
+    + '</div><div style="color:var(--muted);font-size:12px;margin-top:8px">Totals above update as you log. Logged calls/texts also appear on the client’s timeline.</div></div></div>'
+    + '<div class="panel" style="margin-top:14px"><div class="hd">All-time activity</div><div class="bd"><table><tbody>' + ['Call', 'Text', 'Email', 'Meeting', 'Test Drive', 'Note'].map(function (t) { var all = (DB.activities || []).filter(function (x) { return norm(x.type) === norm(t); }).length; return '<tr><td>' + t + '</td><td>' + all + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
+}
+function perfCommission(ym) {
+  var cm = monthCommission(ym), m = cm.m, K = COMM.kpi, V = COMM.vol;
+  var dealsTbl = cm.deals.length
+    ? '<table><thead><tr><th>Date</th><th>Vehicle / client</th><th>Type</th><th>Gross</th><th>Del</th><th>Pays</th><th></th></tr></thead><tbody>'
+      + cm.deals.slice().sort(function (a, b) { return (a.at || 0) - (b.at || 0); }).map(function (d) { var r = dealCommission(d); var c = d.clientId ? client(d.clientId) : null; var v = d.vehicleId ? vehicle(d.vehicleId) : null; var lbl = v ? vehLabel(v) : '(no vehicle)'; return '<tr class="clk" data-edit-deal="' + d.id + '"><td>' + esc(fmtDate(d.at)) + '</td><td>' + esc(lbl) + (c ? ' · ' + esc(c.name) : '') + '</td><td><span class="pill">' + esc(typeLabel(d.type)) + '</span></td><td>' + money(Math.round(r.gross)) + '</td><td>' + (d.delivered ? '✓' : '') + '</td><td><b>' + money(Math.round(r.net)) + '</b></td><td><button class="btn ghost sm" data-del-deal="' + d.id + '">✕</button></td></tr>'; }).join('')
+      + '<tr style="border-top:2px solid var(--line)"><td colspan="5"><b>Front-end commission</b></td><td><b>' + money(Math.round(cm.frontEnd)) + '</b></td><td></td></tr></tbody></table>'
+    : '<div class="empty">No deals logged for ' + esc(monthName(ym)) + '. Add one to start your commission.</div>';
+  function brow(label, ok, amt) { return '<tr><td>' + esc(label) + '</td><td>' + (ok ? '<span class="fit-in">✓</span>' : '<span style="color:var(--muted)">—</span>') + '</td><td style="text-align:right">' + (ok && !cm.disq ? money(amt) : '<span style="color:var(--muted)">' + money(0) + '</span>') + '</td></tr>'; }
+  var bonusTbl = '<table><tbody>'
+    + '<tr><td colspan="3" style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px">Volume</td></tr>'
+    + brow('New target (' + cm.unitsNew + '/' + cm.tgt[0] + ')', cm.newHit, V.newHit) + brow('Used target (' + cm.unitsUsed + '/' + cm.tgt[1] + ')', cm.usedHit, V.usedHit) + brow('Accelerator (both hit)', cm.accel, V.accel)
+    + '<tr><td colspan="3" style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px">KPIs</td></tr>'
+    + brow('ECP ≥ 20%', cm.kpiHit.ecp, K.ecp) + brow('WP/WPP ≥ 40% (leases)', cm.kpiHit.wpwpp, K.wpwpp) + brow('Tires — ' + cm.tireSets + ' set' + (cm.tireSets === 1 ? '' : 's'), cm.kpiHit.tire, K.tirePerSet * cm.tireSets) + brow('Trade win ≥ 55%', cm.kpiHit.tradeWin, K.tradeWin) + brow('CSI ≥ benchmark', cm.kpiHit.csi, K.csi) + brow('F&I avg gross ≥ $1,500', cm.kpiHit.fni, K.fni) + brow('Excellence (all KPIs)', cm.kpiHit.excellence, K.excellence)
+    + '<tr><td colspan="3" style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px">Other</td></tr>'
+    + brow('Google reviews (' + cm.reviewsCount + ' × $20)', cm.reviewsCount > 0, COMM.reviewEach * cm.reviewsCount)
+    + '<tr><td>Vehicle allowance (' + esc(m.allowance || 'none') + ')</td><td>' + (cm.allowance ? '<span class="fit-in">✓</span>' : '—') + '</td><td style="text-align:right">' + money(cm.allowance) + '</td></tr></tbody></table>';
+  var totalsTbl = '<table style="margin-top:6px"><tbody><tr><td>Front-end</td><td style="text-align:right">' + money(Math.round(cm.frontEnd)) + '</td></tr><tr><td>Volume bonus</td><td style="text-align:right">' + money(cm.volume) + '</td></tr><tr><td>KPI bonus</td><td style="text-align:right">' + money(cm.kpi) + '</td></tr><tr><td>Reviews</td><td style="text-align:right">' + money(cm.reviews) + '</td></tr><tr><td>Allowance</td><td style="text-align:right">' + money(cm.allowance) + '</td></tr><tr style="border-top:2px solid var(--line)"><td><b>Total — ' + esc(monthName(ym)) + '</b></td><td style="text-align:right"><b style="font-size:18px;color:var(--accent)">' + money(Math.round(cm.total)) + '</b></td></tr></tbody></table>';
+  var form = '<div class="panel"><div class="hd">Month inputs</div><div class="bd">'
+    + '<div class="field"><label>Vehicle allowance</label><select id="m_allow"><option value="none"' + ((m.allowance || 'none') === 'none' ? ' selected' : '') + '>None</option><option value="oem"' + (m.allowance === 'oem' ? ' selected' : '') + '>OEM program ($600/mo)</option><option value="own"' + (m.allowance === 'own' ? ' selected' : '') + '>Own vehicle ($500/mo)</option></select></div>'
+    + '<div class="row">' + fld('m_reviews', '5★ reviews', m.reviews || '') + fld('m_tireSets', 'Tire sets', m.tireSets || '') + fld('m_fni', 'F&I avg $', m.fniAvg || '') + '</div>'
+    + '<div style="margin:6px 0">' + _ckbox('m_tirePen', 'Tire penetration ≥ 20%', m.tirePenOK) + _ckbox('m_ecp', 'ECP ≥ 20%', m.ecp) + _ckbox('m_wpwpp', 'WP/WPP ≥ 40%', m.wpwpp) + _ckbox('m_tradeWin', 'Trade win ≥ 55%', m.tradeWin) + _ckbox('m_csi', 'CSI ≥ benchmark', m.csi) + '</div>'
+    + '<div style="font-weight:600;font-size:12px;margin:8px 0 2px;color:var(--accent)">Disqualifiers — void all bonuses</div><div>' + _ckbox('m_dqTraining', 'Training incomplete', m.dqTraining) + _ckbox('m_dqConnected', 'Connected services low', m.dqConnected) + _ckbox('m_dqCrm', 'CRM not updated', m.dqCrm) + '</div>'
+    + '<div style="color:var(--muted);font-size:12px;margin:6px 0">“Units delivered &lt; 10” is auto-detected (' + cm.delivered + ' delivered).</div>'
+    + '<button class="btn primary" id="m_save">Save month inputs</button></div></div>';
+  return '<div class="row" style="align-items:flex-start;gap:14px;margin-top:8px">'
+    + '<div style="flex:2;min-width:320px"><div class="panel"><div class="hd">Deals — ' + esc(monthName(ym)) + '<span class="right"><button class="btn sm primary" data-add-deal="1">+ Deal</button></span></div><div class="bd">' + dealsTbl + '</div></div>'
+    + '<div class="panel" style="margin-top:14px"><div class="hd">Pay breakdown</div><div class="bd">' + (cm.disq ? '<div class="backupbar" style="color:var(--accent);background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.35)">⚠ All bonuses voided: ' + esc(cm.disqList.join(', ')) + '. Core commission + allowance still paid.</div>' : '') + bonusTbl + totalsTbl + '</div></div></div>'
+    + '<div style="flex:1;min-width:250px">' + form + '</div></div>';
+}
+function dealForm(existing, presetMonth) {
+  var d = existing || { type: 'new', delivered: true };
+  function opt(v, l, on) { return '<option value="' + esc(v) + '"' + (on ? ' selected' : '') + '>' + esc(l) + '</option>'; }
+  var clientOpts = '<option value="">— none —</option>' + DB.clients.slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).map(function (c) { return opt(c.id, c.name, d.clientId === c.id); }).join('');
+  var vehOpts = '<option value="">— none —</option>' + DB.vehicles.map(function (v) { return opt(v.id, vehLabel(v) + ' · ' + (v.ref || v.vin || ''), d.vehicleId === v.id); }).join('');
+  var typeOpts = dealTypes().map(function (t) { return opt(t[0], t[1], norm(d.type) === t[0]); }).join('');
+  var date = d.at ? fmtDate(d.at) : (presetMonth && presetMonth !== thisMonth() ? presetMonth + '-01' : todayStr());
+  var body = '<div class="row"><div class="field" style="flex:1"><label>Date</label><input id="d_date" type="date" value="' + esc(date) + '"></div><div class="field" style="flex:1"><label>Type</label><select id="d_type">' + typeOpts + '</select></div></div>'
+    + '<div class="field"><label>Client (optional)</label><select id="d_client">' + clientOpts + '</select></div>'
+    + '<div class="field"><label>Vehicle (optional — fills price)</label><select id="d_vehicle">' + vehOpts + '</select></div>'
+    + '<div class="row">' + fld('d_price', 'Selling price', d.price != null ? d.price : '') + fld('d_cost', 'Vehicle cost', d.cost != null ? d.cost : '') + fld('d_exp', 'Direct expenses', d.expenses != null ? d.expenses : '') + '</div>'
+    + '<div class="row" style="gap:18px;margin:6px 0 2px">' + _ckbox('d_deliv', 'Delivered', d.delivered) + _ckbox('d_cash', 'Cash deal', d.cash) + _ckbox('d_flat', 'Min-flat (mgmt: gross too low)', d.flat) + '</div>'
+    + '<div id="d_prev"></div>';
+  modal(existing ? 'Edit deal' : 'Log a deal / close', body, function () {
+    var date = $('#d_date').value || todayStr();
+    var price = num($('#d_price').value);
+    if (price == null) { toast('Selling price required'); return false; }
+    var o = { type: $('#d_type').value, clientId: $('#d_client').value || null, vehicleId: $('#d_vehicle').value || null, price: price, cost: num($('#d_cost').value), expenses: num($('#d_exp').value), delivered: $('#d_deliv').checked, cash: $('#d_cash').checked, flat: $('#d_flat').checked, at: Date.parse(date + 'T12:00:00') || Date.now(), month: date.slice(0, 7) };
+    if (existing) Object.assign(existing, o); else { o.id = uid('d'); DB.deals.push(o); }
+    if (o.clientId) { var c = client(o.clientId); if (c) { addActivity(o.clientId, 'Note', 'Closed: ' + typeLabel(o.type) + (o.vehicleId && vehicle(o.vehicleId) ? ' ' + vehLabel(vehicle(o.vehicleId)) : '') + ' — ' + money(price)); if (norm(c.stage) !== 'won') c.stage = 'Won'; } }
+    _perfMonth = o.month; save(); toast('Deal saved'); route();
+  }, existing ? 'Save deal' : 'Save deal');
+  function fill() {
+    var vid = $('#d_vehicle').value; if (!vid) return; var v = vehicle(vid); if (!v) return;
+    if (!$('#d_price').value) { var p = vehPrice(v); if (p != null) $('#d_price').value = p; }
+    $('#d_type').value = v.kind === 'Used' ? 'used' : 'new';
+  }
+  ['d_date', 'd_type', 'd_price', 'd_cost', 'd_exp'].forEach(function (id) { var e = $('#' + id); if (e) e.oninput = prev; });
+  ['d_deliv', 'd_cash', 'd_flat', 'd_type'].forEach(function (id) { var e = $('#' + id); if (e) e.onchange = prev; });
+  $('#d_vehicle').onchange = function () { fill(); prev(); };
+  function prev() {
+    var d2 = { type: $('#d_type').value, price: num($('#d_price').value), cost: num($('#d_cost').value), expenses: num($('#d_exp').value), delivered: $('#d_deliv').checked, cash: $('#d_cash').checked, flat: $('#d_flat').checked };
+    var r = dealCommission(d2);
+    $('#d_prev').innerHTML = '<div class="panel" style="margin-top:8px"><div class="bd"><table><tbody>'
+      + '<tr><td>Gross profit</td><td>' + money(Math.round(r.gross)) + '</td></tr>'
+      + '<tr><td>Commission' + (d2.flat ? ' (max 18% / flat)' : ' (18%)') + '</td><td>' + money(Math.round(r.per)) + '</td></tr>'
+      + '<tr><td>Fees' + (r.fees ? ' (' + (d2.delivered ? 'delivery' : '') + (d2.cash && norm(d2.type) !== 'asis' ? (d2.delivered ? ' + cash' : 'cash') : '') + ')' : '') + '</td><td>−' + money(r.fees) + '</td></tr>'
+      + '<tr><td><b>This deal pays</b></td><td><b>' + money(Math.round(r.net)) + '</b></td></tr></tbody></table></div></div>';
+  }
+  prev();
+}
+function quickLog(clientId, type) {
+  DB.activities.push({ id: uid('a'), clientId: clientId || null, type: type, body: type + ' (quick log)', at: Date.now() });
+  if (clientId) { var c = client(clientId); if (c) c.lastContact = Date.now(); }
+  save(); toast(type + ' logged'); route();
+}
+function saveMonthInputs() {
+  var ym = _perfMonth; DB.commission = DB.commission || {};
+  DB.commission[ym] = { allowance: $('#m_allow').value, reviews: num($('#m_reviews').value) || 0, tireSets: num($('#m_tireSets').value) || 0, tirePenOK: $('#m_tirePen').checked, ecp: $('#m_ecp').checked, wpwpp: $('#m_wpwpp').checked, tradeWin: $('#m_tradeWin').checked, csi: $('#m_csi').checked, fniAvg: num($('#m_fni').value) || 0, dqTraining: $('#m_dqTraining').checked, dqConnected: $('#m_dqConnected').checked, dqCrm: $('#m_dqCrm').checked };
+  save(); toast('Month inputs saved'); route();
 }
 
 /* ---------- forms / modals ---------- */
@@ -906,6 +1086,109 @@ function buildModal(cid) {
   render();
 }
 /* ---------- import ---------- */
+/* minimal dependency-free .xlsx reader: unzip (deflate-raw) → sharedStrings + first sheet → 2-D rows */
+function _u16(d, o) { return d[o] | (d[o + 1] << 8); }
+function _u32(d, o) { return (d[o] | (d[o + 1] << 8) | (d[o + 2] << 16) | (d[o + 3] << 24)) >>> 0; }
+async function _inflateRaw(bytes) {
+  if (typeof DecompressionStream === 'undefined') throw new Error('This browser cannot read .xlsx — save the sheet as .csv and drop that instead.');
+  var stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+function _unzip(buf) {
+  var d = new Uint8Array(buf), i = d.length - 22;
+  for (; i >= 0; i--) if (_u32(d, i) === 0x06054b50) break;
+  if (i < 0) throw new Error('Not a valid .xlsx file.');
+  var cnt = _u16(d, i + 10), p = _u32(d, i + 16), files = {};
+  for (var k = 0; k < cnt && _u32(d, p) === 0x02014b50; k++) {
+    var nameLen = _u16(d, p + 28), extraLen = _u16(d, p + 30), cmtLen = _u16(d, p + 32);
+    var name = new TextDecoder().decode(d.subarray(p + 46, p + 46 + nameLen));
+    files[name] = { method: _u16(d, p + 10), csize: _u32(d, p + 20), lho: _u32(d, p + 42) };
+    p += 46 + nameLen + extraLen + cmtLen;
+  }
+  return { d: d, files: files };
+}
+async function _zipText(zip, name) {
+  var f = zip.files[name]; if (!f) return null;
+  var d = zip.d, lho = f.lho; if (_u32(d, lho) !== 0x04034b50) return null;
+  var start = lho + 30 + _u16(d, lho + 26) + _u16(d, lho + 28);
+  var comp = d.subarray(start, start + f.csize);
+  return new TextDecoder().decode(f.method === 0 ? comp : await _inflateRaw(comp));
+}
+function _colIdx(ref) { var m = String(ref).match(/^[A-Z]+/); if (!m) return 0; var s = m[0], n = 0; for (var i = 0; i < s.length; i++) n = n * 26 + (s.charCodeAt(i) - 64); return n - 1; }
+async function readXLSX(buf) {
+  var zip = _unzip(buf), sst = [];
+  var ssXml = await _zipText(zip, 'xl/sharedStrings.xml');
+  if (ssXml) { var sis = new DOMParser().parseFromString(ssXml, 'application/xml').getElementsByTagName('si'); for (var i = 0; i < sis.length; i++) { var ts = sis[i].getElementsByTagName('t'), s = ''; for (var j = 0; j < ts.length; j++) s += ts[j].textContent; sst.push(s); } }
+  var sheet = 'xl/worksheets/sheet1.xml';
+  if (!zip.files[sheet]) { var ks = Object.keys(zip.files).filter(function (k) { return /^xl\/worksheets\/.*\.xml$/.test(k); }).sort(); if (ks.length) sheet = ks[0]; }
+  var shXml = await _zipText(zip, sheet); if (!shXml) throw new Error('No worksheet found in the file.');
+  var rowsEl = new DOMParser().parseFromString(shXml, 'application/xml').getElementsByTagName('row'), out = [];
+  for (var r = 0; r < rowsEl.length; r++) {
+    var cells = rowsEl[r].getElementsByTagName('c'), row = [];
+    for (var ci = 0; ci < cells.length; ci++) {
+      var c = cells[ci], col = _colIdx(c.getAttribute('r') || ''), t = c.getAttribute('t'), val = '';
+      if (t === 's') { var vv = c.getElementsByTagName('v')[0]; if (vv) val = sst[parseInt(vv.textContent, 10)] || ''; }
+      else if (t === 'inlineStr') { var isl = c.getElementsByTagName('t'); for (var z = 0; z < isl.length; z++) val += isl[z].textContent; }
+      else { var v2 = c.getElementsByTagName('v')[0]; if (v2) val = v2.textContent; }
+      while (row.length < col) row.push(''); row[col] = val;
+    }
+    out.push(row);
+  }
+  return out;
+}
+/* header-mapped vehicle import with de-dup on stock # (ref) OR VIN — same car only goes in once */
+function importVehiclesRows(rows, defaultKind) {
+  rows = (rows || []).filter(function (r) { return r && r.some(function (x) { return String(x == null ? '' : x).trim() !== ''; }); });
+  if (rows.length < 2) { toast('That sheet looks empty (need a header row + data).'); return; }
+  var hdr = rows[0].map(function (h) { return norm(h); });
+  function col() { var n = [].slice.call(arguments); for (var i = 0; i < hdr.length; i++) for (var j = 0; j < n.length; j++) if (hdr[i].indexOf(n[j]) >= 0) return i; return -1; }
+  var ix = {
+    kind: col('type', 'condition', 'new/used', 'new or used'), stage: col('stage'),
+    ref: col('stock', 'stk', 'order #', 'order#', 'order no', 'ref'), vin: col('vin', 'serial'),
+    year: col('year', 'yr'), make: col('make', 'brand'), series: col('series'),
+    model: col('model', 'vehicle line'), suffix: col('suffix', 'trim', 'grade', 'package'),
+    color: col('colour', 'color', 'exterior', 'ext '), km: col('km', 'odometer', 'mileage', 'kms'),
+    price: col('price', 'retail', 'asking', 'list'), status: col('status', 'availability'),
+    customer: col('customer', 'buyer', 'sold to'), etaFrom: col('eta from', 'eta'), etaTo: col('eta to', 'arrival', 'delivery date'),
+    comments: col('comment', 'note', 'remark', 'description')
+  };
+  var haveRef = {}, haveVin = {};
+  DB.vehicles.forEach(function (v) { if (v.ref) haveRef[norm(v.ref)] = 1; if (v.vin) haveVin[norm(v.vin)] = 1; });
+  var add = 0, dup = 0, bad = 0;
+  for (var r = 1; r < rows.length; r++) {
+    var row = rows[r], get = function (i) { return (i >= 0 && i < row.length) ? String(row[i] == null ? '' : row[i]).trim() : ''; };
+    var ref = get(ix.ref), vin = get(ix.vin), model = get(ix.model);
+    if (!ref && !vin && !model) { bad++; continue; }
+    if ((ref && haveRef[norm(ref)]) || (vin && haveVin[norm(vin)])) { dup++; continue; }
+    var kr = norm(get(ix.kind));
+    var kind = (kr.indexOf('used') >= 0 || kr.indexOf('pre') >= 0 || kr.indexOf('owned') >= 0) ? 'Used'
+      : (kr.indexOf('new') >= 0 || kr.indexOf('demo') >= 0) ? 'New' : (defaultKind || 'New');
+    var v = { id: uid('v'), kind: kind, ref: ref, vin: vin, year: get(ix.year), model: model, suffix: get(ix.suffix), color: get(ix.color), status: get(ix.status) || 'Available', customer: get(ix.customer), comments: get(ix.comments) };
+    if (kind === 'New') { v.stage = get(ix.stage) || 'Inventory'; v.make = get(ix.make) || DB.config.newMake; v.series = get(ix.series) || seriesFromModel(model); v.etaFrom = get(ix.etaFrom); v.etaTo = get(ix.etaTo); }
+    else { v.stage = ''; v.make = get(ix.make); v.series = get(ix.series); v.km = num(get(ix.km)) || ''; v.price = num(get(ix.price)) || ''; v.inStock = ''; v.lastPostedAt = 0; }
+    DB.vehicles.push(v);
+    if (ref) haveRef[norm(ref)] = 1; if (vin) haveVin[norm(vin)] = 1;
+    add++;
+  }
+  save();
+  toast(add + ' vehicle' + (add === 1 ? '' : 's') + ' added' + (dup ? ' · ' + dup + ' duplicate' + (dup === 1 ? '' : 's') + ' skipped' : '') + (bad ? ' · ' + bad + ' row' + (bad === 1 ? '' : 's') + ' skipped (no model/stock#/VIN)' : ''));
+  route();
+}
+function importSheetFile(file, defaultKind) {
+  if (!file) return;
+  var name = (file.name || '').toLowerCase();
+  if (/\.(xlsx|xlsm)$/.test(name)) {
+    var ra = new FileReader();
+    ra.onload = function () { readXLSX(ra.result).then(function (rows) { importVehiclesRows(rows, defaultKind); }).catch(function (err) { console.error(err); toast(err && err.message ? err.message : 'Could not read that Excel file — try saving it as .csv.'); }); };
+    ra.readAsArrayBuffer(file);
+  } else if (/\.csv$/.test(name)) {
+    var rc = new FileReader(); rc.onload = function () { importVehiclesRows(parseCSV(rc.result), defaultKind); }; rc.readAsText(file);
+  } else if (/\.xls$/.test(name)) {
+    toast('Old .xls isn’t supported — open it and Save As .xlsx or .csv.');
+  } else {
+    toast('Drop an .xlsx or .csv file.');
+  }
+}
 function importCSV(kind, text) {
   if (kind === 'form') { importFormResponses(text); return; }
   const rows = parseCSV(text); if (rows.length < 2) { toast('Empty CSV'); return; }
@@ -991,6 +1274,23 @@ function bindView(view, arg) {
     const applyInv = () => { const q = norm($('#invSearch') ? $('#invSearch').value : ''), st = $('#invStage') ? $('#invStage').value : ''; $$('#invTbl tbody tr').forEach(tr => { const okq = !q || (tr.dataset.row || '').indexOf(q) >= 0; const oks = !st || tr.dataset.stage === st; tr.style.display = (okq && oks) ? '' : 'none'; }); };
     if ($('#invSearch')) $('#invSearch').oninput = applyInv;
     if ($('#invStage')) $('#invStage').onchange = applyInv;
+    const dk = arg === 'used' ? 'Used' : 'New';
+    const imp = $('#invImport'); if (imp) imp.onchange = e => { importSheetFile(e.target.files[0], dk); e.target.value = ''; };
+    const dz = $('#invDrop');
+    if (dz) {
+      ['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); dz.classList.add('drag'); }));
+      dz.addEventListener('dragleave', e => { e.preventDefault(); e.stopPropagation(); dz.classList.remove('drag'); });
+      dz.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); dz.classList.remove('drag'); const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) importSheetFile(f, dk); });
+    }
+  }
+  if (view === 'performance') {
+    const pm = $('#perfMonth'); if (pm) pm.onchange = () => { _perfMonth = pm.value; route(); };
+    const ql = $('#qlClient'); if (ql) ql.onchange = () => { _qlClient = ql.value; };
+    $$('[data-ql]').forEach(e => e.onclick = () => quickLog($('#qlClient') ? $('#qlClient').value : '', e.dataset.ql));
+    $$('[data-add-deal]').forEach(e => e.onclick = () => dealForm(null, _perfMonth));
+    $$('[data-edit-deal]').forEach(e => e.onclick = () => dealForm(DB.deals.find(d => d.id === e.dataset.editDeal), _perfMonth));
+    $$('[data-del-deal]').forEach(e => e.onclick = (ev) => { ev.stopPropagation(); if (confirm('Delete this deal?')) { DB.deals = DB.deals.filter(d => d.id !== e.dataset.delDeal); save(); route(); } });
+    const ms = $('#m_save'); if (ms) ms.onclick = saveMonthInputs;
   }
   if (view === 'settings') {
     $('#restoreFile') && ($('#restoreFile').onchange = e => readFile(e, restoreBackup));
@@ -1005,7 +1305,7 @@ function bindView(view, arg) {
     $('#setPass') && ($('#setPass').onclick = setPasscode);
     $('#rmPass') && ($('#rmPass').onclick = removePasscode);
     $('#loadSample') && ($('#loadSample').onclick = () => { if (confirm('Replace current data with sample data?')) { seed(); location.hash = '#/dashboard'; route(); } });
-    $('#clearAll') && ($('#clearAll').onclick = () => { if (confirm('Erase ALL data on this device? Make sure you have a backup.')) { DB = { clients: [], activities: [], vehicles: [], pricing: PRICING.map(function(p){return Object.assign({},p);}), tasks: [], config: defaultConfig(), meta: { createdAt: Date.now(), lastBackupAt: 0 } }; save(); location.hash = '#/dashboard'; route(); } });
+    $('#clearAll') && ($('#clearAll').onclick = () => { if (confirm('Erase ALL data on this device? Make sure you have a backup.')) { DB = { clients: [], activities: [], vehicles: [], pricing: PRICING.map(function(p){return Object.assign({},p);}), tasks: [], deals: [], commission: {}, config: defaultConfig(), meta: { createdAt: Date.now(), lastBackupAt: 0 } }; save(); location.hash = '#/dashboard'; route(); } });
   }
 }
 function readFile(e, cb) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => cb(r.result); r.readAsText(f); e.target.value = ''; }
