@@ -96,6 +96,32 @@
       );
     }).join("");
 
+    // FAQ accordion
+    var faqList = $("#faqList");
+    if (faqList) {
+      faqList.innerHTML = (S.faq || []).map(function (f, i) {
+        return (
+          '<div class="faq__item will-reveal">' +
+            '<button class="faq__q" type="button" aria-expanded="false" aria-controls="faqa' + i + '">' +
+              "<span>" + esc(f.q) + "</span><i class=\"faq__icon\" aria-hidden=\"true\"></i>" +
+            "</button>" +
+            '<div class="faq__a" id="faqa' + i + '" role="region"><p>' + esc(f.a) + "</p></div>" +
+          "</div>"
+        );
+      }).join("");
+      faqList.querySelectorAll(".faq__q").forEach(function (q) {
+        q.addEventListener("click", function () {
+          var open = q.getAttribute("aria-expanded") === "true";
+          // close siblings for a clean single-open accordion
+          faqList.querySelectorAll(".faq__q").forEach(function (o) {
+            o.setAttribute("aria-expanded", "false");
+            o.parentNode.classList.remove("is-open");
+          });
+          if (!open) { q.setAttribute("aria-expanded", "true"); q.parentNode.classList.add("is-open"); }
+        });
+      });
+    }
+
     // direct contact
     var c = S.contact || {};
     var items = [];
@@ -407,6 +433,21 @@
     gsap.to(".stage__disc", { rotation: -360, duration: 90, repeat: -1, ease: "none", transformOrigin: "50% 50%" });
     // gentle "breathing" float of the car
     gsap.to("#stageCar", { y: "-=10", duration: 4, repeat: -1, yoyo: true, ease: "sine.inOut" });
+
+    // periodic studio-light sweep across the car (CSS light bar overlay,
+    // since the car is an <img> of an SVG and can't be reached into)
+    var sc = $("#stageCar");
+    if (sc) {
+      var bar = document.createElement("span");
+      bar.className = "lightsweep";
+      sc.appendChild(bar);
+      gsap.set(bar, { xPercent: -140, opacity: 0 });
+      var st = gsap.timeline({ repeat: -1, repeatDelay: 5 });
+      st.to(bar, { opacity: 1, duration: 0.4 })
+        .to(bar, { xPercent: 140, duration: 1.5, ease: "power1.inOut" }, 0)
+        .to(bar, { opacity: 0, duration: 0.4 }, 1.1)
+        .set(bar, { xPercent: -140 });
+    }
 
     // mouse-parallax tilt on the whole stage (desktop)
     if (!coarse) {

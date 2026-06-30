@@ -129,6 +129,31 @@ window.SITE = {
     },
   ],
 
+  /* --- FAQ (shown in the Request room, above your direct contact) -------
+     The questions discerning buyers actually ask. Edit freely.            */
+  faq: [
+    {
+      q: "How do you charge for sourcing?",
+      a: "A transparent flat finder's fee agreed before any work begins — never a hidden markup on the car. You always see the real acquisition price.", // [PLACEHOLDER — confirm your model]
+    },
+    {
+      q: "Do you only work within the GTA?",
+      a: "My base and network are the Greater Toronto Area, but I source nationally and arrange transport when the right car sits elsewhere.",
+    },
+    {
+      q: "Can you find a car that isn't one of your seven marques?",
+      a: "Those are my specialties, but the network runs deeper. If you're after something else, ask — I'll tell you honestly whether I'm the right person for it.",
+    },
+    {
+      q: "How discreet is the process?",
+      a: "Completely. Names, numbers and negotiations stay private. Many of the cars I place are never advertised publicly, and neither are my clients.",
+    },
+    {
+      q: "Do you handle inspection and paperwork?",
+      a: "Yes — independent pre-purchase inspection, history and lien checks, negotiation, financing introductions if wanted, registration and delivery. White-glove, end to end.",
+    },
+  ],
+
   /* --- The four rooms (hero hotspots map to these) ----------------------- */
   rooms: [
     { id: "inventory", label: "Inventory",   hint: "Current & sourced cars" },
