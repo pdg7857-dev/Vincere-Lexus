@@ -248,6 +248,30 @@ em{ font-style:italic; }
 .status--sold::before{ content:"• "; }
 .empty{ grid-column:1/-1; text-align:center; padding:4rem 1rem; border:1px dashed var(--line); border-radius:4px; color:var(--silver-dim); font-family:var(--serif); font-size:1.4rem; }
 
+/* card art (silhouette) */
+.card__art{ position:absolute; inset:0; display:grid; place-items:center; }
+.card__art .silo{ position:absolute; left:50%; top:54%; width:86%; transform:translate(-50%,-50%); opacity:.5; transition:opacity .6s var(--ease), transform 1.2s var(--ease); }
+.card:hover .card__art .silo{ opacity:.78; transform:translate(-50%,-50%) scale(1.05); }
+.card__art .card__marque{ position:relative; z-index:1; opacity:.32; }
+.card__more{ display:block; margin-top:1rem; font-size:.66rem; letter-spacing:.24em; text-transform:uppercase; color:var(--silver-dim); opacity:0; transform:translateY(6px); transition:opacity .4s var(--ease), transform .4s var(--ease); }
+.card:hover .card__more,.card:focus-visible .card__more{ opacity:1; transform:none; color:var(--platinum); }
+.card{ cursor:pointer; }
+.card:focus-visible{ outline:2px solid var(--silver); outline-offset:4px; }
+
+/* ---------- inventory filters ------------------------------------------ */
+.filters{ display:flex; flex-wrap:wrap; gap:1.4rem 2.2rem; align-items:center; margin-bottom:2.2rem; }
+.filters__group{ display:flex; flex-wrap:wrap; gap:.5rem; }
+.filters__group[data-kind="marque"]{ position:relative; }
+.filters__group[data-kind="marque"]::before{ content:""; }
+.chip{
+  font-family:var(--sans); font-size:.66rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--silver-dim); background:none; border:1px solid var(--line-soft); border-radius:2px;
+  padding:.55rem .9rem; cursor:pointer; transition:color .3s, border-color .3s, background .3s;
+}
+.chip:hover{ color:var(--platinum); border-color:var(--line); }
+.chip.is-active{ color:var(--black); background:var(--platinum); border-color:var(--platinum); }
+.filters-empty{ margin-top:1rem; }
+
 /* ---------- Room 2 · steps --------------------------------------------- */
 .steps{ list-style:none; display:grid; gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); border-radius:4px; overflow:hidden; }
 .step{ display:grid; grid-template-columns:120px 1fr; gap:2rem; padding:clamp(1.8rem,4vw,3rem); background:var(--black); align-items:start; transition:background .5s; }
@@ -316,6 +340,33 @@ em{ font-style:italic; }
 .foot__tag{ font-family:var(--serif); font-style:italic; font-size:1.2rem; color:var(--silver-dim); margin:.6rem 0 1.4rem; }
 .foot__meta{ font-size:.78rem; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
 .foot__fine{ font-size:.72rem; color:var(--muted); margin-top:1.4rem; opacity:.7; }
+
+/* ---------- vehicle lightbox ------------------------------------------- */
+body.no-scroll{ overflow:hidden; }
+.sheet{ position:fixed; inset:0; z-index:9300; display:grid; place-items:center; padding:1.4rem; visibility:hidden; opacity:0; transition:opacity .4s var(--ease), visibility .4s; }
+.sheet.is-open{ visibility:visible; opacity:1; }
+.sheet__backdrop{ position:absolute; inset:0; background:rgba(5,5,6,.78); backdrop-filter:blur(8px); }
+.sheet__panel{ position:relative; z-index:1; width:min(720px,94vw); max-height:90vh; overflow:auto; background:linear-gradient(180deg,var(--panel),var(--black-2)); border:1px solid var(--line); border-radius:5px; }
+.sheet__close{ position:absolute; top:.6rem; right:.9rem; z-index:2; background:none; border:0; color:var(--silver); font-size:2rem; line-height:1; cursor:pointer; transition:color .3s; }
+.sheet__close:hover{ color:var(--platinum); }
+.sheet__media{ position:relative; aspect-ratio:16/9; background:radial-gradient(60% 80% at 50% 24%, rgba(201,204,209,.16), transparent 60%), var(--black); display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line-soft); }
+.sheet__media .silo{ width:78%; opacity:.85; }
+.sheet__media img{ width:100%; height:100%; object-fit:cover; }
+.sheet__media .card__marque{ position:absolute; bottom:.6rem; right:1rem; }
+.sheet__body{ padding:1.8rem 2rem 2.2rem; }
+.sheet__status{ position:static; display:inline-block; margin-bottom:1rem; }
+.sheet__name{ font-family:var(--serif); font-size:clamp(1.8rem,4vw,2.6rem); color:var(--platinum); margin:.3rem 0 1rem; }
+.sheet__note{ color:var(--silver-dim); max-width:52ch; margin-bottom:1.8rem; }
+
+/* ---------- side room navigator ---------------------------------------- */
+.dots{ position:fixed; right:1.6rem; top:50%; transform:translateY(-50%); z-index:6500; display:flex; flex-direction:column; gap:1.1rem; }
+.dot{ position:relative; width:10px; height:10px; padding:0; border:0; background:none; cursor:pointer; display:grid; place-items:center; }
+.dot::after{ content:""; width:7px; height:7px; border-radius:50%; border:1px solid var(--silver-dim); transition:all .35s var(--ease); }
+.dot:hover::after{ border-color:var(--platinum); }
+.dot.is-active::after{ background:var(--platinum); border-color:var(--platinum); transform:scale(1.25); box-shadow:0 0 10px 1px rgba(232,234,237,.5); }
+.dot__label{ position:absolute; right:20px; top:50%; transform:translateY(-50%) translateX(6px); white-space:nowrap; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--silver); background:rgba(10,10,11,.8); padding:.3rem .6rem; border:1px solid var(--line-soft); border-radius:2px; opacity:0; pointer-events:none; transition:opacity .3s, transform .3s var(--ease); }
+.dot:hover .dot__label{ opacity:1; transform:translateY(-50%) translateX(0); }
+@media (max-width:980px){ .dots{ display:none; } }
 
 /* ---------- reveal primitives (JS adds .in) ---------------------------- */
 .reveal-line{ display:block; overflow:hidden; }

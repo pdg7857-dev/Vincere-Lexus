@@ -57,30 +57,8 @@
       hs.appendChild(btn);
     });
 
-    // inventory
-    var grid = $("#inventoryGrid");
-    var inv = S.inventory || [];
-    if (!inv.length) {
-      grid.innerHTML = '<div class="empty">New arrivals incoming.</div>';
-    } else {
-      grid.innerHTML = inv.map(function (c) {
-        var st = (c.status || "Available").toLowerCase();
-        var media = c.image
-          ? '<img src="' + esc(c.image) + '" alt="' + esc(c.year + " " + c.make + " " + c.model) + '" loading="lazy" />'
-          : '<span class="card__marque">' + esc(c.make) + "</span>";
-        return (
-          '<article class="card will-reveal">' +
-            '<span class="status status--' + esc(st) + '">' + esc(c.status || "Available") + "</span>" +
-            '<div class="card__media">' + media + "</div>" +
-            '<div class="card__body">' +
-              '<span class="card__year">' + esc(c.year) + " · " + esc(c.make) + "</span>" +
-              '<h3 class="card__name">' + esc(c.model) + "</h3>" +
-              '<p class="card__note">' + esc(c.note || "") + "</p>" +
-            "</div>" +
-          "</article>"
-        );
-      }).join("");
-    }
+    // inventory (+ filters)
+    buildInventory();
 
     // process
     var pl = $("#processList");
@@ -125,6 +103,164 @@
     if (c.email) items.push('<li><a href="mailto:' + esc(c.email) + '"><span class="direct__k">Email</span><span class="direct__v">' + esc(c.email) + "</span></a></li>");
     if (c.instagram) items.push('<li><a href="' + esc(c.instagramUrl || "#") + '" target="_blank" rel="noopener"><span class="direct__k">Instagram</span><span class="direct__v">' + esc(c.instagram) + "</span></a></li>");
     $("#directList").innerHTML = items.join("");
+  }
+
+  /* ===================== inventory + filters ========================== */
+  var activeStatus = "all", activeMarque = "all";
+
+  function carMedia(c) {
+    if (c.image) {
+      return '<img src="' + esc(c.image) + '" alt="' + esc(c.year + " " + c.make + " " + c.model) + '" loading="lazy" />';
+    }
+    var silo = window.SILHOUETTES && (window.SILHOUETTES[c.body] || window.SILHOUETTES.sedan);
+    return '<div class="card__art">' + (silo ? silo() : "") +
+      '<span class="card__marque">' + esc(c.make) + "</span></div>";
+  }
+
+  function cardHTML(c, i) {
+    var st = (c.status || "Available").toLowerCase();
+    return (
+      '<article class="card will-reveal" data-i="' + i + '" data-status="' + esc(st) + '" data-marque="' + esc(c.make) + '" tabindex="0" role="button" aria-label="' + esc(c.year + " " + c.make + " " + c.model) + ', view details">' +
+        '<span class="status status--' + esc(st) + '">' + esc(c.status || "Available") + "</span>" +
+        '<div class="card__media">' + carMedia(c) + "</div>" +
+        '<div class="card__body">' +
+          '<span class="card__year">' + esc(c.year) + " · " + esc(c.make) + "</span>" +
+          '<h3 class="card__name">' + esc(c.model) + "</h3>" +
+          '<p class="card__note">' + esc(c.note || "") + "</p>" +
+          '<span class="card__more">View details &rsaquo;</span>' +
+        "</div>" +
+      "</article>"
+    );
+  }
+
+  function buildInventory() {
+    var grid = $("#inventoryGrid");
+    var inv = S.inventory || [];
+    if (!inv.length) { grid.innerHTML = '<div class="empty">New arrivals incoming.</div>'; return; }
+    grid.innerHTML = inv.map(cardHTML).join("");
+
+    // filter bar — statuses present + marques present
+    var statuses = ["all"].concat(uniq(inv.map(function (c) { return c.status || "Available"; })));
+    var marques = ["all"].concat(uniq(inv.map(function (c) { return c.make; })));
+    var fb = $("#inventoryFilters");
+    fb.innerHTML =
+      '<div class="filters__group" data-kind="status">' +
+        statuses.map(function (s) { return chip(s, "status"); }).join("") +
+      "</div>" +
+      '<div class="filters__group" data-kind="marque">' +
+        marques.map(function (m) { return chip(m, "marque"); }).join("") +
+      "</div>";
+
+    fb.querySelectorAll(".chip").forEach(function (ch) {
+      ch.addEventListener("click", function () {
+        var kind = ch.getAttribute("data-kind"), val = ch.getAttribute("data-val");
+        if (kind === "status") activeStatus = val; else activeMarque = val;
+        fb.querySelectorAll('.chip[data-kind="' + kind + '"]').forEach(function (c) { c.classList.toggle("is-active", c === ch); });
+        applyFilter();
+      });
+    });
+
+    // card → lightbox
+    grid.querySelectorAll(".card").forEach(function (card) {
+      card.addEventListener("click", function () { openSheet(inv[+card.getAttribute("data-i")]); });
+      card.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openSheet(inv[+card.getAttribute("data-i")]); }
+      });
+    });
+  }
+
+  function applyFilter() {
+    var cards = $$("#inventoryGrid .card");
+    var shown = 0;
+    cards.forEach(function (card) {
+      var okS = activeStatus === "all" || card.getAttribute("data-status") === activeStatus.toLowerCase();
+      var okM = activeMarque === "all" || card.getAttribute("data-marque") === activeMarque;
+      var on = okS && okM;
+      if (on) shown++;
+      if (hasGSAP && !reduce) {
+        if (on) { card.style.display = ""; gsap.fromTo(card, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }); }
+        else gsap.to(card, { opacity: 0, y: 8, duration: 0.25, onComplete: function () { card.style.display = "none"; } });
+      } else { card.style.display = on ? "" : "none"; }
+    });
+    var grid = $("#inventoryGrid");
+    var none = grid.querySelector(".filters-empty");
+    if (!shown) {
+      if (!none) { none = document.createElement("div"); none.className = "empty filters-empty"; none.textContent = "Nothing matching — but I can source it."; grid.appendChild(none); }
+    } else if (none) none.remove();
+    if (hasGSAP && window.ScrollTrigger) ScrollTrigger.refresh();
+  }
+
+  function chip(val, kind) {
+    var label = val === "all" ? (kind === "status" ? "All" : "All marques") : val;
+    return '<button class="chip' + (val === "all" ? " is-active" : "") + '" type="button" data-kind="' + kind + '" data-val="' + esc(val) + '">' + esc(label) + "</button>";
+  }
+  function uniq(arr) { var seen = {}; return arr.filter(function (x) { if (seen[x]) return false; seen[x] = 1; return true; }); }
+
+  /* ===================== vehicle lightbox ============================== */
+  var sheetEl, lastFocus;
+  function openSheet(c) {
+    if (!c) return;
+    sheetEl = sheetEl || $("#sheet");
+    lastFocus = document.activeElement;
+    $("#sheetMedia").innerHTML = carMedia(c);
+    var st = (c.status || "Available");
+    var sS = $("#sheetStatus"); sS.textContent = st; sS.className = "sheet__status status status--" + st.toLowerCase();
+    $("#sheetYear").textContent = c.year + " · " + c.make;
+    $("#sheetName").textContent = c.model;
+    $("#sheetNote").textContent = c.note || "";
+    sheetEl.classList.add("is-open");
+    sheetEl.setAttribute("aria-hidden", "false");
+    document.body.classList.add("no-scroll");
+    if (lenis) lenis.stop();
+    if (hasGSAP && !reduce) {
+      gsap.fromTo(".sheet__panel", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" });
+      gsap.fromTo(".sheet__backdrop", { opacity: 0 }, { opacity: 1, duration: 0.4 });
+    }
+    $(".sheet__close").focus();
+  }
+  function closeSheet() {
+    if (!sheetEl) return;
+    sheetEl.classList.remove("is-open");
+    sheetEl.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("no-scroll");
+    if (lenis) lenis.start();
+    if (lastFocus) lastFocus.focus();
+  }
+  function initSheet() {
+    var s = $("#sheet");
+    if (!s) return;
+    $$("[data-sheet-close]", s).forEach(function (el) { el.addEventListener("click", closeSheet); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && s.classList.contains("is-open")) closeSheet(); });
+    // CTA inside sheet: close then warp to contact
+    var cta = $("#sheetCta");
+    if (cta) cta.addEventListener("click", function (e) { e.preventDefault(); closeSheet(); setTimeout(function () { warpTo("contact"); }, 80); });
+  }
+
+  /* ===================== side room navigator ========================== */
+  function initDots() {
+    var wrap = $("#dots");
+    if (!wrap) return;
+    var sections = [{ id: "hero", label: "Showroom" }].concat((S.rooms || []).map(function (r) { return { id: r.id, label: r.label }; }));
+    wrap.innerHTML = sections.map(function (s) {
+      return '<button class="dot" type="button" data-target="' + esc(s.id) + '" aria-label="' + esc(s.label) + '"><span class="dot__label">' + esc(s.label) + "</span></button>";
+    }).join("");
+    wrap.querySelectorAll(".dot").forEach(function (d) {
+      d.addEventListener("click", function () { warpTo(d.getAttribute("data-target")); });
+    });
+    if (hasGSAP && window.ScrollTrigger) {
+      sections.forEach(function (s) {
+        var el = document.getElementById(s.id);
+        if (!el) return;
+        ScrollTrigger.create({
+          trigger: el, start: "top 50%", end: "bottom 50%",
+          onToggle: function (self) {
+            if (self.isActive) {
+              wrap.querySelectorAll(".dot").forEach(function (d) { d.classList.toggle("is-active", d.getAttribute("data-target") === s.id); });
+            }
+          }
+        });
+      });
+    }
   }
 
   /* ===================== particles (film dust) ========================= */
@@ -452,6 +588,8 @@
   function init() {
     buildContent();
     initNav();
+    initDots();
+    initSheet();
     initForm();
     initLenis();
     initReveals();

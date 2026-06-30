@@ -98,32 +98,32 @@ window.SITE = {
      /phil-dave/assets/ and reference them like "assets/my-car.jpg".          */
   inventory: [
     {
-      make: "Porsche", model: "911 Carrera S", year: 2023,
+      make: "Porsche", model: "911 Carrera S", year: 2023, body: "coupe",
       note: "GT Silver over black. Sport Chrono, PASM, ceramic brakes. Sourced privately for a returning client.",
       status: "Sourced", image: "",
     },
     {
-      make: "Lexus", model: "LC 500", year: 2024,
+      make: "Lexus", model: "LC 500", year: 2024, body: "coupe",
       note: "Naturally-aspirated V8. Infrared over Circuit Red. One of the cleanest examples in Ontario.",
       status: "Available", image: "",
     },
     {
-      make: "Mercedes-Benz", model: "G 63 AMG", year: 2022,
+      make: "Mercedes-Benz", model: "G 63 AMG", year: 2022, body: "suv",
       note: "Obsidian Black, Manufaktur interior. Located and delivered within nine days.",
       status: "Sold", image: "",
     },
     {
-      make: "BMW", model: "M4 Competition", year: 2023,
+      make: "BMW", model: "M4 Competition", year: 2023, body: "coupe",
       note: "Isle of Man Green, carbon package, full PPF. Currently being inspected for a client.",
       status: "Available", image: "",
     },
     {
-      make: "Jaguar", model: "F-Type R", year: 2021,
+      make: "Jaguar", model: "F-Type R", year: 2021, body: "coupe",
       note: "Supercharged V8, Santorini Black. Quiet listing — never advertised publicly.",
       status: "Available", image: "",
     },
     {
-      make: "Audi", model: "RS 6 Avant", year: 2024,
+      make: "Audi", model: "RS 6 Avant", year: 2024, body: "wagon",
       note: "Nardo Grey, Dynamic package plus. The wagon everyone wants. Allocation secured.",
       status: "Sourced", image: "",
     },

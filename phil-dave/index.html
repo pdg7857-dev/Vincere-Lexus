@@ -56,6 +56,25 @@
 <!-- cinematic room-transition overlay -->
 <div class="warp" id="warp" aria-hidden="true"><div class="warp__core"></div></div>
 
+<!-- vertical room navigator (scrollspy) -->
+<nav class="dots" id="dots" aria-label="Sections"></nav>
+
+<!-- vehicle detail lightbox -->
+<div class="sheet" id="sheet" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="sheetName">
+  <div class="sheet__backdrop" data-sheet-close></div>
+  <div class="sheet__panel" role="document">
+    <button class="sheet__close" data-sheet-close aria-label="Close">&times;</button>
+    <div class="sheet__media" id="sheetMedia"></div>
+    <div class="sheet__body">
+      <span class="sheet__status" id="sheetStatus"></span>
+      <span class="card__year" id="sheetYear"></span>
+      <h3 class="sheet__name" id="sheetName"></h3>
+      <p class="sheet__note" id="sheetNote"></p>
+      <a class="btn btn--primary magnetic" id="sheetCta" href="#contact" data-link>Enquire about this car</a>
+    </div>
+  </div>
+</div>
+
 <!-- header -->
 <header class="nav" id="nav">
   <a class="nav__brand" href="#hero" data-link>
@@ -119,6 +138,7 @@
       <h2 class="room__title" id="inventory-h"><span class="reveal-line">Current Inventory</span></h2>
       <p class="room__intro reveal-line">Cars currently sourced, available, or recently delivered. New arrivals are constant — if you don't see it, I'll find it.</p>
     </div>
+    <div class="filters" id="inventoryFilters" role="group" aria-label="Filter inventory"></div>
     <div class="grid" id="inventoryGrid" aria-live="polite"></div>
   </section>
 
@@ -235,6 +255,7 @@
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
 <script src="js/data.js" defer></script>
+<script src="js/silhouettes.js" defer></script>
 <script src="js/main.js" defer></script>
 </body>
 </html>
