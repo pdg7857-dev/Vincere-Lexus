@@ -1,0 +1,42 @@
+{
+  "name": "task-capture-reminder-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal, single-user task capture & reminder system (web + email ingestion, NL parsing, reminders, Outlook .ics invites)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "worker": "tsx worker/index.ts",
+    "worker:dev": "tsx watch worker/index.ts",
+    "backup": "tsx scripts/backup.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "@prisma/client": "^6.1.0",
+    "dotenv": "^16.4.7",
+    "imapflow": "^1.0.171",
+    "mailparser": "^3.7.1",
+    "next": "^15.5.19",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.16",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@types/mailparser": "^3.4.6",
+    "@types/node": "^22.10.2",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^6.4.17",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "prisma": "^6.1.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

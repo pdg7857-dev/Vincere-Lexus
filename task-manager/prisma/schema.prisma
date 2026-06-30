@@ -1,0 +1,49 @@
+// Personal task capture & reminder system — Prisma schema.
+// Single-user, SQLite single-file DB. See README for migration commands.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id                String    @id @default(cuid())
+  rawInput          String // exact original text, never modified
+  title             String // cleaned/derived title
+  notes             String? // any extra detail
+  priority          Int       @default(1) // 1 low, 2 med, 3 high
+  dueDate           DateTime? // parsed deadline if any
+  status            String    @default("pending") // pending | done | snoozed
+  source            String // "web" | "email"
+  needsCalendar     Boolean   @default(false)
+  calendarSent      Boolean   @default(false) // invite already emitted?
+  calendarSequence  Int       @default(0) // iCal SEQUENCE, incremented on updates
+  calendarEventTime DateTime? // when the meeting should be, if set
+  enriched          Boolean   @default(false) // has the parser run successfully?
+  reminderState     String    @default("none") // tracks which reminders already fired (CSV of keys)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  completedAt       DateTime?
+
+  @@index([status, priority, dueDate])
+}
+
+model ProcessedEmail {
+  id          String   @id @default(cuid())
+  messageId   String   @unique // IMAP/Message-ID header — dedupe key
+  processedAt DateTime @default(now())
+}
+
+model JobLog {
+  id        String   @id @default(cuid())
+  job       String // "email_poll" | "reminders" | "calendar_send" | "backup" | "enrich"
+  status    String // "ok" | "error"
+  detail    String?
+  createdAt DateTime @default(now())
+
+  @@index([job, createdAt])
+}
