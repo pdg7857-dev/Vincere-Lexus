@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 360" role="img" aria-label="Luxury car silhouette">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f3f4f6"/>
+      <stop offset="0.18" stop-color="#d7dadf"/>
+      <stop offset="0.5" stop-color="#9a9ea6"/>
+      <stop offset="0.78" stop-color="#5b5e66"/>
+      <stop offset="1" stop-color="#2c2e33"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#aab0ba"/>
+      <stop offset="1" stop-color="#3a3d45"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="wheel" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#1a1b1e"/>
+      <stop offset="0.62" stop-color="#26282c"/>
+      <stop offset="0.72" stop-color="#c9ccd1"/>
+      <stop offset="0.84" stop-color="#6e7178"/>
+      <stop offset="1" stop-color="#0c0c0e"/>
+    </radialGradient>
+  </defs>
+
+  <!-- main body -->
+  <path d="M70 250
+           C 96 210, 150 196, 196 192
+           C 236 156, 300 132, 372 126
+           C 470 118, 560 122, 628 140
+           C 690 156, 760 184, 836 196
+           C 892 204, 928 218, 944 248
+           C 950 262, 946 274, 928 278
+           L 96 278
+           C 74 278, 62 266, 70 250 Z"
+        fill="url(#body)"/>
+
+  <!-- greenhouse / glass -->
+  <path d="M250 190
+           C 286 160, 338 142, 392 138
+           C 452 134, 512 138, 560 152
+           C 596 162, 624 176, 642 190
+           L 560 196
+           L 470 196
+           L 360 196 Z"
+        fill="url(#glass)" opacity="0.92"/>
+  <!-- pillar -->
+  <path d="M455 139 L470 196 L452 196 L440 140 Z" fill="#1c1d21" opacity="0.55"/>
+
+  <!-- beltline accent -->
+  <path d="M150 215 C 360 196, 640 196, 900 224" fill="none" stroke="#eceef1" stroke-width="2" opacity="0.5"/>
+  <!-- lower shadow -->
+  <path d="M96 278 L928 278 C 946 274, 950 262, 944 248 C 900 268, 120 268, 70 250 C 62 266, 74 278, 96 278 Z" fill="#000" opacity="0.28"/>
+
+  <!-- moving sheen -->
+  <path class="sheen" d="M150 215 C 360 196, 640 196, 900 224" fill="none" stroke="url(#sheen)" stroke-width="6" opacity="0.0"/>
+
+  <!-- wheels -->
+  <g>
+    <circle cx="268" cy="278" r="58" fill="#0a0a0b"/>
+    <circle cx="268" cy="278" r="48" fill="url(#wheel)"/>
+    <circle cx="268" cy="278" r="16" fill="#16171a"/>
+    <circle cx="744" cy="278" r="58" fill="#0a0a0b"/>
+    <circle cx="744" cy="278" r="48" fill="url(#wheel)"/>
+    <circle cx="744" cy="278" r="16" fill="#16171a"/>
+  </g>
+
+  <!-- headlight glow -->
+  <ellipse cx="930" cy="236" rx="18" ry="7" fill="#ffffff" opacity="0.85"/>
+  <ellipse cx="930" cy="236" rx="34" ry="14" fill="#e8eaed" opacity="0.18"/>
+  <!-- tail light -->
+  <rect x="74" y="236" width="14" height="8" rx="3" fill="#c9ccd1" opacity="0.7"/>
+</svg>
