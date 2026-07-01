@@ -643,22 +643,112 @@ function viewPerformance(sub) {
   var tabs = '<div class="tabs"><button class="' + (tab === 'scoreboard' ? 'active' : '') + '" data-go="#/performance">Scoreboard</button><button class="' + (tab === 'commission' ? 'active' : '') + '" data-go="#/performance/commission">Commission (pay)</button></div>';
   return '<div class="row" style="align-items:center"><h1>Performance</h1><span class="right">' + msel + '</span></div>' + tabs + (tab === 'scoreboard' ? perfScoreboard(ym) : perfCommission(ym));
 }
+/* ---- scoreboard analytics ---- */
+var OUTREACH = ['Call', 'Text', 'Email', 'Meeting', 'Test Drive'];
+function isOutreach(t) { t = norm(t); return OUTREACH.some(function (x) { return norm(x) === t; }); }
+function _ymd(ts) { var d = new Date(ts); return isNaN(d) ? '' : d.toISOString().slice(0, 10); }
+function daysInMonth(ym) { return new Date(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)), 0).getDate(); }
+function prevMonth(ym) { var y = +ym.slice(0, 4), m = +ym.slice(5, 7) - 1; if (!m) { m = 12; y--; } return y + '-' + String(m).padStart(2, '0'); }
+function actCountsUpTo(ym, day) { var c = {}; OUTREACH.forEach(function (t) { c[t] = 0; }); (DB.activities || []).forEach(function (a) { var s = _ymd(a.at); if (s.slice(0, 7) !== ym || +s.slice(8, 10) > day) return; OUTREACH.forEach(function (t) { if (norm(t) === norm(a.type)) c[t]++; }); }); return c; }
+function closesUpTo(ym, day) { return (DB.deals || []).filter(function (d) { if (d.month !== ym) return false; return (+_ymd(d.at).slice(8, 10) || 1) <= day; }).length; }
+function dailyActivity(ym) { var n = daysInMonth(ym), tot = [], cls = [], i; for (i = 0; i < n; i++) { tot.push(0); cls.push(0); } (DB.activities || []).forEach(function (a) { if (!isOutreach(a.type)) return; var s = _ymd(a.at); if (s.slice(0, 7) !== ym) return; tot[+s.slice(8, 10) - 1]++; }); (DB.deals || []).forEach(function (d) { if (d.month !== ym) return; var dd = (+_ymd(d.at).slice(8, 10) || 1) - 1; if (cls[dd] != null) cls[dd]++; }); return { tot: tot, cls: cls }; }
+function chartBars(tot, cls, todayIdx) { var n = tot.length; if (!n) return ''; var max = 1; tot.forEach(function (v) { if (v > max) max = v; }); var bars = ''; for (var i = 0; i < n; i++) { var h = tot[i] ? Math.max(4, Math.round(38 * tot[i] / max)) : 2; var col = cls[i] ? 'var(--ok)' : (i === todayIdx ? 'var(--accent)' : 'var(--accent2)'); bars += '<rect x="' + (i * 10 + 1) + '" y="' + (44 - h) + '" width="7" height="' + h + '" rx="1.5" fill="' + col + '" opacity="' + (tot[i] ? '1' : '.22') + '"><title>Day ' + (i + 1) + ': ' + tot[i] + ' outreach' + (cls[i] ? ' · ' + cls[i] + ' close' + (cls[i] === 1 ? '' : 's') : '') + '</title></rect>'; } return '<svg viewBox="0 0 ' + (n * 10) + ' 46" preserveAspectRatio="none" style="width:100%;height:64px;display:block">' + bars + '</svg>'; }
+function funnelStats(ym) { var leads = DB.clients.filter(function (c) { return fmtMonth(c.createdAt) === ym; }).length; var touched = {}, td = 0; (DB.activities || []).forEach(function (a) { if (fmtMonth(a.at) !== ym || !isOutreach(a.type)) return; if (norm(a.type) === 'test drive') td++; if (a.clientId) touched[a.clientId] = 1; }); return { leads: leads, worked: Object.keys(touched).length, td: td, closes: (DB.deals || []).filter(function (d) { return d.month === ym; }).length }; }
+function allTimeRatios() { var closes = (DB.deals || []).length, td = 0, ct = 0; (DB.activities || []).forEach(function (a) { var t = norm(a.type); if (t === 'test drive') td++; else if (t === 'call' || t === 'text') ct++; }); return { tdPerClose: closes && td ? td / closes : 0, ctPerClose: closes && ct ? ct / closes : 0 }; }
+function streakStats() { var days = {}; (DB.activities || []).forEach(function (a) { if (!isOutreach(a.type)) return; var s = _ymd(a.at); if (s) days[s] = (days[s] || 0) + 1; }); var today = todayStr(), cur = 0, d = new Date(); if (!days[today]) d.setDate(d.getDate() - 1); for (;;) { var k = d.toISOString().slice(0, 10); if (!days[k]) break; cur++; d.setDate(d.getDate() - 1); } return { cur: cur, today: days[today] || 0 }; }
+function monthHistory() { var s = {}; (DB.deals || []).forEach(function (d) { if (d.month) s[d.month] = 1; }); (DB.activities || []).forEach(function (a) { var k = fmtMonth(a.at); if (k) s[k] = 1; }); return Object.keys(s).sort().reverse().slice(0, 8); }
+function nextBest(ym, cm) {
+  var rows = [], m = cm.m;
+  if (cm.tgt[0] > 0 && !cm.newHit) rows.push({ t: 'Close ' + (cm.tgt[0] - cm.unitsNew) + ' more NEW → volume bonus', v: COMM.vol.newHit });
+  if (cm.tgt[1] > 0 && !cm.usedHit) rows.push({ t: 'Close ' + (cm.tgt[1] - cm.unitsUsed) + ' more USED → volume bonus', v: COMM.vol.usedHit });
+  if (cm.tgt[0] > 0 && cm.tgt[1] > 0 && !cm.accel) rows.push({ t: 'Hit BOTH unit targets → accelerator', v: COMM.vol.accel });
+  if (!cm.kpiHit.fni) rows.push({ t: 'Lift F&I avg gross to $1,500+', v: COMM.kpi.fni });
+  if (!cm.kpiHit.tradeWin) rows.push({ t: 'Trade win rate ≥ 55%', v: COMM.kpi.tradeWin });
+  if (!cm.kpiHit.csi) rows.push({ t: 'CSI ≥ benchmark (60%+ surveys done)', v: COMM.kpi.csi });
+  if (!cm.kpiHit.ecp) rows.push({ t: 'ECP penetration ≥ 20%', v: COMM.kpi.ecp });
+  if (!cm.kpiHit.wpwpp) rows.push({ t: 'WP/WPP ≥ 40% on leases', v: COMM.kpi.wpwpp });
+  if (!cm.kpiHit.excellence) rows.push({ t: 'Sweep every KPI → excellence bonus', v: COMM.kpi.excellence });
+  rows.sort(function (x, y) { return y.v - x.v; });
+  var total = rows.reduce(function (s, r) { return s + r.v; }, 0);
+  rows.push(m.tirePenOK ? { t: 'Each qualifying tire set', lbl: '+$75' } : { t: 'Hit 20% tire penetration → unlocks tire money', lbl: '$75/set' });
+  rows.push({ t: 'Every 5★ Google review', lbl: '$20 each', review: true });
+  return { rows: rows, total: total };
+}
 function perfScoreboard(ym) {
   var a = actCounts(ym), cm = monthCommission(ym), closes = cm.deals.length, td = a['Test Drive'];
+  var cur = ym === thisMonth(), dim = daysInMonth(ym), dayN = cur ? Math.min(+todayStr().slice(8, 10), dim) : dim, left = Math.max(dim - dayN, 0);
+  var pm = prevMonth(ym), pa = actCountsUpTo(pm, dayN), mtd = actCountsUpTo(ym, dayN), pcl = closesUpTo(pm, dayN), ccl = closesUpTo(ym, dayN);
+  function dlt(c2, p2) { if (c2 === p2) return ''; var up = c2 > p2; return '<span style="font-size:11px;font-weight:700;vertical-align:middle;color:' + (up ? 'var(--ok)' : 'var(--accent)') + '">' + (up ? '▲' : '▼') + Math.abs(c2 - p2) + '</span>'; }
+  var outreach = a.Call + a.Text + a.Email + a.Meeting + td;
   var rate = td ? Math.round(100 * closes / td) + '%' : '—';
-  function prog(have, want) { if (!want) return '<div style="color:var(--muted);font-size:12px">no target this month</div>'; var pct = Math.min(100, Math.round(100 * have / want)); return '<div class="bar"><div style="width:' + pct + '%' + (have >= want ? ';background:var(--ok)' : '') + '"></div></div><div style="font-size:12px;color:var(--muted)">' + have + ' / ' + want + (have >= want ? ' ✓' : '') + '</div>'; }
-  return '<div class="grid cards" style="margin-top:8px">'
-    + kpi(a.Call, 'Calls') + kpi(a.Text, 'Texts') + kpi(a.Email, 'Emails') + kpi(a.Meeting, 'Meetings') + kpi(a['Test Drive'], 'Test drives')
-    + kpi('<span style="color:var(--cust)">' + closes + '</span>', 'Closes') + kpi(rate, 'Close rate (vs test drives)') + '</div>'
-    + '<div class="row" style="margin-top:8px">'
-    + '<div class="panel" style="flex:1;min-width:260px"><div class="hd">🎯 Unit targets — ' + esc(monthName(ym)) + '</div><div class="bd"><div style="margin-bottom:12px"><b>New</b>' + prog(cm.unitsNew, cm.tgt[0]) + '</div><div><b>Used</b>' + prog(cm.unitsUsed, cm.tgt[1]) + '</div><div style="color:var(--muted);font-size:12px;margin-top:10px">Delivered this month: <b>' + cm.delivered + '</b>' + (cm.delivered < 10 ? ' · need 10 to keep bonuses' : ' ✓') + '</div></div></div>'
-    + '<div class="panel" style="flex:1;min-width:260px"><div class="hd">💵 Estimated pay — ' + esc(monthName(ym)) + '</div><div class="bd"><div style="font-size:30px;font-weight:700;color:var(--accent)">' + money(Math.round(cm.total)) + '</div><div style="color:var(--muted);font-size:13px;margin-top:4px">Front-end ' + money(Math.round(cm.frontEnd)) + ' · bonuses ' + money(cm.volume + cm.kpi + cm.reviews) + ' · allowance ' + money(cm.allowance) + '</div>' + (cm.disq ? '<div style="color:var(--accent);font-size:12px;margin-top:6px">⚠ bonuses voided: ' + esc(cm.disqList.join(', ')) + '</div>' : '') + '<div style="margin-top:8px"><a href="#/performance/commission">open commission breakdown →</a></div></div></div>'
-    + '</div>'
-    + '<div class="panel" style="margin-top:14px"><div class="hd">⚡ Quick log <span class="right" style="font-weight:400;color:var(--muted);font-size:12px">logs to selected client, if any</span></div><div class="bd"><div class="row" style="align-items:center;gap:8px">'
+  var st = streakStats(), r1 = function (x) { return Math.round(x * 10) / 10; };
+  function prog(have, want) { if (!want) return '<div style="color:var(--muted);font-size:12px">no target this month</div>'; var pct = Math.min(100, Math.round(100 * have / want)); return '<div class="bar"><div style="width:' + pct + '%' + (have >= want ? ';background:var(--ok)' : '') + '"></div></div><div style="font-size:12px;color:var(--muted)">' + have + ' / ' + want + (have >= want ? ' ✓' : ' · ' + (want - have) + ' to go') + '</div>'; }
+  function projU(n2) { return dayN ? r1(n2 / dayN * dim) : 0; }
+  var R = allTimeRatios(), tdc = R.tdPerClose || 2, ctc = R.ctPerClose || 6, est = !R.tdPerClose || !R.ctPerClose;
+  var needC = Math.max((cm.tgt[0] || 0) - cm.unitsNew, 0) + Math.max((cm.tgt[1] || 0) - cm.unitsUsed, 0);
+  var wb = needC > 0
+    ? 'Math to target: <b>' + needC + '</b> close' + (needC === 1 ? '' : 's') + ' ≈ <b>' + Math.ceil(needC * tdc) + '</b> test drives ≈ <b>' + Math.ceil(needC * ctc) + '</b> calls/texts' + (cur && left ? ' · <b>' + Math.ceil(needC * ctc / left) + '/day</b> for the next ' + left + ' days' : '') + (est ? ' <span style="color:var(--muted)">(default ratios — sharpens as you log)</span>' : ' <span style="color:var(--muted)">(from your own ratios)</span>')
+    : ((cm.tgt[0] || cm.tgt[1]) ? '🎉 Unit targets hit' + (cm.accel ? ' — accelerator earned.' : ' — accelerator in reach.') : 'No unit targets in ' + esc(monthName(ym).split(' ')[0]) + ' — targets start August. Bank activity + reviews now.');
+  var projFront = cur && dayN ? cm.frontEnd / dayN * dim : cm.frontEnd;
+  var projTotal = projFront + cm.volume + cm.kpi + cm.reviews + cm.allowance;
+  var F = funnelStats(ym);
+  function fstep(nm, vv) { return '<div style="text-align:center;flex:1;min-width:64px"><div style="font-size:24px;font-weight:700">' + vv + '</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">' + nm + '</div></div>'; }
+  function fpct(from, to) { var p = from ? Math.round(100 * to / from) : null; return '<div style="align-self:center;font-weight:700;font-size:13px;color:' + (p == null ? 'var(--muted)' : (p >= 50 ? 'var(--ok)' : 'var(--warm)')) + '">' + (p == null ? '—' : '→' + p + '%') + '</div>'; }
+  var vel = (function () { var ds = []; cm.deals.forEach(function (d) { if (!d.clientId || !d.at) return; var c2 = client(d.clientId); if (c2 && c2.createdAt) ds.push((d.at - c2.createdAt) / 86400000); }); return ds.length ? Math.round(ds.reduce(function (x, y) { return x + y; }, 0) / ds.length) : null; })();
+  function er(l2, v2) { return '<tr><td>' + l2 + '</td><td style="text-align:right;font-weight:600">' + v2 + '</td></tr>'; }
+  var effTbl = '<table><tbody>'
+    + er('Calls + texts per close', closes ? r1((a.Call + a.Text) / closes) : '—')
+    + er('Test drives per close', closes ? r1(td / closes) : '—')
+    + er('Outreach per close', closes ? r1(outreach / closes) : '—')
+    + er('Front-end $ per outreach', outreach && cm.frontEnd ? money(Math.round(cm.frontEnd / outreach)) : '—')
+    + er('Avg gross / deal', closes ? money(Math.round(cm.deals.reduce(function (s, d) { return s + dealGross(d); }, 0) / closes)) : '—')
+    + er('Avg commission / deal', closes ? money(Math.round(cm.frontEnd / closes)) : '—')
+    + er('Lead → close velocity', vel != null ? vel + ' days' : '—')
+    + '</tbody></table>';
+  var DA = dailyActivity(ym), NB = nextBest(ym, cm);
+  var nbRows = NB.rows.map(function (r) { return '<tr><td>' + r.t + (r.review ? ' <button class="btn ghost sm" data-addreview="1">+1 now</button>' : '') + '</td><td style="text-align:right;font-weight:700;color:var(--ok)">' + (r.lbl || '+' + money(r.v)) + '</td></tr>'; }).join('');
+  var hud = '<p class="sub" style="margin:4px 0 10px">Everything below is ' + esc(monthName(ym)) + ' · ▲▼ vs last month at the same point · press <span class="kbd">1</span>–<span class="kbd">5</span> to quick-log</p>'
+    + '<div class="grid cards">'
+    + kpi(a.Call + ' ' + dlt(mtd.Call, pa.Call), 'Calls')
+    + kpi(a.Text + ' ' + dlt(mtd.Text, pa.Text), 'Texts')
+    + kpi(a.Email + ' ' + dlt(mtd.Email, pa.Email), 'Emails')
+    + kpi(a.Meeting + ' ' + dlt(mtd.Meeting, pa.Meeting), 'Meetings')
+    + kpi(td + ' ' + dlt(mtd['Test Drive'], pa['Test Drive']), 'Test drives')
+    + kpi('<span style="color:var(--cust)">' + closes + '</span> ' + dlt(ccl, pcl), 'Closes')
+    + kpi(rate, 'Close rate (TD → close)')
+    + kpi(st.cur + 'd 🔥', 'Streak · ' + st.today + ' today')
+    + '</div>';
+  var quick = '<div class="panel" style="margin-top:12px"><div class="hd">⚡ Quick log <span class="right" style="font-weight:400;color:var(--muted);font-size:12px">keys 1–5 · logs to selected client, if any</span></div><div class="bd"><div class="row" style="align-items:center;gap:8px">'
     + '<select id="qlClient" style="flex:1;max-width:280px;padding:8px;border:1px solid var(--line);border-radius:8px"><option value="">— no client —</option>' + DB.clients.slice().sort(function (x, y) { return x.name.localeCompare(y.name); }).map(function (c) { return '<option value="' + c.id + '"' + (c.id === _qlClient ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('') + '</select>'
-    + '<button class="btn" data-ql="Call">📞 Call</button><button class="btn" data-ql="Text">💬 Text</button><button class="btn" data-ql="Email">✉ Email</button><button class="btn" data-ql="Meeting">🤝 Meeting</button><button class="btn" data-ql="Test Drive">🚗 Test drive</button><button class="btn primary" data-add-deal="1">✓ Log a close…</button>'
-    + '</div><div style="color:var(--muted);font-size:12px;margin-top:8px">Totals above update as you log. Logged calls/texts also appear on the client’s timeline.</div></div></div>'
-    + '<div class="panel" style="margin-top:14px"><div class="hd">All-time activity</div><div class="bd"><table><tbody>' + ['Call', 'Text', 'Email', 'Meeting', 'Test Drive', 'Note'].map(function (t) { var all = (DB.activities || []).filter(function (x) { return norm(x.type) === norm(t); }).length; return '<tr><td>' + t + '</td><td>' + all + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
+    + '<button class="btn" data-ql="Call">📞 Call<span class="kbd">1</span></button><button class="btn" data-ql="Text">💬 Text<span class="kbd">2</span></button><button class="btn" data-ql="Email">✉ Email<span class="kbd">3</span></button><button class="btn" data-ql="Meeting">🤝 Meeting<span class="kbd">4</span></button><button class="btn" data-ql="Test Drive">🚗 Test drive<span class="kbd">5</span></button><button class="btn primary" data-add-deal="1">✓ Log a close…</button>'
+    + '</div></div></div>';
+  var pace = '<div class="panel"><div class="hd">🎯 Targets & pace</div><div class="bd">'
+    + '<div style="margin-bottom:10px"><b>New</b>' + prog(cm.unitsNew, cm.tgt[0]) + '</div>'
+    + '<div style="margin-bottom:10px"><b>Used</b>' + prog(cm.unitsUsed, cm.tgt[1]) + '</div>'
+    + (cur ? '<div style="font-size:12px;color:var(--muted)">Linear pace by month-end: <b>' + projU(cm.unitsNew) + '</b> new · <b>' + projU(cm.unitsUsed) + '</b> used · day ' + dayN + '/' + dim + '</div>' : '')
+    + '<div style="font-size:12px;color:var(--muted);margin-top:4px">Delivered: <b>' + cm.delivered + '</b>/10' + (cm.delivered < 10 ? ' <span style="color:var(--accent)">(bonus gate)</span>' : ' ✓') + '</div>'
+    + '<div style="margin-top:10px;padding:8px 10px;border:1px dashed var(--line);border-radius:8px;font-size:13px">' + wb + '</div></div></div>';
+  var pay = '<div class="panel"><div class="hd">💵 Pay</div><div class="bd">'
+    + '<div style="font-size:30px;font-weight:700;color:var(--accent)">' + money(Math.round(cm.total)) + '</div>'
+    + (cur ? '<div style="font-size:13px;margin-top:2px">pacing toward <b>' + money(Math.round(projTotal)) + '</b> <span style="color:var(--muted)">(linear front-end + bonuses earned so far)</span></div>' : '')
+    + '<table style="margin-top:8px"><tbody><tr><td>Front-end</td><td style="text-align:right">' + money(Math.round(cm.frontEnd)) + '</td></tr><tr><td>Volume</td><td style="text-align:right">' + money(cm.volume) + '</td></tr><tr><td>KPI</td><td style="text-align:right">' + money(cm.kpi) + '</td></tr><tr><td>Reviews</td><td style="text-align:right">' + money(cm.reviews) + '</td></tr><tr><td>Allowance</td><td style="text-align:right">' + money(cm.allowance) + '</td></tr></tbody></table>'
+    + (cm.disq ? '<div style="color:var(--accent);font-size:12px;margin-top:6px">⚠ bonuses voided: ' + esc(cm.disqList.join(', ')) + '</div>' : '')
+    + '<div style="margin-top:8px"><a href="#/performance/commission">full commission breakdown →</a></div></div></div>';
+  var funnel = '<div class="panel"><div class="hd">🔻 Funnel</div><div class="bd"><div style="display:flex;gap:2px;align-items:stretch">'
+    + fstep('Leads in', F.leads) + fpct(F.leads, F.worked) + fstep('Worked', F.worked) + fpct(F.worked, F.td) + fstep('Test drives', F.td) + fpct(F.td, F.closes) + fstep('Closes', F.closes)
+    + '</div><div style="color:var(--muted);font-size:11px;margin-top:8px">Leads in = clients added this month · worked = clients you touched (call / text / email / meeting / TD) this month.</div></div></div>';
+  var eff = '<div class="panel"><div class="hd">⚙ Efficiency</div><div class="bd">' + effTbl + '</div></div>';
+  var chart = '<div class="panel" style="margin-top:14px"><div class="hd">📈 Daily outreach</div><div class="bd">' + chartBars(DA.tot, DA.cls, cur ? dayN - 1 : -1)
+    + '<div style="display:flex;gap:14px;color:var(--muted);font-size:11px;margin-top:4px"><span><span style="color:var(--accent2)">■</span> outreach</span><span><span style="color:var(--ok)">■</span> day with a close</span>' + (cur ? '<span><span style="color:var(--accent)">■</span> today</span>' : '') + '<span class="right">' + outreach + ' outreach · ' + (dayN ? r1(outreach / dayN) : 0) + '/day</span></div></div></div>';
+  var moneyP = '<div class="panel" style="margin-top:14px"><div class="hd">💰 Money on the table<span class="right" style="color:var(--ok)">' + money(NB.total) + ' unclaimed</span></div><div class="bd">'
+    + (cm.disqList.length ? '<div class="backupbar" style="color:var(--accent);background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.35)">⚠ All bonuses currently VOID: ' + esc(cm.disqList.join(' · ')) + '</div>' : '')
+    + '<table><tbody>' + nbRows + '</tbody></table></div></div>';
+  var hist = '<div class="panel" style="margin-top:14px"><div class="hd">🗓 Month over month</div><div class="bd"><table><thead><tr><th>Month</th><th>New</th><th>Used</th><th>Outreach</th><th>TDs</th><th>Closes</th><th>TD→close</th><th>Front-end</th><th>Total pay</th></tr></thead><tbody>'
+    + (monthHistory().map(function (mo) { var c2 = monthCommission(mo), a2 = actCounts(mo), o2 = a2.Call + a2.Text + a2.Email + a2.Meeting + a2['Test Drive']; var cr2 = a2['Test Drive'] ? Math.round(100 * c2.deals.length / a2['Test Drive']) + '%' : '—'; return '<tr' + (mo === ym ? ' style="background:rgba(96,165,250,.08)"' : '') + '><td>' + esc(monthName(mo)) + '</td><td>' + c2.unitsNew + '</td><td>' + c2.unitsUsed + '</td><td>' + o2 + '</td><td>' + a2['Test Drive'] + '</td><td>' + c2.deals.length + '</td><td>' + cr2 + '</td><td>' + money(Math.round(c2.frontEnd)) + '</td><td><b>' + money(Math.round(c2.total)) + '</b></td></tr>'; }).join('') || '<tr><td colspan="9" class="empty">Log activity and deals to build history.</td></tr>')
+    + '</tbody></table></div></div>';
+  return hud + quick
+    + '<div class="grid" style="grid-template-columns:1fr 1fr;margin-top:14px">' + pace + pay + funnel + eff + '</div>'
+    + chart + moneyP + hist;
 }
 function perfCommission(ym) {
   var cm = monthCommission(ym), m = cm.m, K = COMM.kpi, V = COMM.vol;
@@ -667,6 +757,7 @@ function perfCommission(ym) {
       + cm.deals.slice().sort(function (a, b) { return (a.at || 0) - (b.at || 0); }).map(function (d) { var r = dealCommission(d); var c = d.clientId ? client(d.clientId) : null; var v = d.vehicleId ? vehicle(d.vehicleId) : null; var lbl = v ? vehLabel(v) : '(no vehicle)'; return '<tr class="clk" data-edit-deal="' + d.id + '"><td>' + esc(fmtDate(d.at)) + '</td><td>' + esc(lbl) + (c ? ' · ' + esc(c.name) : '') + '</td><td><span class="pill">' + esc(typeLabel(d.type)) + '</span></td><td>' + money(Math.round(r.gross)) + '</td><td>' + (d.delivered ? '✓' : '') + '</td><td><b>' + money(Math.round(r.net)) + '</b></td><td><button class="btn ghost sm" data-del-deal="' + d.id + '">✕</button></td></tr>'; }).join('')
       + '<tr style="border-top:2px solid var(--line)"><td colspan="5"><b>Front-end commission</b></td><td><b>' + money(Math.round(cm.frontEnd)) + '</b></td><td></td></tr></tbody></table>'
     : '<div class="empty">No deals logged for ' + esc(monthName(ym)) + '. Add one to start your commission.</div>';
+  var avgLine = cm.deals.length ? '<div style="color:var(--muted);font-size:12px;margin-top:6px">Avg gross ' + money(Math.round(cm.deals.reduce(function (s, d) { return s + dealGross(d); }, 0) / cm.deals.length)) + ' · avg pays ' + money(Math.round(cm.frontEnd / cm.deals.length)) + ' per deal</div>' : '';
   function brow(label, ok, amt) { return '<tr><td>' + esc(label) + '</td><td>' + (ok ? '<span class="fit-in">✓</span>' : '<span style="color:var(--muted)">—</span>') + '</td><td style="text-align:right">' + (ok && !cm.disq ? money(amt) : '<span style="color:var(--muted)">' + money(0) + '</span>') + '</td></tr>'; }
   var bonusTbl = '<table><tbody>'
     + '<tr><td colspan="3" style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px">Volume</td></tr>'
@@ -680,12 +771,13 @@ function perfCommission(ym) {
   var form = '<div class="panel"><div class="hd">Month inputs</div><div class="bd">'
     + '<div class="field"><label>Vehicle allowance</label><select id="m_allow"><option value="none"' + ((m.allowance || 'none') === 'none' ? ' selected' : '') + '>None</option><option value="oem"' + (m.allowance === 'oem' ? ' selected' : '') + '>OEM program ($600/mo)</option><option value="own"' + (m.allowance === 'own' ? ' selected' : '') + '>Own vehicle ($500/mo)</option></select></div>'
     + '<div class="row">' + fld('m_reviews', '5★ reviews', m.reviews || '') + fld('m_tireSets', 'Tire sets', m.tireSets || '') + fld('m_fni', 'F&I avg $', m.fniAvg || '') + '</div>'
+    + '<div style="margin:-2px 0 8px"><button class="btn sm" data-addreview="1">🌟 +1 review ($20)</button></div>'
     + '<div style="margin:6px 0">' + _ckbox('m_tirePen', 'Tire penetration ≥ 20%', m.tirePenOK) + _ckbox('m_ecp', 'ECP ≥ 20%', m.ecp) + _ckbox('m_wpwpp', 'WP/WPP ≥ 40%', m.wpwpp) + _ckbox('m_tradeWin', 'Trade win ≥ 55%', m.tradeWin) + _ckbox('m_csi', 'CSI ≥ benchmark', m.csi) + '</div>'
     + '<div style="font-weight:600;font-size:12px;margin:8px 0 2px;color:var(--accent)">Disqualifiers — void all bonuses</div><div>' + _ckbox('m_dqTraining', 'Training incomplete', m.dqTraining) + _ckbox('m_dqConnected', 'Connected services low', m.dqConnected) + _ckbox('m_dqCrm', 'CRM not updated', m.dqCrm) + '</div>'
     + '<div style="color:var(--muted);font-size:12px;margin:6px 0">“Units delivered &lt; 10” is auto-detected (' + cm.delivered + ' delivered).</div>'
     + '<button class="btn primary" id="m_save">Save month inputs</button></div></div>';
   return '<div class="row" style="align-items:flex-start;gap:14px;margin-top:8px">'
-    + '<div style="flex:2;min-width:320px"><div class="panel"><div class="hd">Deals — ' + esc(monthName(ym)) + '<span class="right"><button class="btn sm primary" data-add-deal="1">+ Deal</button></span></div><div class="bd">' + dealsTbl + '</div></div>'
+    + '<div style="flex:2;min-width:320px"><div class="panel"><div class="hd">Deals — ' + esc(monthName(ym)) + '<span class="right"><button class="btn sm primary" data-add-deal="1">+ Deal</button></span></div><div class="bd">' + dealsTbl + avgLine + '</div></div>'
     + '<div class="panel" style="margin-top:14px"><div class="hd">Pay breakdown</div><div class="bd">' + (cm.disq ? '<div class="backupbar" style="color:var(--accent);background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.35)">⚠ All bonuses voided: ' + esc(cm.disqList.join(', ')) + '. Core commission + allowance still paid.</div>' : '') + bonusTbl + totalsTbl + '</div></div></div>'
     + '<div style="flex:1;min-width:250px">' + form + '</div></div>';
 }
@@ -1075,6 +1167,7 @@ function restoreBackup(text) {
 
 /* ---------- event binding ---------- */
 function bindView(view, arg) {
+  if (document.onkeydown && document.onkeydown._perf) document.onkeydown = null;
   $$('[data-go]').forEach(e => e.onclick = () => location.hash = e.dataset.go);
   $$('[data-veh]').forEach(e => e.onclick = () => vehicleForm(vehicle(e.dataset.veh)));
   $$('[data-quote]').forEach(e => e.onclick = () => quoteModal(e.dataset.quote, e.dataset.qc || (view === 'client' ? arg : null)));
@@ -1127,6 +1220,10 @@ function bindView(view, arg) {
     $$('[data-edit-deal]').forEach(e => e.onclick = () => dealForm(DB.deals.find(d => d.id === e.dataset.editDeal), _perfMonth));
     $$('[data-del-deal]').forEach(e => e.onclick = (ev) => { ev.stopPropagation(); if (confirm('Delete this deal?')) { DB.deals = DB.deals.filter(d => d.id !== e.dataset.delDeal); save(); route(); } });
     const ms = $('#m_save'); if (ms) ms.onclick = saveMonthInputs;
+    $$('[data-addreview]').forEach(e => e.onclick = () => { const m = DB.commission[_perfMonth] = DB.commission[_perfMonth] || {}; m.reviews = (num(m.reviews) || 0) + 1; save(); toast('🌟 +1 review — ' + money(COMM.reviewEach)); route(); });
+    const kmap = { '1': 'Call', '2': 'Text', '3': 'Email', '4': 'Meeting', '5': 'Test Drive' };
+    const kh = e => { if (/INPUT|SELECT|TEXTAREA/.test((e.target && e.target.tagName) || '')) return; if ($('#modalRoot').innerHTML.trim()) return; const t = kmap[e.key]; if (t) quickLog($('#qlClient') ? $('#qlClient').value : '', t); };
+    kh._perf = true; document.onkeydown = kh;
   }
   if (view === 'settings') {
     $('#restoreFile') && ($('#restoreFile').onchange = e => readFile(e, restoreBackup));
