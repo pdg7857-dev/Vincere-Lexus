@@ -106,10 +106,6 @@
       return '<div class="stat"><div class="stat__value">' + esc(s.value) + '</div><div class="stat__label">' + esc(s.label) + "</div></div>";
     }).join("");
 
-    // marquee (doubled for a seamless loop)
-    var marques = (S.marques || []).map(function (m) { return '<span class="marque">' + esc(m) + "</span>"; }).join("");
-    $("#marqueeTrack").innerHTML = marques + marques;
-
     // quotes
     $("#quotes").innerHTML = (S.testimonials || []).map(function (q) {
       return (
@@ -156,20 +152,23 @@
     $("#directList").innerHTML = items.join("");
   }
 
-  /* ===================== marques banner ================================ */
+  /* ===================== marques logo marquees ========================== */
+  // one strip of official logos, duplicated for a seamless auto-scroll loop
   function buildBrands() {
-    var row = $("#brandsRow"), label = $("#brandsLabel");
-    if (!row || !window.BRAND_LOGOS) return;
+    var label = $("#brandsLabel");
     if (label) label.textContent = S.brandsLabel || "Brands I source";
-    row.innerHTML = (S.brands || []).map(function (key) {
-      var b = window.BRAND_LOGOS[key];
-      if (!b) return "";
+    var strip = (S.brands || []).map(function (b) {
       return (
-        '<span class="brand brand--' + esc(key) + '" role="img" aria-label="' + esc(b.title) + '" title="' + esc(b.title) + '">' +
-          '<svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d="' + b.path + '"/></svg>' +
-        "</span>"
+        '<img class="brandimg" src="assets/marques/' + esc(b.key) + '.webp" alt="' +
+        esc(b.title) + '" title="' + esc(b.title) + '" loading="lazy" decoding="async" />'
       );
     }).join("");
+    // 4 copies so the 50% translate loop never runs dry on wide screens
+    var loop = strip + strip + strip + strip;
+    ["#brandsTrack", "#marqueeTrack"].forEach(function (sel) {
+      var track = $(sel);
+      if (track) track.innerHTML = loop;
+    });
   }
 
   /* ===================== la collection ================================= */
@@ -194,7 +193,7 @@
     var key = statusKey(c.status);
     return (
       '<article class="card will-reveal" data-i="' + i + '" tabindex="0" role="button" aria-label="' + esc(c.year + " " + c.make + " " + c.model) + ', view details">' +
-        '<span class="status status--' + key + '">' + esc(c.status || "Disponible") + "</span>" +
+        '<span class="status status--' + key + '">' + esc(c.status || "Available") + "</span>" +
         '<div class="card__media">' + carMedia(c) + "</div>" +
         '<div class="card__body">' +
           '<span class="card__year">' + esc(c.year) + " · " + esc(c.make) + "</span>" +
@@ -237,7 +236,7 @@
     sheetEl = sheetEl || $("#sheet");
     lastFocus = document.activeElement;
     $("#sheetMedia").innerHTML = carMedia(c);
-    var st = (c.status || "Disponible");
+    var st = (c.status || "Available");
     var sS = $("#sheetStatus"); sS.textContent = st; sS.className = "sheet__status status status--" + statusKey(st);
     $("#sheetYear").textContent = c.year + " · " + c.make;
     $("#sheetName").textContent = c.model;

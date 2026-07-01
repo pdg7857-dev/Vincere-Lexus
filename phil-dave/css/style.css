@@ -280,38 +280,26 @@ em{ font-style:italic; }
 .card{ cursor:pointer; }
 .card:focus-visible{ outline:2px solid var(--silver); outline-offset:4px; }
 
-/* ---------- marques banner (under the hero) ----------------------------- */
+/* ---------- marques banner (under the hero, auto-scrolls) --------------- */
 .brands{
-  position:relative; z-index:1; padding:2.6rem clamp(1.2rem,5vw,4rem) 2.8rem;
+  position:relative; z-index:1; padding:2.4rem 0 2.6rem;
   border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft);
   background:linear-gradient(180deg, rgba(20,20,22,.4), transparent);
   text-align:center;
 }
 .brands__label{
   font-size:.66rem; letter-spacing:.42em; text-transform:uppercase;
-  color:var(--muted); margin-bottom:2rem;
+  color:var(--muted); margin-bottom:1.8rem;
 }
-.brands__row{
-  display:flex; align-items:center; justify-content:center;
-  gap:clamp(2rem,6vw,4.5rem); flex-wrap:wrap;
-  max-width:var(--maxw); margin:0 auto;
+.brands .marquee{ border:0; margin:0; padding:.4rem 0; }
+
+/* logo strips (banner + the one below About) */
+.marquee--logos .marquee__track{ align-items:center; animation-duration:48s; }
+.marquee--logos .brandimg{
+  height:clamp(38px,5.5vw,56px); width:auto; flex:0 0 auto;
+  opacity:.72; transition:opacity .4s var(--ease), transform .4s var(--ease);
 }
-.brand{
-  display:grid; place-items:center; height:64px; width:64px;
-  color:var(--silver-dim); opacity:.75;
-  transition:color .45s var(--ease), opacity .45s, transform .45s var(--ease);
-}
-.brand svg{ height:100%; width:100%; }
-.brand:hover{ color:var(--platinum); opacity:1; transform:translateY(-3px); }
-/* optical balance — wide/short marks get a slightly different box */
-.brand--audi{ width:96px; height:44px; }
-.brand--porsche{ height:70px; width:70px; }
-@media (max-width:640px){
-  .brands__row{ gap:1.6rem 2.2rem; }
-  .brand{ height:44px; width:44px; }
-  .brand--audi{ width:66px; height:30px; }
-  .brand--porsche{ height:48px; width:48px; }
-}
+.marquee--logos .brandimg:hover{ opacity:1; transform:translateY(-3px); }
 
 /* ---------- private-collection invitation ------------------------------- */
 .privcta{

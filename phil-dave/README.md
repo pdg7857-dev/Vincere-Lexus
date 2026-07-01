@@ -40,18 +40,22 @@ the values marked `[PLACEHOLDER]`:
 | Tagline (drives the hero word too) | `tagline` |
 | Phone / email / Instagram | `contact` |
 | Lead-form destination | `formEndpoint` (see below) |
-| Logo banner under the hero | `brands[]` + `brandsLabel` (keys from `js/brandlogos.js`) |
-| Cars in La Collection (keep it to 3–4) | `inventory[]` — copy a block to add one |
-| "Collection privée" invitation | `inventoryCta` |
+| Logo marquees (banner + About) | `brands[]` + `brandsLabel` — logos live in `assets/marques/<key>.webp` |
+| Cars in The Collection (keep it to 3–4) | `inventory[]` — copy a block to add one |
+| "Full inventory is private" invitation | `inventoryCta` |
 | Sourcing steps | `process[]` |
 | About copy + portrait | `about` (photo → `assets/phil-*.webp`) |
 | Stats & client quotes | `stats[]`, `testimonials[]` |
-| Marque wordmark marquee (À Propos) | `marques[]` |
 
-`inventory[].status` reads in French — `"Disponible"`, `"Réservée"`, or
-`"Vendue"` (English values still work). Leave `image: ""` for an elegant
-marque card, or point it at a photo in `assets/`. Empty the `inventory`
-array and the room shows a graceful "Nouveautés en route."
+`inventory[].status` is `"Available"`, `"Sourced"`, or `"Sold"`. Leave
+`image: ""` for an elegant marque card, or point it at a photo in `assets/`.
+Empty the `inventory` array and the room shows a graceful empty state.
+
+Both marque strips are the same auto-scrolling component fed by `brands[]` —
+the official logos were converted to a uniform platinum greyscale (dark
+details lifted so every mark reads on black). To add a marque, drop a
+transparent-background logo in `assets/marques/` and add
+`{ key: "<file>", title: "<Name>" }` to `brands[]`.
 
 ### Wiring the lead form
 
