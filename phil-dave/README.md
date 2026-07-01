@@ -60,16 +60,23 @@ form at [formspree.io](https://formspree.io) and paste its endpoint into
 
 ---
 
-## The hero — swapping the car
+## The hero — real-time 3D
 
-The hero is **image/illustration based by default** (the platinum car in
-`assets/car.svg`) and is built to upgrade to real 3D with zero code changes:
+On desktop the hero is a **live Three.js showroom**: a procedurally-built
+platinum grand tourer on a lit turntable — auto-rotating, **drag to spin**
+(with inertia), floor reflection, studio lighting, and the hotspot markers
+anchored to actual points on the car so they orbit with it (the turntable
+eases to a stop while you hover one). Three.js is self-hosted in
+`js/vendor/three/` — still no CDN, still no build step.
 
-- **Use a photo:** set `heroImage: "assets/your-car.webp"` in `data.js`.
-- **Use a real 3D model (Three.js turntable, drag-to-rotate):** drop a `.glb`
-  in `models/` and set `heroModel: "models/car.glb"`. The site lazy-loads
-  Three.js + GLTFLoader on demand and swaps the 2D hero for a live turntable.
-  Falls back to the 2D hero on mobile, reduced-motion, or if the model fails.
+Swapping the car:
+
+- **Use your own 3D model:** drop a `.glb` in `models/` and set
+  `heroModel: "models/car.glb"` in `data.js`. It replaces the built-in car
+  automatically (auto-scaled and grounded), loaded via the vendored GLTFLoader.
+- **2D fallback** (mobile, `prefers-reduced-motion`, or no WebGL): the
+  illustrated pedestal hero. Point `heroImage` at a photo to replace the
+  illustration.
 
 ---
 

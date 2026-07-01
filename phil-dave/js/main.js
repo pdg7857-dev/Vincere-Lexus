@@ -464,49 +464,9 @@
     }
   }
 
-  /* ===================== optional Three.js turntable ===================
-     Activates ONLY if SITE.heroModel points to a .glb that loads.
-     Loads three + GLTFLoader from CDN on demand so the base site stays light.
-  ===================================================================== */
-  function initThree() {
-    if (reduce || coarse || !S.heroModel) return;
-    var THREE_URL = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-    var GLTF_URL = "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
-    var ORBIT_URL = "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
-    import(THREE_URL).then(function (THREE) {
-      return Promise.all([import(GLTF_URL), import(ORBIT_URL)]).then(function (mods) {
-        var GLTFLoader = mods[0].GLTFLoader, OrbitControls = mods[1].OrbitControls;
-        var mount = $("#three");
-        var w = mount.clientWidth || 800, h = mount.clientHeight || 450;
-        var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(w, h); renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
-        mount.appendChild(renderer.domElement);
-        var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
-        camera.position.set(4.2, 1.6, 5.2);
-        var key = new THREE.SpotLight(0xffffff, 60, 0, Math.PI / 6, 0.4);
-        key.position.set(0, 8, 2); scene.add(key);
-        scene.add(new THREE.AmbientLight(0x99a, 0.6));
-        scene.add(new THREE.HemisphereLight(0xffffff, 0x111114, 0.5));
-        var controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; controls.enablePan = false; controls.enableZoom = false;
-        controls.autoRotate = true; controls.autoRotateSpeed = 0.8;
-        controls.minPolarAngle = controls.maxPolarAngle = Math.PI / 2.3;
-        new GLTFLoader().load(S.heroModel, function (gltf) {
-          scene.add(gltf.scene);
-          // swap 2D hero for 3D
-          $("#stageCar").style.display = "none";
-          mount.hidden = false;
-          function loop() { controls.update(); renderer.render(scene, camera); requestAnimationFrame(loop); }
-          loop();
-        }, null, function () { /* model failed → keep 2D hero */ });
-        window.addEventListener("resize", function () {
-          var nw = mount.clientWidth, nh = mount.clientHeight;
-          camera.aspect = nw / nh; camera.updateProjectionMatrix(); renderer.setSize(nw, nh);
-        });
-      });
-    }).catch(function () { /* no module support / offline → keep 2D hero */ });
-  }
+  /* The 3D turntable hero lives in js/hero3d.js (module) — it swaps the 2D
+     stage for a real-time Three.js showroom on capable desktops and leaves
+     this 2D version in place everywhere else. */
 
   /* ===================== nav + links =================================== */
   function closeMenu() {
@@ -638,7 +598,6 @@
     initCursor();
     buildParticles();
     initTurntable();
-    initThree();
     runIntro(function () { if (hasGSAP && window.ScrollTrigger) ScrollTrigger.refresh(); });
   }
 
