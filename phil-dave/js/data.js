@@ -41,6 +41,10 @@ window.SITE = {
     { key: "mercedes-benz", title: "Mercedes-Benz" },
     { key: "audi", title: "Audi" },
     { key: "volvo", title: "Volvo" },
+    { key: "acura", title: "Acura" },
+    { key: "land-rover", title: "Land Rover" },
+    { key: "zenvo", title: "Zenvo" },
+    { key: "tedson", title: "Tedson Motors" },
   ],
   brandsLabel: "Brands I source",
 
@@ -48,7 +52,7 @@ window.SITE = {
   stats: [
     { value: "150+", label: "Cars sourced" },        // [PLACEHOLDER]
     { value: "12 yrs", label: "In the trade" },       // [PLACEHOLDER]
-    { value: "6", label: "Marques" },
+    { value: "10", label: "Marques" },
     { value: "100%", label: "Discretion" },
   ],
 
@@ -102,8 +106,8 @@ window.SITE = {
     photoCaption: "Phil Dave — luxury car sourcer",
     lead: "I source cars for people who value their time and their taste.",
     body: [
-      "Phil Dave is a private luxury car sourcer based in the Greater Toronto Area. I don't run a dealership — I work for the buyer. That means finding the right car, verifying it properly, negotiating the price down, and handling every detail of the acquisition so you don't have to.",
-      "Years in the trade have built a network that reaches well past the public listings. Whether it's a specific Porsche allocation, a low-kilometre Lexus, or the exact Mercedes spec you've been picturing, I find it — quietly, and on your terms.",
+      "Phil Dave is a private luxury car sourcer based in the Greater Toronto Area. Every search is handled by me personally — finding the right car, verifying it properly, negotiating the number, and looking after every detail so you don't have to.",
+      "Years in the trade have built a network that reaches well past the public listings, and every deal closes through licensed, established channels — the paperwork as clean as the car. Whether it's a specific Porsche allocation, a low-kilometre Lexus, or the exact Mercedes spec you've been picturing, I find it — quietly, and on your terms.",
       "Born in France, based in Toronto — service available in English and French.",
     ],
   },
@@ -139,10 +143,10 @@ window.SITE = {
     },
   ],
 
-  /* --- The private-inventory invitation under the collection ------------- */
+  /* --- The private-inventory invitation under the showroom --------------- */
   inventoryCta: {
-    lead: "The full inventory is private.",
-    body: "What you see here is a glimpse. Contact me to see the full inventory — or tell me what you're dreaming of, and I'll find it.",
+    lead: "The showroom doesn't end here.",
+    body: "What you see is a glimpse. Contact me to see the full inventory — or tell me what you're dreaming of, and I'll find it.",
     button: "Request a car",
   },
 
@@ -150,16 +154,16 @@ window.SITE = {
      The questions discerning buyers actually ask. Edit freely.            */
   faq: [
     {
-      q: "How do you charge for sourcing?",
-      a: "A transparent flat finder's fee agreed before any work begins — never a hidden markup on the car. You always see the real acquisition price.", // [PLACEHOLDER — confirm your model]
+      q: "How does it work — fees, terms?",
+      a: "Simple, transparent terms agreed before any search begins — no surprises, no hidden costs. Ask me and I'll walk you through exactly how it works.", // [PLACEHOLDER — confirm your model]
     },
     {
       q: "Do you only work within the GTA?",
       a: "My base and network are the Greater Toronto Area, but I source nationally and arrange transport when the right car sits elsewhere.",
     },
     {
-      q: "Can you find a car that isn't one of your six brands?",
-      a: "Porsche, BMW, Lexus, Mercedes, Audi and Volvo are my specialties, but the network runs deeper. If you're after something else, ask — I'll tell you honestly whether I'm the right person for it.",
+      q: "Can you find a car outside the marques you list?",
+      a: "The marques in the showroom are my specialties, but the network runs deeper. If you're after something else, ask — I'll tell you honestly whether I'm the right person for it.",
     },
     {
       q: "How discreet is the process?",
@@ -167,14 +171,14 @@ window.SITE = {
     },
     {
       q: "Do you handle inspection and paperwork?",
-      a: "Yes — independent pre-purchase inspection, history and lien checks, negotiation, financing introductions if wanted, registration and delivery. White-glove, end to end.",
+      a: "Yes — pre-purchase inspection, history and lien checks, negotiation, financing if wanted, registration and delivery. Everything closes through licensed, professional channels. White-glove, end to end.",
     },
   ],
 
   /* --- The four rooms (hero hotspots map to these; page order) ------------ */
   rooms: [
     { id: "about",     label: "About Phil",    hint: "The man behind the cars" },
-    { id: "inventory", label: "The Collection", hint: "Curated & sourced cars" },
+    { id: "inventory", label: "The Show Room", hint: "Curated & sourced cars" },
     { id: "process",   label: "Sourcing",      hint: "How it works" },
     { id: "contact",   label: "Request a Car", hint: "Tell me what you want" },
   ],
