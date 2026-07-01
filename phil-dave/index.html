@@ -49,7 +49,7 @@
   <div class="intro__inner">
     <div class="intro__name">PHIL&nbsp;DAVE</div>
     <div class="intro__bar"><span></span></div>
-    <div class="intro__sub">Bringing up the lights</div>
+    <div class="intro__sub">Bienvenue</div>
   </div>
 </div>
 
@@ -82,10 +82,10 @@
     <span class="nav__tag" data-region>Greater Toronto Area</span>
   </a>
   <nav class="nav__links" aria-label="Primary">
-    <a href="#inventory" data-link>Inventory</a>
-    <a href="#process" data-link>Sourcing</a>
-    <a href="#about" data-link>About</a>
-    <a class="nav__cta magnetic" href="#contact" data-link>Request a Car</a>
+    <a href="#inventory" data-link>La Collection</a>
+    <a href="#process" data-link>Savoir-Faire</a>
+    <a href="#about" data-link>À Propos</a>
+    <a class="nav__cta magnetic" href="#contact" data-link>Sur Mesure</a>
   </nav>
   <button class="nav__menu" id="navMenu" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span></button>
 </header>
@@ -100,7 +100,7 @@
     </div>
 
     <div class="hero__copy">
-      <p class="eyebrow reveal-line">Private luxury car sourcing</p>
+      <p class="eyebrow reveal-line">Dénicheur d'automobiles d'exception</p>
       <h1 class="hero__title">
         <span class="reveal-line">Your dream car,</span>
         <span class="reveal-line"><em data-tagline-em>sourced</em>.</span>
@@ -128,39 +128,52 @@
       <div class="hotspots" id="hotspots"></div>
     </div>
 
-    <div class="hero__scrollcue" aria-hidden="true"><span>Enter the garage</span><i></i></div>
+    <div class="hero__scrollcue" aria-hidden="true"><span>Entrez — enter the garage</span><i></i></div>
   </section>
 
-  <!-- ====================== ROOM 1 · INVENTORY ====================== -->
+  <!-- ================== marques banner (under the hero) ================== -->
+  <section class="brands" aria-label="Brands I source">
+    <p class="brands__label" id="brandsLabel"></p>
+    <div class="brands__row" id="brandsRow"></div>
+  </section>
+
+  <!-- ==================== SALON 1 · LA COLLECTION ==================== -->
   <section class="room room--inventory" id="inventory" aria-labelledby="inventory-h">
     <div class="room__head">
-      <span class="room__index">Room 01</span>
-      <h2 class="room__title" id="inventory-h"><span class="reveal-line">Current Inventory</span></h2>
-      <p class="room__intro reveal-line">Cars currently sourced, available, or recently delivered. New arrivals are constant — if you don't see it, I'll find it.</p>
+      <span class="room__index">Salon 01</span>
+      <h2 class="room__title" id="inventory-h"><span class="reveal-line">La Collection</span></h2>
+      <p class="room__intro reveal-line">A curated selection — a few pièces d'exception, recently sourced or awaiting the right owner.</p>
     </div>
-    <div class="filters" id="inventoryFilters" role="group" aria-label="Filter inventory"></div>
     <div class="grid" id="inventoryGrid" aria-live="polite"></div>
+    <aside class="privcta will-reveal" id="privCta">
+      <p class="privcta__lead" id="privLead"></p>
+      <p class="privcta__body" id="privBody"></p>
+      <a class="btn btn--primary magnetic" id="privBtn" href="#contact" data-link></a>
+    </aside>
   </section>
 
-  <!-- ====================== ROOM 2 · PROCESS ====================== -->
+  <!-- ==================== SALON 2 · SAVOIR-FAIRE ==================== -->
   <section class="room room--process" id="process" aria-labelledby="process-h">
     <div class="room__head">
-      <span class="room__index">Room 02</span>
-      <h2 class="room__title" id="process-h"><span class="reveal-line">How Sourcing Works</span></h2>
-      <p class="room__intro reveal-line">White-glove from first call to keys in hand. Four steps, fully handled.</p>
+      <span class="room__index">Salon 02</span>
+      <h2 class="room__title" id="process-h"><span class="reveal-line">Savoir-Faire</span></h2>
+      <p class="room__intro reveal-line">White-glove from first call to keys in hand. Four steps, fully handled — en toute discrétion.</p>
     </div>
     <ol class="steps" id="processList"></ol>
   </section>
 
-  <!-- ====================== ROOM 3 · ABOUT ====================== -->
+  <!-- ===================== SALON 3 · À PROPOS ===================== -->
   <section class="room room--about" id="about" aria-labelledby="about-h">
     <div class="room__head">
-      <span class="room__index">Room 03</span>
-      <h2 class="room__title" id="about-h"><span class="reveal-line">About Phil Dave</span></h2>
+      <span class="room__index">Salon 03</span>
+      <h2 class="room__title" id="about-h"><span class="reveal-line">À Propos</span></h2>
     </div>
-    <div class="about">
-      <div class="about__lead reveal-line" id="aboutLead"></div>
-      <div class="about__body" id="aboutBody"></div>
+    <div class="about about--portrait">
+      <figure class="about__photo will-reveal" id="aboutPhoto"></figure>
+      <div class="about__text">
+        <div class="about__lead reveal-line" id="aboutLead"></div>
+        <div class="about__body" id="aboutBody"></div>
+      </div>
       <div class="about__stats" id="aboutStats"></div>
     </div>
 
@@ -171,12 +184,12 @@
     <div class="quotes" id="quotes"></div>
   </section>
 
-  <!-- ====================== ROOM 4 · CONTACT ====================== -->
+  <!-- ===================== SALON 4 · SUR MESURE ===================== -->
   <section class="room room--contact" id="contact" aria-labelledby="contact-h">
     <div class="room__head">
-      <span class="room__index">Room 04</span>
-      <h2 class="room__title" id="contact-h"><span class="reveal-line">Request a Car</span></h2>
-      <p class="room__intro reveal-line">Tell me what you're looking for. I'll come back to you personally.</p>
+      <span class="room__index">Salon 04</span>
+      <h2 class="room__title" id="contact-h"><span class="reveal-line">Sur Mesure</span></h2>
+      <p class="room__intro reveal-line">Dites-moi tout — tell me what you're looking for, and I'll come back to you personally.</p>
     </div>
 
     <form class="lead" id="leadForm" novalidate>
@@ -228,18 +241,18 @@
         <textarea name="notes" rows="4" placeholder="Tell me about the car you're picturing…"></textarea>
       </label>
       <div class="lead__foot">
-        <button type="submit" class="btn btn--primary magnetic" id="leadSubmit">Send my request</button>
+        <button type="submit" class="btn btn--primary magnetic" id="leadSubmit">Envoyer — send my request</button>
         <p class="lead__status" id="leadStatus" role="status"></p>
       </div>
     </form>
 
     <section class="faq" aria-label="Frequently asked questions">
-      <h3 class="faq__title reveal-line">Before you ask</h3>
+      <h3 class="faq__title reveal-line">Avant de demander</h3>
       <div class="faq__list" id="faqList"></div>
     </section>
 
     <aside class="direct">
-      <p class="direct__label">Or reach me directly</p>
+      <p class="direct__label">Ou contactez-moi directement</p>
       <ul class="direct__list" id="directList"></ul>
     </aside>
   </section>
@@ -249,8 +262,8 @@
 <footer class="foot">
   <div class="foot__name">Phil&nbsp;Dave</div>
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
-  <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed.</p>
+  <p class="foot__meta">Dénicheur d'automobiles d'exception · <span data-region>Greater Toronto Area</span> · Sur rendez-vous</p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discrétion assurée · English &amp; Français.</p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
@@ -261,6 +274,7 @@
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
 <script src="js/data.js" defer></script>
 <script src="js/silhouettes.js" defer></script>
+<script src="js/brandlogos.js" defer></script>
 <script src="js/main.js" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,

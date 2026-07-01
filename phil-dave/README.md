@@ -40,15 +40,18 @@ the values marked `[PLACEHOLDER]`:
 | Tagline (drives the hero word too) | `tagline` |
 | Phone / email / Instagram | `contact` |
 | Lead-form destination | `formEndpoint` (see below) |
-| Cars in the Inventory room | `inventory[]` — copy a block to add one |
+| Logo banner under the hero | `brands[]` + `brandsLabel` (keys from `js/brandlogos.js`) |
+| Cars in La Collection (keep it to 3–4) | `inventory[]` — copy a block to add one |
+| "Collection privée" invitation | `inventoryCta` |
 | Sourcing steps | `process[]` |
-| About copy | `about` |
+| About copy + portrait | `about` (photo → `assets/phil-*.webp`) |
 | Stats & client quotes | `stats[]`, `testimonials[]` |
-| The 7 marques | `marques[]` |
+| Marque wordmark marquee (À Propos) | `marques[]` |
 
-`inventory[].status` is `"Available"`, `"Sourced"`, or `"Sold"`. Leave
-`image: ""` for an elegant marque card, or point it at a photo in `assets/`.
-Empty the `inventory` array and the room shows a graceful "New arrivals incoming."
+`inventory[].status` reads in French — `"Disponible"`, `"Réservée"`, or
+`"Vendue"` (English values still work). Leave `image: ""` for an elegant
+marque card, or point it at a photo in `assets/`. Empty the `inventory`
+array and the room shows a graceful "Nouveautés en route."
 
 ### Wiring the lead form
 

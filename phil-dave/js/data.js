@@ -31,15 +31,19 @@ window.SITE = {
      payload to the console, and offers a mailto: fallback to your email).   */
   formEndpoint: "", // [PLACEHOLDER — e.g. "https://formspree.io/f/xxxxxxx"]
 
-  /* --- The 7 marques you specialise in ----------------------------------- */
-  marques: ["Lexus", "Jaguar", "Mercedes-Benz", "BMW", "Volvo", "Porsche", "Audi"],
+  /* --- The marques you source --------------------------------------------
+     `brands` drives the logo banner under the hero (keys must exist in
+     js/brandlogos.js); `marques` feeds the text marquee in À Propos.       */
+  brands: ["porsche", "bmw", "lexus", "mercedes", "audi"],
+  brandsLabel: "Les marques — brands I source",
+  marques: ["Porsche", "BMW", "Lexus", "Mercedes-Benz", "Audi"],
 
   /* --- Credibility stats (Room 3). Edit freely. -------------------------- */
   stats: [
-    { value: "150+", label: "Cars sourced" },        // [PLACEHOLDER]
-    { value: "12 yrs", label: "In the trade" },       // [PLACEHOLDER]
-    { value: "7", label: "Marques specialised" },
-    { value: "100%", label: "Discretion" },
+    { value: "150+", label: "Voitures sourcées" },   // [PLACEHOLDER]
+    { value: "12 ans", label: "Dans le métier" },     // [PLACEHOLDER]
+    { value: "5", label: "Maisons" },
+    { value: "100%", label: "Discrétion" },
   ],
 
   /* --- Client quotes (Room 3). Add/remove freely. ------------------------ */
@@ -58,36 +62,43 @@ window.SITE = {
     },
   ],
 
-  /* --- The sourcing process (Room 2) ------------------------------------- */
+  /* --- The sourcing process (Salon 02) ------------------------------------ */
   process: [
     {
       step: "01",
-      title: "Consultation",
-      body: "We start with a quiet conversation about the car you want — spec, colour, feel, budget and timeline. No pressure, no showroom.",
+      title: "La Consultation",
+      body: "We begin with a quiet tête-à-tête about the car you want — spec, colour, feel, budget and timeline. No pressure, no showroom.",
     },
     {
       step: "02",
-      title: "Search & Source",
+      title: "La Recherche",
       body: "I work my private network across the GTA and beyond to locate the right car — including quiet listings you'll never see publicly.",
     },
     {
       step: "03",
-      title: "Inspection & Negotiation",
-      body: "Every car is independently inspected and history-checked. I negotiate hard on your behalf so the number is right before you commit.",
+      title: "L'Inspection & La Négociation",
+      body: "Every car is independently inspected and history-checked. I negotiate hard on your behalf so the number is juste before you commit.",
     },
     {
       step: "04",
-      title: "Delivery",
-      body: "Paperwork handled, car detailed and delivered to your door. White-glove from first call to keys in hand.",
+      title: "La Livraison",
+      body: "Paperwork handled, car detailed and delivered to your door. White-glove from first call to keys in hand — voilà.",
     },
   ],
 
-  /* --- About copy (Room 3) ----------------------------------------------- */
+  /* --- About copy (Salon 03) ---------------------------------------------- */
   about: {
-    lead: "I source cars for people who value their time and their taste.",
+    /* portrait shown beside the story — replace the assets/phil-*.webp
+       files to change it (black & white keeps the maison look) */
+    photo: "assets/phil-700.webp",
+    photoSrcset: "assets/phil-440.webp 440w, assets/phil-700.webp 700w, assets/phil-1100.webp 1100w",
+    photoAlt: "Phil Dave, on the phone beside a sourced coupe at the harbour",
+    photoCaption: "Phil — dénicheur d'automobiles",
+    lead: "I source cars for people who value their time and their taste — c'est mon métier.",
     body: [
-      "Phil Dave is a private luxury car sourcer based in the Greater Toronto Area. I don't run a dealership — I work for the buyer. That means finding the right car, verifying it properly, negotiating the price down, and handling every detail of the acquisition so you don't have to.",
+      "Phil Dave is a private luxury car sourcer based in the Greater Toronto Area — French by birth, with a French eye for the belle machine. I don't run a dealership; I work for the buyer. That means finding the right car, verifying it properly, negotiating the price down, and handling every detail of the acquisition so you don't have to.",
       "Years in the trade have built a network that reaches well past the public listings. Whether it's a specific Porsche allocation, a low-kilometre Lexus, or the exact Mercedes spec you've been picturing, I find it — quietly, and on your terms.",
+      "Service en français et en anglais, naturellement.",
     ],
   },
 
@@ -96,38 +107,39 @@ window.SITE = {
      "Available", "Sourced", "Sold". `image` is optional — leave "" to show an
      elegant marque card instead of a photo. If you add photos, drop them in
      /phil-dave/assets/ and reference them like "assets/my-car.jpg".          */
+  /* A curated selection — 3 or 4 pièces d'exception, no more. The full
+     inventory stays private; the panel below the grid invites a request.
+     `status`: "Disponible" (available), "Réservée" (sourced for a client),
+     or "Vendue" (sold).                                                     */
   inventory: [
     {
       make: "Porsche", model: "911 Carrera S", year: 2023, body: "coupe",
       note: "GT Silver over black. Sport Chrono, PASM, ceramic brakes. Sourced privately for a returning client.",
-      status: "Sourced", image: "",
+      status: "Réservée", image: "",
     },
     {
       make: "Lexus", model: "LC 500", year: 2024, body: "coupe",
       note: "Naturally-aspirated V8. Infrared over Circuit Red. One of the cleanest examples in Ontario.",
-      status: "Available", image: "",
+      status: "Disponible", image: "",
     },
     {
       make: "Mercedes-Benz", model: "G 63 AMG", year: 2022, body: "suv",
       note: "Obsidian Black, Manufaktur interior. Located and delivered within nine days.",
-      status: "Sold", image: "",
-    },
-    {
-      make: "BMW", model: "M4 Competition", year: 2023, body: "coupe",
-      note: "Isle of Man Green, carbon package, full PPF. Currently being inspected for a client.",
-      status: "Available", image: "",
-    },
-    {
-      make: "Jaguar", model: "F-Type R", year: 2021, body: "coupe",
-      note: "Supercharged V8, Santorini Black. Quiet listing — never advertised publicly.",
-      status: "Available", image: "",
+      status: "Vendue", image: "",
     },
     {
       make: "Audi", model: "RS 6 Avant", year: 2024, body: "wagon",
       note: "Nardo Grey, Dynamic package plus. The wagon everyone wants. Allocation secured.",
-      status: "Sourced", image: "",
+      status: "Réservée", image: "",
     },
   ],
+
+  /* --- The private-inventory invitation under the collection ------------- */
+  inventoryCta: {
+    lead: "La collection complète est privée.",
+    body: "What you see here is a glimpse. Contact me to view the full inventory — or tell me what you're dreaming of, and I'll find it.",
+    button: "Request a car",
+  },
 
   /* --- FAQ (shown in the Request room, above your direct contact) -------
      The questions discerning buyers actually ask. Edit freely.            */
@@ -141,8 +153,8 @@ window.SITE = {
       a: "My base and network are the Greater Toronto Area, but I source nationally and arrange transport when the right car sits elsewhere.",
     },
     {
-      q: "Can you find a car that isn't one of your seven marques?",
-      a: "Those are my specialties, but the network runs deeper. If you're after something else, ask — I'll tell you honestly whether I'm the right person for it.",
+      q: "Can you find a car that isn't one of your five maisons?",
+      a: "Porsche, BMW, Lexus, Mercedes and Audi are my specialties, but the network runs deeper. If you're after something else, ask — I'll tell you honestly whether I'm the right person for it.",
     },
     {
       q: "How discreet is the process?",
@@ -154,12 +166,12 @@ window.SITE = {
     },
   ],
 
-  /* --- The four rooms (hero hotspots map to these) ----------------------- */
+  /* --- The four salons (hero hotspots map to these) ----------------------- */
   rooms: [
-    { id: "inventory", label: "Inventory",   hint: "Current & sourced cars" },
-    { id: "process",   label: "Sourcing",    hint: "How it works" },
-    { id: "about",     label: "About Phil",  hint: "Why clients trust me" },
-    { id: "contact",   label: "Request a Car", hint: "Tell me what you want" },
+    { id: "inventory", label: "La Collection", hint: "Curated & sourced cars" },
+    { id: "process",   label: "Savoir-Faire",  hint: "How sourcing works" },
+    { id: "about",     label: "À Propos",      hint: "The man behind the cars" },
+    { id: "contact",   label: "Sur Mesure",    hint: "Request a car" },
   ],
 
   /* --- Hero asset swapping ----------------------------------------------

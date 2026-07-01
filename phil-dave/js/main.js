@@ -73,7 +73,8 @@
       hs.appendChild(btn);
     });
 
-    // inventory (+ filters)
+    // marques banner + la collection
+    buildBrands();
     buildInventory();
 
     // process
@@ -88,10 +89,18 @@
       );
     }).join("");
 
-    // about
+    // about (+ portrait)
     if (S.about) {
       $("#aboutLead").textContent = S.about.lead || "";
       $("#aboutBody").innerHTML = (S.about.body || []).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
+      var ph = $("#aboutPhoto");
+      if (ph && S.about.photo) {
+        ph.innerHTML =
+          '<img src="' + esc(S.about.photo) + '"' +
+          (S.about.photoSrcset ? ' srcset="' + esc(S.about.photoSrcset) + '" sizes="(max-width: 860px) 86vw, 380px"' : "") +
+          ' alt="' + esc(S.about.photoAlt || "Portrait") + '" loading="lazy" decoding="async" />' +
+          (S.about.photoCaption ? '<figcaption>' + esc(S.about.photoCaption) + "</figcaption>" : "");
+      } else if (ph) { ph.style.display = "none"; }
     }
     $("#aboutStats").innerHTML = (S.stats || []).map(function (s) {
       return '<div class="stat"><div class="stat__value">' + esc(s.value) + '</div><div class="stat__label">' + esc(s.label) + "</div></div>";
@@ -147,8 +156,30 @@
     $("#directList").innerHTML = items.join("");
   }
 
-  /* ===================== inventory + filters ========================== */
-  var activeStatus = "all", activeMarque = "all";
+  /* ===================== marques banner ================================ */
+  function buildBrands() {
+    var row = $("#brandsRow"), label = $("#brandsLabel");
+    if (!row || !window.BRAND_LOGOS) return;
+    if (label) label.textContent = S.brandsLabel || "Brands I source";
+    row.innerHTML = (S.brands || []).map(function (key) {
+      var b = window.BRAND_LOGOS[key];
+      if (!b) return "";
+      return (
+        '<span class="brand brand--' + esc(key) + '" role="img" aria-label="' + esc(b.title) + '" title="' + esc(b.title) + '">' +
+          '<svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d="' + b.path + '"/></svg>' +
+        "</span>"
+      );
+    }).join("");
+  }
+
+  /* ===================== la collection ================================= */
+  // status → css key (statuses read in French; classes stay stable)
+  var STATUS_KEYS = {
+    "disponible": "available", "available": "available",
+    "réservée": "sourced", "reservee": "sourced", "sourced": "sourced",
+    "vendue": "sold", "sold": "sold"
+  };
+  function statusKey(s) { return STATUS_KEYS[String(s || "").toLowerCase()] || "available"; }
 
   function carMedia(c) {
     if (c.image) {
@@ -160,16 +191,16 @@
   }
 
   function cardHTML(c, i) {
-    var st = (c.status || "Available").toLowerCase();
+    var key = statusKey(c.status);
     return (
-      '<article class="card will-reveal" data-i="' + i + '" data-status="' + esc(st) + '" data-marque="' + esc(c.make) + '" tabindex="0" role="button" aria-label="' + esc(c.year + " " + c.make + " " + c.model) + ', view details">' +
-        '<span class="status status--' + esc(st) + '">' + esc(c.status || "Available") + "</span>" +
+      '<article class="card will-reveal" data-i="' + i + '" tabindex="0" role="button" aria-label="' + esc(c.year + " " + c.make + " " + c.model) + ', view details">' +
+        '<span class="status status--' + key + '">' + esc(c.status || "Disponible") + "</span>" +
         '<div class="card__media">' + carMedia(c) + "</div>" +
         '<div class="card__body">' +
           '<span class="card__year">' + esc(c.year) + " · " + esc(c.make) + "</span>" +
           '<h3 class="card__name">' + esc(c.model) + "</h3>" +
           '<p class="card__note">' + esc(c.note || "") + "</p>" +
-          '<span class="card__more">View details &rsaquo;</span>' +
+          '<span class="card__more">Découvrir &rsaquo;</span>' +
         "</div>" +
       "</article>"
     );
@@ -178,65 +209,26 @@
   function buildInventory() {
     var grid = $("#inventoryGrid");
     var inv = S.inventory || [];
-    if (!inv.length) { grid.innerHTML = '<div class="empty">New arrivals incoming.</div>'; return; }
-    grid.innerHTML = inv.map(cardHTML).join("");
-
-    // filter bar — statuses present + marques present
-    var statuses = ["all"].concat(uniq(inv.map(function (c) { return c.status || "Available"; })));
-    var marques = ["all"].concat(uniq(inv.map(function (c) { return c.make; })));
-    var fb = $("#inventoryFilters");
-    fb.innerHTML =
-      '<div class="filters__group" data-kind="status">' +
-        statuses.map(function (s) { return chip(s, "status"); }).join("") +
-      "</div>" +
-      '<div class="filters__group" data-kind="marque">' +
-        marques.map(function (m) { return chip(m, "marque"); }).join("") +
-      "</div>";
-
-    fb.querySelectorAll(".chip").forEach(function (ch) {
-      ch.addEventListener("click", function () {
-        var kind = ch.getAttribute("data-kind"), val = ch.getAttribute("data-val");
-        if (kind === "status") activeStatus = val; else activeMarque = val;
-        fb.querySelectorAll('.chip[data-kind="' + kind + '"]').forEach(function (c) { c.classList.toggle("is-active", c === ch); });
-        applyFilter();
+    if (!inv.length) {
+      grid.innerHTML = '<div class="empty">Nouveautés en route — new arrivals incoming.</div>';
+    } else {
+      grid.innerHTML = inv.map(cardHTML).join("");
+      // card → lightbox
+      grid.querySelectorAll(".card").forEach(function (card) {
+        card.addEventListener("click", function () { openSheet(inv[+card.getAttribute("data-i")]); });
+        card.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openSheet(inv[+card.getAttribute("data-i")]); }
+        });
       });
-    });
-
-    // card → lightbox
-    grid.querySelectorAll(".card").forEach(function (card) {
-      card.addEventListener("click", function () { openSheet(inv[+card.getAttribute("data-i")]); });
-      card.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openSheet(inv[+card.getAttribute("data-i")]); }
-      });
-    });
+    }
+    // the private-collection invitation
+    var cta = S.inventoryCta || {};
+    if ($("#privCta")) {
+      $("#privLead").textContent = cta.lead || "";
+      $("#privBody").textContent = cta.body || "";
+      $("#privBtn").textContent = cta.button || "Request a car";
+    }
   }
-
-  function applyFilter() {
-    var cards = $$("#inventoryGrid .card");
-    var shown = 0;
-    cards.forEach(function (card) {
-      var okS = activeStatus === "all" || card.getAttribute("data-status") === activeStatus.toLowerCase();
-      var okM = activeMarque === "all" || card.getAttribute("data-marque") === activeMarque;
-      var on = okS && okM;
-      if (on) shown++;
-      if (hasGSAP && !reduce) {
-        if (on) { card.style.display = ""; gsap.fromTo(card, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }); }
-        else gsap.to(card, { opacity: 0, y: 8, duration: 0.25, onComplete: function () { card.style.display = "none"; } });
-      } else { card.style.display = on ? "" : "none"; }
-    });
-    var grid = $("#inventoryGrid");
-    var none = grid.querySelector(".filters-empty");
-    if (!shown) {
-      if (!none) { none = document.createElement("div"); none.className = "empty filters-empty"; none.textContent = "Nothing matching — but I can source it."; grid.appendChild(none); }
-    } else if (none) none.remove();
-    if (hasGSAP && window.ScrollTrigger) ScrollTrigger.refresh();
-  }
-
-  function chip(val, kind) {
-    var label = val === "all" ? (kind === "status" ? "All" : "All marques") : val;
-    return '<button class="chip' + (val === "all" ? " is-active" : "") + '" type="button" data-kind="' + kind + '" data-val="' + esc(val) + '">' + esc(label) + "</button>";
-  }
-  function uniq(arr) { var seen = {}; return arr.filter(function (x) { if (seen[x]) return false; seen[x] = 1; return true; }); }
 
   /* ===================== vehicle lightbox ============================== */
   var sheetEl, lastFocus;
@@ -245,8 +237,8 @@
     sheetEl = sheetEl || $("#sheet");
     lastFocus = document.activeElement;
     $("#sheetMedia").innerHTML = carMedia(c);
-    var st = (c.status || "Available");
-    var sS = $("#sheetStatus"); sS.textContent = st; sS.className = "sheet__status status status--" + st.toLowerCase();
+    var st = (c.status || "Disponible");
+    var sS = $("#sheetStatus"); sS.textContent = st; sS.className = "sheet__status status status--" + statusKey(st);
     $("#sheetYear").textContent = c.year + " · " + c.make;
     $("#sheetName").textContent = c.model;
     $("#sheetNote").textContent = c.note || "";
