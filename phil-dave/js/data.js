@@ -163,14 +163,17 @@ window.SITE = {
   ],
 
   /* --- Hero asset swapping ----------------------------------------------
-     The hero is a REAL-TIME 3D turntable by default on desktop (a platinum
-     grand tourer built procedurally in Three.js — drag it to spin). Mobile,
-     reduced-motion and no-WebGL visitors get the 2D pedestal hero instead.
+     Priority: heroImage (a real photo — used on ALL devices, wins over 3D)
+             → heroModel (.glb on the 3D turntable, desktop only)
+             → built-in procedural 3D car (desktop) / illustration (mobile).
 
-     heroModel: path to your own .glb car model — it replaces the built-in
-                3D car automatically (auto-scaled and grounded).
-     heroImage: path to a high-res car-on-pedestal PHOTO for the 2D fallback
-                hero. Leave "" to use the built-in illustration.              */
+     heroImage:       your car-on-a-podium photo. Shot on a black studio
+                      background works best — it melts into the page.
+     heroImageSrcset: optional responsive variants so phones download the
+                      small file. Leave "" to always use heroImage.
+     heroModel:       path to your own .glb car model (only used when
+                      heroImage is ""); auto-scaled and grounded.            */
+  heroImage: "assets/hero-car-1536.webp",
+  heroImageSrcset: "assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w",
   heroModel: "",                 // e.g. "models/car.glb"
-  heroImage: "",                 // e.g. "assets/hero-car.webp"
 };

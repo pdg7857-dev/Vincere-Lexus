@@ -37,11 +37,27 @@
     }
     var yr = $("#year"); if (yr) yr.textContent = "2026";
 
-    // hotspots (positions distributed around the car)
+    // hero photo mode — a real car-on-podium photograph replaces the
+    // illustrated/3D stage (the photo brings its own podium and floor)
+    if (S.heroImage) {
+      var stageEl = $("#stage"), img = $("#carImg");
+      stageEl.classList.add("stage--photo");
+      img.src = S.heroImage;
+      if (S.heroImageSrcset) {
+        img.srcset = S.heroImageSrcset;
+        img.sizes = "(max-width: 860px) 96vw, 1100px";
+      }
+      img.setAttribute("fetchpriority", "high");
+      img.decoding = "async";
+      img.alt = "Luxury car presented on a lit studio podium";
+    }
+
+    // hotspots — in photo mode they pin to points ON the car (percentages of
+    // the photo itself); otherwise they float around the illustrated stage
     var hs = $("#hotspots");
-    var positions = [
-      { x: 22, y: 30 }, { x: 76, y: 26 }, { x: 30, y: 70 }, { x: 70, y: 72 }, { x: 50, y: 18 }
-    ];
+    var positions = S.heroImage
+      ? [{ x: 27, y: 56 }, { x: 53, y: 30 }, { x: 81, y: 44 }, { x: 54, y: 70 }, { x: 90, y: 70 }]
+      : [{ x: 22, y: 30 }, { x: 76, y: 26 }, { x: 30, y: 70 }, { x: 70, y: 72 }, { x: 50, y: 18 }];
     (S.rooms || []).forEach(function (room, i) {
       var p = positions[i % positions.length];
       var btn = document.createElement("button");

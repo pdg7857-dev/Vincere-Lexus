@@ -171,6 +171,27 @@ em{ font-style:italic; }
 /* sheen sweep on the car body line */
 .stage__car .sheen{ animation:none; }
 
+/* photo mode — a real car-on-podium photograph is the hero.
+   The photo brings its own podium, floor and studio black, so the CSS
+   pedestal/reflection retire and the frame is feathered into the page. */
+.stage--photo .stage__pedestal,
+.stage--photo .stage__reflection{ display:none; }
+.stage--photo .stage__car{ width:74%; top:2%; }
+.stage--photo .stage__car > img{
+  filter:none;
+  -webkit-mask-image:radial-gradient(68% 62% at 50% 50%, #000 42%, rgba(0,0,0,.5) 66%, transparent 88%);
+  mask-image:radial-gradient(68% 62% at 50% 50%, #000 42%, rgba(0,0,0,.5) 66%, transparent 88%);
+}
+/* hotspot layer tracks the photo's box so pins stay on the car at any size */
+.stage--photo .hotspots{
+  inset:auto; left:50%; top:2%; width:74%; aspect-ratio:3/2;
+  transform:translateX(-50%);
+}
+@media (max-width:860px){
+  .stage--photo .stage__car{ width:96%; top:6%; }
+  .stage--photo .hotspots{ width:96%; top:6%; }
+}
+
 /* hotspots */
 .hotspots{ position:absolute; inset:0; z-index:5; }
 .hotspot{

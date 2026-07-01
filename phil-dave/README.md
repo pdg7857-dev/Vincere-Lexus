@@ -60,23 +60,23 @@ form at [formspree.io](https://formspree.io) and paste its endpoint into
 
 ---
 
-## The hero — real-time 3D
+## The hero — swapping the car
 
-On desktop the hero is a **live Three.js showroom**: a procedurally-built
-platinum grand tourer on a lit turntable — auto-rotating, **drag to spin**
-(with inertia), floor reflection, studio lighting, and the hotspot markers
-anchored to actual points on the car so they orbit with it (the turntable
-eases to a stop while you hover one). Three.js is self-hosted in
-`js/vendor/three/` — still no CDN, still no build step.
+Priority order (set in `js/data.js`):
 
-Swapping the car:
+1. **`heroImage` — a real photo (current setup).** The car-on-podium
+   photograph is served as responsive WebP (`600w / 900w / 1536w`, 7–41 KB)
+   so phones download the small file; its edges are feathered into the page
+   and the hotspot pins anchor to points ON the car at every screen size.
+   To change the car, replace the `assets/hero-car-*.webp` files (any photo
+   on a black studio background works best) or point `heroImage` at a new
+   file and clear `heroImageSrcset`.
+2. **`heroModel` — your own `.glb`** on the real-time Three.js turntable
+   (desktop only; drag to spin, auto-scaled and grounded).
+3. **Neither set:** the built-in procedural 3D car on desktop, the
+   illustrated pedestal on mobile / `prefers-reduced-motion` / no-WebGL.
 
-- **Use your own 3D model:** drop a `.glb` in `models/` and set
-  `heroModel: "models/car.glb"` in `data.js`. It replaces the built-in car
-  automatically (auto-scaled and grounded), loaded via the vendored GLTFLoader.
-- **2D fallback** (mobile, `prefers-reduced-motion`, or no WebGL): the
-  illustrated pedestal hero. Point `heroImage` at a photo to replace the
-  illustration.
+Three.js is self-hosted in `js/vendor/three/` — still no CDN, no build step.
 
 ---
 
@@ -94,7 +94,7 @@ phil-dave/
 │  └─ vendor/            # self-hosted GSAP, ScrollTrigger, Lenis
 ├─ assets/
 │  ├─ car.svg            # the hero car illustration (swappable)
-│  ├─ favicon.svg, og.svg
+│  ├─ favicon.svg, og.jpg, hero-car-*.webp
 │  └─ fonts/             # woff2 (self-hosted)
 └─ models/               # drop a car.glb here to enable 3D
 ```
