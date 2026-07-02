@@ -641,6 +641,13 @@
     // gentle "breathing" float of the car
     gsap.to("#stageCar", { y: "-=10", duration: 4, repeat: -1, yoyo: true, ease: "sine.inOut" });
 
+    // the display turntable — a slow, constant 3D sway of the whole scene,
+    // as if the podium is quietly turning under the studio lights
+    gsap.set("#carImg", { transformPerspective: 950, transformOrigin: "50% 72%" });
+    gsap.fromTo("#carImg", { rotationY: -6.5 }, {
+      rotationY: 6.5, duration: 9, ease: "sine.inOut", repeat: -1, yoyo: true
+    });
+
     // periodic studio-light sweep across the car (CSS light bar overlay,
     // since the car is an <img> of an SVG and can't be reached into)
     var sc = $("#stageCar");
@@ -663,7 +670,7 @@
         var r = stage.getBoundingClientRect();
         var nx = (e.clientX - (r.left + r.width / 2)) / r.width;
         var ny = (e.clientY - (r.top + r.height / 2)) / r.height;
-        gsap.to("#stageCar", { rotationY: nx * 8, rotationX: -ny * 5, duration: 0.8, ease: "power3", transformPerspective: 800 });
+        gsap.to("#stageCar", { rotationY: nx * 4, rotationX: -ny * 3, duration: 0.8, ease: "power3", transformPerspective: 800 });
       });
       stage.addEventListener("mouseleave", function () {
         gsap.to("#stageCar", { rotationY: 0, rotationX: 0, duration: 1.2, ease: "power3" });
@@ -771,6 +778,8 @@
   }
 
   /* ===================== intro / boot ================================== */
+  /* the opening: the car waits in a dark garage, then the studio lights
+     stutter awake (HID-style) and bloom over the podium */
   function runIntro(then) {
     var intro = $("#intro"), bar = $(".intro__bar span");
     function finish() {
@@ -779,14 +788,30 @@
       then && then();
     }
     if (reduce || !hasGSAP) { finish(); return; }
+
+    // before the overlay lifts: kill the lights
+    gsap.set("#stage", { filter: "brightness(0.05)" });
+    gsap.set(".hero__spot", { opacity: 0 });
+    gsap.set(".hotspot", { opacity: 0, scale: 0 });
+    gsap.set(".baynav", { opacity: 0 });
+
     var tl = gsap.timeline();
-    tl.to(bar, { width: "100%", duration: 1.3, ease: "power2.inOut", delay: 0.3 })
-      .to(intro, { duration: 0.2 })
+    tl.to(bar, { width: "100%", duration: 1.0, ease: "power2.inOut", delay: 0.25 })
       .add(finish)
-      // hero entrance: lights come up on the car
-      .from(".stage", { opacity: 0, scale: 0.92, duration: 1.4, ease: "power3.out" }, "+=0.0")
-      .from(".hotspot", { opacity: 0, scale: 0, stagger: 0.12, duration: 0.6, ease: "back.out(2)" }, "-=0.6")
-      .from(".hero__spot", { opacity: 0, duration: 1.6, ease: "power2.out" }, 0);
+      // a beat in the dark — the silhouette on the podium
+      .to({}, { duration: 0.9 })
+      // the lamps stutter awake…
+      .to("#stage", { filter: "brightness(0.55)", duration: 0.07 })
+      .to("#stage", { filter: "brightness(0.08)", duration: 0.09 })
+      .to("#stage", { filter: "brightness(0.7)", duration: 0.07, delay: 0.14 })
+      .to("#stage", { filter: "brightness(0.18)", duration: 0.08 })
+      // …then bloom to full
+      .to("#stage", { filter: "brightness(1)", duration: 1.1, ease: "power2.out" })
+      .to(".hero__spot", { opacity: 1, duration: 1.3, ease: "power2.out" }, "<")
+      .to(".baynav", { opacity: 1, duration: 0.8 }, "-=0.7")
+      .to(".hotspot", { opacity: 1, scale: 1, stagger: 0.08, duration: 0.5, ease: "back.out(2)" }, "-=0.6")
+      // hand the filter back untouched so bay transitions own it from here
+      .set("#stage", { clearProps: "filter" });
   }
 
   /* ===================== init ========================================== */
