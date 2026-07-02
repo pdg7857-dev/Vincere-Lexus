@@ -264,6 +264,27 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
     loaderP = loaderP || import("./vendor/three/GLTFLoader.js").then(function (m) { return new m.GLTFLoader(); });
     return loaderP;
   }
+  // per-bay material overrides — exact paint/trim control in-engine, where
+  // envMapIntensity can be tamed (files can't express it)
+  function tuneMaterials(g, tune) {
+    if (!tune || !tune.length) return;
+    g.traverse(function (o) {
+      if (!o.isMesh) return;
+      var mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach(function (m) {
+        tune.forEach(function (t) {
+          if (m.name !== t.match) return;
+          if (t.color) m.color.set(t.color);
+          if (t.stripMap) m.map = null;
+          ["metalness", "roughness", "clearcoat", "clearcoatRoughness", "envMapIntensity"].forEach(function (k) {
+            if (t[k] !== undefined) m[k] = t[k];
+          });
+          m.needsUpdate = true;
+        });
+      });
+    });
+  }
+
   var modelCache = {};
   function loadBayModel(url) {
     modelCache[url] = modelCache[url] || getLoader().then(function (loader) {
@@ -400,7 +421,9 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
           var now = window.__bayCurrent;
           if (!now || now.model !== url) return;   // walked on mid-load
           clearTimeout(arrivalTimer);
-          mountCar(prepare(scene.clone(true), room.modelLength));
+          var g = prepare(scene.clone(true), room.modelLength);
+          tuneMaterials(g, room.paintTune);
+          mountCar(g);
           currentUrl = url;
           show();                                   // reclaim from the photo
           // gentle arrival under the lights

@@ -213,6 +213,17 @@ window.SITE = {
       model: "models/car.glb",
       modelLength: 4.38,
       spin3d: true,
+      /* material overrides applied in-engine at load (names from the .glb):
+         satin CU-Later-Grey body with reflections tamed so real GPUs don't
+         silver it out, black roof/glass surrounds and trim like the photo  */
+      paintTune: [
+        { match: "PaletteMaterial003", color: "#383e46", stripMap: true,
+          metalness: 0.12, roughness: 0.5, clearcoat: 0.5, clearcoatRoughness: 0.35, envMapIntensity: 0.45 },
+        { match: "PaletteMaterial002", color: "#101114",
+          metalness: 0.6, roughness: 0.35, envMapIntensity: 0.5 },
+        { match: "PaletteMaterial001", color: "#17181b",
+          metalness: 0.6, roughness: 0.4, envMapIntensity: 0.5 },
+      ],
       image: "assets/hero-car-1536.webp",
       srcset: "assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w",
       alt: "Grey Toyota GR Supra on a lit studio podium",
