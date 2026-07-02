@@ -43,6 +43,7 @@ window.SITE = {
     { key: "volvo", title: "Volvo" },
     { key: "acura", title: "Acura" },
     { key: "land-rover", title: "Land Rover" },
+    { key: "lamborghini", title: "Lamborghini" },
     { key: "zenvo", title: "Zenvo" },
     { key: "tedson", title: "Tedson Motors" },
   ],
@@ -52,7 +53,7 @@ window.SITE = {
   stats: [
     { value: "150+", label: "Cars sourced" },        // [PLACEHOLDER]
     { value: "12 yrs", label: "In the trade" },       // [PLACEHOLDER]
-    { value: "10", label: "Marques" },
+    { value: "11", label: "Marques" },
     { value: "100%", label: "Discretion" },
   ],
 
