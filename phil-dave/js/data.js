@@ -217,8 +217,8 @@ window.SITE = {
          satin CU-Later-Grey body with reflections tamed so real GPUs don't
          silver it out, black roof/glass surrounds and trim like the photo  */
       paintTune: [
-        { match: "PaletteMaterial003", color: "#383e46", stripMap: true,
-          metalness: 0.12, roughness: 0.5, clearcoat: 0.5, clearcoatRoughness: 0.35, envMapIntensity: 0.45 },
+        { match: "PaletteMaterial003", color: "#3a4149", stripMap: true,
+          metalness: 0.1, roughness: 0.52, clearcoat: 0.4, clearcoatRoughness: 0.4, envMapIntensity: 0.3 },
         { match: "PaletteMaterial002", color: "#101114",
           metalness: 0.6, roughness: 0.35, envMapIntensity: 0.5 },
         { match: "PaletteMaterial001", color: "#17181b",
