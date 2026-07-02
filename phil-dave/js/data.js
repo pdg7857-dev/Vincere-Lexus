@@ -203,10 +203,15 @@ window.SITE = {
     {
       key: "supra", bay: "Bay 01", label: "About Me", section: "about",
       car: "2025 Toyota GR Supra", type: "photo",
-      /* spin3d: on capable desktops this bay upgrades to the real-time 3D
-         turntable (a full 360° continuous spin, drag to steer). The photo
-         below remains the fallback everywhere else. Drop models/car.glb +
-         set heroModel to replace the built-in car with a real model.      */
+      /* model: this bay shows ONLY the spinning 3D car (no photo) wherever
+         WebGL runs; the photo below is the fallback for reduced-motion /
+         very old browsers. modelLength is the car's REAL length in metres —
+         all bays share one scale, so walking bay to bay keeps the cars'
+         sizes realistic relative to each other.
+         Real lengths for the other bays when their models arrive:
+         LC 500: 4.77 · M4 G82: 4.79 · Revuelto: 4.95                       */
+      model: "models/car.glb",
+      modelLength: 4.38,
       spin3d: true,
       image: "assets/hero-car-1536.webp",
       srcset: "assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w",
@@ -247,7 +252,7 @@ window.SITE = {
      optional .glb turntable that activates when no photos are set at all.  */
   heroImage: "",
   heroImageSrcset: "",
-  heroModel: "models/car.glb",   // the real GR Supra model — spins in Bay 01
+  heroModel: "",                 // legacy single-hero mode only — bays use bays[].model
 
   /* Attribution for the 3D model (required by its Creative Commons license).
      ⚠ Current model is CC BY-NC (non-commercial) — replace it with a CC-BY

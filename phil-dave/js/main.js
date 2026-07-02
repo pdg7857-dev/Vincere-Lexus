@@ -46,10 +46,11 @@
     var isPhoto = room.type !== "illustration" && room.type !== "ghost";
     stageEl.classList.toggle("stage--photo", isPhoto);
     stageEl.classList.toggle("stage--ghost", room.type === "ghost");
-    // bays flagged spin3d upgrade to the live Three.js turntable on capable
-    // desktops (hero3d.js listens); the photo below stays as the fallback
-    window.__baySpin3d = !!room.spin3d;
-    if (window.HERO3D) { if (room.spin3d) window.HERO3D.show(); else window.HERO3D.hide(); }
+    // bays with a model (or spin3d) run the live Three.js turntable wherever
+    // WebGL works — the photo never shows there; it stays purely a fallback
+    window.__bayCurrent = room;
+    window.__baySpin3d = !!(room.spin3d || room.model);
+    if (window.HERO3D) window.HERO3D.sync();
     if (isPhoto) {
       if (room.srcset) {
         img.srcset = room.srcset;

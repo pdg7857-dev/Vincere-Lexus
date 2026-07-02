@@ -22,7 +22,7 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   // Garage mode: activate only if some bay asks for the 3D spin (spin3d);
   // legacy single-photo mode: the photo wins and 3D stands down entirely.
   var garageMode = !!(S.bays && S.bays.length);
-  var wantsSpin = garageMode && S.bays.some(function (b) { return b.spin3d; });
+  var wantsSpin = garageMode && S.bays.some(function (b) { return b.spin3d || b.model; });
   if (garageMode && !wantsSpin) return;
   if (!garageMode && (S.heroImage || (S.heroRooms && S.heroRooms.length))) return;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -225,6 +225,7 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   scene.add(spin);
 
   function mountCar(car) {
+    spin.clear();
     spin.add(car);
     // cheap, convincing floor reflection: mirrored ghost of the car
     var mirror = car.clone(true);
@@ -242,26 +243,52 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
     spin.add(mirror);
   }
 
+  /* one shared world scale: units per metre, anchored so a ~4.4 m coupe
+     fills the stage the way the original car did. Every bay model is
+     scaled by its real length, so car-to-car size differences stay true. */
+  var UNITS_PER_M = 1.05;
+  function prepare(g, lengthM) {
+    var box = new THREE.Box3().setFromObject(g);
+    var size = box.getSize(new THREE.Vector3());
+    var target = (lengthM || 4.4) * UNITS_PER_M;
+    var s = target / Math.max(size.x, size.z);
+    g.scale.setScalar(s);
+    box.setFromObject(g);
+    g.position.y -= box.min.y;
+    var center = box.getCenter(new THREE.Vector3());
+    g.position.x -= center.x; g.position.z -= center.z;
+    g.traverse(function (o) { if (o.isMesh) o.castShadow = true; });
+    return g;
+  }
+
+  // lazy loader + per-URL cache so bay swaps are instant after first visit
+  var loaderP = null;
+  function getLoader() {
+    loaderP = loaderP || import("./vendor/three/GLTFLoader.js").then(function (m) { return new m.GLTFLoader(); });
+    return loaderP;
+  }
+  var modelCache = {};
+  function loadBayModel(url) {
+    modelCache[url] = modelCache[url] || getLoader().then(function (loader) {
+      return new Promise(function (res, rej) {
+        loader.load(url, function (gltf) { res(gltf.scene); }, undefined, rej);
+      });
+    });
+    return modelCache[url];
+  }
+
   var carReady = false;
-  var readyCb = function () {};   // assigned below once show/activate exist
-  if (S.heroModel) {
-    // owner supplied a real model — use it instead of the procedural car
-    import("./vendor/three/GLTFLoader.js").then(function (m) {
-      new m.GLTFLoader().load(S.heroModel, function (gltf) {
-        var g = gltf.scene;
-        // normalise to ~4.6 units long, sitting on y=0
-        var box = new THREE.Box3().setFromObject(g);
-        var size = box.getSize(new THREE.Vector3());
-        var s = 4.6 / Math.max(size.x, size.z);
-        g.scale.setScalar(s);
-        box.setFromObject(g);
-        g.position.y -= box.min.y;
-        g.traverse(function (o) { if (o.isMesh) o.castShadow = true; });
-        mountCar(g); carReady = true; readyCb();
-      }, undefined, function () { mountCar(buildCar()); carReady = true; readyCb(); });
-    }).catch(function () { mountCar(buildCar()); carReady = true; readyCb(); });
-  } else {
-    mountCar(buildCar()); carReady = true;
+  var readyCb = function () {};   // legacy mode only — assigned below
+  if (!garageMode) {
+    if (S.heroModel) {
+      getLoader().then(function (loader) {
+        loader.load(S.heroModel, function (gltf) {
+          mountCar(prepare(gltf.scene, 4.4)); carReady = true; readyCb();
+        }, undefined, function () { mountCar(buildCar()); carReady = true; readyCb(); });
+      }).catch(function () { mountCar(buildCar()); carReady = true; readyCb(); });
+    } else {
+      mountCar(buildCar()); carReady = true;
+    }
   }
 
   /* ---------- hotspot anchors on the car body ---------------------------- */
@@ -373,7 +400,7 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   function startLoop() { if (!looping) { looping = true; loop(); } }
 
   function show() {
-    if (!carReady) return;
+    if (!garageMode && !carReady) return;
     stage.classList.add("stage--3d");
     mount.hidden = false;
     resize();
@@ -385,13 +412,42 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   }
 
   if (garageMode) {
-    // main.js drives visibility per bay via this handle
-    window.HERO3D = { show: show, hide: hide };
-    var syncBay = function () { if (window.__baySpin3d) show(); else hide(); };
-    readyCb = syncBay;
+    // The bay's 3D scene: the canvas takes the stage immediately (no photo
+    // underneath — the client only ever sees the car spinning); the model
+    // mounts as soon as it's loaded, cached for instant returns.
+    var currentUrl = null;
+    var syncBay = function () {
+      var room = window.__bayCurrent;
+      var want = room && (room.model || room.spin3d);
+      if (!want) { hide(); return; }
+      show();
+      if (room.model) {
+        var url = room.model;
+        if (currentUrl === url) return;
+        loadBayModel(url).then(function (scene) {
+          var now = window.__bayCurrent;
+          if (!now || now.model !== url) return;   // walked on mid-load
+          mountCar(prepare(scene.clone(true), room.modelLength));
+          currentUrl = url;
+          // gentle arrival under the lights
+          if (window.gsap) {
+            window.gsap.fromTo(spin.scale, { x: 0.88, y: 0.88, z: 0.88 },
+              { x: 1, y: 1, z: 1, duration: 0.9, ease: "power3.out" });
+          }
+        }).catch(function () { if (currentUrl === null) hide(); }); // failed → photo returns
+      } else if (currentUrl !== "procedural") {
+        mountCar(buildCar());
+        currentUrl = "procedural";
+      }
+    };
+    window.HERO3D = { sync: syncBay, show: show, hide: hide };
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", syncBay);
     else syncBay();
     document.addEventListener("bay:applied", syncBay);
+    // warm the other bays' models once the page has settled
+    setTimeout(function () {
+      (S.bays || []).forEach(function (b) { if (b.model) loadBayModel(b.model); });
+    }, 4000);
   } else {
     // legacy single-hero mode: take over the stage outright
     var activate = function () {
