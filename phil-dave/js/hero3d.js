@@ -45,9 +45,6 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   mount.appendChild(renderer.domElement);
-  renderer.domElement.style.cursor = "grab";
-  // horizontal drags spin the car; vertical swipes still scroll the page
-  renderer.domElement.style.touchAction = "pan-y";
   renderer.domElement.setAttribute("aria-hidden", "true");
 
   var scene = new THREE.Scene();
@@ -319,35 +316,8 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
     }
   }
 
-  /* ---------- drag to rotate, with inertia ------------------------------- */
+  /* ---------- the turntable turns on its own — no dragging, no stopping -- */
   var AUTO = 0.22;           // rad/s luxury-slow turntable
-  var vel = AUTO, dragging = false, lastX = 0, lastT = 0;
-  var el = renderer.domElement;
-  el.addEventListener("pointerdown", function (e) {
-    dragging = true; lastX = e.clientX; lastT = performance.now();
-    el.style.cursor = "grabbing";
-    el.setPointerCapture(e.pointerId);
-  });
-  el.addEventListener("pointermove", function (e) {
-    if (!dragging) return;
-    var now = performance.now();
-    var dx = e.clientX - lastX;
-    spin.rotation.y += dx * 0.006;
-    vel = (dx * 0.006) / Math.max((now - lastT) / 1000, 0.016);
-    lastX = e.clientX; lastT = now;
-  });
-  function endDrag() { dragging = false; el.style.cursor = "grab"; }
-  el.addEventListener("pointerup", endDrag);
-  el.addEventListener("pointercancel", endDrag);
-
-  // hovering a hotspot eases the turntable to a stop so it's easy to hit
-  var hotspotHover = false;
-  stage.addEventListener("mouseover", function (e) {
-    if (e.target.closest && e.target.closest(".hotspot")) hotspotHover = true;
-  });
-  stage.addEventListener("mouseout", function (e) {
-    if (e.target.closest && e.target.closest(".hotspot")) hotspotHover = false;
-  });
 
   // subtle camera parallax on mouse
   var mx = 0, my = 0;
@@ -379,12 +349,7 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
     requestAnimationFrame(loop);
     if (!visible || document.hidden || mount.hidden) return;
     var dt = Math.min(clock.getDelta(), 0.05);
-    if (!dragging) {
-      spin.rotation.y += vel * dt;
-      // inertia bleeds back to the slow auto-rotate (or to a stop on hover)
-      var goal = hotspotHover ? 0 : AUTO;
-      vel += (goal - vel) * Math.min(1, dt * (hotspotHover ? 6 : 1.2));
-    }
+    spin.rotation.y += AUTO * dt;
     ring.material.emissiveIntensity = 1.15 + Math.sin(clock.elapsedTime * 1.4) * 0.35;
     camera.position.x = CAM.x + mx * 0.7;
     camera.position.y = CAM.y - my * 0.4;
