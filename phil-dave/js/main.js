@@ -214,10 +214,13 @@
 
     // 3D model attribution (Creative Commons requirement)
     var mc = $("#modelCredit");
-    if (mc && S.modelCredit && S.modelCredit.text) {
+    var credits = S.modelCredits || (S.modelCredit && S.modelCredit.text ? [S.modelCredit] : []);
+    if (mc && credits.length) {
       mc.hidden = false;
-      mc.innerHTML = '<a href="' + esc(S.modelCredit.url || "#") + '" target="_blank" rel="noopener">' +
-        esc(S.modelCredit.text) + "</a>" + (S.modelCredit.license ? " · " + esc(S.modelCredit.license) : "");
+      mc.innerHTML = "3D models: " + credits.map(function (c) {
+        return '<a href="' + esc(c.url || "#") + '" target="_blank" rel="noopener">' + esc(c.text) + "</a>" +
+          (c.license ? " (" + esc(c.license) + ")" : "");
+      }).join(" · ");
     }
 
     // the garage — dress the stage for Bay 01 and pre-warm the others

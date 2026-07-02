@@ -236,6 +236,17 @@ window.SITE = {
       image: "assets/hero-lc500-1536.webp",
       srcset: "assets/hero-lc500-600.webp 600w, assets/hero-lc500-900.webp 900w, assets/hero-lc500-1536.webp 1536w",
       alt: "Red Lexus LC 500 on a dark studio podium",
+      model: "models/lc500.glb",
+      modelLength: 4.77,
+      /* Infrared body is recoloured inside the model's palette texture;
+         here we tame the shared atlas material so the red reads rich on
+         real GPUs, and keep the carbon-fibre trim black                    */
+      paintTune: [
+        { match: "PaletteMaterial001",
+          metalness: 0.3, roughness: 0.42, envMapIntensity: 0.35 },
+        { match: "material_8", color: "#101114",
+          metalness: 0.5, roughness: 0.5, envMapIntensity: 0.4 },
+      ],
       pins: [{ x: 26, y: 54 }, { x: 60, y: 29 }, { x: 85, y: 47 }, { x: 53, y: 64 }],
       door: { x: 10, y: 22 },
     },
@@ -268,9 +279,8 @@ window.SITE = {
   /* Attribution for the 3D model (required by its Creative Commons license).
      ⚠ Current model is CC BY-NC (non-commercial) — replace it with a CC-BY
      model or get the artist's permission before using the site commercially. */
-  modelCredit: {
-    text: "3D GR Supra model by J5nnym1r™ via Sketchfab",
-    url: "https://sketchfab.com/3d-models/toyota-gr-supra-371c9c1ded6440699b7c261c0fb82a2c",
-    license: "CC BY-NC 4.0",
-  },
+  modelCredits: [
+    { text: "GR Supra by J5nnym1r™", url: "https://sketchfab.com/3d-models/toyota-gr-supra-371c9c1ded6440699b7c261c0fb82a2c", license: "CC BY-NC 4.0" },
+    { text: "Lexus LC 500 by Socksthecat", url: "https://sketchfab.com/3d-models/lexus-lc-500-3f6118da005a457a9ce6d737e5d1e37d", license: "CC BY 4.0" },
+  ],
 };
