@@ -20,30 +20,52 @@
   var esc = function (t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (m) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]; }); };
 
-  /* ===================== the garage (hero bays) ======================== */
-  // Normalise config: heroRooms array, or the legacy single heroImage.
-  var garage = (S.heroRooms && S.heroRooms.length) ? S.heroRooms
+  /* ===================== the garage (bays) ============================== */
+  // Each bay = a hero scene + ONE section of the site. You enter a bay to
+  // see that information; the other sections stay hidden.
+  var garage = (S.bays && S.bays.length) ? S.bays
     : (S.heroImage ? [{
-        key: "hero", bay: "", title: "", image: S.heroImage, srcset: S.heroImageSrcset || "",
+        key: "hero", bay: "", label: "", car: "", section: "", type: "photo",
+        image: S.heroImage, srcset: S.heroImageSrcset || "",
         alt: "Luxury car presented on a lit studio podium",
         pins: [{ x: 27, y: 56 }, { x: 53, y: 30 }, { x: 81, y: 44 }, { x: 54, y: 70 }],
         door: null,
       }] : null);
   var bayIndex = 0, baySwapping = false;
 
-  function applyBay(room, img) {
-    if (room.srcset) {
-      img.srcset = room.srcset;
-      img.sizes = "(max-width: 860px) 96vw, 1100px";
-    } else { img.removeAttribute("srcset"); }
-    img.src = room.image;
-    img.alt = room.alt || "Luxury car on a studio podium";
+  function bayFor(sectionId) {
+    if (!garage) return -1;
+    for (var i = 0; i < garage.length; i++) if (garage[i].section === sectionId) return i;
+    return -1;
+  }
+
+  // dress the stage for a bay: photo, platinum illustration, or the empty
+  // "reserved" pedestal with a ghost silhouette
+  function applyBay(room) {
+    var stageEl = $("#stage"), img = $("#carImg");
+    var isPhoto = room.type !== "illustration" && room.type !== "ghost";
+    stageEl.classList.toggle("stage--photo", isPhoto);
+    stageEl.classList.toggle("stage--ghost", room.type === "ghost");
+    if (isPhoto) {
+      if (room.srcset) {
+        img.srcset = room.srcset;
+        img.sizes = "(max-width: 860px) 96vw, 1100px";
+      } else { img.removeAttribute("srcset"); }
+      img.src = room.image;
+      img.alt = room.alt || "Luxury car on a studio podium";
+    } else {
+      img.removeAttribute("srcset"); img.removeAttribute("sizes");
+      img.src = "assets/car.svg";
+      img.alt = room.type === "ghost"
+        ? "Empty lit pedestal, reserved for your car"
+        : "Platinum car illustration on a lit pedestal";
+    }
   }
 
   function setBayLabel(room) {
     var n = $("#bayNum"), t = $("#bayTitle");
     if (n) n.textContent = room.bay || "";
-    if (t) t.textContent = room.title || "";
+    if (t) t.textContent = room.car || room.label || "";
   }
 
   function placeDoor() {
@@ -54,32 +76,89 @@
     doorEl.style.top = room.door.y + "%";
     doorEl.classList.toggle("hotspot--flip", room.door.x > 55);
     var nxt = garage[(bayIndex + 1) % garage.length];
-    doorEl.querySelector("b").textContent = "Enter " + (nxt.bay || "the next bay");
-    doorEl.querySelector(".hotspot__label span").textContent = nxt.title || "";
-    doorEl.setAttribute("aria-label", "Walk through to " + (nxt.bay || "the next bay") + " — " + (nxt.title || ""));
+    doorEl.querySelector("b").textContent = "Next — " + (nxt.bay || "the next bay");
+    doorEl.querySelector(".hotspot__label span").textContent = nxt.label || "";
+    doorEl.setAttribute("aria-label", "Walk through to " + (nxt.bay || "the next bay") + " — " + (nxt.label || ""));
   }
 
   function movePins(room) {
-    $$(".hotspot:not(.hotspot--door)").forEach(function (el, i) {
+    $$(".hotspot--bay").forEach(function (el, i) {
       var p = (room.pins || [])[i];
       if (p) { el.style.left = p.x + "%"; el.style.top = p.y + "%"; }
+      el.classList.toggle("is-here", i === bayIndex);
     });
     placeDoor();
   }
 
-  // walk through the door: zoom into the darkness, flash, lights come up
-  // on the next car
-  function garageGo(step) {
-    if (!garage || garage.length < 2 || baySwapping) return;
-    var next = (bayIndex + step + garage.length) % garage.length;
+  // show only the entered bay's section of the site
+  function gateSections() {
+    if (!garage) return;
+    garage.forEach(function (room, i) {
+      var sec = document.getElementById(room.section);
+      if (!sec) return;
+      sec.classList.add("room--gated");
+      var open = i === bayIndex;
+      sec.classList.toggle("is-open", open);
+      if (!open) sec.__revealed = false; // re-entering a bay replays its entrance
+    });
+    if (hasGSAP && window.ScrollTrigger) ScrollTrigger.refresh();
+  }
+
+  function updateDots() {
+    $$("#dots .dot").forEach(function (d) {
+      d.classList.toggle("is-active", d.getAttribute("data-bay") == String(bayIndex));
+    });
+  }
+
+  // reveal a section's content (sections live hidden, so scroll-triggered
+  // reveals can't be trusted — stagger everything in when the bay opens)
+  function revealSection(sec) {
+    if (sec.__revealed) return;
+    sec.__revealed = true;
+    var items = $$(".will-reveal, .reveal-line", sec);
+    if (!items.length) return;
+    if (!hasGSAP || reduce) { items.forEach(function (el) { el.classList.add("in"); el.style.opacity = 1; el.style.transform = "none"; }); return; }
+    gsap.fromTo(items, { opacity: 0, y: 26 }, {
+      opacity: 1, y: 0, duration: 0.85, ease: "power3.out", stagger: 0.06, overwrite: "auto",
+      onComplete: function () { items.forEach(function (el) { el.classList.add("in"); }); }
+    });
+  }
+
+  /* enter a bay: cinematic pull-through on the hero, swap the visible
+     section, then glide down to the information */
+  function enterBay(next, opts) {
+    opts = opts || {};
+    if (!garage || baySwapping) return;
+    next = (next + garage.length) % garage.length;
     var room = garage[next];
-    var img = $("#carImg");
+    var sec = document.getElementById(room.section);
+
+    // already here → just glide down to the info
+    if (next === bayIndex) {
+      if (sec) { scrollToId(room.section); revealSection(sec); }
+      return;
+    }
+
+    var heroVisible = window.scrollY < window.innerHeight * 0.7;
+    var stageZoom = $("#stage");
     var door = garage[bayIndex].door || { x: 85, y: 25 };
 
-    if (reduce || !hasGSAP) {
-      applyBay(room, img);
+    function commit() {
       bayIndex = next;
-      setBayLabel(room); movePins(room);
+      applyBay(room);
+      setBayLabel(room);
+      movePins(room);
+      gateSections();
+      updateDots();
+    }
+
+    if (reduce || !hasGSAP || !heroVisible) {
+      // away from the hero (or calm mode): swap instantly, then glide
+      commit();
+      if (sec && opts.scroll !== false) {
+        scrollToId(room.section);
+        setTimeout(function () { revealSection(sec); }, 350);
+      }
       return;
     }
 
@@ -87,20 +166,22 @@
     var pins = $$(".hotspot");
     gsap.timeline({ onComplete: function () { baySwapping = false; } })
       .to(pins, { opacity: 0, scale: 0.5, duration: 0.22, stagger: 0.02, ease: "power1.in" }, 0)
-      .add(function () { gsap.set(img, { transformOrigin: door.x + "% " + door.y + "%" }); }, 0)
-      .to(img, { scale: 2.5, filter: "blur(16px) brightness(0.25)", duration: 0.65, ease: "power2.in" }, 0)
+      .add(function () { gsap.set(stageZoom, { transformOrigin: door.x + "% " + door.y + "%" }); }, 0)
+      .to(stageZoom, { scale: 2.5, filter: "blur(16px) brightness(0.25)", duration: 0.65, ease: "power2.in" }, 0)
       .set("#warp", { opacity: 1 }, 0.45)
       .fromTo(".warp__core", { scale: 1, opacity: 1 }, { scale: 70, duration: 0.35, ease: "power2.in" }, 0.45)
-      .add(function () {
-        applyBay(room, img);
-        bayIndex = next;
-        setBayLabel(room); movePins(room);
-      })
-      .set(img, { transformOrigin: "50% 50%", scale: 0.7, filter: "blur(12px) brightness(0.2)" })
+      .add(commit)
+      .set(stageZoom, { transformOrigin: "50% 50%", scale: 0.7, filter: "blur(12px) brightness(0.2)" })
       .to(".warp__core", { opacity: 0, duration: 0.3 })
       .set("#warp", { opacity: 0 })
-      .to(img, { scale: 1, filter: "blur(0px) brightness(1)", duration: 1.0, ease: "power3.out" }, "-=0.25")
-      .to(pins, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: "back.out(1.6)" }, "-=0.5");
+      .to(stageZoom, { scale: 1, filter: "blur(0px) brightness(1)", duration: 1.0, ease: "power3.out" }, "-=0.25")
+      .to(pins, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: "back.out(1.6)" }, "-=0.5")
+      .add(function () {
+        if (sec && opts.scroll !== false) {
+          scrollToId(room.section);
+          setTimeout(function () { revealSection(sec); }, 400);
+        }
+      }, "-=0.55");
   }
 
   /* ===================== content injection ============================= */
@@ -120,45 +201,41 @@
     }
     var yr = $("#year"); if (yr) yr.textContent = "2026";
 
-    // hero photo mode / the garage — one or more photo "bays". The four
-    // pins sit ON the car; the door pin pulls you through into the next bay.
+    // the garage — dress the stage for Bay 01 and pre-warm the others
     if (garage) {
-      var stageEl = $("#stage"), img = $("#carImg");
-      stageEl.classList.add("stage--photo");
-      applyBay(garage[0], img);
+      var img = $("#carImg");
+      applyBay(garage[0]);
       img.setAttribute("fetchpriority", "high");
       img.decoding = "async";
-      // pre-warm the other bays so walking through the door is instant
       garage.slice(1).forEach(function (r) {
+        if (!r.image) return;
         var pre = new Image();
         if (r.srcset) { pre.srcset = r.srcset; pre.sizes = "(max-width: 860px) 96vw, 1100px"; }
         pre.src = r.image;
       });
       if (garage.length > 1) { $("#stageBay").hidden = false; setBayLabel(garage[0]); }
+      gateSections();
     }
 
-    // hotspots — in photo mode they pin to points ON the car (percentages of
-    // the photo itself); otherwise they float around the illustrated stage
+    // the bay buttons — four clear, always-labelled pins over the car
+    // ("About Me — Enter Bay 01"), plus the chevron door to the next bay
     var hs = $("#hotspots");
-    var positions = garage
-      ? garage[0].pins
-      : [{ x: 22, y: 30 }, { x: 76, y: 26 }, { x: 30, y: 70 }, { x: 70, y: 72 }, { x: 50, y: 18 }];
-    (S.rooms || []).forEach(function (room, i) {
-      var p = positions[i % positions.length];
+    (garage || []).forEach(function (room, i) {
+      var p = (garage[0].pins || [])[i] || { x: 25 + i * 18, y: 40 };
       var btn = document.createElement("button");
-      btn.className = "hotspot magnetic";
+      btn.className = "hotspot hotspot--bay magnetic" + (i === 0 ? " is-here" : "");
       btn.type = "button";
       btn.style.left = p.x + "%";
       btn.style.top = p.y + "%";
-      btn.setAttribute("data-target", room.id);
-      btn.setAttribute("aria-label", "Enter " + room.label + " — " + (room.hint || ""));
+      btn.setAttribute("data-bay", i);
+      btn.setAttribute("aria-label", room.label + " — enter " + room.bay);
       btn.innerHTML =
         '<span class="hotspot__dot" aria-hidden="true"></span>' +
-        '<span class="hotspot__label"><b>' + esc(room.label) + "</b><span>" + esc(room.hint || "") + "</span></span>";
+        '<span class="hotspot__label"><b>' + esc(room.label) + "</b><span>Enter " + esc(room.bay) + "</span></span>";
+      btn.addEventListener("click", function () { enterBay(i); });
       hs.appendChild(btn);
     });
 
-    // the door into the next bay
     if (garage && garage.length > 1) {
       var doorBtn = document.createElement("button");
       doorBtn.className = "hotspot hotspot--door magnetic";
@@ -166,7 +243,7 @@
       doorBtn.innerHTML =
         '<span class="hotspot__dot" aria-hidden="true">&rsaquo;</span>' +
         '<span class="hotspot__label"><b></b><span></span></span>';
-      doorBtn.addEventListener("click", function () { garageGo(1); });
+      doorBtn.addEventListener("click", function () { enterBay(bayIndex + 1); });
       hs.appendChild(doorBtn);
       placeDoor();
     }
@@ -297,7 +374,7 @@
           '<span class="card__year">' + esc(c.year) + " · " + esc(c.make) + "</span>" +
           '<h3 class="card__name">' + esc(c.model) + "</h3>" +
           '<p class="card__note">' + esc(c.note || "") + "</p>" +
-          '<span class="card__more">Découvrir &rsaquo;</span>' +
+          '<span class="card__more">View details &rsaquo;</span>' +
         "</div>" +
       "</article>"
     );
@@ -367,31 +444,16 @@
     if (cta) cta.addEventListener("click", function (e) { e.preventDefault(); closeSheet(); setTimeout(function () { warpTo("contact"); }, 80); });
   }
 
-  /* ===================== side room navigator ========================== */
+  /* ===================== side bay navigator ============================ */
   function initDots() {
     var wrap = $("#dots");
-    if (!wrap) return;
-    var sections = [{ id: "hero", label: "Showroom" }].concat((S.rooms || []).map(function (r) { return { id: r.id, label: r.label }; }));
-    wrap.innerHTML = sections.map(function (s) {
-      return '<button class="dot" type="button" data-target="' + esc(s.id) + '" aria-label="' + esc(s.label) + '"><span class="dot__label">' + esc(s.label) + "</span></button>";
+    if (!wrap || !garage) return;
+    wrap.innerHTML = garage.map(function (room, i) {
+      return '<button class="dot' + (i === 0 ? " is-active" : "") + '" type="button" data-bay="' + i + '" aria-label="' + esc(room.bay + " — " + room.label) + '"><span class="dot__label">' + esc(room.bay + " · " + room.label) + "</span></button>";
     }).join("");
     wrap.querySelectorAll(".dot").forEach(function (d) {
-      d.addEventListener("click", function () { warpTo(d.getAttribute("data-target")); });
+      d.addEventListener("click", function () { enterBay(+d.getAttribute("data-bay")); });
     });
-    if (hasGSAP && window.ScrollTrigger) {
-      sections.forEach(function (s) {
-        var el = document.getElementById(s.id);
-        if (!el) return;
-        ScrollTrigger.create({
-          trigger: el, start: "top 50%", end: "bottom 50%",
-          onToggle: function (self) {
-            if (self.isActive) {
-              wrap.querySelectorAll(".dot").forEach(function (d) { d.classList.toggle("is-active", d.getAttribute("data-target") === s.id); });
-            }
-          }
-        });
-      });
-    }
   }
 
   /* ===================== particles (film dust) ========================= */
@@ -476,47 +538,44 @@
     else el.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
   }
 
-  /* ===================== cinematic room transition ===================== */
-  var warping = false;
+  /* ===================== navigation routing ============================ */
+  // Every in-page link routes through the garage: section links enter their
+  // bay (cinematic pull-through + reveal); anything else glides.
   function warpTo(id) {
     closeMenu();
-    if (reduce || !hasGSAP) { scrollToId(id); return; }
-    if (warping) return;
-    warping = true;
-    var warp = $("#warp"), core = $(".warp__core"), main = $("#main");
-    var tl = gsap.timeline({ onComplete: function () { warping = false; } });
-    tl.set(warp, { opacity: 1 })
-      .set(core, { scale: 1, opacity: 1 })
-      // push "into" the screen
-      .to(main, { scale: 1.06, filter: "blur(6px)", duration: 0.42, ease: "power2.in" }, 0)
-      .to(core, { scale: 90, duration: 0.5, ease: "power2.in" }, 0.04)
-      .add(function () { scrollToId(id); })
-      // arrive in the room
-      .to(core, { opacity: 0, duration: 0.4, ease: "power2.out" }, 0.5)
-      .to(main, { scale: 1, filter: "blur(0px)", duration: 0.6, ease: "power3.out" }, 0.5)
-      .set(warp, { opacity: 0 });
+    var b = bayFor(id);
+    if (b >= 0) { enterBay(b); return; }
+    scrollToId(id);
   }
 
   /* ===================== reveals & scroll motion ======================= */
   function initReveals() {
     if (!hasGSAP || !window.ScrollTrigger) {
-      $$(".will-reveal").forEach(function (el) { el.classList.add("in"); });
+      $$(".will-reveal").forEach(function (el) { el.classList.add("in"); el.style.opacity = 1; el.style.transform = "none"; });
       return;
     }
-    // line masks in hero + headings
+    // line masks — only for always-visible chrome (hero, banner); gated
+    // sections reveal via revealSection when their bay opens
     $$(".reveal-line").forEach(function (line) {
+      if (line.closest(".room--gated")) return;
       gsap.from(line, {
         yPercent: 110, opacity: 0, duration: 1.1, ease: "power4.out",
         scrollTrigger: { trigger: line, start: "top 92%" }
       });
     });
-    // generic reveal blocks, gently staggered within their grid
-    $$(".room").forEach(function (room) {
-      var items = $$(".will-reveal", room);
-      if (!items.length) return;
-      gsap.to(items, {
-        opacity: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.08,
-        scrollTrigger: { trigger: room, start: "top 70%" }
+    // the open bay's section reveals when it first scrolls into view
+    $$(".room--gated").forEach(function (sec) {
+      ScrollTrigger.create({
+        trigger: sec, start: "top 78%",
+        onEnter: function () { revealSection(sec); }
+      });
+    });
+    // any non-gated will-reveal blocks
+    $$(".will-reveal").forEach(function (el) {
+      if (el.closest(".room--gated")) return;
+      gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.9, ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 85%" }
       });
     });
     // subtle parallax on the hero stage as you leave it
@@ -601,10 +660,7 @@
         if (document.getElementById(id)) { e.preventDefault(); warpTo(id); }
       });
     });
-    // hotspots → warp (the door pin handles its own click)
-    $$(".hotspot[data-target]").forEach(function (h) {
-      h.addEventListener("click", function () { warpTo(h.getAttribute("data-target")); });
-    });
+    // (bay pins and the door bind their own clicks at creation)
   }
 
   /* ===================== lead form ===================================== */

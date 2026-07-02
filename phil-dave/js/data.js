@@ -176,29 +176,33 @@ window.SITE = {
     },
   ],
 
-  /* --- The four rooms (hero hotspots map to these; page order) ------------ */
-  rooms: [
-    { id: "about",     label: "About Phil",    hint: "The man behind the cars" },
-    { id: "inventory", label: "The Show Room", hint: "Curated & sourced cars" },
-    { id: "process",   label: "Sourcing",      hint: "How it works" },
-    { id: "contact",   label: "Request a Car", hint: "Tell me what you want" },
-  ],
+  /* (Section navigation now derives from `bays` below — each bay unlocks
+     one section of the site.) */
 
-  /* --- The garage: hero rooms ("bays") ------------------------------------
-     The hero is a garage of photo bays. The four glowing pins navigate the
-     site; the DOOR pin in the dark edge of the studio pulls you through
-     into the next bay (cinematic zoom-through, lights come up on the next
-     car). Add a bay by copying a block — photos on black studio backgrounds
-     melt into the page best.
+  /* --- The garage: bays -----------------------------------------------------
+     The site IS a garage. Each bay pairs a hero scene with ONE section of
+     the website — you enter a bay to see that information. The four labelled
+     pins over the car are the bay buttons ("About Me — Enter Bay 01"); the
+     chevron door pin walks you to the next bay in order.
 
-     pins: four {x,y} points ON the car (percent of the photo) for the
-           section hotspots, in page order (About / Show Room / Sourcing /
-           Request). door: where the next-room pin floats in the darkness.  */
-  heroRooms: [
+     Per bay:
+       section: which page section this bay unlocks
+               ("about" | "inventory" | "process" | "contact")
+       label:   the button text shown on the pin
+       car:     name engraved on the floor plaque
+       type:    "photo" (image+srcset) · "illustration" (platinum car
+                artwork on the lit pedestal) · "ghost" (empty pedestal with
+                a faint silhouette — perfect for "your car here")
+       pins:    the four bay-button positions {x,y} (percent of the photo
+                in photo bays, of the whole stage otherwise)
+       door:    where the next-bay chevron floats in the darkness
+
+     To give Bay 03/04 a real car later: set type "photo" and add
+     image/srcset/alt like the first two bays.                              */
+  bays: [
     {
-      key: "supra",
-      bay: "Bay 01",
-      title: "Toyota GR Supra",
+      key: "supra", bay: "Bay 01", label: "About Me", section: "about",
+      car: "Toyota GR Supra", type: "photo",
       image: "assets/hero-car-1536.webp",
       srcset: "assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w",
       alt: "Grey Toyota GR Supra on a lit studio podium",
@@ -206,18 +210,29 @@ window.SITE = {
       door: { x: 89, y: 22 },
     },
     {
-      key: "revuelto",
-      bay: "Bay 02",
-      title: "Lamborghini Revuelto",
+      key: "revuelto", bay: "Bay 02", label: "The Show Room", section: "inventory",
+      car: "Lamborghini Revuelto", type: "photo",
       image: "assets/hero-revuelto-1536.webp",
       srcset: "assets/hero-revuelto-600.webp 600w, assets/hero-revuelto-900.webp 900w, assets/hero-revuelto-1536.webp 1536w",
       alt: "White Lamborghini Revuelto on a dark studio podium",
       pins: [{ x: 33, y: 54 }, { x: 62, y: 33 }, { x: 88, y: 48 }, { x: 61, y: 63 }],
       door: { x: 10, y: 22 },
     },
+    {
+      key: "atelier", bay: "Bay 03", label: "Sourcing", section: "process",
+      car: "The Atelier", type: "illustration",
+      pins: [{ x: 24, y: 32 }, { x: 74, y: 28 }, { x: 32, y: 68 }, { x: 68, y: 70 }],
+      door: { x: 88, y: 18 },
+    },
+    {
+      key: "reserved", bay: "Bay 04", label: "Request a Car", section: "contact",
+      car: "Reserved — your car here", type: "ghost",
+      pins: [{ x: 24, y: 32 }, { x: 74, y: 28 }, { x: 32, y: 68 }, { x: 68, y: 70 }],
+      door: { x: 12, y: 18 },
+    },
   ],
 
-  /* Legacy single-photo fields (used only if heroRooms is empty), plus the
+  /* Legacy single-photo fields (used only if bays is empty), plus the
      optional .glb turntable that activates when no photos are set at all.  */
   heroImage: "",
   heroImageSrcset: "",

@@ -182,6 +182,14 @@ em{ font-style:italic; }
   -webkit-mask-image:radial-gradient(68% 62% at 50% 50%, #000 42%, rgba(0,0,0,.5) 66%, transparent 88%);
   mask-image:radial-gradient(68% 62% at 50% 50%, #000 42%, rgba(0,0,0,.5) 66%, transparent 88%);
 }
+/* gated sections — you enter a bay to see its room */
+.room--gated{ display:none; }
+.room--gated.is-open{ display:block; }
+
+/* ghost bay — empty pedestal, reserved for the client's car */
+.stage--ghost .stage__car > img{ opacity:.13; filter:grayscale(1); }
+.stage--ghost .stage__reflection{ display:none; }
+
 /* hotspot layer tracks the photo's box so pins stay on the car at any size */
 .stage--photo .hotspots{
   inset:auto; left:50%; top:2%; width:74%; aspect-ratio:3/2;
@@ -214,6 +222,25 @@ em{ font-style:italic; }
 .hotspot:hover .hotspot__dot::before,.hotspot:focus-visible .hotspot__dot::before{ background:#fff; }
 .hotspot:focus-visible{ outline:2px solid var(--silver); outline-offset:10px; border-radius:4px; }
 
+/* bay buttons — always-visible labelled pins over the car */
+.hotspot--bay .hotspot__label{
+  max-width:none; opacity:1; overflow:visible;
+  padding:.45rem .7rem; border:1px solid var(--line-soft); border-radius:2px;
+  background:rgba(10,10,11,.55); backdrop-filter:blur(6px);
+  transition:border-color .35s var(--ease), background .35s;
+}
+.hotspot--bay:hover .hotspot__label{ border-color:var(--line); background:rgba(20,20,22,.75); }
+.hotspot--bay .hotspot__label b{ font-size:.8rem; }
+.hotspot--bay .hotspot__label span{ font-size:.56rem; letter-spacing:.24em; }
+.hotspot--bay.is-here .hotspot__dot::before{ background:#fff; box-shadow:0 0 18px 4px rgba(232,234,237,.75); }
+.hotspot--bay.is-here .hotspot__label{ border-color:rgba(232,234,237,.4); }
+.hotspot--bay.is-here .hotspot__label span::after{ content:" · here"; color:var(--platinum); }
+@media (max-width:640px){
+  .hotspot--bay .hotspot__label{ padding:.3rem .5rem; }
+  .hotspot--bay .hotspot__label b{ font-size:.66rem; }
+  .hotspot--bay .hotspot__label span{ font-size:.5rem; }
+}
+
 /* the door into the next garage bay */
 .hotspot--door .hotspot__dot{
   width:26px; height:26px; display:grid; place-items:center;
@@ -233,13 +260,18 @@ em{ font-style:italic; }
 /* bay caption (photo garage mode) */
 .stage__bay{
   position:absolute; left:50%; bottom:18%; transform:translateX(-50%);
-  display:flex; align-items:baseline; gap:.9rem; z-index:6; pointer-events:none;
+  display:flex; align-items:baseline; gap:.9rem; z-index:4; pointer-events:none;
   white-space:nowrap;
   padding:.55rem 1.1rem; border:1px solid var(--line-soft); border-radius:2px;
   background:rgba(10,10,11,.45); backdrop-filter:blur(6px);
 }
 .stage__bay-num{ font-size:.6rem; letter-spacing:.34em; text-transform:uppercase; color:var(--muted); }
 .stage__bay-title{ font-family:var(--serif); font-size:1.05rem; letter-spacing:.18em; text-transform:uppercase; color:var(--silver); }
+@media (max-width:640px){
+  .stage__bay{ bottom:6%; padding:.35rem .7rem; gap:.5rem; }
+  .stage__bay-num{ font-size:.5rem; }
+  .stage__bay-title{ font-size:.8rem; }
+}
 
 .hero__scrollcue{ position:absolute; bottom:1.6rem; left:50%; transform:translateX(-50%); z-index:3; display:flex; flex-direction:column; align-items:center; gap:.7rem; }
 .hero__scrollcue i{ width:1px; height:42px; background:linear-gradient(var(--silver),transparent); animation:cue 2.4s var(--ease) infinite; }

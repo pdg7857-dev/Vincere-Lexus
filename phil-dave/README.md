@@ -67,25 +67,34 @@ form at [formspree.io](https://formspree.io) and paste its endpoint into
 
 ---
 
-## The hero — the garage (multi-bay)
+## The garage — bays ARE the site
 
-The hero is a **garage of photo bays** (`heroRooms` in `js/data.js`) — each
-bay is a car-on-podium photograph with its own hotspot pins and a nameplate
-("Bay 01 — Toyota GR Supra"). The glowing **door pin** floating in the dark
-edge of the studio pulls you *through* the room — the camera zooms into the
-darkness, a light flashes, and the lights come up on the next car (currently
-the Lamborghini Revuelto in Bay 02). The door in each bay leads onward,
-looping back to Bay 01.
+The site is structured as a **garage of bays** (`bays` in `js/data.js`).
+Each bay pairs a hero scene with ONE section of the site — the rest stay
+hidden until you enter their bay:
 
-Add a bay by copying a block in `heroRooms`: drop `600/900/1536w` WebP
-variants in `assets/`, set the four `pins` (percent-of-photo points on the
-car) and the `door` position. Other bays are pre-loaded so the transition is
-instant; the walk-through simplifies to an instant swap under
-`prefers-reduced-motion`.
+| Bay | Hero scene | Unlocks |
+|-----|-----------|---------|
+| Bay 01 | Toyota GR Supra photo | About Me |
+| Bay 02 | Lamborghini Revuelto photo | The Show Room |
+| Bay 03 | Platinum illustration ("The Atelier") | How Sourcing Works |
+| Bay 04 | Empty pedestal + ghost silhouette ("Reserved — your car here") | Request a Car |
 
-Fallbacks (when `heroRooms` is empty): single `heroImage` photo →
-`heroModel` .glb on the Three.js turntable → the built-in procedural 3D car
-(desktop) / illustrated pedestal (mobile). Three.js is self-hosted in
+Four **always-visible bay buttons** float over the car ("About Me — Enter
+Bay 01"; the current one is marked "here"), plus a chevron **door pin** to
+the next bay. Entering a bay pulls you through the room — zoom into the
+darkness, flash, lights up on the next scene — then glides down to that
+bay's information. Nav links and the side dots route through the same
+system; away from the hero the swap is instant, and `prefers-reduced-motion`
+always gets the instant version.
+
+Give Bay 03/04 a real car later: set `type: "photo"` on the bay and add
+`image`/`srcset`/`alt` (drop `600/900/1536w` WebP in `assets/`), then tune
+the four `pins` (percent-of-photo points) and the `door` position.
+
+Fallbacks (when `bays` is empty): single `heroImage` photo → `heroModel`
+.glb on the Three.js turntable → the built-in procedural 3D car (desktop) /
+illustrated pedestal (mobile). Three.js is self-hosted in
 `js/vendor/three/` — still no CDN, no build step.
 
 ---
