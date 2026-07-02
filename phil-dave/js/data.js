@@ -247,5 +247,14 @@ window.SITE = {
      optional .glb turntable that activates when no photos are set at all.  */
   heroImage: "",
   heroImageSrcset: "",
-  heroModel: "",                 // e.g. "models/car.glb"
+  heroModel: "models/car.glb",   // the real GR Supra model — spins in Bay 01
+
+  /* Attribution for the 3D model (required by its Creative Commons license).
+     ⚠ Current model is CC BY-NC (non-commercial) — replace it with a CC-BY
+     model or get the artist's permission before using the site commercially. */
+  modelCredit: {
+    text: "3D GR Supra model by J5nnym1r™ via Sketchfab",
+    url: "https://sketchfab.com/3d-models/toyota-gr-supra-371c9c1ded6440699b7c261c0fb82a2c",
+    license: "CC BY-NC 4.0",
+  },
 };

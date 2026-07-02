@@ -211,6 +211,14 @@
     }
     var yr = $("#year"); if (yr) yr.textContent = "2026";
 
+    // 3D model attribution (Creative Commons requirement)
+    var mc = $("#modelCredit");
+    if (mc && S.modelCredit && S.modelCredit.text) {
+      mc.hidden = false;
+      mc.innerHTML = '<a href="' + esc(S.modelCredit.url || "#") + '" target="_blank" rel="noopener">' +
+        esc(S.modelCredit.text) + "</a>" + (S.modelCredit.license ? " · " + esc(S.modelCredit.license) : "");
+    }
+
     // the garage — dress the stage for Bay 01 and pre-warm the others
     if (garage) {
       var img = $("#carImg");
