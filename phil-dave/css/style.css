@@ -214,6 +214,33 @@ em{ font-style:italic; }
 .hotspot:hover .hotspot__dot::before,.hotspot:focus-visible .hotspot__dot::before{ background:#fff; }
 .hotspot:focus-visible{ outline:2px solid var(--silver); outline-offset:10px; border-radius:4px; }
 
+/* the door into the next garage bay */
+.hotspot--door .hotspot__dot{
+  width:26px; height:26px; display:grid; place-items:center;
+  font-family:var(--serif); font-size:1.25rem; line-height:1; color:var(--platinum);
+}
+.hotspot--door .hotspot__dot::before{
+  background:rgba(10,10,11,.55); border:1px solid rgba(232,234,237,.75);
+  box-shadow:0 0 16px 2px rgba(232,234,237,.35);
+}
+.hotspot--door:hover .hotspot__dot::before{ background:rgba(232,234,237,.16); }
+.hotspot--door .hotspot__dot::after{ inset:-7px; animation-duration:3.4s; }
+/* label on the left when the door sits near the right edge */
+.hotspot--flip{ flex-direction:row-reverse; }
+.hotspot--flip .hotspot__label{ text-align:right; }
+.hotspot--flip .hotspot__label b,.hotspot--flip .hotspot__label span{ align-self:flex-end; }
+
+/* bay caption (photo garage mode) */
+.stage__bay{
+  position:absolute; left:50%; bottom:18%; transform:translateX(-50%);
+  display:flex; align-items:baseline; gap:.9rem; z-index:6; pointer-events:none;
+  white-space:nowrap;
+  padding:.55rem 1.1rem; border:1px solid var(--line-soft); border-radius:2px;
+  background:rgba(10,10,11,.45); backdrop-filter:blur(6px);
+}
+.stage__bay-num{ font-size:.6rem; letter-spacing:.34em; text-transform:uppercase; color:var(--muted); }
+.stage__bay-title{ font-family:var(--serif); font-size:1.05rem; letter-spacing:.18em; text-transform:uppercase; color:var(--silver); }
+
 .hero__scrollcue{ position:absolute; bottom:1.6rem; left:50%; transform:translateX(-50%); z-index:3; display:flex; flex-direction:column; align-items:center; gap:.7rem; }
 .hero__scrollcue i{ width:1px; height:42px; background:linear-gradient(var(--silver),transparent); animation:cue 2.4s var(--ease) infinite; }
 @keyframes cue{ 0%{ transform:scaleY(0); transform-origin:top; } 40%{ transform:scaleY(1); transform-origin:top; } 60%{ transform:scaleY(1); transform-origin:bottom; } 100%{ transform:scaleY(0); transform-origin:bottom; } }

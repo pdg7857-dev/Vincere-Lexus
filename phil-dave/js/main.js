@@ -20,6 +20,89 @@
   var esc = function (t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (m) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]; }); };
 
+  /* ===================== the garage (hero bays) ======================== */
+  // Normalise config: heroRooms array, or the legacy single heroImage.
+  var garage = (S.heroRooms && S.heroRooms.length) ? S.heroRooms
+    : (S.heroImage ? [{
+        key: "hero", bay: "", title: "", image: S.heroImage, srcset: S.heroImageSrcset || "",
+        alt: "Luxury car presented on a lit studio podium",
+        pins: [{ x: 27, y: 56 }, { x: 53, y: 30 }, { x: 81, y: 44 }, { x: 54, y: 70 }],
+        door: null,
+      }] : null);
+  var bayIndex = 0, baySwapping = false;
+
+  function applyBay(room, img) {
+    if (room.srcset) {
+      img.srcset = room.srcset;
+      img.sizes = "(max-width: 860px) 96vw, 1100px";
+    } else { img.removeAttribute("srcset"); }
+    img.src = room.image;
+    img.alt = room.alt || "Luxury car on a studio podium";
+  }
+
+  function setBayLabel(room) {
+    var n = $("#bayNum"), t = $("#bayTitle");
+    if (n) n.textContent = room.bay || "";
+    if (t) t.textContent = room.title || "";
+  }
+
+  function placeDoor() {
+    var doorEl = $(".hotspot--door");
+    var room = garage[bayIndex];
+    if (!doorEl || !room.door) return;
+    doorEl.style.left = room.door.x + "%";
+    doorEl.style.top = room.door.y + "%";
+    doorEl.classList.toggle("hotspot--flip", room.door.x > 55);
+    var nxt = garage[(bayIndex + 1) % garage.length];
+    doorEl.querySelector("b").textContent = "Enter " + (nxt.bay || "the next bay");
+    doorEl.querySelector(".hotspot__label span").textContent = nxt.title || "";
+    doorEl.setAttribute("aria-label", "Walk through to " + (nxt.bay || "the next bay") + " — " + (nxt.title || ""));
+  }
+
+  function movePins(room) {
+    $$(".hotspot:not(.hotspot--door)").forEach(function (el, i) {
+      var p = (room.pins || [])[i];
+      if (p) { el.style.left = p.x + "%"; el.style.top = p.y + "%"; }
+    });
+    placeDoor();
+  }
+
+  // walk through the door: zoom into the darkness, flash, lights come up
+  // on the next car
+  function garageGo(step) {
+    if (!garage || garage.length < 2 || baySwapping) return;
+    var next = (bayIndex + step + garage.length) % garage.length;
+    var room = garage[next];
+    var img = $("#carImg");
+    var door = garage[bayIndex].door || { x: 85, y: 25 };
+
+    if (reduce || !hasGSAP) {
+      applyBay(room, img);
+      bayIndex = next;
+      setBayLabel(room); movePins(room);
+      return;
+    }
+
+    baySwapping = true;
+    var pins = $$(".hotspot");
+    gsap.timeline({ onComplete: function () { baySwapping = false; } })
+      .to(pins, { opacity: 0, scale: 0.5, duration: 0.22, stagger: 0.02, ease: "power1.in" }, 0)
+      .add(function () { gsap.set(img, { transformOrigin: door.x + "% " + door.y + "%" }); }, 0)
+      .to(img, { scale: 2.5, filter: "blur(16px) brightness(0.25)", duration: 0.65, ease: "power2.in" }, 0)
+      .set("#warp", { opacity: 1 }, 0.45)
+      .fromTo(".warp__core", { scale: 1, opacity: 1 }, { scale: 70, duration: 0.35, ease: "power2.in" }, 0.45)
+      .add(function () {
+        applyBay(room, img);
+        bayIndex = next;
+        setBayLabel(room); movePins(room);
+      })
+      .set(img, { transformOrigin: "50% 50%", scale: 0.7, filter: "blur(12px) brightness(0.2)" })
+      .to(".warp__core", { opacity: 0, duration: 0.3 })
+      .set("#warp", { opacity: 0 })
+      .to(img, { scale: 1, filter: "blur(0px) brightness(1)", duration: 1.0, ease: "power3.out" }, "-=0.25")
+      .to(pins, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: "back.out(1.6)" }, "-=0.5");
+  }
+
   /* ===================== content injection ============================= */
   function fillText(attr, value) {
     $$("[" + attr + "]").forEach(function (el) { el.textContent = value; });
@@ -37,26 +120,28 @@
     }
     var yr = $("#year"); if (yr) yr.textContent = "2026";
 
-    // hero photo mode — a real car-on-podium photograph replaces the
-    // illustrated/3D stage (the photo brings its own podium and floor)
-    if (S.heroImage) {
+    // hero photo mode / the garage — one or more photo "bays". The four
+    // pins sit ON the car; the door pin pulls you through into the next bay.
+    if (garage) {
       var stageEl = $("#stage"), img = $("#carImg");
       stageEl.classList.add("stage--photo");
-      img.src = S.heroImage;
-      if (S.heroImageSrcset) {
-        img.srcset = S.heroImageSrcset;
-        img.sizes = "(max-width: 860px) 96vw, 1100px";
-      }
+      applyBay(garage[0], img);
       img.setAttribute("fetchpriority", "high");
       img.decoding = "async";
-      img.alt = "Luxury car presented on a lit studio podium";
+      // pre-warm the other bays so walking through the door is instant
+      garage.slice(1).forEach(function (r) {
+        var pre = new Image();
+        if (r.srcset) { pre.srcset = r.srcset; pre.sizes = "(max-width: 860px) 96vw, 1100px"; }
+        pre.src = r.image;
+      });
+      if (garage.length > 1) { $("#stageBay").hidden = false; setBayLabel(garage[0]); }
     }
 
     // hotspots — in photo mode they pin to points ON the car (percentages of
     // the photo itself); otherwise they float around the illustrated stage
     var hs = $("#hotspots");
-    var positions = S.heroImage
-      ? [{ x: 27, y: 56 }, { x: 53, y: 30 }, { x: 81, y: 44 }, { x: 54, y: 70 }, { x: 90, y: 70 }]
+    var positions = garage
+      ? garage[0].pins
       : [{ x: 22, y: 30 }, { x: 76, y: 26 }, { x: 30, y: 70 }, { x: 70, y: 72 }, { x: 50, y: 18 }];
     (S.rooms || []).forEach(function (room, i) {
       var p = positions[i % positions.length];
@@ -72,6 +157,19 @@
         '<span class="hotspot__label"><b>' + esc(room.label) + "</b><span>" + esc(room.hint || "") + "</span></span>";
       hs.appendChild(btn);
     });
+
+    // the door into the next bay
+    if (garage && garage.length > 1) {
+      var doorBtn = document.createElement("button");
+      doorBtn.className = "hotspot hotspot--door magnetic";
+      doorBtn.type = "button";
+      doorBtn.innerHTML =
+        '<span class="hotspot__dot" aria-hidden="true">&rsaquo;</span>' +
+        '<span class="hotspot__label"><b></b><span></span></span>';
+      doorBtn.addEventListener("click", function () { garageGo(1); });
+      hs.appendChild(doorBtn);
+      placeDoor();
+    }
 
     // marques banner + la collection
     buildBrands();
@@ -503,8 +601,8 @@
         if (document.getElementById(id)) { e.preventDefault(); warpTo(id); }
       });
     });
-    // hotspots → warp
-    $$(".hotspot").forEach(function (h) {
+    // hotspots → warp (the door pin handles its own click)
+    $$(".hotspot[data-target]").forEach(function (h) {
       h.addEventListener("click", function () { warpTo(h.getAttribute("data-target")); });
     });
   }

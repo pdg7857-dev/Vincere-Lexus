@@ -184,18 +184,42 @@ window.SITE = {
     { id: "contact",   label: "Request a Car", hint: "Tell me what you want" },
   ],
 
-  /* --- Hero asset swapping ----------------------------------------------
-     Priority: heroImage (a real photo — used on ALL devices, wins over 3D)
-             → heroModel (.glb on the 3D turntable, desktop only)
-             → built-in procedural 3D car (desktop) / illustration (mobile).
+  /* --- The garage: hero rooms ("bays") ------------------------------------
+     The hero is a garage of photo bays. The four glowing pins navigate the
+     site; the DOOR pin in the dark edge of the studio pulls you through
+     into the next bay (cinematic zoom-through, lights come up on the next
+     car). Add a bay by copying a block — photos on black studio backgrounds
+     melt into the page best.
 
-     heroImage:       your car-on-a-podium photo. Shot on a black studio
-                      background works best — it melts into the page.
-     heroImageSrcset: optional responsive variants so phones download the
-                      small file. Leave "" to always use heroImage.
-     heroModel:       path to your own .glb car model (only used when
-                      heroImage is ""); auto-scaled and grounded.            */
-  heroImage: "assets/hero-car-1536.webp",
-  heroImageSrcset: "assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w",
+     pins: four {x,y} points ON the car (percent of the photo) for the
+           section hotspots, in page order (About / Show Room / Sourcing /
+           Request). door: where the next-room pin floats in the darkness.  */
+  heroRooms: [
+    {
+      key: "supra",
+      bay: "Bay 01",
+      title: "Toyota GR Supra",
+      image: "assets/hero-car-1536.webp",
+      srcset: "assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w",
+      alt: "Grey Toyota GR Supra on a lit studio podium",
+      pins: [{ x: 27, y: 56 }, { x: 53, y: 30 }, { x: 81, y: 44 }, { x: 54, y: 70 }],
+      door: { x: 89, y: 22 },
+    },
+    {
+      key: "revuelto",
+      bay: "Bay 02",
+      title: "Lamborghini Revuelto",
+      image: "assets/hero-revuelto-1536.webp",
+      srcset: "assets/hero-revuelto-600.webp 600w, assets/hero-revuelto-900.webp 900w, assets/hero-revuelto-1536.webp 1536w",
+      alt: "White Lamborghini Revuelto on a dark studio podium",
+      pins: [{ x: 33, y: 54 }, { x: 62, y: 33 }, { x: 88, y: 48 }, { x: 61, y: 63 }],
+      door: { x: 10, y: 22 },
+    },
+  ],
+
+  /* Legacy single-photo fields (used only if heroRooms is empty), plus the
+     optional .glb turntable that activates when no photos are set at all.  */
+  heroImage: "",
+  heroImageSrcset: "",
   heroModel: "",                 // e.g. "models/car.glb"
 };

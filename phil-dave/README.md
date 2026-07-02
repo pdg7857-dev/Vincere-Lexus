@@ -67,23 +67,26 @@ form at [formspree.io](https://formspree.io) and paste its endpoint into
 
 ---
 
-## The hero — swapping the car
+## The hero — the garage (multi-bay)
 
-Priority order (set in `js/data.js`):
+The hero is a **garage of photo bays** (`heroRooms` in `js/data.js`) — each
+bay is a car-on-podium photograph with its own hotspot pins and a nameplate
+("Bay 01 — Toyota GR Supra"). The glowing **door pin** floating in the dark
+edge of the studio pulls you *through* the room — the camera zooms into the
+darkness, a light flashes, and the lights come up on the next car (currently
+the Lamborghini Revuelto in Bay 02). The door in each bay leads onward,
+looping back to Bay 01.
 
-1. **`heroImage` — a real photo (current setup).** The car-on-podium
-   photograph is served as responsive WebP (`600w / 900w / 1536w`, 7–41 KB)
-   so phones download the small file; its edges are feathered into the page
-   and the hotspot pins anchor to points ON the car at every screen size.
-   To change the car, replace the `assets/hero-car-*.webp` files (any photo
-   on a black studio background works best) or point `heroImage` at a new
-   file and clear `heroImageSrcset`.
-2. **`heroModel` — your own `.glb`** on the real-time Three.js turntable
-   (desktop only; drag to spin, auto-scaled and grounded).
-3. **Neither set:** the built-in procedural 3D car on desktop, the
-   illustrated pedestal on mobile / `prefers-reduced-motion` / no-WebGL.
+Add a bay by copying a block in `heroRooms`: drop `600/900/1536w` WebP
+variants in `assets/`, set the four `pins` (percent-of-photo points on the
+car) and the `door` position. Other bays are pre-loaded so the transition is
+instant; the walk-through simplifies to an instant swap under
+`prefers-reduced-motion`.
 
-Three.js is self-hosted in `js/vendor/three/` — still no CDN, no build step.
+Fallbacks (when `heroRooms` is empty): single `heroImage` photo →
+`heroModel` .glb on the Three.js turntable → the built-in procedural 3D car
+(desktop) / illustrated pedestal (mobile). Three.js is self-hosted in
+`js/vendor/three/` — still no CDN, no build step.
 
 ---
 

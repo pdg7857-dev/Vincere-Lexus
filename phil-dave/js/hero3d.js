@@ -19,7 +19,8 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   "use strict";
 
   var S = window.SITE || {};
-  if (S.heroImage) return;      // a real photo is the hero — 3D stands down
+  // real photos are the hero (garage bays or single image) — 3D stands down
+  if (S.heroImage || (S.heroRooms && S.heroRooms.length)) return;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var coarse = window.matchMedia("(hover: none)").matches;
   if (reduce || coarse) return; // calm/mobile → keep the 2D hero
