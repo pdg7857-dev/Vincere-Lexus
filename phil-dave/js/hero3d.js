@@ -19,11 +19,15 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   "use strict";
 
   var S = window.SITE || {};
-  // real photo bays are the hero (garage or single image) — 3D stands down
-  if (S.heroImage || (S.bays && S.bays.length) || (S.heroRooms && S.heroRooms.length)) return;
+  // Garage mode: activate only if some bay asks for the 3D spin (spin3d);
+  // legacy single-photo mode: the photo wins and 3D stands down entirely.
+  var garageMode = !!(S.bays && S.bays.length);
+  var wantsSpin = garageMode && S.bays.some(function (b) { return b.spin3d; });
+  if (garageMode && !wantsSpin) return;
+  if (!garageMode && (S.heroImage || (S.heroRooms && S.heroRooms.length))) return;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var coarse = window.matchMedia("(hover: none)").matches;
-  if (reduce || coarse) return; // calm/mobile → keep the 2D hero
+  if (reduce || coarse) return; // calm/mobile → keep the photo hero
 
   var mount = document.getElementById("three");
   var stage = document.getElementById("stage");
@@ -202,6 +206,7 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   }
 
   var carReady = false;
+  var readyCb = function () {};   // assigned below once show/activate exist
   if (S.heroModel) {
     // owner supplied a real model — use it instead of the procedural car
     import("./vendor/three/GLTFLoader.js").then(function (m) {
@@ -215,9 +220,9 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
         box.setFromObject(g);
         g.position.y -= box.min.y;
         g.traverse(function (o) { if (o.isMesh) o.castShadow = true; });
-        mountCar(g); carReady = true; activate();
-      }, undefined, function () { mountCar(buildCar()); carReady = true; activate(); });
-    }).catch(function () { mountCar(buildCar()); carReady = true; activate(); });
+        mountCar(g); carReady = true; readyCb();
+      }, undefined, function () { mountCar(buildCar()); carReady = true; readyCb(); });
+    }).catch(function () { mountCar(buildCar()); carReady = true; readyCb(); });
   } else {
     mountCar(buildCar()); carReady = true;
   }
@@ -308,7 +313,7 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   var clock = new THREE.Clock();
   function loop() {
     requestAnimationFrame(loop);
-    if (!visible || document.hidden) return;
+    if (!visible || document.hidden || mount.hidden) return;
     var dt = Math.min(clock.getDelta(), 0.05);
     if (!dragging) {
       spin.rotation.y += vel * dt;
@@ -321,24 +326,48 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
     camera.position.y = CAM.y - my * 0.4;
     camera.lookAt(camTarget);
     spin.updateMatrixWorld();
-    placeHotspots();
+    // in garage mode the pins are static bay buttons — leave them alone
+    if (!garageMode) placeHotspots();
     renderer.render(scene, camera);
   }
 
-  /* ---------- activate: swap 2D hero for 3D ------------------------------ */
-  function activate() {
+  /* ---------- activate: swap the photo/2D hero for 3D --------------------- */
+  var looping = false;
+  function startLoop() { if (!looping) { looping = true; loop(); } }
+
+  function show() {
     if (!carReady) return;
-    var flat = document.getElementById("stageCar");
-    if (flat) flat.style.display = "none";
-    // the 3D scene has its own pedestal — retire the CSS one so its rings
-    // and glow don't float behind the transparent canvas
-    var ped = stage.querySelector(".stage__pedestal");
-    if (ped) ped.style.display = "none";
+    stage.classList.add("stage--3d");
     mount.hidden = false;
     resize();
-    loop();
+    startLoop();
   }
-  if (carReady) {
+  function hide() {
+    stage.classList.remove("stage--3d");
+    mount.hidden = true;
+  }
+
+  if (garageMode) {
+    // main.js drives visibility per bay via this handle
+    window.HERO3D = { show: show, hide: hide };
+    var syncBay = function () { if (window.__baySpin3d) show(); else hide(); };
+    readyCb = syncBay;
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", syncBay);
+    else syncBay();
+    document.addEventListener("bay:applied", syncBay);
+  } else {
+    // legacy single-hero mode: take over the stage outright
+    var activate = function () {
+      if (!carReady) return;
+      var flat = document.getElementById("stageCar");
+      if (flat) flat.style.display = "none";
+      var ped = stage.querySelector(".stage__pedestal");
+      if (ped) ped.style.display = "none";
+      mount.hidden = false;
+      resize();
+      startLoop();
+    };
+    readyCb = activate;
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", activate);
     else activate();
   }

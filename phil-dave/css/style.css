@@ -186,6 +186,11 @@ em{ font-style:italic; }
 .room--gated{ display:none; }
 .room--gated.is-open{ display:block; }
 
+/* 3D bay — the live turntable canvas replaces the photo */
+.stage--3d .stage__car{ display:none; }
+.stage--3d .stage__pedestal{ display:none; }
+.stage--3d .stage__three{ z-index:2; }
+
 /* ghost bay — empty pedestal, reserved for the client's car */
 .stage--ghost .stage__car > img{ opacity:.13; filter:grayscale(1); }
 .stage--ghost .stage__reflection{ display:none; }

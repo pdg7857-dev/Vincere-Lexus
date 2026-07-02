@@ -203,6 +203,11 @@ window.SITE = {
     {
       key: "supra", bay: "Bay 01", label: "About Me", section: "about",
       car: "Toyota GR Supra", type: "photo",
+      /* spin3d: on capable desktops this bay upgrades to the real-time 3D
+         turntable (a full 360° continuous spin, drag to steer). The photo
+         below remains the fallback everywhere else. Drop models/car.glb +
+         set heroModel to replace the built-in car with a real model.      */
+      spin3d: true,
       image: "assets/hero-car-1536.webp",
       srcset: "assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w",
       alt: "Grey Toyota GR Supra on a lit studio podium",
