@@ -80,88 +80,122 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   scene.add(new THREE.AmbientLight(0x1c1e24, 2.2));
 
   /* ---------- materials -------------------------------------------------- */
+  // CU Later Grey — the satin medium grey of the photo car
   var paint = new THREE.MeshPhysicalMaterial({
-    color: 0xaab0b8, metalness: 0.85, roughness: 0.34,
-    clearcoat: 1.0, clearcoatRoughness: 0.08, envMapIntensity: 1.6
+    color: 0x878d93, metalness: 0.6, roughness: 0.46,
+    clearcoat: 0.7, clearcoatRoughness: 0.22, envMapIntensity: 1.15
   });
   var glass = new THREE.MeshPhysicalMaterial({
     color: 0x14161b, metalness: 0.5, roughness: 0.05,
     clearcoat: 1.0, clearcoatRoughness: 0.03, envMapIntensity: 2.0
   });
   var tireMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0b, roughness: 0.92, metalness: 0.1 });
+  // gloss-black wheels with a bright machined lip, like the photo car
   var rimMat = new THREE.MeshStandardMaterial({
-    color: 0xe8eaed, roughness: 0.18, metalness: 1.0, envMapIntensity: 1.6,
-    emissive: 0x53565c, emissiveIntensity: 0.5
+    color: 0x17181b, roughness: 0.25, metalness: 0.9, envMapIntensity: 1.4
+  });
+  var lipMat = new THREE.MeshStandardMaterial({
+    color: 0xc9ccd1, roughness: 0.15, metalness: 1.0, envMapIntensity: 1.6,
+    emissive: 0x3c3f45, emissiveIntensity: 0.4
   });
   var trimDark = new THREE.MeshStandardMaterial({ color: 0x121316, roughness: 0.5, metalness: 0.8 });
   var glowWhite = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 2.6 });
 
-  /* ---------- procedural grand tourer ----------------------------------- */
+  /* ---------- procedural 2025 GR Supra (A91) ----------------------------
+     Sculpted to the MK5's proportions and cues: long hood with a low
+     drooping nose, cab-rearward greenhouse with the black double-bubble
+     roof, short deck with the ducktail kick, wide rear haunches, black
+     wheels with machined lips.                                            */
   function buildCar() {
     var car = new THREE.Group();
 
-    // body — sleek side profile extruded + fat bevel to round the flanks
+    // body side profile
     var body = new THREE.Shape();
-    body.moveTo(-2.25, 0.34);
-    body.lineTo(2.05, 0.34);
-    body.quadraticCurveTo(2.48, 0.38, 2.44, 0.62);   // nose
-    body.quadraticCurveTo(2.3, 0.82, 1.5, 0.87);     // hood
-    body.quadraticCurveTo(-0.2, 1.0, -2.02, 0.92);   // beltline rising aft
-    body.quadraticCurveTo(-2.36, 0.9, -2.34, 0.62);  // tail
-    body.quadraticCurveTo(-2.38, 0.4, -2.25, 0.34);  // undertail
+    body.moveTo(-2.2, 0.34);                          // under tail
+    body.lineTo(2.0, 0.34);                           // rocker line
+    body.quadraticCurveTo(2.38, 0.36, 2.42, 0.5);     // low pointed nose
+    body.quadraticCurveTo(2.4, 0.6, 2.15, 0.66);      // nose crown
+    body.quadraticCurveTo(1.2, 0.78, 0.55, 0.82);     // the long hood
+    body.quadraticCurveTo(-0.6, 0.92, -1.55, 0.86);   // beltline under glass
+    body.quadraticCurveTo(-1.95, 0.86, -2.1, 0.94);   // ducktail kick UP
+    body.quadraticCurveTo(-2.28, 0.9, -2.3, 0.62);    // tail face
+    body.quadraticCurveTo(-2.32, 0.4, -2.2, 0.34);    // undertail
     var bodyGeo = new THREE.ExtrudeGeometry(body, {
-      depth: 1.5, bevelEnabled: true, bevelThickness: 0.3, bevelSize: 0.26, bevelSegments: 6, curveSegments: 24
+      depth: 1.42, bevelEnabled: true, bevelThickness: 0.28, bevelSize: 0.24, bevelSegments: 6, curveSegments: 28
     });
-    bodyGeo.translate(0, 0, -0.75);
+    bodyGeo.translate(0, 0, -0.71);
     var bodyMesh = new THREE.Mesh(bodyGeo, paint);
     bodyMesh.castShadow = true;
     car.add(bodyMesh);
 
-    // cabin — low fastback greenhouse in dark glass
+    // greenhouse — compact, set rearward, long fastback into the deck;
+    // the dark glass doubles as the Supra's black roof
     var cabin = new THREE.Shape();
-    cabin.moveTo(1.18, 0.88);
-    cabin.quadraticCurveTo(0.5, 1.19, -0.15, 1.2);   // windshield → roof
-    cabin.quadraticCurveTo(-0.95, 1.17, -1.55, 0.9); // fastback
-    cabin.quadraticCurveTo(-0.2, 0.97, 1.18, 0.88);  // close along beltline
+    cabin.moveTo(0.78, 0.78);
+    cabin.quadraticCurveTo(0.3, 1.26, -0.25, 1.3);    // fast windshield → roof peak
+    cabin.quadraticCurveTo(-0.95, 1.24, -1.68, 0.84); // long fastback glass
+    cabin.quadraticCurveTo(-0.5, 0.9, 0.78, 0.78);    // close along beltline
     var cabinGeo = new THREE.ExtrudeGeometry(cabin, {
-      depth: 1.06, bevelEnabled: true, bevelThickness: 0.12, bevelSize: 0.12, bevelSegments: 4, curveSegments: 20
+      depth: 1.04, bevelEnabled: true, bevelThickness: 0.13, bevelSize: 0.13, bevelSegments: 5, curveSegments: 22
     });
-    cabinGeo.translate(0, 0, -0.53);
+    cabinGeo.translate(0, 0, -0.49);
     var cabinMesh = new THREE.Mesh(cabinGeo, glass);
     cabinMesh.castShadow = true;
     car.add(cabinMesh);
 
-    // wheels
-    var tireGeo = new THREE.CylinderGeometry(0.43, 0.43, 0.3, 36);
-    var rimGeo = new THREE.CylinderGeometry(0.29, 0.29, 0.325, 24);
-    var hubGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.34, 12);
-    [[1.45, 0.95], [1.45, -0.95], [-1.45, 0.95], [-1.45, -0.95]].forEach(function (p) {
+    // the Supra hips — wide bulges over the rear wheels (and subtler fronts)
+    [[-1.3, 0.62, 1.55, 0.5], [1.35, 0.58, 1.15, 0.38]].forEach(function (f) {
+      [1, -1].forEach(function (side) {
+        var h = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 18), paint);
+        h.scale.set(f[2] * 0.62, f[3], 0.34);
+        h.position.set(f[0], f[1], side * 0.86);
+        h.castShadow = true;
+        car.add(h);
+      });
+    });
+
+    // wheels — Supra wheelbase, black rims, bright machined lip
+    var tireGeo = new THREE.CylinderGeometry(0.39, 0.39, 0.3, 36);
+    var rimGeo = new THREE.CylinderGeometry(0.27, 0.27, 0.315, 24);
+    var lipGeo = new THREE.TorusGeometry(0.265, 0.016, 8, 40);
+    var hubGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.33, 12);
+    [[1.32, 0.9], [1.32, -0.9], [-1.3, 0.92], [-1.3, -0.92]].forEach(function (p) {
       var w = new THREE.Group();
       var tire = new THREE.Mesh(tireGeo, tireMat);
       var rim = new THREE.Mesh(rimGeo, rimMat);
       var hub = new THREE.Mesh(hubGeo, trimDark);
       tire.castShadow = true;
       w.add(tire); w.add(rim); w.add(hub);
+      [1, -1].forEach(function (s) {
+        var lip = new THREE.Mesh(lipGeo, lipMat);
+        lip.rotation.x = Math.PI / 2;
+        lip.position.y = s * 0.158;
+        w.add(lip);
+      });
       w.rotation.x = Math.PI / 2;
-      w.position.set(p[0], 0.43, p[1]);
+      w.position.set(p[0], 0.39, p[1]);
       car.add(w);
     });
 
-    // rocker shadow line (visually grounds the body over the wheels)
-    var rocker = new THREE.Mesh(new THREE.BoxGeometry(3.7, 0.16, 1.72), trimDark);
+    // dark rocker + splitter line grounds the body
+    var rocker = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.14, 1.6), trimDark);
     rocker.position.set(0, 0.3, 0);
     car.add(rocker);
+    var splitter = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.06, 1.7), trimDark);
+    splitter.position.set(2.15, 0.3, 0);
+    car.add(splitter);
 
-    // headlights + tail light bar
-    var hl = new THREE.CapsuleGeometry(0.045, 0.16, 4, 8);
-    [0.62, -0.62].forEach(function (z) {
+    // slim wraparound headlights on the drooping nose + full-width tail bar
+    var hl = new THREE.CapsuleGeometry(0.035, 0.2, 4, 8);
+    [0.58, -0.58].forEach(function (z) {
       var m = new THREE.Mesh(hl, glowWhite);
       m.rotation.z = Math.PI / 2;
-      m.position.set(2.42, 0.6, z);
+      m.rotation.y = z > 0 ? -0.5 : 0.5;
+      m.position.set(2.3, 0.56, z);
       car.add(m);
     });
-    var tail = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 1.5), glowWhite);
-    tail.position.set(-2.37, 0.74, 0);
+    var tail = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.045, 1.4), glowWhite);
+    tail.position.set(-2.3, 0.78, 0);
     car.add(tail);
 
     return car;

@@ -202,7 +202,7 @@ window.SITE = {
   bays: [
     {
       key: "supra", bay: "Bay 01", label: "About Me", section: "about",
-      car: "Toyota GR Supra", type: "photo",
+      car: "2025 Toyota GR Supra", type: "photo",
       /* spin3d: on capable desktops this bay upgrades to the real-time 3D
          turntable (a full 360° continuous spin, drag to steer). The photo
          below remains the fallback everywhere else. Drop models/car.glb +
