@@ -27,7 +27,8 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   if (!garageMode && (S.heroImage || (S.heroRooms && S.heroRooms.length))) return;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var coarse = window.matchMedia("(hover: none)").matches;
-  if (reduce || coarse) return; // calm/mobile → keep the photo hero
+  if (reduce) return;                      // calm mode → keep the photo hero
+  if (coarse && !garageMode) return;       // legacy mode stays desktop-only
 
   var mount = document.getElementById("three");
   var stage = document.getElementById("stage");
@@ -38,13 +39,15 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
   try {
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
   } catch (e) { return; }
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.setPixelRatio(Math.min(coarse ? 1.75 : 2, window.devicePixelRatio || 1));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.35;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   mount.appendChild(renderer.domElement);
   renderer.domElement.style.cursor = "grab";
+  // horizontal drags spin the car; vertical swipes still scroll the page
+  renderer.domElement.style.touchAction = "pan-y";
   renderer.domElement.setAttribute("aria-hidden", "true");
 
   var scene = new THREE.Scene();
