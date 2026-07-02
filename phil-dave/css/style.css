@@ -240,10 +240,10 @@ em{ font-style:italic; }
 .hotspot--bay.is-here .hotspot__dot::before{ background:#fff; box-shadow:0 0 18px 4px rgba(232,234,237,.75); }
 .hotspot--bay.is-here .hotspot__label{ border-color:rgba(232,234,237,.4); }
 .hotspot--bay.is-here .hotspot__label span::after{ content:" · here"; color:var(--platinum); }
+/* on phones the pins and their labels crowd the car — the bay navigator
+   tabs and edge arrows carry navigation instead */
 @media (max-width:640px){
-  .hotspot--bay .hotspot__label{ padding:.3rem .5rem; }
-  .hotspot--bay .hotspot__label b{ font-size:.66rem; }
-  .hotspot--bay .hotspot__label span{ font-size:.5rem; }
+  .hotspots{ display:none; }
 }
 
 /* the door into the next garage bay */
