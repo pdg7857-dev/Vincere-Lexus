@@ -132,7 +132,17 @@
         <span class="stage__bay-num" id="bayNum"></span>
         <span class="stage__bay-title" id="bayTitle"></span>
       </div>
+
+      <!-- previous / next bay arrows -->
+      <button class="bayarrow bayarrow--prev" id="bayPrev" type="button" aria-label="Previous bay" hidden>&lsaquo;</button>
+      <button class="bayarrow bayarrow--next" id="bayNext" type="button" aria-label="Next bay" hidden>&rsaquo;</button>
     </div>
+
+    <!-- the bay navigator — the map of the garage -->
+    <nav class="baynav" id="bayNav" aria-label="Garage bays" hidden>
+      <p class="baynav__label">The garage has <b id="bayCount"></b> bays — click one to walk through</p>
+      <div class="baynav__tabs" id="bayTabs"></div>
+    </nav>
 
     <div class="hero__scrollcue" aria-hidden="true"><span>Enter the garage</span><i></i></div>
   </section>

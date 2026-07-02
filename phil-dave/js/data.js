@@ -219,9 +219,12 @@ window.SITE = {
       door: { x: 10, y: 22 },
     },
     {
-      key: "atelier", bay: "Bay 03", label: "Sourcing", section: "process",
-      car: "The Atelier", type: "illustration",
-      pins: [{ x: 24, y: 32 }, { x: 74, y: 28 }, { x: 32, y: 68 }, { x: 68, y: 70 }],
+      key: "m4", bay: "Bay 03", label: "Sourcing", section: "process",
+      car: "BMW M4 Competition", type: "photo",
+      image: "assets/hero-m4-1536.webp",
+      srcset: "assets/hero-m4-600.webp 600w, assets/hero-m4-900.webp 900w, assets/hero-m4-1536.webp 1536w",
+      alt: "Green BMW M4 Competition on a dark studio podium",
+      pins: [{ x: 27, y: 55 }, { x: 57, y: 30 }, { x: 85, y: 49 }, { x: 58, y: 66 }],
       door: { x: 88, y: 18 },
     },
     {

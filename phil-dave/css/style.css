@@ -273,6 +273,57 @@ em{ font-style:italic; }
   .stage__bay-title{ font-size:.8rem; }
 }
 
+/* ---------- bay navigator (the map of the garage) ----------------------- */
+.baynav{ position:relative; z-index:4; width:min(1100px,96vw); margin:.6rem auto 0; text-align:center; }
+.baynav__label{
+  font-size:.64rem; letter-spacing:.34em; text-transform:uppercase; color:var(--silver-dim);
+  margin-bottom:.9rem;
+}
+.baynav__label b{ color:var(--platinum); font-weight:500; }
+.baynav__tabs{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:var(--line-soft); border:1px solid var(--line-soft); border-radius:3px; overflow:hidden;
+}
+.baytab{
+  display:flex; flex-direction:column; align-items:center; gap:.28rem;
+  padding:.9rem .6rem .8rem; background:rgba(12,12,14,.82); border:0; cursor:pointer;
+  color:var(--silver-dim); transition:background .35s var(--ease), color .35s;
+}
+.baytab:hover{ background:rgba(24,24,27,.92); color:var(--platinum); }
+.baytab__num{ font-family:var(--serif); font-size:1.05rem; color:var(--silver-dim); line-height:1; }
+.baytab__name{ font-family:var(--sans); font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--platinum); }
+.baytab__cta{ font-size:.56rem; letter-spacing:.26em; text-transform:uppercase; color:var(--muted); transition:color .35s; }
+.baytab:hover .baytab__cta{ color:var(--silver); }
+.baytab.is-active{ background:linear-gradient(180deg, rgba(232,234,237,.14), rgba(232,234,237,.05)); }
+.baytab.is-active .baytab__num{ color:var(--platinum); }
+.baytab.is-active .baytab__cta{ color:var(--platinum); }
+.baytab:focus-visible{ outline:2px solid var(--silver); outline-offset:-2px; }
+@media (max-width:640px){
+  .baynav__tabs{ grid-template-columns:repeat(2,1fr); }
+  .baytab{ padding:.7rem .4rem .6rem; }
+  .baytab__name{ font-size:.66rem; }
+}
+
+/* prev / next bay arrows on the stage edges */
+.bayarrow{
+  position:absolute; top:50%; transform:translateY(-50%); z-index:6;
+  width:46px; height:46px; border-radius:50%;
+  display:grid; place-items:center;
+  background:rgba(10,10,11,.55); border:1px solid var(--line); color:var(--platinum);
+  font-family:var(--serif); font-size:1.6rem; line-height:1; cursor:pointer;
+  backdrop-filter:blur(6px);
+  transition:background .35s var(--ease), border-color .35s, transform .35s var(--ease);
+}
+.bayarrow:hover{ background:rgba(232,234,237,.16); border-color:rgba(232,234,237,.5); }
+.bayarrow--prev{ left:.4rem; }
+.bayarrow--next{ right:.4rem; }
+.bayarrow--prev:hover{ transform:translateY(-50%) translateX(-2px); }
+.bayarrow--next:hover{ transform:translateY(-50%) translateX(2px); }
+.bayarrow:focus-visible{ outline:2px solid var(--silver); outline-offset:4px; }
+@media (max-width:640px){
+  .bayarrow{ width:38px; height:38px; font-size:1.3rem; }
+}
+
 .hero__scrollcue{ position:absolute; bottom:1.6rem; left:50%; transform:translateX(-50%); z-index:3; display:flex; flex-direction:column; align-items:center; gap:.7rem; }
 .hero__scrollcue i{ width:1px; height:42px; background:linear-gradient(var(--silver),transparent); animation:cue 2.4s var(--ease) infinite; }
 @keyframes cue{ 0%{ transform:scaleY(0); transform-origin:top; } 40%{ transform:scaleY(1); transform-origin:top; } 60%{ transform:scaleY(1); transform-origin:bottom; } 100%{ transform:scaleY(0); transform-origin:bottom; } }

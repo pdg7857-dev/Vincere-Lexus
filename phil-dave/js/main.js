@@ -104,9 +104,15 @@
     if (hasGSAP && window.ScrollTrigger) ScrollTrigger.refresh();
   }
 
-  function updateDots() {
+  function updateBayUI() {
     $$("#dots .dot").forEach(function (d) {
       d.classList.toggle("is-active", d.getAttribute("data-bay") == String(bayIndex));
+    });
+    $$(".baytab").forEach(function (t, i) {
+      var here = i === bayIndex;
+      t.classList.toggle("is-active", here);
+      var cta = t.querySelector(".baytab__cta");
+      if (cta) cta.textContent = here ? "You are here" : "Enter bay ›";
     });
   }
 
@@ -149,7 +155,7 @@
       setBayLabel(room);
       movePins(room);
       gateSections();
-      updateDots();
+      updateBayUI();
     }
 
     if (reduce || !hasGSAP || !heroVisible) {
@@ -246,6 +252,43 @@
       doorBtn.addEventListener("click", function () { enterBay(bayIndex + 1); });
       hs.appendChild(doorBtn);
       placeDoor();
+
+      // the bay navigator strip + edge arrows — the unmissable way through
+      var navEl = $("#bayNav"), tabs = $("#bayTabs");
+      if (navEl && tabs) {
+        navEl.hidden = false;
+        // the tabs are the invitation now — retire the scroll cue
+        var cue = $(".hero__scrollcue");
+        if (cue) cue.style.display = "none";
+        $("#bayCount").textContent = garage.length;
+        tabs.innerHTML = garage.map(function (room, i) {
+          return (
+            '<button class="baytab' + (i === 0 ? " is-active" : "") + '" type="button" data-bay="' + i + '" aria-label="' + esc(room.bay + " — " + room.label) + '">' +
+              '<span class="baytab__num">' + esc(String(i + 1).padStart(2, "0")) + "</span>" +
+              '<span class="baytab__name">' + esc(room.label) + "</span>" +
+              '<span class="baytab__cta"></span>' +
+            "</button>"
+          );
+        }).join("");
+        tabs.querySelectorAll(".baytab").forEach(function (t) {
+          t.addEventListener("click", function () { enterBay(+t.getAttribute("data-bay")); });
+        });
+      }
+      var prev = $("#bayPrev"), nxt = $("#bayNext");
+      if (prev && nxt) {
+        prev.hidden = nxt.hidden = false;
+        prev.addEventListener("click", function () { enterBay(bayIndex - 1); });
+        nxt.addEventListener("click", function () { enterBay(bayIndex + 1); });
+      }
+      // arrow keys walk the garage while the hero is on screen
+      document.addEventListener("keydown", function (e) {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        var t = e.target.tagName;
+        if (t === "INPUT" || t === "TEXTAREA" || t === "SELECT") return;
+        if (window.scrollY > window.innerHeight * 0.7) return;
+        enterBay(bayIndex + (e.key === "ArrowRight" ? 1 : -1));
+      });
+      updateBayUI();
     }
 
     // marques banner + la collection

@@ -77,7 +77,7 @@ hidden until you enter their bay:
 |-----|-----------|---------|
 | Bay 01 | Toyota GR Supra photo | About Me |
 | Bay 02 | Lamborghini Revuelto photo | The Show Room |
-| Bay 03 | Platinum illustration ("The Atelier") | How Sourcing Works |
+| Bay 03 | BMW M4 Competition photo | How Sourcing Works |
 | Bay 04 | Empty pedestal + ghost silhouette ("Reserved — your car here") | Request a Car |
 
 Four **always-visible bay buttons** float over the car ("About Me — Enter
