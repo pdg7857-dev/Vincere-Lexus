@@ -381,25 +381,38 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
     // underneath — the client only ever sees the car spinning); the model
     // mounts as soon as it's loaded, cached for instant returns.
     var currentUrl = null;
+    var arrivalTimer = null;
     var syncBay = function () {
       var room = window.__bayCurrent;
       var want = room && (room.model || room.spin3d);
-      if (!want) { hide(); return; }
+      if (!want) { clearTimeout(arrivalTimer); hide(); return; }
       show();
       if (room.model) {
         var url = room.model;
         if (currentUrl === url) return;
+        // never leave the bay empty: if the model is still in transit after
+        // 14s (slow network), bring the photo back until it arrives
+        clearTimeout(arrivalTimer);
+        arrivalTimer = setTimeout(function () {
+          if (currentUrl !== url) hide();
+        }, 14000);
         loadBayModel(url).then(function (scene) {
           var now = window.__bayCurrent;
           if (!now || now.model !== url) return;   // walked on mid-load
+          clearTimeout(arrivalTimer);
           mountCar(prepare(scene.clone(true), room.modelLength));
           currentUrl = url;
+          show();                                   // reclaim from the photo
           // gentle arrival under the lights
           if (window.gsap) {
             window.gsap.fromTo(spin.scale, { x: 0.88, y: 0.88, z: 0.88 },
               { x: 1, y: 1, z: 1, duration: 0.9, ease: "power3.out" });
           }
-        }).catch(function () { if (currentUrl === null) hide(); }); // failed → photo returns
+        }).catch(function () {
+          clearTimeout(arrivalTimer);
+          var now = window.__bayCurrent;
+          if (now && now.model === url && currentUrl !== url) hide(); // failed → photo
+        });
       } else if (currentUrl !== "procedural") {
         mountCar(buildCar());
         currentUrl = "procedural";
