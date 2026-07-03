@@ -133,10 +133,27 @@
       opacity: 1, y: 0, duration: 0.85, ease: "power3.out", stagger: 0.06, overwrite: "auto",
       onComplete: function () { items.forEach(function (el) { el.classList.add("in"); }); }
     });
+    // safety net: whatever happens to the tween (interrupted scroll, tab
+    // switch, odd mobile browsers), nothing may stay faded out
+    setTimeout(function () {
+      items.forEach(function (el) {
+        if (+getComputedStyle(el).opacity < 0.99) {
+          el.classList.add("in"); el.style.opacity = 1; el.style.transform = "none";
+        }
+      });
+    }, 2200);
   }
 
   /* enter a bay: cinematic pull-through on the hero, swap the visible
      section, then glide down to the information */
+  // phones stay where they are (you watch the car change on the stage);
+  // only desktop glides down to the text. Nav-menu links force the glide
+  // on every device because there the destination IS the text.
+  function wantsGlide(opts) {
+    if (opts.scroll === false) return false;
+    if (opts.scroll === "force") return true;
+    return window.matchMedia("(min-width: 821px)").matches;
+  }
   function enterBay(next, opts) {
     opts = opts || {};
     if (!garage || baySwapping) return;
@@ -166,8 +183,8 @@
     if (reduce || !hasGSAP || !heroVisible) {
       // away from the hero (or calm mode): swap instantly, then glide
       commit();
-      if (sec && opts.scroll !== false) {
-        scrollToId(room.section);
+      if (sec) {
+        if (wantsGlide(opts)) scrollToId(room.section);
         setTimeout(function () { revealSection(sec); }, 350);
       }
       return;
@@ -188,8 +205,8 @@
       .to(stageZoom, { scale: 1, filter: "blur(0px) brightness(1)", duration: 1.0, ease: "power3.out" }, "-=0.25")
       .to(pins, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: "back.out(1.6)" }, "-=0.5")
       .add(function () {
-        if (sec && opts.scroll !== false) {
-          scrollToId(room.section);
+        if (sec) {
+          if (wantsGlide(opts)) scrollToId(room.section);
           setTimeout(function () { revealSection(sec); }, 400);
         }
       }, "-=0.55");
@@ -603,7 +620,7 @@
   function warpTo(id) {
     closeMenu();
     var b = bayFor(id);
-    if (b >= 0) { enterBay(b); return; }
+    if (b >= 0) { enterBay(b, { scroll: "force" }); return; }
     scrollToId(id);
   }
 
