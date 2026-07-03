@@ -81,9 +81,9 @@
     doorEl.style.top = room.door.y + "%";
     doorEl.classList.toggle("hotspot--flip", room.door.x > 55);
     var nxt = garage[(bayIndex + 1) % garage.length];
-    doorEl.querySelector("b").textContent = "Next — " + (nxt.bay || "the next bay");
+    doorEl.querySelector("b").textContent = "Next: " + (nxt.bay || "the next bay");
     doorEl.querySelector(".hotspot__label span").textContent = nxt.label || "";
-    doorEl.setAttribute("aria-label", "Walk through to " + (nxt.bay || "the next bay") + " — " + (nxt.label || ""));
+    doorEl.setAttribute("aria-label", "Walk through to " + (nxt.bay || "the next bay") + ", " + (nxt.label || ""));
   }
 
   function movePins(room) {
@@ -250,7 +250,7 @@
       btn.style.left = p.x + "%";
       btn.style.top = p.y + "%";
       btn.setAttribute("data-bay", i);
-      btn.setAttribute("aria-label", room.label + " — enter " + room.bay);
+      btn.setAttribute("aria-label", room.label + ", enter " + room.bay);
       btn.innerHTML =
         '<span class="hotspot__dot" aria-hidden="true"></span>' +
         '<span class="hotspot__label"><b>' + esc(room.label) + "</b><span>Enter " + esc(room.bay) + "</span></span>";

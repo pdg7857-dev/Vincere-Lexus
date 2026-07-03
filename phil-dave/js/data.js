@@ -60,16 +60,16 @@ window.SITE = {
   /* --- Client quotes (Room 3). Add/remove freely. ------------------------ */
   testimonials: [
     {
-      quote: "Phil found the exact spec I'd been chasing for a year — and made the whole thing feel effortless.",
-      author: "M. — Forest Hill", // [PLACEHOLDER]
+      quote: "Phil found the exact spec I'd been chasing for a year, and made the whole thing feel effortless.",
+      author: "M., Forest Hill", // [PLACEHOLDER]
     },
     {
       quote: "Discreet, fast, and he negotiated better than I ever could. The only person I call now.",
-      author: "A. — Oakville", // [PLACEHOLDER]
+      author: "A., Oakville", // [PLACEHOLDER]
     },
     {
       quote: "Delivered to my door, detailed, paperwork done. This is how buying a car should feel.",
-      author: "R. — Yorkville", // [PLACEHOLDER]
+      author: "R., Yorkville", // [PLACEHOLDER]
     },
   ],
 
@@ -78,22 +78,22 @@ window.SITE = {
     {
       step: "01",
       title: "Consultation",
-      body: "We start with a quiet conversation about the car you want — spec, colour, feel, budget and timeline. No pressure, no showroom.",
+      body: "We start with a quiet conversation about the car you want: spec, colour, feel, budget and timeline. No pressure, just a plan.",
     },
     {
       step: "02",
       title: "Search & Source",
-      body: "I work my private network across the GTA and beyond to locate the right car — including quiet listings you'll never see publicly.",
+      body: "I work my private network across the GTA and beyond to locate the right car, including quiet listings you'll never see publicly.",
     },
     {
       step: "03",
       title: "Inspection & Negotiation",
-      body: "Every car is independently inspected and history-checked. I negotiate hard on your behalf so the number is right before you commit.",
+      body: "Every car is independently inspected with a full history check. I negotiate hard on your behalf so the number is right before you commit.",
     },
     {
       step: "04",
       title: "Delivery",
-      body: "Paperwork handled, car detailed and delivered to your door. White-glove from first call to keys in hand.",
+      body: "Paperwork handled, car detailed and delivered to your door. Everything looked after from first call to keys in hand.",
     },
   ],
 
@@ -104,12 +104,12 @@ window.SITE = {
     photo: "assets/phil-700.webp",
     photoSrcset: "assets/phil-440.webp 440w, assets/phil-700.webp 700w, assets/phil-1100.webp 1100w",
     photoAlt: "Phil Dave, on the phone beside a sourced coupe at the harbour",
-    photoCaption: "Phil Dave — luxury car sourcer",
+    photoCaption: "Phil Dave, luxury car sourcing specialist",
     lead: "I source cars for people who value their time and their taste.",
     body: [
-      "Phil Dave is a luxury car sourcing specialist based in the Greater Toronto Area. I'm not a private seller — I work within one of the region's established dealership groups, and I'm your personal way in: I find the right car, verify it properly, fight for the right number, and have everything ready before you walk through the door.",
-      "Years in the trade have built a network that reaches well past the public listings. When the right car surfaces, the purchase completes at the dealership — licensed, financed if you wish, warranty-backed, the paperwork as clean as the car. You get the reach of a personal sourcer with a full dealership standing behind every deal.",
-      "Born in France, based in Toronto — service available in English and French.",
+      "Phil Dave is a luxury car sourcing specialist based in the Greater Toronto Area. I'm not a private seller. I work within one of the region's established dealership groups, and I'm your personal way in: I find the right car, verify it properly, fight for the right number, and have everything ready before you walk through the door.",
+      "Years in the trade have built a network that reaches well past the public listings. When the right car surfaces, the purchase completes at the dealership, fully licensed, with financing and warranty available and the paperwork as clean as the car. You get the reach of a personal sourcer with a full dealership standing behind every deal.",
+      "I grew up in Atlantic Canada and speak fluent French. Service available in English and French, across the GTA and beyond.",
     ],
   },
 
@@ -124,12 +124,12 @@ window.SITE = {
   inventory: [
     {
       make: "Porsche", model: "911 Carrera S", year: 2023, body: "coupe",
-      note: "GT Silver over black. Sport Chrono, PASM, ceramic brakes. Sourced privately for a returning client.",
+      note: "GT Silver over black. Sport Chrono, PASM, ceramic brakes. Sourced for a returning client.",
       status: "Sourced", image: "",
     },
     {
       make: "Lexus", model: "LC 500", year: 2024, body: "coupe",
-      note: "Naturally-aspirated V8. Infrared over Circuit Red. One of the cleanest examples in Ontario.",
+      note: "Naturally aspirated V8. Infrared over Circuit Red. One of the cleanest examples in Ontario.",
       status: "Available", image: "",
     },
     {
@@ -147,7 +147,7 @@ window.SITE = {
   /* --- The private-inventory invitation under the showroom --------------- */
   inventoryCta: {
     lead: "The showroom doesn't end here.",
-    body: "What you see is a glimpse. Contact me to see the full inventory — or tell me what you're dreaming of, and I'll find it.",
+    body: "What you see is a glimpse. Contact me to see the full inventory, or tell me what you're dreaming of and I'll find it.",
     button: "Request a car",
   },
 
@@ -155,8 +155,8 @@ window.SITE = {
      The questions discerning buyers actually ask. Edit freely.            */
   faq: [
     {
-      q: "How does it work — fees, terms?",
-      a: "Simple, transparent terms agreed before any search begins — no surprises, no hidden costs. Ask me and I'll walk you through exactly how it works.", // [PLACEHOLDER — confirm your model]
+      q: "How does it work, and what are the terms?",
+      a: "Simple, transparent terms agreed before any search begins, with no surprises and no hidden costs. Ask me and I'll walk you through exactly how it works.", // [PLACEHOLDER — confirm your model]
     },
     {
       q: "Do you only work within the GTA?",
@@ -164,7 +164,7 @@ window.SITE = {
     },
     {
       q: "Can you find a car outside the marques you list?",
-      a: "The marques in the showroom are my specialties, but the network runs deeper. If you're after something else, ask — I'll tell you honestly whether I'm the right person for it.",
+      a: "The marques in the showroom are my specialties, but the network runs deeper. If you're after something else, just ask. I'll tell you honestly whether I'm the right person for it.",
     },
     {
       q: "How discreet is the process?",
@@ -172,7 +172,7 @@ window.SITE = {
     },
     {
       q: "Do you handle inspection and paperwork?",
-      a: "Yes — pre-purchase inspection, history and lien checks, negotiation, financing if wanted, registration and delivery. Everything closes through licensed, professional channels. White-glove, end to end.",
+      a: "Yes. Inspection before purchase, history and lien checks, negotiation, financing if wanted, registration and delivery. Everything closes through licensed, professional channels, end to end.",
     },
   ],
 
