@@ -107,8 +107,8 @@ window.SITE = {
     photoCaption: "Phil Dave — luxury car sourcer",
     lead: "I source cars for people who value their time and their taste.",
     body: [
-      "Phil Dave is a private luxury car sourcer based in the Greater Toronto Area. Every search is handled by me personally — finding the right car, verifying it properly, negotiating the number, and looking after every detail so you don't have to.",
-      "Years in the trade have built a network that reaches well past the public listings, and every deal closes through licensed, established channels — the paperwork as clean as the car. Whether it's a specific Porsche allocation, a low-kilometre Lexus, or the exact Mercedes spec you've been picturing, I find it — quietly, and on your terms.",
+      "Phil Dave is a luxury car sourcing specialist based in the Greater Toronto Area. I'm not a private seller — I work within one of the region's established dealership groups, and I'm your personal way in: I find the right car, verify it properly, fight for the right number, and have everything ready before you walk through the door.",
+      "Years in the trade have built a network that reaches well past the public listings. When the right car surfaces, the purchase completes at the dealership — licensed, financed if you wish, warranty-backed, the paperwork as clean as the car. You get the reach of a personal sourcer with a full dealership standing behind every deal.",
       "Born in France, based in Toronto — service available in English and French.",
     ],
   },
