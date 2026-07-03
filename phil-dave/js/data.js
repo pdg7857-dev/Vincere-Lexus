@@ -208,8 +208,8 @@ window.SITE = {
          very old browsers. modelLength is the car's REAL length in metres —
          all bays share one scale, so walking bay to bay keeps the cars'
          sizes realistic relative to each other.
-         Real lengths for the other bays when their models arrive:
-         LC 500: 4.77 · M4 G82: 4.79 · Revuelto: 4.95                       */
+         Shared scale across bays: Supra 4.38 · LC 500 4.77 · M4 4.79 ·
+         Urus 5.11 — walking bay to bay keeps relative sizes realistic.     */
       model: "models/car.glb",
       modelLength: 4.38,
       spin3d: true,
@@ -256,15 +256,37 @@ window.SITE = {
       image: "assets/hero-m4-1536.webp",
       srcset: "assets/hero-m4-600.webp 600w, assets/hero-m4-900.webp 900w, assets/hero-m4-1536.webp 1536w",
       alt: "Green BMW M4 Competition on a dark studio podium",
+      model: "models/m4.glb",
+      modelLength: 4.79,
+      /* Source model shipped untextured, so its materials were re-authored
+         from the part names baked into the file (M4Paint, M4Glass, …).
+         Body is Signal Green matched to the photo; roof/aero stay carbon.  */
+      paintTune: [
+        { match: "M4Paint", color: "#0e8038",
+          metalness: 0.15, roughness: 0.4, envMapIntensity: 0.35 },
+        { match: "M4Carbon", envMapIntensity: 0.35 },
+        { match: "M4Trim", envMapIntensity: 0.45 },
+        { match: "M4Rim", envMapIntensity: 0.4 },
+      ],
       pins: [{ x: 27, y: 55 }, { x: 57, y: 30 }, { x: 85, y: 49 }, { x: 58, y: 66 }],
       door: { x: 88, y: 18 },
     },
     {
-      key: "revuelto", bay: "Bay 04", label: "Request a Car", section: "contact",
-      car: "Lamborghini Revuelto", type: "photo",
+      key: "urus", bay: "Bay 04", label: "Request a Car", section: "contact",
+      car: "Lamborghini Urus SE", type: "photo",
+      /* fallback photo still shows the Revuelto — swap it when an Urus
+         podium shot arrives (photo only appears if 3D can't run)          */
       image: "assets/hero-revuelto-1536.webp",
       srcset: "assets/hero-revuelto-600.webp 600w, assets/hero-revuelto-900.webp 900w, assets/hero-revuelto-1536.webp 1536w",
-      alt: "White Lamborghini Revuelto on a dark studio podium",
+      alt: "White Lamborghini supercar on a dark studio podium",
+      model: "models/urus.glb",
+      modelLength: 5.11,
+      /* factory Arancio orange lives in the file's own materials — only
+         the reflections are tamed so real GPUs don't blow the paint out   */
+      paintTune: [
+        { match: "LLamborghini_UrusPHEVRewardRecycled_2024Paint_Material1",
+          metalness: 0.2, roughness: 0.3, envMapIntensity: 0.35 },
+      ],
       pins: [{ x: 33, y: 54 }, { x: 62, y: 33 }, { x: 88, y: 48 }, { x: 61, y: 63 }],
       door: { x: 12, y: 18 },
     },
@@ -282,5 +304,7 @@ window.SITE = {
   modelCredits: [
     { text: "GR Supra by J5nnym1r™", url: "https://sketchfab.com/3d-models/toyota-gr-supra-371c9c1ded6440699b7c261c0fb82a2c", license: "CC BY-NC 4.0" },
     { text: "Lexus LC 500 by Socksthecat", url: "https://sketchfab.com/3d-models/lexus-lc-500-3f6118da005a457a9ce6d737e5d1e37d", license: "CC BY 4.0" },
+    { text: "BMW M4 G82 Competition by DR1KING100K", url: "https://sketchfab.com/3d-models/bmw-m4-g82-competition-e7ec00b1dbe54901a5fc07801667897b", license: "CC BY 4.0" },
+    { text: "2025 Lamborghini Urus SE by Ddiaz Design", url: "https://sketchfab.com/3d-models/2025-lamborghini-urus-se-cc113385b7e34481af5e50a2fb8b6b2e", license: "CC BY 4.0" },
   ],
 };
