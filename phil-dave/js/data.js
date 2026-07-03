@@ -124,24 +124,24 @@ window.SITE = {
      `status`: "Available", "Sourced" (for a client), or "Sold".            */
   inventory: [
     {
-      make: "Porsche", model: "911 Carrera S", year: 2023, body: "coupe",
-      note: "GT Silver over black. Sport Chrono, PASM, ceramic brakes. Sourced for a returning client.",
-      status: "Sourced", image: "",
-    },
-    {
-      make: "Lexus", model: "LC 500", year: 2024, body: "coupe",
-      note: "Naturally aspirated V8. Infrared over Circuit Red. One of the cleanest examples in Ontario.",
+      make: "Porsche", model: "911 Carrera Coupe", year: 2021, body: "coupe",
+      note: "992 generation, PDK. The benchmark sports car, kept exactly as it should be.",
       status: "Available", image: "",
     },
     {
-      make: "Mercedes-Benz", model: "G 63 AMG", year: 2022, body: "suv",
-      note: "Obsidian Black, Manufaktur interior. Located and delivered within nine days.",
-      status: "Sold", image: "",
+      make: "Lexus", model: "LX 600", year: 2026, body: "suv",
+      note: "The flagship 4WD. Twin turbo V6, three rows, and presence that needs no introduction.",
+      status: "Available", image: "",
     },
     {
-      make: "Audi", model: "RS 6 Avant", year: 2024, body: "wagon",
-      note: "Nardo Grey, Dynamic package plus. The wagon everyone wants. Allocation secured.",
-      status: "Sourced", image: "",
+      make: "BMW", model: "X5 xDrive40i", year: 2024, body: "suv",
+      note: "M Sport package, certified by BMW. The luxury SUV that does everything well.",
+      status: "Available", image: "",
+    },
+    {
+      make: "Volvo", model: "XC90 Recharge T8", year: 2024, body: "suv",
+      note: "Electrified AWD, seven seats. Scandinavian calm with instant torque.",
+      status: "Available", image: "",
     },
   ],
 
