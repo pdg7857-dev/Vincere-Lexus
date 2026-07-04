@@ -107,9 +107,8 @@ window.SITE = {
     photoCaption: "Phil Dave, luxury car sourcing specialist",
     lead: "I source cars for people who value their time and their taste.",
     body: [
-      "Phil Dave is a luxury car sourcing specialist based in the Greater Toronto Area. I'm not a private seller. I work within the Policaro Group, and I'm your personal way in: I find the right car, verify it properly, fight for the right number, and have everything ready before you walk through the door.",
-      "The Policaro story is a family story. Three brothers bought into a single Honda store in Brampton in 1979, earned Canada's first Acura franchise in 1987, and in 2013 opened Porsche Centre Oakville, the largest Porsche facility in the country. Today the group represents seven luxury marques across the GTA and Southern Ontario: Porsche, BMW, Lexus, Acura, Jaguar, Land Rover and Volvo.",
-      "And because clients trade in cars of every marque, what comes through my hands runs well past the seven brands on the sign: Mercedes, Audi, or something rarer. When the right car surfaces, the purchase completes at the dealership, fully licensed, with financing and warranty available and the paperwork as clean as the car. You get the reach of a personal sourcer with one of Canada's most respected family owned dealership groups standing behind every deal.",
+      "Phil Dave is a luxury car sourcing specialist based in the Greater Toronto Area. I'm not a private seller. I work within an established luxury dealership group, and I'm your personal way in: I find the right car, verify it properly, fight for the right number, and have everything ready before you walk through the door.",
+      "And because clients trade in cars of every marque, what comes through my hands runs well past any single brand: Mercedes, Audi, or something rarer. When the right car surfaces, the purchase completes at the dealership, fully licensed, with financing and warranty available and the paperwork as clean as the car. Every deal has a full dealership standing behind it, but you deal with me.",
       "I grew up in Atlantic Canada and speak fluent French. Service available in English and French, across the GTA and beyond.",
     ],
   },
