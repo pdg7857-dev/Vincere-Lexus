@@ -27,10 +27,10 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Upload the phil-dave site as the Pages artifact
+      - name: Upload the repo root as the Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'phil-dave'
+          path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
