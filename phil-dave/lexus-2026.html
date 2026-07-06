@@ -312,6 +312,16 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
 .model.is-active{display:block!important;}
 .modelnav a.is-active{color:var(--platinum);border-color:var(--silver);}
 .model-hint{margin-top:1rem;font-size:.95rem;color:var(--silver);letter-spacing:.02em;}
+
+/* grouped nav + 3D turntable */
+.modelnav .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 2px}
+.mn-group{display:inline-flex;align-items:center;gap:2px;margin:0 4px;padding-left:6px;border-left:1px solid var(--line-soft)}
+.mn-label{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.pd-spin{position:relative;height:360px;margin:6px 0 24px;border:1px solid var(--line-soft);border-radius:4px;background:radial-gradient(70% 90% at 50% 18%,rgba(201,204,209,.09),transparent 60%),var(--panel);overflow:hidden}
+.pd-spin canvas{opacity:0;transition:opacity .8s ease}
+.pd-spin canvas.is-live{opacity:1}
+.pd-spin__cap{position:absolute;left:14px;bottom:12px;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);z-index:2;pointer-events:none}
+@media (max-width:640px){.pd-spin{height:230px}}
 </style>
 
 <div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-h">
@@ -431,18 +441,7 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
 
 </div></header>
 
-<nav class="modelnav"><div class="wrap"><a href="#compare" class="jump">&#9776; Compare / Calc</a><a href="#gx">GX</a>
-<a href="#lx">LX</a>
-<a href="#nx">NX</a>
-<a href="#nx-plug-in">NX Plug-in</a>
-<a href="#rx">RX</a>
-<a href="#rx-plug-in">RX Plug-in</a>
-<a href="#rz-all-electric">RZ All-Electric</a>
-<a href="#tx">TX</a>
-<a href="#ux">UX</a>
-<a href="#es">ES</a>
-<a href="#is">IS</a>
-<a href="#ls">LS</a></div></nav>
+<nav class="modelnav"><div class="wrap"><a href="#compare" class="jump">&#9776; Compare / Calc</a><span class="mn-group"><span class="mn-label">Sedans</span><a href="#es">ES</a><a href="#is">IS</a><a href="#ls">LS</a></span><span class="mn-group"><span class="mn-label">SUVs</span><a href="#ux">UX</a><a href="#nx">NX</a><a href="#nx-plug-in">NX Plug-in</a><a href="#rx">RX</a><a href="#rx-plug-in">RX Plug-in</a><a href="#rz-all-electric">RZ</a><a href="#tx">TX</a></span><span class="mn-group"><span class="mn-label">Trucks</span><a href="#gx">GX</a><a href="#lx">LX</a></span></div></nav>
 
 <main class="wrap">
 <div class="section-lead"><span class="eyebrow">The Full Range</span><h2>Pick a model to see its trims</h2><p>Tap any model in the bar above and its full trim ladder and specs open here &mdash; each family&rsquo;s variants shown side by side so you can compare them directly. Send any two up to the desk above to compare payments.</p><p class="model-hint" id="modelHint">&#9776;&nbsp;&nbsp;Choose a model above to begin.</p></div>
@@ -2785,6 +2784,7 @@ if(document.readyState!=="loading") init(); else document.addEventListener("DOMC
       a.classList.toggle("is-active", a.getAttribute("href")==="#"+id);
     });
     if(hint) hint.style.display="none";
+    try{ var el=document.getElementById(id); if(window.__pdLexusSpin) window.__pdLexusSpin(id, el); }catch(e){}
   }
   if(nav){
     nav.addEventListener("click", function(e){
