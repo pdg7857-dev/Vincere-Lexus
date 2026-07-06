@@ -332,25 +332,28 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
   <p class="gate__lede">The complete, fact-checked trim comparison and a live lease &amp; finance desk. Tell me who you are and it&rsquo;s yours &mdash; and I&rsquo;ll be here when you&rsquo;re ready to source one.</p>
   <form id="gate-form" novalidate>
    <input class="gate__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website">
+   <div class="gate__f" data-f="name"><label for="g-name">Full name <span class="req">*</span></label><input id="g-name" name="name" autocomplete="name" required><span class="gate__err"></span></div>
    <div class="gate__row">
-    <div class="gate__f" data-f="first"><label for="g-first">First name <span class="req">*</span></label><input id="g-first" name="first" autocomplete="given-name" required><span class="gate__err"></span></div>
-    <div class="gate__f" data-f="last"><label for="g-last">Last name <span class="req">*</span></label><input id="g-last" name="last" autocomplete="family-name" required><span class="gate__err"></span></div>
+    <div class="gate__f" data-f="email"><label for="g-email">Email address <span class="req">*</span></label><input id="g-email" name="email" type="email" autocomplete="email" required><span class="gate__err"></span></div>
+    <div class="gate__f" data-f="phone"><label for="g-phone">Phone number <span class="req">*</span></label><input id="g-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required><span class="gate__err"></span></div>
    </div>
-   <div class="gate__f" data-f="email"><label for="g-email">Email <span class="req">*</span></label><input id="g-email" name="email" type="email" autocomplete="email" required><span class="gate__err"></span></div>
+   <div class="gate__opt">The vehicle you&rsquo;re after</div>
    <div class="gate__row">
-    <div class="gate__f" data-f="phone"><label for="g-phone">Mobile <span class="req">*</span></label><input id="g-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required><span class="gate__err"></span></div>
-    <div class="gate__f" data-f="city"><label for="g-city">City <span class="req">*</span></label><input id="g-city" name="city" autocomplete="address-level2" placeholder="e.g. Toronto" required><span class="gate__err"></span></div>
-   </div>
-   <div class="gate__opt">Optional &mdash; helps me help you</div>
-   <div class="gate__row">
-    <div class="gate__f"><label for="g-budget">Budget</label><select id="g-budget" name="budget"><option value="">Select&hellip;</option><option>Under $75k</option><option>$75k &ndash; $125k</option><option>$125k &ndash; $200k</option><option>$200k &ndash; $350k</option><option>$350k+</option></select></div>
-    <div class="gate__f"><label for="g-timeline">Timeline</label><select id="g-timeline" name="timeline"><option value="">Select&hellip;</option><option>Just researching</option><option>Within 3 months</option><option>3&ndash;6 months</option><option>6+ months</option></select></div>
+    <div class="gate__f" data-f="year"><label for="g-year">Vehicle year <span class="req">*</span></label><select id="g-year" name="year" required><option value="">Select&hellip;</option><option>2026</option><option>2025</option><option>2024</option><option>2023</option><option>Older / used</option><option>Not sure yet</option></select><span class="gate__err"></span></div>
+    <div class="gate__f" data-f="make"><label for="g-make">Make <span class="req">*</span></label><input id="g-make" name="make" value="Lexus" placeholder="e.g. Lexus" required><span class="gate__err"></span></div>
    </div>
    <div class="gate__row">
-    <div class="gate__f"><label for="g-plan">How you&rsquo;d buy</label><select id="g-plan" name="plan"><option value="">Select&hellip;</option><option>Lease</option><option>Finance</option><option>Cash</option><option>Not sure yet</option></select></div>
-    <div class="gate__f"><label for="g-interest">Model of interest</label><input id="g-interest" name="interest" placeholder="e.g. RX, GX, ES&hellip;"></div>
+    <div class="gate__f" data-f="model"><label for="g-model">Model <span class="req">*</span></label><input id="g-model" name="model" placeholder="e.g. RX, GX, ES&hellip;" required><span class="gate__err"></span></div>
+    <div class="gate__f" data-f="trim"><label for="g-trim">Trim <span class="req">*</span></label><input id="g-trim" name="trim" placeholder="e.g. F Sport, or &lsquo;help me pick&rsquo;" required><span class="gate__err"></span></div>
    </div>
-   <label class="gate__check" data-f="tradein"><input type="checkbox" name="tradein"><span>I have a vehicle to <b>trade in</b>.</span></label>
+   <div class="gate__row">
+    <div class="gate__f" data-f="exterior"><label for="g-exterior">Exterior colour <span class="req">*</span></label><input id="g-exterior" name="exterior" placeholder="e.g. Ultra White, or &lsquo;open&rsquo;" required><span class="gate__err"></span></div>
+    <div class="gate__f" data-f="interior"><label for="g-interior">Interior colour <span class="req">*</span></label><input id="g-interior" name="interior" placeholder="e.g. Black, or &lsquo;open&rsquo;" required><span class="gate__err"></span></div>
+   </div>
+   <div class="gate__row">
+    <div class="gate__f" data-f="budget"><label for="g-budget">Budget / price range <span class="req">*</span></label><select id="g-budget" name="budget" required><option value="">Select&hellip;</option><option>Under $75k</option><option>$75k &ndash; $125k</option><option>$125k &ndash; $200k</option><option>$200k &ndash; $350k</option><option>$350k+</option></select><span class="gate__err"></span></div>
+    <div class="gate__f" data-f="timeline"><label for="g-timeline">Purchase timeline <span class="req">*</span></label><select id="g-timeline" name="timeline" required><option value="">Select&hellip;</option><option>ASAP</option><option>Within 30 days</option><option>Within 90 days</option><option>Just browsing</option></select><span class="gate__err"></span></div>
+   </div>
    <div class="gate__f" data-f="consent">
      <label class="gate__check"><input type="checkbox" name="consent" required><span>I agree that Phil&nbsp;Dave may contact me by <b>phone, text and email</b> about my enquiry. <span class="req">*</span></span></label>
      <span class="gate__err"></span>
@@ -2522,7 +2525,15 @@ ready(function(){
     ev.preventDefault();
     var g=function(n){ var el=form.querySelector('[name="'+n+'"]'); return el?el.value.trim():""; };
     var firstBad=null, ok=true;
-    [["first","Please enter your first name."],["last","Please enter your last name."],["city","Which city are you in?"]]
+    [["name","Please enter your full name."],
+     ["year","Pick a vehicle year."],
+     ["make","Which make?"],
+     ["model","Which model?"],
+     ["trim","Which trim? 'Help me pick' is fine."],
+     ["exterior","Exterior colour? 'Open' is fine."],
+     ["interior","Interior colour? 'Open' is fine."],
+     ["budget","Pick a budget range."],
+     ["timeline","Pick a timeline."]]
       .forEach(function(p){ var v=g(p[0]); var f=setErr(p[0], v?"":p[1]); if(!v){ok=false; if(!firstBad)firstBad=f;} });
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g("email"))){ var fe=setErr("email","Enter a valid email address."); ok=false; if(!firstBad)firstBad=fe; }
     else setErr("email","");
@@ -2544,7 +2555,6 @@ ready(function(){
     delete lead.website;
     lead.consent=consent.checked;
     lead.marketing=form.querySelector('[name="marketing"]').checked;
-    lead.tradein=form.querySelector('[name="tradein"]').checked;
     try{ lead.captured_at=new Date().toISOString(); }catch(e){}
     lead.source="2026 Lexus Reference Room";
     lead.token=TOKEN;
@@ -2556,7 +2566,7 @@ ready(function(){
     if(url && !isBot){
       try{ fetch(url,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(lead)}).catch(function(){}); }catch(e){}
     }
-    welcome(lead.first);
+    welcome((lead.name||"").split(/\s+/)[0]);
   });
 });
 })();
