@@ -147,6 +147,17 @@ window.SITE = {
       make: "Lexus", model: "LX 600", year: 2026, body: "suv",
       note: "The flagship 4WD. Twin turbo V6, three rows, and presence that needs no introduction.",
       status: "Available", image: "",
+      specs: [
+        { label: "Mileage", value: "Delivery mileage" },
+        { label: "Engine", value: "3.4L twin turbo V6, 409 hp" },
+        { label: "Gearbox", value: "10 speed automatic, full time 4WD" },
+        { label: "Audio", value: "25 speaker Mark Levinson" },
+        { label: "History", value: "New, in stock at the dealership" },
+      ],
+      story: [
+        "LX is the flagship badge Lexus has reserved for its largest machine since 1996, and every generation has shared bones with the unstoppable Toyota Land Cruiser. This one rides on the newest 300 series platform: full boxed frame, locking centre differential, and the kind of engineering that gets measured in decades, not model years.",
+        "Inside it is pure Lexus: three rows, semi aniline leather and a cabin assembled with fanatical care. It is the truck for people who could buy anything and want it to last forever.",
+      ],
     },
     {
       make: "BMW", model: "X5 xDrive40i", year: 2024, body: "suv",
@@ -167,9 +178,20 @@ window.SITE = {
       ],
     },
     {
-      make: "Volvo", model: "XC90 Recharge T8", year: 2024, body: "suv",
-      note: "Electrified AWD, seven seats. Scandinavian calm with instant torque.",
+      make: "Land Rover", model: "Defender P500 V8", year: 2025, body: "suv",
+      note: "Supercharged V8 in the reborn icon. Unstoppable off the road, indecent on it.",
       status: "Available", image: "",
+      specs: [
+        { label: "Mileage", value: "Delivery mileage" },
+        { label: "Engine", value: "5.0L supercharged V8" },
+        { label: "Gearbox", value: "8 speed automatic, permanent AWD" },
+        { label: "Spec", value: "V8 P500, as equipped in stock" },
+        { label: "History", value: "New, in stock at the dealership" },
+      ],
+      story: [
+        "The Defender bloodline starts in 1948 with the Series I, the farm tool that conquered every continent. Land Rover retired the old warhorse in 2016 and brought the name back in 2020 with the L663: aluminium monocoque, air suspension, and the same brief it always had, which is to go absolutely anywhere.",
+        "The V8 version is the twist nobody needed and everybody wants: a supercharged 5.0L pushing five hundred horsepower through permanent all wheel drive. A mud room that outruns hot hatches.",
+      ],
     },
   ],
 
