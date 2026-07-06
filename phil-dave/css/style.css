@@ -620,3 +620,36 @@ body.no-scroll{ overflow:hidden; }
 .spec__value{ color:var(--silver); font-size:.95rem; }
 .sheet__storytitle{ font-family:var(--serif); color:var(--platinum); font-size:1.15rem; margin:1.5rem 0 .5rem; letter-spacing:.04em; }
 .sheet__story p{ color:var(--silver-dim); margin:0 0 .85rem; max-width:64ch; font-size:.95rem; line-height:1.65; }
+
+/* ---------- sticky "explore the next bay" teaser ------------------------- */
+.nextbay{
+  position:fixed; left:50%; bottom:14px; transform:translateX(-50%);
+  z-index:6900; display:flex; align-items:center; gap:.85rem;
+  padding:.45rem 1.15rem .45rem .5rem;
+  background:rgba(10,10,12,.74); border:1px solid var(--line); border-radius:999px;
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  cursor:pointer; color:inherit; text-align:left;
+  opacity:0; animation:nextbayIn .8s var(--ease) 2.4s forwards;
+  transition:border-color .3s, transform .3s;
+}
+@keyframes nextbayIn{ to{ opacity:1; } }
+.nextbay:hover{ border-color:var(--platinum); transform:translateX(-50%) translateY(-2px); }
+.nextbay__spin{
+  position:relative; width:96px; height:58px; border-radius:999px; overflow:hidden;
+  background:radial-gradient(70% 90% at 50% 30%, rgba(201,204,209,.14), transparent 65%), #0a0a0c;
+  background-size:cover; background-position:center; flex:0 0 auto;
+}
+.nextbay__spin canvas{ position:absolute; inset:0; width:100% !important; height:100% !important; opacity:0; transition:opacity .8s var(--ease); }
+.nextbay__spin canvas.is-live{ opacity:1; }
+.nextbay__text{ display:flex; flex-direction:column; gap:.14rem; }
+.nextbay__kicker{ font-size:.6rem; letter-spacing:.28em; text-transform:uppercase; color:var(--muted); }
+.nextbay__name{ font-family:var(--serif); font-weight:500; font-size:1.02rem; letter-spacing:.04em; color:var(--platinum); white-space:nowrap; }
+.nextbay__arrow{ color:var(--silver); font-size:1.5rem; line-height:1; padding-left:.15rem; }
+body.no-scroll .nextbay{ opacity:0 !important; pointer-events:none; }
+body.is-loading .nextbay{ opacity:0; }
+@media (max-width:640px){
+  .nextbay{ bottom:10px; gap:.6rem; padding:.4rem .9rem .4rem .4rem; }
+  .nextbay__spin{ width:74px; height:46px; }
+  .nextbay__name{ font-size:.86rem; }
+}
+@media (prefers-reduced-motion: reduce){ .nextbay{ animation:none; opacity:1; } }

@@ -144,6 +144,36 @@
     }, 2200);
   }
 
+  /* ---------- sticky "explore the next bay" teaser ---------------------- */
+  // shows the NEXT bay's car slowly spinning in a little porthole; the
+  // fallback photo sits behind the canvas until the model streams in
+  var miniMod = null, miniReady = false;
+  function nextRoom() { return garage[(bayIndex + 1) % garage.length]; }
+  function updateNextBay() {
+    var nb = $("#nextBay");
+    if (!nb || !garage || garage.length < 2) return;
+    var nxt = nextRoom();
+    $("#nextBayName").textContent = (nxt.bay ? nxt.bay + " · " : "") + (nxt.label || nxt.car || "");
+    var mount = $("#nextBaySpin");
+    // photo thumb behind the canvas (smallest srcset entry)
+    var thumb = (nxt.srcset || "").split(",")[0].trim().split(" ")[0] || nxt.image || "";
+    if (thumb) mount.style.backgroundImage =
+      "radial-gradient(70% 90% at 50% 30%, rgba(201,204,209,.14), transparent 65%), url('" + thumb + "')";
+    if (reduce || !miniReady || !nxt.model) return;
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=17").then(function (m) { miniMod = m; return m; }))
+      .then(function (m) { return m.show(mount, nxt); })
+      .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
+  }
+  function initNextBay() {
+    var nb = $("#nextBay");
+    if (!nb || !garage || garage.length < 2) return;
+    nb.hidden = false;
+    nb.addEventListener("click", function () { enterBay(bayIndex + 1); });
+    updateNextBay();                 // name + photo immediately
+    // let the hero's own model win the bandwidth race, then go live
+    setTimeout(function () { miniReady = true; updateNextBay(); }, 4500);
+  }
+
   /* enter a bay: cinematic pull-through on the hero, swap the visible
      section, then glide down to the information */
   // phones stay where they are (you watch the car change on the stage);
@@ -178,6 +208,7 @@
       movePins(room);
       gateSections();
       updateBayUI();
+      updateNextBay();
     }
 
     if (reduce || !hasGSAP || !heroVisible) {
@@ -322,6 +353,7 @@
         enterBay(bayIndex + (e.key === "ArrowRight" ? 1 : -1));
       });
       updateBayUI();
+      initNextBay();
     }
 
     // marques banner + la collection
@@ -488,7 +520,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=16").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=17").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
