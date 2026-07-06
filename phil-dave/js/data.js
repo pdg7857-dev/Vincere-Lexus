@@ -125,7 +125,9 @@ window.SITE = {
     {
       make: "Porsche", model: "911 Carrera Coupe", year: 2021, body: "coupe",
       note: "992 generation, PDK. The benchmark sports car, kept exactly as it should be.",
-      status: "Available", image: "",
+      /* ⚠ render uses a CC BY-NC-SA model — replace with a CC-BY render or a
+         real photo before commercial launch (same situation as the Supra)  */
+      status: "Available", image: "assets/car-911.webp",
     },
     {
       make: "Lexus", model: "LX 600", year: 2026, body: "suv",
@@ -135,7 +137,7 @@ window.SITE = {
     {
       make: "BMW", model: "X5 xDrive40i", year: 2024, body: "suv",
       note: "M Sport package, certified by BMW. The luxury SUV that does everything well.",
-      status: "Available", image: "",
+      status: "Available", image: "assets/car-x5.webp",
     },
     {
       make: "Volvo", model: "XC90 Recharge T8", year: 2024, body: "suv",
@@ -306,5 +308,7 @@ window.SITE = {
     { text: "Lexus LC 500 by Socksthecat", url: "https://sketchfab.com/3d-models/lexus-lc-500-3f6118da005a457a9ce6d737e5d1e37d", license: "CC BY 4.0" },
     { text: "BMW M4 G82 Competition by DR1KING100K", url: "https://sketchfab.com/3d-models/bmw-m4-g82-competition-e7ec00b1dbe54901a5fc07801667897b", license: "CC BY 4.0" },
     { text: "2025 Lamborghini Urus SE by Ddiaz Design", url: "https://sketchfab.com/3d-models/2025-lamborghini-urus-se-cc113385b7e34481af5e50a2fb8b6b2e", license: "CC BY 4.0" },
+    { text: "911 Turbo S render from a model by Ddiaz Design", url: "https://sketchfab.com/3d-models/2021-porsche-911-turbo-s-992-b6756fc06654405a839bf14e931e4c83", license: "CC BY-NC-SA 4.0" },
+    { text: "BMW X5 M render from a model by GT Cars: Hyperspeed", url: "https://sketchfab.com/3d-models/bmw-x5-m-g05-4abeaa4dfee24ae5a49e12b624882e1b", license: "CC BY 4.0" },
   ],
 };
