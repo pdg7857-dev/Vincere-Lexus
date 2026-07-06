@@ -304,6 +304,12 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
 
 .gate__hp{position:absolute!important;left:-9999px;top:auto;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* click-to-reveal model families */
+.model{display:none;}
+.model.is-active{display:block;}
+.modelnav a.is-active{color:var(--platinum);border-color:var(--silver);}
+.model-hint{margin-top:1rem;font-size:.95rem;color:var(--silver);letter-spacing:.02em;}
 </style>
 
 <div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-h">
@@ -434,10 +440,10 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
 <a href="#ux">UX</a>
 <a href="#es">ES</a>
 <a href="#is">IS</a>
-<a href="#ls">LS</a><a href="#accuracy" class="jump">&#10003; Accuracy</a></div></nav>
+<a href="#ls">LS</a></div></nav>
 
 <main class="wrap">
-<div class="section-lead"><span class="eyebrow">The Full Range</span><h2>Trim by trim, model by model</h2><p>Every model&rsquo;s trims side by side, showing only the equipment that differs. Send any two up to the desk above to compare payments.</p></div>
+<div class="section-lead"><span class="eyebrow">The Full Range</span><h2>Pick a model to see its trims</h2><p>Tap any model in the bar above and its full trim ladder and specs open here &mdash; each family&rsquo;s variants shown side by side so you can compare them directly. Send any two up to the desk above to compare payments.</p><p class="model-hint" id="modelHint">&#9776;&nbsp;&nbsp;Choose a model above to begin.</p></div>
 <section class="model" id="gx">
 <div class="model-head">
 <div class="mh-left"><span class="mh-idx">01</span><h2>GX</h2><p class="mh-sub">Body-on-frame SUV · SUV</p></div>
@@ -2441,35 +2447,7 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
 </ul></details>
 </section>
 
-<section class="accuracy" id="accuracy">
- <span class="eyebrow">Diligence</span>
- <h3>Data accuracy &amp; fact-check</h3>
- <p class="asub">Every model, trim ladder, powertrain and price below was cross-checked against official Lexus&nbsp;Canada 2026 product summaries, press releases and dealer listings &mdash; the same diligence I bring to a private sourcing.</p>
- <span class="averdict">&#10003;&nbsp;&nbsp;Verified &mdash; lineup, trims &amp; powertrains confirmed accurate</span>
- <div class="acc-grid">
-  <div class="acc-col">
-   <h4>Confirmed correct</h4>
-   <ul class="acc-list">
-    <li class="ok">All <b>12 models &amp; 83 trims</b>, and the full trim ladder for each, match Lexus Canada&rsquo;s official Ontario product summaries.</li>
-    <li class="ok">The redesigned <b>2026 ES</b> is a genuine MY2026 car and really offers <b>battery-electric</b> ES&nbsp;350e / 500e alongside the ES&nbsp;350h hybrid.</li>
-    <li class="ok"><b>RZ</b> is fully electric (350e / 450e / 550e); <b>RX&nbsp;450h+</b> and <b>NX&nbsp;450h+</b> plug-in hybrids and the <b>F&nbsp;SPORT Black Line</b> editions all exist as listed.</li>
-    <li class="ok">Correctly <b>no missing trims</b>: no NX&nbsp;250, no IS&nbsp;500/IS&nbsp;300, no TX&nbsp;550h+ (all US-only or discontinued); <b>LS</b> is a single Heritage Edition (5 units for Canada).</li>
-    <li class="ok">Spot-checked prices match Lexus Canada MSRP + a consistent freight/fee delta to the dollar.</li>
-   </ul>
-  </div>
-  <div class="acc-col">
-   <h4>Caveats &amp; minor corrections</h4>
-   <ul class="acc-list">
-    <li class="warn"><b>GX Overtrail is not air suspension.</b> It uses E-KDSS + adaptive variable damping (AVS), not a ride-height air system &mdash; labelled &ldquo;Adaptive variable suspension&rdquo; here. Full <b>air suspension is genuine on the LX&nbsp;700h</b>.</li>
-    <li class="warn"><b>IS F&nbsp;SPORT 2 &amp; 3 prices</b> in the source run ~3&ndash;5% low vs current dealer pricing (F&nbsp;SPORT&nbsp;3 is closer to ~$70,800). Design &amp; SAP prices are correct.</li>
-    <li><b>Pricing basis varies slightly:</b> most trims are MSRP+freight; some GX top trims read ~2&ndash;3% high and <b>LX prices include federal luxury tax</b>.</li>
-    <li><b>RZ output</b> is ~1&ndash;2% understated (350e is 224&nbsp;hp, 450e 313&nbsp;hp in Canadian spec).</li>
-    <li>Prices are a <b>2026-06 snapshot</b> &mdash; confirm current figures with the dealer.</li>
-   </ul>
-  </div>
- </div>
- <p class="acc-src">Sources: Lexus Canada product summaries &amp; Build&amp;Price (lexus.ca), Lexus Canada media releases (media.lexus.ca), and Canadian dealer listings / auto123 / autotrader.ca / EmptyTank.</p>
-</section>
+>
 
 </main>
 
@@ -2794,3 +2772,31 @@ function init(){
 if(document.readyState!=="loading") init(); else document.addEventListener("DOMContentLoaded",init);
 })();
 </script>
+
+<script>(function(){
+  var nav=document.querySelector(".modelnav");
+  var models=[].slice.call(document.querySelectorAll("section.model"));
+  var hint=document.getElementById("modelHint");
+  function show(id){
+    models.forEach(function(m){ m.classList.toggle("is-active", m.id===id); });
+    [].slice.call(document.querySelectorAll(".modelnav a")).forEach(function(a){
+      a.classList.toggle("is-active", a.getAttribute("href")==="#"+id);
+    });
+    if(hint) hint.style.display="none";
+  }
+  if(nav){
+    nav.addEventListener("click", function(e){
+      var a=e.target&&e.target.closest?e.target.closest("a"):null;
+      if(!a||a.classList.contains("jump")) return;
+      var href=a.getAttribute("href")||"";
+      if(href.charAt(0)!=="#") return;
+      var id=href.slice(1), el=document.getElementById(id);
+      if(el&&el.classList.contains("model")){
+        e.preventDefault();
+        show(id);
+        if(el.scrollIntoView) el.scrollIntoView({behavior:"smooth",block:"start"});
+      }
+    });
+  }
+  models.forEach(function(m){ m.classList.remove("is-active"); });
+})();</script>
