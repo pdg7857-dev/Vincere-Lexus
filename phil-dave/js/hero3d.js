@@ -445,10 +445,15 @@ import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", syncBay);
     else syncBay();
     document.addEventListener("bay:applied", syncBay);
-    // warm the other bays' models once the page has settled
-    setTimeout(function () {
-      (S.bays || []).forEach(function (b) { if (b.model) loadBayModel(b.model); });
-    }, 4000);
+    // Warm the other bays' models once the page has settled — desktop only.
+    // On touch devices, holding every heavy GLB in GPU memory at once can
+    // exhaust mobile WebGL memory and drop the context (cars vanish), so
+    // phones load each car on demand as its bay is entered instead.
+    if (!coarse) {
+      setTimeout(function () {
+        (S.bays || []).forEach(function (b) { if (b.model) loadBayModel(b.model); });
+      }, 4000);
+    }
   } else {
     // legacy single-hero mode: take over the stage outright
     var activate = function () {
