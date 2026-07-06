@@ -123,8 +123,8 @@ window.SITE = {
      `status`: "Available", "Sourced" (for a client), or "Sold".            */
   inventory: [
     {
-      make: "Porsche", model: "911 Carrera Coupe", year: 2021, body: "coupe",
-      note: "992 generation, PDK. The benchmark sports car, kept exactly as it should be.",
+      make: "Porsche", model: "911 Turbo S", year: 2024, body: "coupe",
+      note: "992 Turbo S, pre owned at the dealership. The everyday hypercar.",
       /* ⚠ render + model use a CC BY-NC-SA source — replace with a CC-BY
          render or a real photo before commercial launch (like the Supra)   */
       status: "Available", image: "assets/car-911.webp",
@@ -132,27 +132,27 @@ window.SITE = {
       spinModel: "models/car-911.glb", spinLength: 4.53,
       spinTune: [{ match: "PorschePorsche_911TurboS992_2021RegionA1", envMapIntensity: 0.5 }],
       specs: [
-        { label: "Mileage", value: "38,851 km" },
-        { label: "Engine", value: "3.0L twin turbo flat six" },
-        { label: "Gearbox", value: "8 speed PDK" },
-        { label: "Drive", value: "Rear wheel drive" },
-        { label: "History", value: "Clean history, fully serviced" }, // [PLACEHOLDER — confirm]
+        { label: "Mileage", value: "On request" }, // [PLACEHOLDER — km from the listing]
+        { label: "Engine", value: "3.7L twin turbo flat six, 640 hp" },
+        { label: "Gearbox", value: "8 speed PDK, all wheel drive" },
+        { label: "Performance", value: "0 to 100 km/h in 2.7 seconds" },
+        { label: "History", value: "Pre owned at the Porsche Centre" },
       ],
       story: [
-        "The 911 is the reference point every sports car gets measured against, and the 992 is its eighth generation. Launched in 2019, it still carries the silhouette Ferdinand Alexander Porsche drew in 1963, refined for six decades and never abandoned.",
-        "Developed under Porsche design chief Michael Mauer, the 992 keeps the rear engined layout that makes a 911 a 911, adds a wider body and a sharper chassis, and pairs its twin turbo flat six with a PDK gearbox that shifts faster than thought. It is the everyday supercar, and it holds its value like almost nothing else on the road.",
+        "The 911 is the reference point every sports car gets measured against, and the 992 is its eighth generation, still carrying the silhouette Ferdinand Alexander Porsche drew in 1963. Turbo has been the flagship badge since 1975, when Porsche strapped a turbocharger to the 911 and created a legend.",
+        "The Turbo S is the fastest way to own a 911: 640 horsepower, all wheel drive, and a PDK gearbox that shifts faster than thought. It will out accelerate almost anything with number plates, then idle through traffic like a Cayenne. The everyday hypercar, and it holds its value like almost nothing else.",
       ],
     },
     {
-      make: "Lexus", model: "LX 600", year: 2026, body: "suv",
+      make: "Lexus", model: "LX 600", year: 2024, body: "suv",
       note: "The flagship 4WD. Twin turbo V6, three rows, and presence that needs no introduction.",
       status: "Available", image: "",
       specs: [
-        { label: "Mileage", value: "Delivery mileage" },
+        { label: "Mileage", value: "On request" }, // [PLACEHOLDER — km from the listing]
         { label: "Engine", value: "3.4L twin turbo V6, 409 hp" },
         { label: "Gearbox", value: "10 speed automatic, full time 4WD" },
         { label: "Audio", value: "25 speaker Mark Levinson" },
-        { label: "History", value: "New, in stock at the dealership" },
+        { label: "History", value: "Full history at the dealership" },
       ],
       story: [
         "LX is the flagship badge Lexus has reserved for its largest machine since 1996, and every generation has shared bones with the unstoppable Toyota Land Cruiser. This one rides on the newest 300 series platform: full boxed frame, locking centre differential, and the kind of engineering that gets measured in decades, not model years.",
@@ -160,37 +160,37 @@ window.SITE = {
       ],
     },
     {
-      make: "BMW", model: "X5 xDrive40i", year: 2024, body: "suv",
-      note: "M Sport package, certified by BMW. The luxury SUV that does everything well.",
+      make: "BMW", model: "X5 M Competition", year: 2025, body: "suv",
+      note: "617 horsepower V8. The family SUV that embarrasses supercars.",
       status: "Available", image: "assets/car-x5.webp",
       spinModel: "models/car-x5.glb", spinLength: 4.94,
       spinTune: [{ match: "Marina_Bay_Blue_Metallic", envMapIntensity: 0.55 }],
       specs: [
-        { label: "Mileage", value: "On request" }, // [PLACEHOLDER — real km]
-        { label: "Engine", value: "3.0L turbocharged inline six" },
-        { label: "Gearbox", value: "8 speed automatic, xDrive AWD" },
-        { label: "Package", value: "M Sport, certified by BMW" },
-        { label: "History", value: "Certified, inspected, warranty backed" },
+        { label: "Mileage", value: "On request" }, // [PLACEHOLDER — km from the listing]
+        { label: "Engine", value: "4.4L twin turbo V8, 617 hp" },
+        { label: "Gearbox", value: "8 speed M Steptronic, M xDrive" },
+        { label: "Performance", value: "0 to 100 km/h in 3.9 seconds" },
+        { label: "History", value: "In stock at the dealership" },
       ],
       story: [
-        "BMW invented its idea of the Sport Activity Vehicle with the first X5 in 1999, an SUV that drove like a 5 Series and reset what buyers expected from the whole segment. The G05 generation, launched in 2018, is the fourth and most complete expression of that idea.",
-        "The xDrive40i pairs BMW's silky inline six with an eight speed automatic and intelligent all wheel drive, and the M Sport package sharpens the stance without costing any comfort. It is the default choice in the class for a reason.",
+        "BMW invented its idea of the Sport Activity Vehicle with the first X5 in 1999, an SUV that drove like a 5 Series and reset what buyers expected from the whole segment. The G05 generation is the fourth and most complete expression of that idea.",
+        "The M Competition is the version the M division builds when nobody tells it no: a 617 horsepower twin turbo V8, M xDrive, and a chassis that shrinks two and a half tonnes around you. A family SUV on the school run, a supercar on the on ramp.",
       ],
     },
     {
-      make: "Land Rover", model: "Defender P500 V8", year: 2025, body: "suv",
-      note: "Supercharged V8 in the reborn icon. Unstoppable off the road, indecent on it.",
+      make: "Land Rover", model: "Defender 110 X-Dynamic SE", year: 2025, body: "suv",
+      note: "The icon reborn, fresh on trade. Proof the garage runs past any one badge.",
       status: "Available", image: "",
       specs: [
-        { label: "Mileage", value: "Delivery mileage" },
-        { label: "Engine", value: "5.0L supercharged V8" },
+        { label: "Mileage", value: "On request" }, // [PLACEHOLDER — km from the listing]
+        { label: "Engine", value: "3.0L turbo inline six, mild hybrid" },
         { label: "Gearbox", value: "8 speed automatic, permanent AWD" },
-        { label: "Spec", value: "V8 P500, as equipped in stock" },
-        { label: "History", value: "New, in stock at the dealership" },
+        { label: "Spec", value: "110 X-Dynamic SE" },
+        { label: "History", value: "Full history at the dealership" },
       ],
       story: [
         "The Defender bloodline starts in 1948 with the Series I, the farm tool that conquered every continent. Land Rover retired the old warhorse in 2016 and brought the name back in 2020 with the L663: aluminium monocoque, air suspension, and the same brief it always had, which is to go absolutely anywhere.",
-        "The V8 version is the twist nobody needed and everybody wants: a supercharged 5.0L pushing five hundred horsepower through permanent all wheel drive. A mud room that outruns hot hatches.",
+        "The X-Dynamic SE is the sweet spot of the range: the smooth turbocharged inline six with mild hybrid assistance, air suspension, and the blacked out trim that makes the square silhouette look carved from one billet. Equally at home on King Street or a logging road.",
       ],
     },
   ],
