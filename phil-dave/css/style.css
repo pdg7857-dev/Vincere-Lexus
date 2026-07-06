@@ -675,3 +675,17 @@ body.is-loading .nextbay{ opacity:0; }
 .newsletter__done{ grid-column:1 / -1; color:var(--platinum); font-family:var(--serif); font-size:1.1rem; margin:.2rem 0 0; }
 @media (max-width:900px){ .newsletter__form{ grid-template-columns:1fr 1fr; } .newsletter__form .btn{ grid-column:1 / -1; } }
 @media (max-width:520px){ .newsletter__form{ grid-template-columns:1fr; } }
+
+/* ---------- Bay 05 · The Vault (members) --------------------------------- */
+.vaultlock{ max-width:640px; }
+.vaultlock__lead{ font-family:var(--serif); font-size:clamp(1.15rem, 2.2vw, 1.5rem); color:var(--platinum); margin:0 0 1.4rem; }
+.vaultlock__form{ display:flex; gap:.7rem; }
+.vaultlock__form input{
+  flex:1; min-width:0; background:var(--black); border:1px solid var(--line); border-radius:4px;
+  padding:.85rem 1rem; color:var(--platinum); font:inherit; transition:border-color .3s;
+}
+.vaultlock__form input:focus{ outline:none; border-color:var(--silver); }
+.vaultlock__hint{ color:var(--muted); font-size:.85rem; margin:.9rem 0 0; }
+.vaultlock__msg{ color:var(--silver); margin:.9rem 0 0; }
+.vault__welcome{ font-family:var(--serif); color:var(--platinum); font-size:1.2rem; }
+@media (max-width:520px){ .vaultlock__form{ flex-direction:column; } }

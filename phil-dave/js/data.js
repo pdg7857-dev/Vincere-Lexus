@@ -357,7 +357,23 @@ window.SITE = {
       pins: [{ x: 33, y: 54 }, { x: 62, y: 33 }, { x: 88, y: 48 }, { x: 61, y: 63 }],
       door: { x: 12, y: 18 },
     },
+    {
+      /* members only bay: the pedestal sits empty (ghost) and the section
+         is locked until the visitor subscribes or verifies their email    */
+      key: "vault", bay: "Bay 05", label: "The Vault", section: "members",
+      car: "Members only", type: "ghost",
+      image: "", srcset: "", alt: "Empty lit pedestal behind the members bay",
+    },
   ],
+
+  /* --- Members area (Bay 05) ----------------------------------------------
+     Access: anyone who subscribed on this device, or an email that your
+     membership endpoint recognises. Point `endpoint` at a Google Apps
+     Script web app that checks your Google Sheet and answers
+     { "member": true | false } for ?email=...                             */
+  members: {
+    endpoint: "", // [PLACEHOLDER — Apps Script web app URL]
+  },
 
   /* Legacy single-photo fields (used only if bays is empty), plus the
      optional .glb turntable that activates when no photos are set at all.  */

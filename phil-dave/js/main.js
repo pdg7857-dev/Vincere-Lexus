@@ -156,7 +156,7 @@
     $("#nextBayName").textContent = (nxt.bay ? nxt.bay + " · " : "") + (nxt.label || nxt.car || "");
     var mount = $("#nextBaySpin");
     if (!miniReady || !nxt.model) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=19").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=20").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -521,8 +521,9 @@
         function ok() {
           $$("input, button", form).forEach(function (el) { el.style.display = "none"; });
           form.querySelector(".newsletter__done").hidden = false;
-          // remember the subscription locally (unlocks member areas later)
+          // remember the subscription locally (it is the key to Bay 05)
           try { localStorage.setItem("pd_subscribed", JSON.stringify({ email: data.email, name: data.name, t: Date.now() })); } catch (err) {}
+          document.dispatchEvent(new CustomEvent("pd:subscribed"));
         }
         if (cfg.endpoint) {
           fetch(cfg.endpoint, {
@@ -538,6 +539,43 @@
     });
   }
 
+  /* ---------- Bay 05 · The Vault member gate ----------------------------- */
+  // open for anyone who subscribed on this device, or whose email the
+  // membership endpoint (Google Sheet via Apps Script) recognises
+  function initVault() {
+    var lock = $("#vaultLock"), content = $("#vaultContent"), form = $("#vaultForm"), msg = $("#vaultMsg");
+    if (!lock || !content || !form) return;
+    function open() { lock.hidden = true; content.hidden = false; }
+    try {
+      if (localStorage.getItem("pd_subscribed") || localStorage.getItem("pd_member")) open();
+    } catch (e) {}
+    document.addEventListener("pd:subscribed", open);
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = form.elements.email.value.trim().toLowerCase();
+      msg.hidden = false;
+      if (!email || email.indexOf("@") < 0) { msg.textContent = "That email does not look right."; return; }
+      var cfg = S.members || {};
+      function denied() { msg.textContent = "I do not recognise that email yet. Subscribe below and the door opens."; }
+      function grant() {
+        try { localStorage.setItem("pd_member", email); } catch (err) {}
+        open();
+      }
+      if (!cfg.endpoint) {
+        // no endpoint configured: the key is a subscription made on this device
+        var sub = null;
+        try { sub = JSON.parse(localStorage.getItem("pd_subscribed") || "null"); } catch (err) {}
+        if (sub && String(sub.email || "").toLowerCase() === email) grant(); else denied();
+        return;
+      }
+      msg.textContent = "Checking…";
+      fetch(cfg.endpoint + (cfg.endpoint.indexOf("?") < 0 ? "?" : "&") + "email=" + encodeURIComponent(email))
+        .then(function (r) { return r.json(); })
+        .then(function (j) { if (j && j.member) grant(); else denied(); })
+        .catch(function () { msg.textContent = "Could not check right now. Try again in a moment."; });
+    });
+  }
+
   /* ===================== vehicle lightbox ============================== */
   var sheetEl, lastFocus, spinMod = null;
   function startSheetSpin(c) {
@@ -546,7 +584,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=19").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=20").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
@@ -940,6 +978,7 @@
     initNav();
     initDots();
     initSheet();
+    initVault();
     initForm();
     initLenis();
     initReveals();
