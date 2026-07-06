@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=25").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=26").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -341,8 +341,7 @@
     buildNewsletter();
     buildOmvic();
     buildNews();
-    buildLexusPreviews();
-    initLexusFrame();
+    loadLexusTool();
 
     // process
     var pl = $("#processList");
@@ -583,38 +582,47 @@
     }).join("");
   }
 
-  /* ---------- Bay 05 · Lexus model preview strip ----------------------- */
-  function buildLexusPreviews() {
-    var box = $("#lexusGrid"); if (!box) return;
-    var items = S.lexusPreviews || [];
-    if (!items.length) { box.style.display = "none"; return; }
-    box.innerHTML = items.map(function (m) {
-      return '<figure class="lexcard">' +
-        (m.img ? '<span class="lexcard__img"><img src="' + esc(m.img) + '" alt="Lexus ' + esc(m.model) + '" loading="lazy" /></span>'
-               : '<span class="lexcard__img lexcard__img--empty"></span>') +
-        '<figcaption class="lexcard__cap"><b>' + esc(m.model) + "</b>" +
-          (m.sub ? "<span>" + esc(m.sub) + "</span>" : "") + "</figcaption></figure>";
-    }).join("");
-  }
 
-  /* ---------- Bay 05 · flush tool frame -------------------------------- */
-  // the Lexus tool is a full standalone page, isolated in the frame so its
-  // global CSS/JS can't collide with the site. We hide the tool's own hero
-  // (so it starts at the working UI) and drop every border/background so it
-  // reads as part of the section rather than a boxed-in container
-  function initLexusFrame() {
-    var f = $("#lexusFrame"); if (!f) return;
-    f.addEventListener("load", function () {
-      try {
-        var doc = f.contentDocument; if (!doc || !doc.head) return;
-        var st = doc.createElement("style");
-        st.textContent =
-          "html,body{background:transparent !important;}" +
-          "header.hero{display:none !important;}" +
-          "body>footer,.site-footer{display:none !important;}";
-        doc.head.appendChild(st);
-      } catch (e) {}
-    });
+  /* ---------- Bay 05 · Lexus tool, inlined via shadow DOM -------------- */
+  // The tool is a full standalone page (its own 240KB CSS with universal
+  // resets + .card/.btn rules that would wreck this page if inlined raw).
+  // We mount it in a shadow root: its CSS is injected UNCHANGED and stays
+  // fully isolated both ways, while its handful of `document` queries are
+  // redirected into the shadow root so it runs as real in-page DOM — one
+  // document, one scroll, no iframe, no boxed container.
+  function loadLexusTool() {
+    var mount = $("#lexusMount");
+    if (!mount || mount.__loaded) return;
+    mount.__loaded = true;
+    fetch("lexus-2026.html").then(function (r) { return r.text(); }).then(function (txt) {
+      var doc = new DOMParser().parseFromString(txt, "text/html");
+      // drop the tool's own standalone hero + footer so it starts at the UI
+      var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
+      Array.prototype.forEach.call(doc.querySelectorAll("body > footer, .site-footer"), function (f) { f.parentNode.removeChild(f); });
+      // collect css (map the page-level selectors onto the shadow host so
+      // the tool's body/root styling still applies inside the shadow)
+      var css = Array.prototype.map.call(doc.querySelectorAll("style"), function (s) { return s.textContent; }).join("\n")
+        .replace(/:root/g, ":host")
+        .replace(/(^|[}{,])\s*html\s*,\s*body\b/g, "$1 :host")
+        .replace(/(^|[}{,])\s*(?:html|body)\b(?=\s*[,{])/g, "$1 :host");
+      // collect scripts, then strip scripts + styles from the markup
+      var code = Array.prototype.map.call(doc.querySelectorAll("script"), function (s) { return s.textContent; }).join("\n;\n");
+      Array.prototype.forEach.call(doc.querySelectorAll("script, style"), function (n) { n.parentNode.removeChild(n); });
+      var markup = doc.body.innerHTML;
+      // build the shadow tree
+      var shadow = mount.attachShadow({ mode: "open" });
+      shadow.innerHTML = "<style>:host{display:block}</style><style>" + css + "</style>" + markup;
+      // redirect the tool's document queries into the shadow root, and run
+      // its DOMContentLoaded handlers immediately (the page already loaded)
+      code = code
+        .replace(/document\.getElementById\(/g, "__SRGET__(")
+        .replace(/document\.querySelectorAll\(/g, "__SR__.querySelectorAll(")
+        .replace(/document\.querySelector\(/g, "__SR__.querySelector(")
+        .replace(/document\.addEventListener\(\s*["']DOMContentLoaded["']\s*,\s*([\w$]+)\s*\)/g, "($1)()");
+      code = 'var __SRGET__=function(id){return __SR__.querySelector("#"+(window.CSS&&CSS.escape?CSS.escape(id):id))};\n' + code;
+      try { new Function("__SR__", "window", "document", code)(shadow, window, document); }
+      catch (e) { if (window.console) console.error("Lexus tool init failed", e); }
+    }).catch(function (e) { if (window.console) console.error("Lexus tool load failed", e); });
   }
 
   /* ---------- Bay 08 · The Lot member gate ----------------------------- */
@@ -662,7 +670,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=25").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=26").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }

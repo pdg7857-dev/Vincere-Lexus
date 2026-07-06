@@ -439,14 +439,6 @@ window.SITE = {
     ],
   },
 
-  /* --- Bay 05 · Lexus model previews (studio renders) ---------------------
-     Small stills shown above the tool. Add one as each model's render is
-     made. `img` optional — omit for a text-only chip.                      */
-  lexusPreviews: [
-    { model: "ES", sub: "350 F Sport", img: "assets/car-es.webp" },
-    { model: "GX", sub: "550 Overtrail", img: "assets/car-gx.webp" },
-    { model: "LX", sub: "700h flagship", img: "assets/car-lx.webp" },
-  ],
 
   /* --- Members area (Bay 05) ----------------------------------------------
      Access: anyone who subscribed on this device, or an email that your
