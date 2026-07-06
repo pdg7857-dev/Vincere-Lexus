@@ -25,6 +25,11 @@
 
 *{ box-sizing:border-box; margin:0; padding:0; }
 html{ scroll-behavior:auto; -webkit-text-size-adjust:100%; }
+/* iOS Safari freezes vertical scrolling when the BODY has overflow-x:hidden
+   (it becomes a broken scroll container). Contain horizontal overflow on
+   <html> with `clip`, which never creates a scroll container, and force the
+   body to stay a normal, natively scrollable element on touch devices. */
+html{ overflow-x:clip; }
 body{
   background:var(--black);
   color:var(--silver);
@@ -32,10 +37,14 @@ body{
   font-weight:300;
   line-height:1.6;
   letter-spacing:.01em;
-  overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
 body.is-loading{ overflow:hidden; height:100vh; }
+/* On touch devices never lock the page: even if the intro's JS callback is
+   missed, the body must remain natively scrollable. */
+@media (hover:none){
+  body.is-loading{ overflow:visible; height:auto; }
+}
 img{ max-width:100%; display:block; }
 a{ color:inherit; text-decoration:none; }
 ::selection{ background:var(--silver); color:var(--black); }
