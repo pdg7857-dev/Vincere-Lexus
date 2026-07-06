@@ -1,15 +1,15 @@
 /* ============================================================================
-   Phil Dave — "next bay" mini turntable
+   Phil Dave — "next bay" mini viewer
    Tiny transparent 3D viewer inside the sticky bay teaser: shows the NEXT
-   bay's car slowly spinning. Reuses the bay models (same URLs the hero
-   engine loads, so the browser cache pays once). Loaded on demand.
+   bay's car in a fixed three quarter pose (no spin). Reuses the bay models
+   (same URLs the hero engine loads, so the browser cache pays once).
    ========================================================================== */
 import * as THREE from "three";
 import { GLTFLoader } from "./vendor/three/GLTFLoader.js";
 import { RoomEnvironment } from "./vendor/three/RoomEnvironment.js";
 
-var renderer = null, scene = null, cam = null, spin = null, raf = 0, running = false;
-var loader = null, cache = {}, currentUrl = null;
+var renderer = null, scene = null, cam = null, spin = null;
+var loader = null, cache = {};
 
 function ensure() {
   if (renderer) return true;
@@ -72,20 +72,9 @@ function fit(g) {
   return g;
 }
 
-function loop() {
-  var last = performance.now();
-  function tick(now) {
-    if (!running) return;
-    raf = requestAnimationFrame(tick);
-    var dt = Math.min(0.05, (now - last) / 1000); last = now;
-    spin.rotation.y += 0.32 * dt;
-    renderer.render(scene, cam);
-  }
-  raf = requestAnimationFrame(tick);
-}
-
-/* show bay `room` ({ model, paintTune }) inside `mount`; keeps whatever is
-   behind the canvas (the photo thumb) visible until the model arrives */
+/* show bay `room` ({ model, paintTune }) inside `mount`; the porthole
+   stays an empty gradient until the model arrives, then one static frame
+   is rendered (diagonal pose, no motion) */
 export function show(mount, room) {
   if (!room || !room.model || !ensure()) return Promise.resolve();
   var url = room.model;
@@ -94,22 +83,17 @@ export function show(mount, room) {
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
   renderer.setSize(w, h);
   cam.aspect = w / h; cam.updateProjectionMatrix();
+  // the previous bay's car must never linger while the next one loads
+  renderer.domElement.classList.remove("is-live");
   return load(url).then(function (src) {
     if (!mount.isConnected || mount.getAttribute("data-mini-for") !== url) return;
     while (spin.children.length) spin.remove(spin.children[0]);
-    spin.rotation.y = 0.9;
+    spin.rotation.y = 0.9;                     // fixed three quarter pose
     var g = fit(src.clone(true));
     tune(g, room.paintTune);
     spin.add(g);
     if (renderer.domElement.parentNode !== mount) mount.appendChild(renderer.domElement);
-    currentUrl = url;
-    running = true;
-    cancelAnimationFrame(raf); loop();
+    renderer.render(scene, cam);               // one still frame, no loop
     requestAnimationFrame(function () { renderer.domElement.classList.add("is-live"); });
   });
-}
-
-export function stop() {
-  running = false;
-  if (raf) cancelAnimationFrame(raf);
 }

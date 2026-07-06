@@ -145,8 +145,8 @@
   }
 
   /* ---------- sticky "explore the next bay" teaser ---------------------- */
-  // shows the NEXT bay's car slowly spinning in a little porthole; the
-  // fallback photo sits behind the canvas until the model streams in
+  // shows the NEXT bay's car in a still three quarter pose in a little
+  // porthole (no photos behind it, so cars never overlap old images)
   var miniMod = null, miniReady = false;
   function nextRoom() { return garage[(bayIndex + 1) % garage.length]; }
   function updateNextBay() {
@@ -155,12 +155,8 @@
     var nxt = nextRoom();
     $("#nextBayName").textContent = (nxt.bay ? nxt.bay + " · " : "") + (nxt.label || nxt.car || "");
     var mount = $("#nextBaySpin");
-    // photo thumb behind the canvas (smallest srcset entry)
-    var thumb = (nxt.srcset || "").split(",")[0].trim().split(" ")[0] || nxt.image || "";
-    if (thumb) mount.style.backgroundImage =
-      "radial-gradient(70% 90% at 50% 30%, rgba(201,204,209,.14), transparent 65%), url('" + thumb + "')";
-    if (reduce || !miniReady || !nxt.model) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=18").then(function (m) { miniMod = m; return m; }))
+    if (!miniReady || !nxt.model) return;
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=19").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -334,6 +330,7 @@
     // marques banner + la collection
     buildBrands();
     buildInventory();
+    buildNewsletter();
 
     // process
     var pl = $("#processList");
@@ -487,6 +484,60 @@
     }
   }
 
+  /* ---------- newsletter (bottom of every bay) -------------------------- */
+  function buildNewsletter() {
+    var cfg = S.newsletter;
+    if (!cfg || !garage) return;
+    garage.forEach(function (room) {
+      var sec = document.getElementById(room.section);
+      if (!sec) return;
+      var wrap = document.createElement("div");
+      wrap.className = "newsletter will-reveal";
+      wrap.innerHTML =
+        '<div class="newsletter__head">' +
+          '<span class="newsletter__kicker">' + esc(cfg.kicker || "") + "</span>" +
+          '<h3 class="newsletter__title">' + esc(cfg.title || "") + "</h3>" +
+          '<p class="newsletter__body">' + esc(cfg.body || "") + "</p>" +
+        "</div>" +
+        '<form class="newsletter__form" novalidate>' +
+          '<input name="name" type="text" placeholder="Name" autocomplete="name" required />' +
+          '<input name="phone" type="tel" placeholder="Number" autocomplete="tel" required />' +
+          '<input name="email" type="email" placeholder="Email" autocomplete="email" required />' +
+          '<input name="city" type="text" placeholder="City" autocomplete="address-level2" required />' +
+          '<button class="btn btn--primary" type="submit">' + esc(cfg.button || "Subscribe") + "</button>" +
+          '<p class="newsletter__done" hidden>You are on the list. Watch your inbox.</p>' +
+        "</form>";
+      sec.appendChild(wrap);
+      var form = wrap.querySelector("form");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var data = { source: "newsletter" };
+        ["name", "phone", "email", "city"].forEach(function (k) { data[k] = form.elements[k].value.trim(); });
+        if (!data.name || !data.email || data.email.indexOf("@") < 0) {
+          form.classList.add("is-error");
+          return;
+        }
+        form.classList.remove("is-error");
+        function ok() {
+          $$("input, button", form).forEach(function (el) { el.style.display = "none"; });
+          form.querySelector(".newsletter__done").hidden = false;
+          // remember the subscription locally (unlocks member areas later)
+          try { localStorage.setItem("pd_subscribed", JSON.stringify({ email: data.email, name: data.name, t: Date.now() })); } catch (err) {}
+        }
+        if (cfg.endpoint) {
+          fetch(cfg.endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify(data),
+          }).then(ok).catch(ok);
+        } else {
+          console.log("[newsletter demo]", data);
+          ok();
+        }
+      });
+    });
+  }
+
   /* ===================== vehicle lightbox ============================== */
   var sheetEl, lastFocus, spinMod = null;
   function startSheetSpin(c) {
@@ -495,7 +546,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=18").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=19").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }

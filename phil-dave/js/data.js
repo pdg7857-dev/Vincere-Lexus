@@ -31,6 +31,17 @@ window.SITE = {
      payload to the console, and offers a mailto: fallback to your email).   */
   formEndpoint: "", // [PLACEHOLDER — e.g. "https://formspree.io/f/xxxxxxx"]
 
+  /* --- Newsletter (rendered at the bottom of every bay) -------------------
+     Collects name, number, email and city. Until `endpoint` is set it runs
+     in DEMO mode (success state + payload in the console).                 */
+  newsletter: {
+    kicker: "The daily drop",
+    title: "New stock in your inbox, before anyone else.",
+    body: "One email a day: the newest vehicles in stock and tips worth reading. Tell me who you are and where you are, and you're in.",
+    button: "Subscribe",
+    endpoint: "", // [PLACEHOLDER — e.g. a Formspree endpoint for the list]
+  },
+
   /* --- The marques you source --------------------------------------------
      Drives both auto-scrolling logo marquees (under the hero and in About).
      Each key needs a matching assets/marques/<key>.webp                    */
@@ -64,11 +75,11 @@ window.SITE = {
       author: "M., Forest Hill", // [PLACEHOLDER]
     },
     {
-      quote: "Discreet, fast, and he negotiated better than I ever could. The only person I call now.",
+      quote: "Discreet, fast, and he found exactly what I asked for. The only person I call now.",
       author: "A., Oakville", // [PLACEHOLDER]
     },
     {
-      quote: "Delivered to my door, detailed, paperwork done. This is how buying a car should feel.",
+      quote: "Detailed, paperwork done, keys in hand. This is how buying a car should feel.",
       author: "R., Yorkville", // [PLACEHOLDER]
     },
   ],
@@ -87,13 +98,13 @@ window.SITE = {
     },
     {
       step: "03",
-      title: "Inspection & Negotiation",
-      body: "Every car is independently inspected with a full history check. I negotiate hard on your behalf so the number is right before you commit.",
+      title: "Inspection & Verification",
+      body: "Every car is independently inspected with a full history check, so the car is exactly what it says it is before you commit.",
     },
     {
       step: "04",
-      title: "Delivery",
-      body: "Paperwork handled, car detailed and delivered to your door. Everything looked after from first call to keys in hand.",
+      title: "Handover",
+      body: "Paperwork prepared and the car detailed, ready for you at the dealership. Everything looked after from first call to keys in hand.",
     },
   ],
 
@@ -107,7 +118,7 @@ window.SITE = {
     photoCaption: "Phil Dave, luxury car sourcing specialist",
     lead: "I source cars for people who value their time and their taste.",
     body: [
-      "Phil Dave is a luxury car sourcing specialist based in the Greater Toronto Area. I'm not a private seller. I work within an established luxury dealership group, and I'm your personal way in: I find the right car, verify it properly, fight for the right number, and have everything ready before you walk through the door.",
+      "Phil Dave is a luxury car sourcing specialist based in the Greater Toronto Area. I'm not a private seller. I work within an established luxury dealership group, and I'm your personal way in: I find the right car, verify it properly, and have everything ready before you walk through the door.",
       "And because clients trade in cars of every marque, what comes through my hands runs well past any single brand: Mercedes, Audi, or something rarer. When the right car surfaces, the purchase completes at the dealership, fully licensed, with financing and warranty available and the paperwork as clean as the car. Every deal has a full dealership standing behind it, but you deal with me.",
       "I grew up in Atlantic Canada and speak fluent French. Service available in English and French, across the GTA and beyond.",
     ],
@@ -224,11 +235,11 @@ window.SITE = {
     },
     {
       q: "How discreet is the process?",
-      a: "Completely. Names, numbers and negotiations stay private. Many of the cars I place are never advertised publicly, and neither are my clients.",
+      a: "Completely. Names and numbers stay private. Many of the cars I place are never advertised publicly, and neither are my clients.",
     },
     {
       q: "Do you handle inspection and paperwork?",
-      a: "Yes. Inspection before purchase, history and lien checks, negotiation, financing if wanted, registration and delivery. Everything closes through licensed, professional channels, end to end.",
+      a: "Yes. Inspection before purchase, history and lien checks, financing if wanted, and registration. Everything closes through licensed, professional channels, end to end.",
     },
   ],
 
