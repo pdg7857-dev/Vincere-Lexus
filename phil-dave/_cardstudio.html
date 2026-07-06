@@ -1,0 +1,140 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;background:#000}</style>
+<script type="importmap">{"imports":{"three":"./js/vendor/three/three.module.min.js"}}</script>
+</head><body>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from './js/vendor/three/GLTFLoader.js';
+import { RoomEnvironment } from './js/vendor/three/RoomEnvironment.js';
+
+const q = new URLSearchParams(location.search);
+const car = q.get('car') || '911';
+const angle = parseFloat(q.get('angle') || '0.62');   // radians around the car
+const camH = parseFloat(q.get('h') || '1.5');
+const dist = parseFloat(q.get('d') || '7.2');
+
+// per-car config: model file, real length (m), material overrides
+const CARS = {
+  '911': {
+    url: 'models/tmp-911.glb', length: 4.53,
+    tune: [
+      { match: 'PorschePorsche_911TurboS992_2021RegionA1', color: 0x9fa3a8, metalness: 0.75, roughness: 0.28, env: 0.5 }, // GT Silver
+    ],
+  },
+  'x5': {
+    url: 'models/tmp-x5.glb', length: 4.94,
+    hide: /^edge_color/,   // CSR-style helper meshes: invisible but inflate the bbox
+    hideNodes: ['Object_1041', 'Object_1045', 'Object_1049'], // baked-in showroom prop
+    tune: [
+      { match: 'Marina_Bay_Blue_Metallic', color: 0x0d0e11, metalness: 0.55, roughness: 0.34, env: 0.55 }, // black sapphire
+    ],
+  },
+  'lx': { url: 'models/tmp-lx.glb', length: 5.10, tune: [] },
+  'xc90': { url: 'models/tmp-xc90.glb', length: 4.95, tune: [] },
+};
+const cfg = CARS[car];
+
+const W = 1600, H = 1000;
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(W, H);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0a0c);
+scene.fog = new THREE.Fog(0x0a0a0c, 14, 30);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+// floor — deep gloss like the stage
+const floor = new THREE.Mesh(
+  new THREE.CircleGeometry(30, 64),
+  new THREE.MeshStandardMaterial({ color: 0x0b0b0d, metalness: 0.4, roughness: 0.35 })
+);
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+
+// podium disc
+const podium = new THREE.Mesh(
+  new THREE.CylinderGeometry(3.6, 3.8, 0.16, 96),
+  new THREE.MeshStandardMaterial({ color: 0x131316, metalness: 0.75, roughness: 0.3 })
+);
+podium.position.y = 0.08; podium.receiveShadow = true; scene.add(podium);
+const rim = new THREE.Mesh(
+  new THREE.TorusGeometry(3.7, 0.015, 12, 128),
+  new THREE.MeshBasicMaterial({ color: 0xc9ccd1 })
+);
+rim.rotation.x = Math.PI / 2; rim.position.y = 0.165; scene.add(rim);
+
+// studio lights — cool key, warm rim, soft fill (matches the bays)
+const key = new THREE.SpotLight(0xf4f6ff, 260, 0, 0.55, 0.45, 1.6);
+key.position.set(4.5, 7.5, 3.5); key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0002;
+scene.add(key);
+const rimL = new THREE.SpotLight(0xd9c9a8, 90, 0, 0.7, 0.6, 1.8);
+rimL.position.set(-6, 4.2, -4.5); scene.add(rimL);
+const fill = new THREE.AmbientLight(0x9aa0ad, 0.32); scene.add(fill);
+// halo over the podium like the stage lamp
+const halo = new THREE.PointLight(0xe8ecf5, 26, 9, 1.7);
+halo.position.set(0, 4.4, 0); scene.add(halo);
+
+const cam = new THREE.PerspectiveCamera(30, W / H, 0.1, 100);
+cam.position.set(Math.sin(angle) * dist, camH, Math.cos(angle) * dist);
+cam.lookAt(0, 0.62, 0);
+
+new GLTFLoader().load(cfg.url, (gltf) => {
+  const g = gltf.scene;
+  g.traverse(o => {
+    if (!o.isMesh) return;
+    if (cfg.hideNodes && cfg.hideNodes.includes(o.name)) { o.visible = false; return; }
+    if (!cfg.hide) return;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    if (mats.some(m => cfg.hide.test(m.name))) o.visible = false;
+  });
+  // bbox from visible meshes only — hidden helpers must not affect grounding
+  function visBox(root) {
+    root.updateMatrixWorld(true);
+    const bb = new THREE.Box3();
+    root.traverse(o => { if (o.isMesh && o.visible) bb.expandByObject(o); });
+    return bb;
+  }
+  const box = visBox(g);
+  const size = box.getSize(new THREE.Vector3());
+  const s = cfg.length * 1.05 / Math.max(size.x, size.z);
+  g.scale.setScalar(s);
+  const b2 = visBox(g);
+  const c = b2.getCenter(new THREE.Vector3());
+  g.position.x -= c.x; g.position.z -= c.z; g.position.y += 0.165 - b2.min.y;
+  g.traverse(o => {
+    if (!o.isMesh) return;
+    o.castShadow = true;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    mats.forEach(m => {
+      cfg.tune.forEach(t => {
+        if (m.name !== t.match) return;
+        if (t.color !== undefined) { m.color.set(t.color); if (m.map) m.map = null; }
+        if (t.metalness !== undefined) m.metalness = t.metalness;
+        if (t.roughness !== undefined) m.roughness = t.roughness;
+        if (t.env !== undefined) m.envMapIntensity = t.env;
+        m.needsUpdate = true;
+      });
+    });
+  });
+  scene.add(g);
+  // debug: report the lowest meshes so bbox offenders can be identified
+  g.updateMatrixWorld(true);
+  const rows = [];
+  g.traverse(o => {
+    if (!o.isMesh || !o.visible) return;
+    const bb = new THREE.Box3().expandByObject(o);
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    rows.push({ node: o.name.slice(0, 40), mat: mats.map(m => m.name).join('+').slice(0, 40), minY: +bb.min.y.toFixed(2), maxY: +bb.max.y.toFixed(2) });
+  });
+  rows.sort((a, b) => a.minY - b.minY);
+  window.__lowest = rows.slice(0, 10);
+  renderer.render(scene, cam);
+  window.__done = true;
+}, undefined, (e) => { window.__err = String(e); });
+</script></body></html>
