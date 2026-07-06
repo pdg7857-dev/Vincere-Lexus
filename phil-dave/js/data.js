@@ -375,12 +375,77 @@ window.SITE = {
       ],
     },
     {
+      /* trust bay: registration + credentials, empty lit pedestal          */
+      key: "omvic", bay: "Bay 06", label: "Registered & Licensed", section: "omvic",
+      car: "Registered & Licensed", type: "ghost",
+      image: "", srcset: "", alt: "Empty lit pedestal behind the credentials bay",
+    },
+    {
+      /* automotive news / blog bay, empty lit pedestal                     */
+      key: "news", bay: "Bay 07", label: "Automotive News", section: "news",
+      car: "Automotive News", type: "ghost",
+      image: "", srcset: "", alt: "Empty lit pedestal behind the news bay",
+    },
+    {
       /* members only bay: the pedestal sits empty (ghost) and the section
          is locked until the visitor subscribes or verifies their email    */
-      key: "vault", bay: "Bay 06", label: "The Lot", section: "members",
+      key: "vault", bay: "Bay 08", label: "The Lot", section: "members",
       car: "Members only", type: "ghost",
       image: "", srcset: "", alt: "Empty lit pedestal behind the members bay",
     },
+  ],
+
+  /* --- Bay 06 · Registration & credentials (OMVIC) ------------------------
+     Ontario dealers and salespeople register with OMVIC; every deal is
+     protected by the Motor Vehicle Dealers Act. Replace the registration
+     numbers with your real ones before launch.                            */
+  omvic: {
+    lead: "Every deal is done by the book.",
+    body: "I'm a registered salesperson working through a licensed Ontario dealership, so every purchase is covered by the same rules and protections as any franchised showroom, not a private sale.",
+    badges: [
+      { title: "OMVIC registered", text: "Registered salesperson under the Ontario Motor Vehicle Industry Council.", ref: "Reg. #000000" }, // [PLACEHOLDER — your OMVIC number]
+      { title: "Licensed dealership", text: "Deals complete through a licensed Ontario motor vehicle dealer, bonded and in good standing." },
+      { title: "Consumer protection", text: "Backed by the Motor Vehicle Dealers Act and the OMVIC Compensation Fund." },
+      { title: "UCDA member", text: "Dealership is a member of the Used Car Dealers Association of Ontario." }, // [PLACEHOLDER — confirm]
+    ],
+    note: "Verify any Ontario registration at omvic.on.ca.",
+  },
+
+  /* --- Bay 07 · Automotive news / blog ------------------------------------
+     A simple, hand-curated feed. Add a post by copying a block. Newest
+     first. `link` is optional (leave "" for a text-only note).            */
+  news: {
+    lead: "What's moving in the market.",
+    body: "Notes on new launches, allocations worth chasing and things worth knowing before you buy. Updated as the industry moves.",
+    posts: [
+      {
+        date: "2026-07-01", tag: "New model",
+        title: "The 2026 Lexus LX gains the 700h hybrid flagship",
+        body: "The twin-turbo V6 hybrid joins the LX line as the new range-topper. Worth the wait if you want the most capable, most comfortable full-size Lexus yet.",
+        link: "",
+      },
+      {
+        date: "2026-06-20", tag: "Buying tip",
+        title: "Why a dealer trade-in can be the smart used buy",
+        body: "The cleanest used cars often never hit the public market. They come in on trade, get inspected, and move quietly. Ask me what's landed this week.",
+        link: "",
+      },
+      {
+        date: "2026-06-05", tag: "Market",
+        title: "Allocations are tightening on the fun stuff",
+        body: "Halo cars and manual-adjacent specials are getting harder to get at MSRP. If there's a specific build you want, the time to get in line is now.",
+        link: "",
+      },
+    ],
+  },
+
+  /* --- Bay 05 · Lexus model previews (studio renders) ---------------------
+     Small stills shown above the tool. Add one as each model's render is
+     made. `img` optional — omit for a text-only chip.                      */
+  lexusPreviews: [
+    { model: "ES", sub: "350 F Sport", img: "assets/car-es.webp" },
+    { model: "GX", sub: "550 Overtrail", img: "assets/car-gx.webp" },
+    { model: "LX", sub: "700h flagship", img: "assets/car-lx.webp" },
   ],
 
   /* --- Members area (Bay 05) ----------------------------------------------

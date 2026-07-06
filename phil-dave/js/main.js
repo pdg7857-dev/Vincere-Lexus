@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=23").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=25").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -339,6 +339,10 @@
     buildBrands();
     buildInventory();
     buildNewsletter();
+    buildOmvic();
+    buildNews();
+    buildLexusPreviews();
+    initLexusFrame();
 
     // process
     var pl = $("#processList");
@@ -547,7 +551,73 @@
     });
   }
 
-  /* ---------- Bay 05 · The Vault member gate ----------------------------- */
+  /* ---------- Bay 06 · Registered & Licensed --------------------------- */
+  function buildOmvic() {
+    var cfg = S.omvic; if (!cfg) return;
+    var lead = $("#omvicLead"); if (lead) lead.textContent = cfg.lead || "";
+    var body = $("#omvicBody"); if (body) body.textContent = cfg.body || "";
+    var note = $("#omvicNote"); if (note) note.textContent = cfg.note || "";
+    var box = $("#omvicBadges"); if (!box) return;
+    box.innerHTML = (cfg.badges || []).map(function (b) {
+      return '<div class="omvic__badge will-reveal"><h4>' + esc(b.title) + "</h4><p>" + esc(b.text) + "</p>" +
+        (b.ref ? '<span class="omvic__ref">' + esc(b.ref) + "</span>" : "") + "</div>";
+    }).join("");
+  }
+
+  /* ---------- Bay 07 · Automotive News --------------------------------- */
+  function buildNews() {
+    var cfg = S.news; if (!cfg) return;
+    var lead = $("#newsLead"); if (lead) lead.textContent = cfg.lead || "";
+    var body = $("#newsBody"); if (body) body.textContent = cfg.body || "";
+    var list = $("#newsList"); if (!list) return;
+    list.innerHTML = (cfg.posts || []).map(function (p) {
+      var d = "";
+      if (p.date) { var parts = p.date.split("-"); var mo = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; d = (mo[(+parts[1] || 1) - 1] || "") + " " + (+parts[2] || "") + ", " + parts[0]; }
+      return '<article class="news__post will-reveal">' +
+        '<div class="news__meta">' + (p.tag ? '<span class="news__tag">' + esc(p.tag) + "</span>" : "") +
+          (d ? '<span class="news__date">' + esc(d) + "</span>" : "") + "</div>" +
+        '<h3 class="news__title">' + esc(p.title || "") + "</h3>" +
+        '<p class="news__excerpt">' + esc(p.body || "") + "</p>" +
+        (p.link ? '<a class="news__more" href="' + esc(p.link) + '" target="_blank" rel="noopener">Read more ›</a>' : "") +
+        "</article>";
+    }).join("");
+  }
+
+  /* ---------- Bay 05 · Lexus model preview strip ----------------------- */
+  function buildLexusPreviews() {
+    var box = $("#lexusGrid"); if (!box) return;
+    var items = S.lexusPreviews || [];
+    if (!items.length) { box.style.display = "none"; return; }
+    box.innerHTML = items.map(function (m) {
+      return '<figure class="lexcard">' +
+        (m.img ? '<span class="lexcard__img"><img src="' + esc(m.img) + '" alt="Lexus ' + esc(m.model) + '" loading="lazy" /></span>'
+               : '<span class="lexcard__img lexcard__img--empty"></span>') +
+        '<figcaption class="lexcard__cap"><b>' + esc(m.model) + "</b>" +
+          (m.sub ? "<span>" + esc(m.sub) + "</span>" : "") + "</figcaption></figure>";
+    }).join("");
+  }
+
+  /* ---------- Bay 05 · flush tool frame -------------------------------- */
+  // the Lexus tool is a full standalone page, isolated in the frame so its
+  // global CSS/JS can't collide with the site. We hide the tool's own hero
+  // (so it starts at the working UI) and drop every border/background so it
+  // reads as part of the section rather than a boxed-in container
+  function initLexusFrame() {
+    var f = $("#lexusFrame"); if (!f) return;
+    f.addEventListener("load", function () {
+      try {
+        var doc = f.contentDocument; if (!doc || !doc.head) return;
+        var st = doc.createElement("style");
+        st.textContent =
+          "html,body{background:transparent !important;}" +
+          "header.hero{display:none !important;}" +
+          "body>footer,.site-footer{display:none !important;}";
+        doc.head.appendChild(st);
+      } catch (e) {}
+    });
+  }
+
+  /* ---------- Bay 08 · The Lot member gate ----------------------------- */
   // open for anyone who subscribed on this device, or whose email the
   // membership endpoint (Google Sheet via Apps Script) recognises
   function initVault() {
@@ -592,7 +662,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=23").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=25").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }

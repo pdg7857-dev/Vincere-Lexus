@@ -28,8 +28,10 @@ function ensure() {
   scene.add(new THREE.AmbientLight(0x9aa0ad, 0.45));
   spin = new THREE.Group(); scene.add(spin);
   cam = new THREE.PerspectiveCamera(26, 1.6, 0.1, 50);
-  cam.position.set(2.9, 1.15, 2.9);
-  cam.lookAt(0, 0.05, 0);
+  // classic front three-quarter: camera swung toward the front corner and
+  // dropped low, so the car reads at ~45°, never head-on
+  cam.position.set(3.5, 0.95, 2.6);
+  cam.lookAt(0, 0.02, 0);
   return true;
 }
 
@@ -88,7 +90,7 @@ export function show(mount, room) {
   return load(url).then(function (src) {
     if (!mount.isConnected || mount.getAttribute("data-mini-for") !== url) return;
     while (spin.children.length) spin.remove(spin.children[0]);
-    spin.rotation.y = 0.9;                     // fixed three quarter pose
+    spin.rotation.y = -0.35;                    // fixed 45° three-quarter pose
     var g = fit(src.clone(true));
     tune(g, room.paintTune);
     spin.add(g);
