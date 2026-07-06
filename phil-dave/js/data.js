@@ -358,9 +358,26 @@ window.SITE = {
       door: { x: 12, y: 18 },
     },
     {
+      /* the Lexus tool bay: trim comparisons and the pricing calculator.
+         Reuses Bay 02's LC 500 model, so it costs no extra download.      */
+      key: "lexus", bay: "Bay 05", label: "Find your Lexus", section: "lexus",
+      car: "Lexus LC 500", type: "photo",
+      image: "assets/hero-lc500-1536.webp",
+      srcset: "assets/hero-lc500-600.webp 600w, assets/hero-lc500-900.webp 900w, assets/hero-lc500-1536.webp 1536w",
+      alt: "Red Lexus LC 500 on a dark studio podium",
+      model: "models/lc500.glb",
+      modelLength: 4.77,
+      paintTune: [
+        { match: "PaletteMaterial001",
+          metalness: 0.3, roughness: 0.42, envMapIntensity: 0.35 },
+        { match: "material_8", color: "#101114",
+          metalness: 0.5, roughness: 0.5, envMapIntensity: 0.4 },
+      ],
+    },
+    {
       /* members only bay: the pedestal sits empty (ghost) and the section
          is locked until the visitor subscribes or verifies their email    */
-      key: "vault", bay: "Bay 05", label: "The Vault", section: "members",
+      key: "vault", bay: "Bay 06", label: "The Vault", section: "members",
       car: "Members only", type: "ghost",
       image: "", srcset: "", alt: "Empty lit pedestal behind the members bay",
     },

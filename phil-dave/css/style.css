@@ -689,3 +689,13 @@ body.is-loading .nextbay{ opacity:0; }
 .vaultlock__msg{ color:var(--silver); margin:.9rem 0 0; }
 .vault__welcome{ font-family:var(--serif); color:var(--platinum); font-size:1.2rem; }
 @media (max-width:520px){ .vaultlock__form{ flex-direction:column; } }
+
+/* ---------- Bay 05 · Find your Lexus (embedded tool) ---------------------- */
+.lexustool{ margin-top:1.6rem; }
+.lexustool__frame{
+  width:100%; height:min(78vh, 760px); border:1px solid var(--line); border-radius:6px;
+  background:var(--black); display:block;
+}
+.lexustool__foot{ color:var(--muted); font-size:.85rem; margin:.8rem 0 0; }
+.lexustool__foot a{ color:var(--silver); text-decoration:underline; text-underline-offset:3px; }
+@media (max-width:640px){ .lexustool__frame{ height:82vh; } }

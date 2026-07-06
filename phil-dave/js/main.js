@@ -155,8 +155,16 @@
     var nxt = nextRoom();
     $("#nextBayName").textContent = (nxt.bay ? nxt.bay + " · " : "") + (nxt.label || nxt.car || "");
     var mount = $("#nextBaySpin");
-    if (!miniReady || !nxt.model) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=20").then(function (m) { miniMod = m; return m; }))
+    if (!nxt.model) {
+      // bays without a car (the Vault) get the plain gradient, never a
+      // leftover frame of the previous bay's car
+      mount.setAttribute("data-mini-for", "");
+      var cv = mount.querySelector("canvas");
+      if (cv) cv.classList.remove("is-live");
+      return;
+    }
+    if (!miniReady) return;
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=21").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -584,7 +592,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=20").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=21").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
