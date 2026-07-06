@@ -29,7 +29,16 @@ const CARS = {
     ],
   },
   'lx': { url: 'models/tmp-lx.glb', length: 5.10, tune: [] },
-  'defender': { url: 'models/tmp-def.glb', length: 5.02, tune: [] },
+  'defender': {
+    url: 'models/tmp-def.glb', length: 5.02,
+    hide: /^edge_color|^material$/,
+    tune: [
+      { match: '2021_Land_Rover_Defender_110_Land_Rover_Defender_110_2020body_1', color: 0x6b6e72, metalness: 0.35, roughness: 0.42, env: 0.5 }, // Eiger Grey
+      { match: '2021_Land_Rover_Defender_110_Land_Rover_Defender_110_2020chrome', metalness: 1.0, roughness: 0.2, env: 0.6 },
+      { match: '2021_Land_Rover_Defender_110_Land_Rover_Defender_110_2020silver', metalness: 0.7, roughness: 0.35, env: 0.5 },
+      { match: '2021_Land_Rover_Defender_110_Land_Rover_Defender_110_2020black_shiny', metalness: 0.4, roughness: 0.3, env: 0.45 },
+    ],
+  },
   'xc90': { url: 'models/tmp-xc90.glb', length: 4.95, tune: [] },
 };
 const cfg = CARS[car];

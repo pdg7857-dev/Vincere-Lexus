@@ -180,7 +180,12 @@ window.SITE = {
     {
       make: "Land Rover", model: "Defender 110 X-Dynamic SE", year: 2025, body: "suv",
       note: "The icon reborn, fresh on trade. Proof the garage runs past any one badge.",
-      status: "Available", image: "",
+      status: "Available", image: "assets/car-defender.webp",
+      spinModel: "models/car-defender.glb", spinLength: 5.02,
+      spinTune: [
+        { match: "2021_Land_Rover_Defender_110_Land_Rover_Defender_110_2020body_1", envMapIntensity: 0.5 },
+        { match: "2021_Land_Rover_Defender_110_Land_Rover_Defender_110_2020chrome", envMapIntensity: 0.6 },
+      ],
       specs: [
         { label: "Mileage", value: "On request" }, // [PLACEHOLDER — km from the listing]
         { label: "Engine", value: "3.0L turbo inline six, mild hybrid" },
@@ -359,5 +364,6 @@ window.SITE = {
     { text: "2025 Lamborghini Urus SE by Ddiaz Design", url: "https://sketchfab.com/3d-models/2025-lamborghini-urus-se-cc113385b7e34481af5e50a2fb8b6b2e", license: "CC BY 4.0" },
     { text: "911 Turbo S render from a model by Ddiaz Design", url: "https://sketchfab.com/3d-models/2021-porsche-911-turbo-s-992-b6756fc06654405a839bf14e931e4c83", license: "CC BY-NC-SA 4.0" },
     { text: "BMW X5 M render from a model by GT Cars: Hyperspeed", url: "https://sketchfab.com/3d-models/bmw-x5-m-g05-4abeaa4dfee24ae5a49e12b624882e1b", license: "CC BY 4.0" },
+    { text: "Defender 110 render from a model by David_Holiday", url: "https://sketchfab.com/3d-models/2021-land-rover-defender-110-26f042fcf1594890a529bfb41f0fae0d", license: "CC BY 4.0" },
   ],
 };
