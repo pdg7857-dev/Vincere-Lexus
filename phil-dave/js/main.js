@@ -160,7 +160,7 @@
     if (thumb) mount.style.backgroundImage =
       "radial-gradient(70% 90% at 50% 30%, rgba(201,204,209,.14), transparent 65%), url('" + thumb + "')";
     if (reduce || !miniReady || !nxt.model) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=17").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=18").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -287,36 +287,11 @@
       gateSections();
     }
 
-    // the bay buttons — four clear, always-labelled pins over the car
-    // ("About Me — Enter Bay 01"), plus the chevron door to the next bay
-    var hs = $("#hotspots");
-    (garage || []).forEach(function (room, i) {
-      var p = (garage[0].pins || [])[i] || { x: 25 + i * 18, y: 40 };
-      var btn = document.createElement("button");
-      btn.className = "hotspot hotspot--bay magnetic" + (i === 0 ? " is-here" : "");
-      btn.type = "button";
-      btn.style.left = p.x + "%";
-      btn.style.top = p.y + "%";
-      btn.setAttribute("data-bay", i);
-      btn.setAttribute("aria-label", room.label + ", enter " + room.bay);
-      btn.innerHTML =
-        '<span class="hotspot__dot" aria-hidden="true"></span>' +
-        '<span class="hotspot__label"><b>' + esc(room.label) + "</b><span>Enter " + esc(room.bay) + "</span></span>";
-      btn.addEventListener("click", function () { enterBay(i); });
-      hs.appendChild(btn);
-    });
+    // (the labelled pins and the chevron door that used to float over the
+    // car are gone — the tab strip, edge arrows and the sticky next-bay
+    // teaser carry all navigation now, so the car stays unobstructed)
 
     if (garage && garage.length > 1) {
-      var doorBtn = document.createElement("button");
-      doorBtn.className = "hotspot hotspot--door magnetic";
-      doorBtn.type = "button";
-      doorBtn.innerHTML =
-        '<span class="hotspot__dot" aria-hidden="true">&rsaquo;</span>' +
-        '<span class="hotspot__label"><b></b><span></span></span>';
-      doorBtn.addEventListener("click", function () { enterBay(bayIndex + 1); });
-      hs.appendChild(doorBtn);
-      placeDoor();
-
       // the bay navigator strip + edge arrows — the unmissable way through
       var navEl = $("#bayNav"), tabs = $("#bayTabs");
       if (navEl && tabs) {
@@ -520,7 +495,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=17").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=18").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
