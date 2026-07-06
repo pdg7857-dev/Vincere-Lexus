@@ -32,8 +32,8 @@
 <link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
 <link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="css/fonts.css?v=21" />
-<link rel="stylesheet" href="css/style.css?v=21" />
+<link rel="stylesheet" href="css/fonts.css?v=23" />
+<link rel="stylesheet" href="css/style.css?v=23" />
 </head>
 <body class="is-loading">
 
@@ -293,10 +293,10 @@
       <span class="room__index">Room 05</span>
       <h2 class="room__title" id="lexus-h"><span class="reveal-line">Find your Lexus</span></h2>
     </div>
-    <p class="room__intro reveal-line">Compare trims side by side, build the numbers, and land on the exact Lexus for you. My sales companion, open to everyone.</p>
+    <p class="room__intro reveal-line">Tell it what matters, compare the 2026 trims side by side and build the numbers. My reference companion, open to everyone.</p>
     <div class="lexustool will-reveal">
-      <iframe id="lexusFrame" class="lexustool__frame" src="../app/" title="Lexus Trim Matcher, trim comparisons and pricing calculator" loading="lazy"></iframe>
-      <p class="lexustool__foot">Prefer a bigger screen? <a href="../app/" target="_blank" rel="noopener">Open the tool full screen</a>, or <a href="#contact" data-link>ask me and I will run the numbers with you</a>.</p>
+      <iframe id="lexusFrame" class="lexustool__frame" src="lexus-2026.html" title="2026 Lexus reference, trim comparisons and pricing" loading="lazy"></iframe>
+      <p class="lexustool__foot">Prefer a bigger screen? <a href="lexus-2026.html" target="_blank" rel="noopener">Open the tool full screen</a>, or <a href="#contact" data-link>ask me and I will run the numbers with you</a>.</p>
     </div>
   </section>
 
@@ -304,7 +304,7 @@
   <section class="room room--members" id="members" aria-labelledby="members-h">
     <div class="room__head">
       <span class="room__index">Room 06</span>
-      <h2 class="room__title" id="members-h"><span class="reveal-line">The Vault</span></h2>
+      <h2 class="room__title" id="members-h"><span class="reveal-line">The Lot</span></h2>
     </div>
 
     <!-- the lock: shown until the visitor is recognised -->
@@ -330,23 +330,23 @@
   <div class="foot__name">Phil&nbsp;Dave</div>
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
   <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. <span style="opacity:.45">· build 21</span></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. <span style="opacity:.45">· build 23</span></p>
   <p class="foot__fine" id="modelCredit" hidden></p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
-<script src="js/vendor/gsap.min.js?v=21" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=21" defer></script>
-<script src="js/vendor/lenis.umd.js?v=21" defer></script>
+<script src="js/vendor/gsap.min.js?v=23" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=23" defer></script>
+<script src="js/vendor/lenis.umd.js?v=23" defer></script>
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
-<script src="js/data.js?v=21" defer></script>
-<script src="js/silhouettes.js?v=21" defer></script>
-<script src="js/main.js?v=21" defer></script>
+<script src="js/data.js?v=23" defer></script>
+<script src="js/silhouettes.js?v=23" defer></script>
+<script src="js/main.js?v=23" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
      reduced-motion, or when WebGL is unavailable) -->
 <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="js/hero3d.js?v=21"></script>
+<script type="module" src="js/hero3d.js?v=23"></script>
 </body>
 </html>

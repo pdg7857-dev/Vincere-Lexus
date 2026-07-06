@@ -377,7 +377,7 @@ window.SITE = {
     {
       /* members only bay: the pedestal sits empty (ghost) and the section
          is locked until the visitor subscribes or verifies their email    */
-      key: "vault", bay: "Bay 06", label: "The Vault", section: "members",
+      key: "vault", bay: "Bay 06", label: "The Lot", section: "members",
       car: "Members only", type: "ghost",
       image: "", srcset: "", alt: "Empty lit pedestal behind the members bay",
     },
