@@ -481,17 +481,45 @@
   }
 
   /* ===================== vehicle lightbox ============================== */
-  var sheetEl, lastFocus;
+  var sheetEl, lastFocus, spinMod = null;
+  function startSheetSpin(c) {
+    // live turntable over the still — only when the card ships a model and
+    // the device is happy to animate; the still stays put on any failure
+    var media = $("#sheetMedia");
+    media.setAttribute("data-spin-for", c.spinModel || "");
+    if (!c.spinModel || reduce) return;
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=13").then(function (m) { spinMod = m; return m; }))
+      .then(function (m) { return m.start(media, c); })
+      .catch(function () { /* no WebGL / fetch failed → still image remains */ });
+  }
+  function sheetSpecs(c) {
+    var box = $("#sheetSpecs");
+    if (!box) return;
+    var rows = c.specs || [];
+    box.hidden = !rows.length;
+    box.innerHTML = rows.map(function (r) {
+      return '<div class="spec"><span class="spec__label">' + esc(r.label) + '</span><span class="spec__value">' + esc(r.value) + "</span></div>";
+    }).join("");
+    var story = $("#sheetStory");
+    if (!story) return;
+    var paras = c.story || [];
+    story.hidden = !paras.length;
+    story.innerHTML = (paras.length ? '<h4 class="sheet__storytitle">The story</h4>' : "") +
+      paras.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
+  }
   function openSheet(c) {
     if (!c) return;
     sheetEl = sheetEl || $("#sheet");
     lastFocus = document.activeElement;
+    if (spinMod) spinMod.stop();
     $("#sheetMedia").innerHTML = carMedia(c);
     var st = (c.status || "Available");
     var sS = $("#sheetStatus"); sS.textContent = st; sS.className = "sheet__status status status--" + statusKey(st);
     $("#sheetYear").textContent = c.year + " · " + c.make;
     $("#sheetName").textContent = c.model;
     $("#sheetNote").textContent = c.note || "";
+    sheetSpecs(c);
+    startSheetSpin(c);
     sheetEl.classList.add("is-open");
     sheetEl.setAttribute("aria-hidden", "false");
     document.body.classList.add("no-scroll");
@@ -504,6 +532,7 @@
   }
   function closeSheet() {
     if (!sheetEl) return;
+    if (spinMod) spinMod.stop();
     sheetEl.classList.remove("is-open");
     sheetEl.setAttribute("aria-hidden", "true");
     document.body.classList.remove("no-scroll");

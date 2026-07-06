@@ -125,9 +125,23 @@ window.SITE = {
     {
       make: "Porsche", model: "911 Carrera Coupe", year: 2021, body: "coupe",
       note: "992 generation, PDK. The benchmark sports car, kept exactly as it should be.",
-      /* ⚠ render uses a CC BY-NC-SA model — replace with a CC-BY render or a
-         real photo before commercial launch (same situation as the Supra)  */
+      /* ⚠ render + model use a CC BY-NC-SA source — replace with a CC-BY
+         render or a real photo before commercial launch (like the Supra)   */
       status: "Available", image: "assets/car-911.webp",
+      /* opening the card streams this model in and it spins over the still */
+      spinModel: "models/car-911.glb", spinLength: 4.53,
+      spinTune: [{ match: "PorschePorsche_911TurboS992_2021RegionA1", envMapIntensity: 0.5 }],
+      specs: [
+        { label: "Mileage", value: "38,851 km" },
+        { label: "Engine", value: "3.0L twin turbo flat six" },
+        { label: "Gearbox", value: "8 speed PDK" },
+        { label: "Drive", value: "Rear wheel drive" },
+        { label: "History", value: "Clean history, fully serviced" }, // [PLACEHOLDER — confirm]
+      ],
+      story: [
+        "The 911 is the reference point every sports car gets measured against, and the 992 is its eighth generation. Launched in 2019, it still carries the silhouette Ferdinand Alexander Porsche drew in 1963, refined for six decades and never abandoned.",
+        "Developed under Porsche design chief Michael Mauer, the 992 keeps the rear engined layout that makes a 911 a 911, adds a wider body and a sharper chassis, and pairs its twin turbo flat six with a PDK gearbox that shifts faster than thought. It is the everyday supercar, and it holds its value like almost nothing else on the road.",
+      ],
     },
     {
       make: "Lexus", model: "LX 600", year: 2026, body: "suv",
@@ -138,6 +152,19 @@ window.SITE = {
       make: "BMW", model: "X5 xDrive40i", year: 2024, body: "suv",
       note: "M Sport package, certified by BMW. The luxury SUV that does everything well.",
       status: "Available", image: "assets/car-x5.webp",
+      spinModel: "models/car-x5.glb", spinLength: 4.94,
+      spinTune: [{ match: "Marina_Bay_Blue_Metallic", envMapIntensity: 0.55 }],
+      specs: [
+        { label: "Mileage", value: "On request" }, // [PLACEHOLDER — real km]
+        { label: "Engine", value: "3.0L turbocharged inline six" },
+        { label: "Gearbox", value: "8 speed automatic, xDrive AWD" },
+        { label: "Package", value: "M Sport, certified by BMW" },
+        { label: "History", value: "Certified, inspected, warranty backed" },
+      ],
+      story: [
+        "BMW invented its idea of the Sport Activity Vehicle with the first X5 in 1999, an SUV that drove like a 5 Series and reset what buyers expected from the whole segment. The G05 generation, launched in 2018, is the fourth and most complete expression of that idea.",
+        "The xDrive40i pairs BMW's silky inline six with an eight speed automatic and intelligent all wheel drive, and the M Sport package sharpens the stance without costing any comfort. It is the default choice in the class for a reason.",
+      ],
     },
     {
       make: "Volvo", model: "XC90 Recharge T8", year: 2024, body: "suv",
