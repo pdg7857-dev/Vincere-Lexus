@@ -13,6 +13,7 @@ var MODELS = {
   es: { file: "models/lexus-es.glb", length: 4.98, tune: [] },
   gx: { file: "models/lexus-gx.glb", length: 4.95, tune: [] },
   lx: { file: "models/lexus-lx.glb", length: 5.10, tune: [] },
+  rx: { file: "models/lexus-rx.glb", length: 4.89, tune: [], hide: ["Plate", "License"] },
 };
 
 var renderer = null, scene = null, cam = null, spin = null, raf = 0, running = false;
@@ -65,6 +66,18 @@ function tune(g, list) {
   });
 }
 
+// hide meshes whose name (or material name) contains any of the given
+// substrings — used to drop stray props like a scanned licence plate.
+function hideParts(g, list) {
+  if (!list || !list.length) return;
+  g.traverse(function (o) {
+    if (!o.isMesh) return;
+    var names = [o.name || ""];
+    (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) { if (m && m.name) names.push(m.name); });
+    if (list.some(function (sub) { return names.some(function (n) { return n.indexOf(sub) !== -1; }); })) o.visible = false;
+  });
+}
+
 function prepare(g, lengthM) {
   var box = new THREE.Box3().setFromObject(g);
   var size = box.getSize(new THREE.Vector3());
@@ -111,7 +124,9 @@ export function show(id, container) {
     if (currentId !== id) return true;                 // switched while loading
     while (spin.children.length) spin.remove(spin.children[0]);
     spin.rotation.y = -0.5;
-    spin.add(prepare(src.clone(true), cfg.length));
+    var model = src.clone(true);
+    hideParts(model, cfg.hide);
+    spin.add(prepare(model, cfg.length));
     tune(spin, cfg.tune);
     resize();
     running = true; cancelAnimationFrame(raf); loop();
