@@ -29,7 +29,7 @@ window.SITE = {
      endpoint below (looks like "https://formspree.io/f/abcwxyz"). Until you
      set this, the form runs in DEMO mode (shows a success state, logs the
      payload to the console, and offers a mailto: fallback to your email).   */
-  formEndpoint: "https://script.google.com/macros/s/AKfycby4G3GDuFGXaCaZqDL2Jfb8Cj9a1BhcysmdpeMTTNH8F5_nhwL0FxjaT14nFPvb9PYmrQ/exec",
+  formEndpoint: "https://script.google.com/macros/s/AKfycbyNDlgwsTBHuUcnRWreNkLqr2S_y5-6CZ7Z_kz3Zwq34MmEvB3EsjHEuZ9WPiNlVFjPFg/exec",
 
   /* --- Newsletter (rendered at the bottom of every bay) -------------------
      Collects name, number, email and city. Until `endpoint` is set it runs
@@ -467,7 +467,7 @@ window.SITE = {
      Script web app that checks your Google Sheet and answers
      { "member": true | false } for ?email=...                             */
   members: {
-    endpoint: "https://script.google.com/macros/s/AKfycby4G3GDuFGXaCaZqDL2Jfb8Cj9a1BhcysmdpeMTTNH8F5_nhwL0FxjaT14nFPvb9PYmrQ/exec",
+    endpoint: "https://script.google.com/macros/s/AKfycbyNDlgwsTBHuUcnRWreNkLqr2S_y5-6CZ7Z_kz3Zwq34MmEvB3EsjHEuZ9WPiNlVFjPFg/exec",
   },
 
   /* Legacy single-photo fields (used only if bays is empty), plus the
