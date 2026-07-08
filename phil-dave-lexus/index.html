@@ -5,115 +5,80 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow" />
 <title>Phil Dave · Your Lexus, Sourced · Greater Toronto Area</title>
-<meta name="description" content="Phil Dave sources and delivers Lexus for clients across the Greater Toronto Area — new and pre-owned, found, vetted and ready. Request yours." />
+
+<meta name="description" content="Phil Dave is a private luxury car sourcing specialist serving the Greater Toronto Area. Finding and vetting high-end Lexus, Jaguar, Mercedes-Benz, BMW, Volvo, Porsche and Audi, discreetly and on your terms." />
 <meta name="theme-color" content="#0A0A0B" />
-<link rel="icon" href="../phil-dave/assets/favicon.svg" type="image/svg+xml" />
-<link rel="stylesheet" href="../phil-dave/css/fonts.css?v=1" />
-<link rel="stylesheet" href="lexus.css?v=1" />
+<link rel="canonical" href="https://phildave.example/" />
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Phil Dave · Private Luxury Car Sourcing · GTA" />
+<meta property="og:description" content="Your dream car, sourced. Private luxury car sourcing across the Greater Toronto Area." />
+<meta property="og:image" content="assets/og.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<!-- Local business structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AutoBroker",
+  "name": "Phil Dave",
+  "description": "Private luxury car sourcing in the Greater Toronto Area.",
+  "areaServed": "Greater Toronto Area, Ontario, Canada",
+  "knowsAbout": ["Lexus","Jaguar","Mercedes-Benz","BMW","Volvo","Porsche","Audi"]
+}
+</script>
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
+<link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="css/fonts.css?v=1" />
+<link rel="stylesheet" href="css/style.css?v=1" />
 </head>
-<body>
+<body class="is-loading">
 
-<header class="nav" id="nav">
-  <a class="nav__brand" href="#top">
-    <span class="nav__name">Phil Dave</span>
-    <span class="nav__tag">Lexus Specialist · GTA</span>
-  </a>
-  <nav class="nav__links" aria-label="Primary">
-    <a href="#find">Find your Lexus</a>
-    <a href="#inventory">Inventory</a>
-    <a class="nav__cta" href="#request">Request a Lexus</a>
-  </nav>
-</header>
+<!-- film grain + vignette overlays -->
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
 
-<main id="top">
+<!-- custom cursor -->
+<div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
 
-  <!-- ============ HERO ============ -->
-  <section class="hero">
-    <div class="hero__copy">
-      <p class="eyebrow">Private Lexus sourcing · Greater Toronto Area</p>
-      <h1 class="hero__title">Your next <em>Lexus</em>,<br />sourced.</h1>
-      <p class="hero__lede">New or pre-owned, I find the exact Lexus you want, verify it properly, and have it ready for you at the dealership. One point of contact, start to finish.</p>
-      <div class="hero__cta">
-        <a class="btn btn--primary" href="#request">Request a Lexus</a>
-        <a class="btn" href="#inventory">Browse inventory</a>
-      </div>
+<!-- intro / preloader: lights come up -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro__inner">
+    <div class="intro__name">PHIL&nbsp;DAVE</div>
+    <div class="intro__bar"><span></span></div>
+    <div class="intro__sub">Bringing up the lights</div>
+  </div>
+</div>
+
+<!-- cinematic room-transition overlay -->
+<div class="warp" id="warp" aria-hidden="true"><div class="warp__core"></div></div>
+
+<!-- vertical room navigator (scrollspy) -->
+<nav class="dots" id="dots" aria-label="Sections"></nav>
+
+<!-- vehicle detail lightbox -->
+<div class="sheet" id="sheet" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="sheetName">
+  <div class="sheet__backdrop" data-sheet-close></div>
+  <div class="sheet__panel" role="document">
+    <button class="sheet__close" data-sheet-close aria-label="Close">&times;</button>
+    <div class="sheet__media" id="sheetMedia"></div>
+    <div class="sheet__body">
+      <span class="sheet__status" id="sheetStatus"></span>
+      <span class="card__year" id="sheetYear"></span>
+      <h3 class="sheet__name" id="sheetName"></h3>
+      <p class="sheet__note" id="sheetNote"></p>
+      <div class="sheet__specs" id="sheetSpecs" hidden></div>
+      <div class="sheet__story" id="sheetStory" hidden></div>
+      <a class="btn btn--primary magnetic" id="sheetCta" href="#contact" data-link>Enquire about this car</a>
     </div>
-    <div class="hero__spin" id="heroSpin" aria-hidden="true"></div>
-  </section>
+  </div>
+</div>
 
-  <!-- ============ FIND YOUR LEXUS ============ -->
-  <section class="band find" id="find">
-    <div class="band__head">
-      <span class="eyebrow">The reference room</span>
-      <h2>Find your Lexus</h2>
-      <p class="band__lede">Compare every 2026 Lexus trim side by side and build the numbers — lease, finance and cash — in one place. Then tell me which one, and I'll source it.</p>
-      <a class="btn btn--primary" href="../phil-dave/lexus-2026.html">Open the 2026 Lexus guide</a>
-    </div>
-  </section>
-
-  <!-- ============ INVENTORY ============ -->
-  <section class="band inventory" id="inventory">
-    <div class="band__head">
-      <span class="eyebrow">In stock now</span>
-      <h2>Lexus inventory</h2>
-      <p class="band__lede">A live look at Lexus on the lot. See one you like? Tap it and I'll be in touch.</p>
-    </div>
-    <div class="lotbar">
-      <span class="lot__count" id="lotCount"></span>
-      <div class="lot__controls">
-        <input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search inventory" />
-        <select id="lotSort" aria-label="Sort">
-          <option value="year-desc">Newest first</option>
-          <option value="price-asc">Price: low to high</option>
-          <option value="price-desc">Price: high to low</option>
-          <option value="km-asc">Kilometres: lowest</option>
-        </select>
-      </div>
-    </div>
-    <div class="lotgrid" id="lotGrid"></div>
-    <p class="lot__empty" id="lotEmpty" hidden>No Lexus match — widen your search.</p>
-  </section>
-
-  <!-- ============ REQUEST ============ -->
-  <section class="band request" id="request">
-    <div class="band__head">
-      <span class="eyebrow">Tell me what you want</span>
-      <h2>Request a Lexus</h2>
-      <p class="band__lede">Give me the details and I'll come back to you personally with options and pricing.</p>
-    </div>
-    <form class="lead" id="leadForm" novalidate>
-      <input class="lead__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website" />
-      <div class="lead__row">
-        <label class="field"><span>Name <b>*</b></span><input type="text" name="name" autocomplete="name" required /></label>
-        <label class="field"><span>Phone <b>*</b></span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required /></label>
-      </div>
-      <div class="lead__row">
-        <label class="field"><span>Email <b>*</b></span><input type="email" name="email" autocomplete="email" required /></label>
-        <label class="field"><span>Which Lexus? <b>*</b></span><select name="dreamcar" id="leadModel" required><option value="">Select a model…</option></select></label>
-      </div>
-      <div class="lead__row">
-        <label class="field"><span>New or used</span><select name="newused"><option value="">No preference</option><option>New</option><option>Used</option></select></label>
-        <label class="field"><span>Budget</span><select name="budget"><option value="">Select…</option><option>Under $50k</option><option>$50k – $70k</option><option>$70k – $90k</option><option>$90k – $120k</option><option>$120k +</option></select></label>
-      </div>
-      <label class="field"><span>Anything else? <span class="opt">(colour, timeline, trade-in…)</span></span><textarea name="notes" rows="2" placeholder="e.g. RX 500h F Sport, white on black, needed within 60 days"></textarea></label>
-      <label class="check"><input type="checkbox" name="consent" required /><span>You may contact me by <b>phone, text &amp; email</b> about my Lexus. <b>*</b></span></label>
-      <div class="lead__foot">
-        <button type="submit" class="btn btn--primary" id="leadSubmit">Send my request</button>
-        <p class="lead__status" id="leadStatus" role="status"></p>
-      </div>
-    </form>
-  </section>
-</main>
-
-<footer class="foot">
-  <div class="foot__name">Phil&nbsp;Dave</div>
-  <p class="foot__tag">Your Lexus, sourced.</p>
-  <p class="foot__meta">Lexus specialist · Greater Toronto Area · English &amp; French</p>
-  <p class="foot__contact"><a href="tel:+15149433730">514-943-3730</a> · <a href="mailto:pgelinas@northwestlexus.com">pgelinas@northwestlexus.com</a> · <a href="https://instagram.com/lexusphildave" target="_blank" rel="noopener">@lexusphildave</a></p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave. · <a href="../phil-dave/privacy.html">Privacy Policy</a></p>
-</footer>
-
-<!-- inquiry popup -->
+<!-- The Lot: inquire-about-this-car popup -->
 <div class="lotmodal" id="lotModal" hidden role="dialog" aria-modal="true" aria-labelledby="lotModalName">
   <div class="lotmodal__backdrop" data-lotclose></div>
   <div class="lotmodal__panel" role="document">
@@ -123,25 +88,417 @@
       <span class="lotmodal__price" id="lotModalPrice"></span>
       <h3 class="lotmodal__name" id="lotModalName"></h3>
       <p class="lotmodal__meta" id="lotModalMeta"></p>
-      <p class="lotmodal__q">Inquire about this Lexus?</p>
-      <form class="lotmodal__form" id="lotModalForm" novalidate>
-        <div class="lead__row">
-          <label class="field"><span>Name <b>*</b></span><input name="name" autocomplete="name" required /></label>
-          <label class="field"><span>Phone <b>*</b></span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required /></label>
-        </div>
-        <label class="field"><span>Email <b>*</b></span><input name="email" type="email" autocomplete="email" required /></label>
-        <label class="check"><input type="checkbox" name="consent" required /><span>You may contact me by phone, text &amp; email. <b>*</b></span></label>
-        <div class="lotmodal__actions">
-          <button type="button" class="btn" data-lotclose>Cancel</button>
-          <button type="submit" class="btn btn--primary" id="lotModalSend">Send inquiry</button>
-        </div>
-        <p class="lotmodal__msg" id="lotModalMsg" hidden></p>
-      </form>
+      <p class="lotmodal__q">Inquire about this car?</p>
+      <p class="lotmodal__who" id="lotModalWho"></p>
+      <textarea id="lotModalNote" rows="2" placeholder="Anything specific? (optional)"></textarea>
+      <div class="lotmodal__actions">
+        <button type="button" class="btn" data-lotclose>Cancel</button>
+        <button type="button" class="btn btn--primary" id="lotModalSend">Inquire about this car</button>
+      </div>
+      <p class="lotmodal__msg" id="lotModalMsg" hidden></p>
     </div>
   </div>
 </div>
 
-<script type="importmap">{ "imports": { "three": "../phil-dave/js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="lexus.js?v=1"></script>
+<!-- sticky "explore the next bay" teaser (filled by JS) -->
+<button class="nextbay" id="nextBay" type="button" hidden>
+  <span class="nextbay__spin" id="nextBaySpin" aria-hidden="true"></span>
+  <span class="nextbay__text">
+    <span class="nextbay__kicker">Explore the next bay</span>
+    <b class="nextbay__name" id="nextBayName"></b>
+  </span>
+  <span class="nextbay__arrow" aria-hidden="true">&rsaquo;</span>
+</button>
+
+<!-- header -->
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#hero" data-link>
+    <span class="nav__name">Phil Dave</span>
+    <span class="nav__tag" data-region>Greater Toronto Area</span>
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="#about" data-link>About</a>
+    <a href="#inventory" data-link>Show Room</a>
+    <a href="#process" data-link>Sourcing</a>
+    <a class="nav__cta magnetic" href="#contact" data-link>Request a Car</a>
+  </nav>
+  <button class="nav__menu" id="navMenu" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+
+<main id="main">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero" id="hero" aria-label="Showroom">
+    <div class="hero__studio" aria-hidden="true">
+      <div class="hero__spot"></div>
+      <div class="hero__particles" id="particles"></div>
+    </div>
+
+    <div class="hero__copy">
+      <p class="eyebrow reveal-line">Private Lexus sourcing</p>
+      <h1 class="hero__title">
+        <span class="reveal-line">Your next Lexus,</span>
+        <span class="reveal-line"><em data-tagline-em>sourced</em>.</span>
+      </h1>
+      <p class="hero__lede reveal-line">Found, vetted and ready for you across the Greater Toronto Area, discreetly and on your terms.</p>
+    </div>
+
+    <!-- the pedestal + car -->
+    <div class="stage" id="stage">
+      <div class="stage__pedestal">
+        <div class="stage__ring stage__ring--1"></div>
+        <div class="stage__ring stage__ring--2"></div>
+        <div class="stage__disc"></div>
+      </div>
+
+      <div class="stage__car" id="stageCar">
+        <img src="assets/car.svg" alt="Luxury car on a lit showroom pedestal" id="carImg" />
+        <div class="stage__reflection" aria-hidden="true"><img src="assets/car.svg" alt="" /></div>
+      </div>
+
+      <!-- 3D mount (activated only if SITE.heroModel is set) -->
+      <div class="stage__three" id="three" hidden></div>
+
+      <!-- hotspots injected by JS -->
+      <div class="hotspots" id="hotspots"></div>
+
+      <!-- current garage bay (photo mode) -->
+      <div class="stage__bay" id="stageBay" aria-live="polite" hidden>
+        <span class="stage__bay-num" id="bayNum"></span>
+        <span class="stage__bay-title" id="bayTitle"></span>
+      </div>
+
+      <!-- previous / next bay arrows -->
+      <button class="bayarrow bayarrow--prev" id="bayPrev" type="button" aria-label="Previous bay" hidden>&lsaquo;</button>
+      <button class="bayarrow bayarrow--next" id="bayNext" type="button" aria-label="Next bay" hidden>&rsaquo;</button>
+    </div>
+
+    <!-- the bay navigator — the map of the garage -->
+    <nav class="baynav" id="bayNav" aria-label="Garage bays" hidden>
+      <p class="baynav__label">The garage has <b id="bayCount"></b> bays. Click one to walk through</p>
+      <div class="baynav__tabs" id="bayTabs"></div>
+    </nav>
+
+    <div class="hero__scrollcue" aria-hidden="true"><span>Enter the garage</span><i></i></div>
+  </section>
+
+  <!-- ============ marques banner (under the hero, auto-scrolls) ============ -->
+  <section class="brands" aria-label="Brands I source">
+    <p class="brands__label" id="brandsLabel"></p>
+    <div class="marquee marquee--logos" aria-hidden="true">
+      <div class="marquee__track" id="brandsTrack"></div>
+    </div>
+  </section>
+
+  <!-- ====================== ROOM 1 · ABOUT ====================== -->
+  <section class="room room--about" id="about" aria-labelledby="about-h">
+    <div class="room__head">
+      <span class="room__index">Room 01</span>
+      <h2 class="room__title" id="about-h"><span class="reveal-line">About Phil Dave</span></h2>
+    </div>
+    <div class="about about--portrait">
+      <figure class="about__photo will-reveal" id="aboutPhoto"></figure>
+      <div class="about__text">
+        <div class="about__lead reveal-line" id="aboutLead"></div>
+        <div class="about__body" id="aboutBody"></div>
+      </div>
+      <div class="about__stats" id="aboutStats"></div>
+    </div>
+
+    <div class="marquee marquee--logos" aria-hidden="true">
+      <div class="marquee__track" id="marqueeTrack"></div>
+    </div>
+
+    <div class="quotes" id="quotes"></div>
+  </section>
+
+  <!-- ====================== ROOM 2 · THE SHOW ROOM ====================== -->
+  <section class="room room--inventory" id="inventory" aria-labelledby="inventory-h">
+    <div class="room__head">
+      <span class="room__index">Room 02</span>
+      <h2 class="room__title" id="inventory-h"><span class="reveal-line">The Show Room</span></h2>
+      <p class="room__intro reveal-line">A curated selection. A few highlights, recently sourced or awaiting the right owner.</p>
+    </div>
+    <div class="grid" id="inventoryGrid" aria-live="polite"></div>
+    <aside class="privcta will-reveal" id="privCta">
+      <p class="privcta__lead" id="privLead"></p>
+      <p class="privcta__body" id="privBody"></p>
+      <a class="btn btn--primary magnetic" id="privBtn" href="#contact" data-link></a>
+    </aside>
+  </section>
+
+  <!-- ====================== ROOM 3 · SOURCING ====================== -->
+  <section class="room room--process" id="process" aria-labelledby="process-h">
+    <div class="room__head">
+      <span class="room__index">Room 03</span>
+      <h2 class="room__title" id="process-h"><span class="reveal-line">How Sourcing Works</span></h2>
+      <p class="room__intro reveal-line">Everything looked after from first request to keys in hand. Four steps, fully handled.</p>
+    </div>
+    <ol class="steps" id="processList"></ol>
+    <div class="process__cta will-reveal">
+      <a class="btn btn--primary magnetic" href="#contact" data-link>Find my car</a>
+    </div>
+  </section>
+
+  <!-- ====================== ROOM 4 · CONTACT ====================== -->
+  <section class="room room--contact" id="contact" aria-labelledby="contact-h">
+    <div class="room__head">
+      <span class="room__index">Room 04</span>
+      <h2 class="room__title" id="contact-h"><span class="reveal-line">Request a Car</span></h2>
+      <p class="room__intro reveal-line">Tell me what you're looking for. I'll come back to you personally.</p>
+    </div>
+
+    <figure class="reqphoto will-reveal">
+      <img src="assets/contact-mustang-1100.webp"
+           srcset="assets/contact-mustang-700.webp 700w, assets/contact-mustang-1100.webp 1100w, assets/contact-mustang-1600.webp 1600w"
+           sizes="(max-width: 860px) 94vw, 760px"
+           alt="Phil Dave beside a Ford Mustang" loading="lazy" decoding="async" />
+    </figure>
+
+    <div class="anymodel will-reveal">
+      <span class="anymodel__tag">Any make, any model</span>
+      <p class="anymodel__body">Not just the brands above. If it exists, I can find it and bring it in through the dealership &mdash; a <b>Dodge Challenger</b>, a <b>Ford Mustang</b>, a Nissan GT-R, a hard-to-find spec from another province. Don&rsquo;t see your make below? Choose <b>&ldquo;Other&rdquo;</b> and tell me exactly what you want.</p>
+    </div>
+
+    <form class="lead" id="leadForm" novalidate>
+      <input class="lead__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website" />
+      <div class="lead__row">
+        <label class="field">
+          <span>Name <b class="req">*</b></span>
+          <input type="text" name="name" autocomplete="name" required />
+        </label>
+        <label class="field">
+          <span>Phone number <b class="req">*</b></span>
+          <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required />
+        </label>
+      </div>
+      <div class="lead__row">
+        <label class="field">
+          <span>Make <b class="req">*</b></span>
+          <select name="make" id="leadMake" required><option value="">Select…</option></select>
+        </label>
+        <label class="field">
+          <span>Dream car <b class="req">*</b></span>
+          <input type="text" name="dreamcar" id="leadModel" list="leadModels" autocomplete="off" placeholder="Pick a make, then start typing…" required />
+          <datalist id="leadModels"></datalist>
+        </label>
+      </div>
+      <label class="field">
+        <span>Email <b class="req">*</b></span>
+        <input type="email" name="email" autocomplete="email" required />
+      </label>
+      <label class="field">
+        <span>Notes <span class="opt">(car not listed? describe it, plus any spec that matters)</span></span>
+        <textarea name="notes" rows="3" placeholder="e.g. 2024 Dodge Challenger Scat Pack, Black on black, low km…"></textarea>
+      </label>
+
+      <fieldset class="lead__consent">
+        <label class="check">
+          <input type="checkbox" name="consent" required />
+          <span>You may contact me by <b>phone, text &amp; email</b> about my enquiry. <b class="req">*</b></span>
+        </label>
+        <div class="lead__optin">
+          <span class="lead__optin-label">Best ways to reach me</span>
+          <label class="check check--inline"><input type="checkbox" name="text_ok" checked /><span>Text</span></label>
+          <label class="check check--inline"><input type="checkbox" name="email_ok" checked /><span>Email</span></label>
+        </div>
+      </fieldset>
+
+      <details class="lead__more">
+        <summary>Help me find it faster <span>— optional</span></summary>
+        <div class="lead__more-grid">
+          <div class="lead__row">
+            <label class="field">
+              <span>New or used</span>
+              <select name="newused"><option value="">Select…</option><option>New</option><option>Used</option><option>Either</option></select>
+            </label>
+            <label class="field">
+              <span>General type</span>
+              <select name="gentype"><option value="">Select…</option><option>SUV</option><option>Sedan</option><option>Coupe</option><option>Truck</option><option>Convertible</option><option>Not sure</option></select>
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>Gas / Hybrid / EV</span>
+              <select name="fuel"><option value="">Select…</option><option>Gas</option><option>Hybrid</option><option>Electric</option><option>No preference</option></select>
+            </label>
+            <label class="field">
+              <span>Trim</span>
+              <input type="text" name="trim" placeholder="e.g. F Sport" />
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>Budget / price range</span>
+              <select name="budget"><option value="">Select…</option><option>Under $40k</option><option>$40k – $60k</option><option>$60k – $85k</option><option>$85k – $120k</option><option>$120k +</option></select>
+            </label>
+            <label class="field">
+              <span>Purchase timeline</span>
+              <select name="timeline"><option value="">Select…</option><option>ASAP</option><option>Within 30 days</option><option>Within 90 days</option><option>Just browsing</option></select>
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>Exterior colour</span>
+              <input type="text" name="exterior" placeholder="e.g. Ultra White, or 'open'" />
+            </label>
+            <label class="field">
+              <span>Interior colour</span>
+              <input type="text" name="interior" placeholder="e.g. Black, or 'open'" />
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>Business name <span class="opt">(optional)</span></span>
+              <input type="text" name="business" placeholder="For a business or fleet purchase" />
+            </label>
+            <label class="field lead__order" id="leadOrder" hidden>
+              <span>Open to a factory order?</span>
+              <select name="factory_order"><option value="">Select…</option><option>Yes</option><option>No</option><option>Not sure</option></select>
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>How did you hear about me?</span>
+              <select name="met_how"><option value="">Select…</option><option>Instagram</option><option>Referral</option><option>Google search</option><option>At the dealership</option><option>Event</option><option>Other</option></select>
+            </label>
+          </div>
+        </div>
+      </details>
+
+      <div class="lead__foot">
+        <button type="submit" class="btn btn--primary magnetic" id="leadSubmit">Send my request</button>
+        <p class="lead__status" id="leadStatus" role="status"></p>
+      </div>
+    </form>
+
+    <section class="faq" aria-label="Frequently asked questions">
+      <h3 class="faq__title reveal-line">Before you ask</h3>
+      <div class="faq__list" id="faqList"></div>
+    </section>
+
+    <aside class="direct">
+      <p class="direct__label">Or reach me directly</p>
+      <ul class="direct__list" id="directList"></ul>
+    </aside>
+  </section>
+
+  <!-- ====================== ROOM 5 · FIND YOUR LEXUS ====================== -->
+  <section class="room room--lexus" id="lexus" aria-labelledby="lexus-h">
+    <div class="room__head">
+      <span class="room__index">Room 05</span>
+      <h2 class="room__title" id="lexus-h"><span class="reveal-line">Find your Lexus</span></h2>
+    </div>
+    <p class="room__intro reveal-line">Tell it what matters, compare the 2026 trims side by side and build the numbers. My reference companion, open to everyone.</p>
+
+    <form class="lead lexlead will-reveal" id="lexusForm" novalidate>
+      <p class="lexlead__lede">Know the Lexus you want? Tell me and I'll send new-car pricing and availability, personally.</p>
+      <input class="lead__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website" />
+      <input type="hidden" name="make" value="Lexus" />
+      <div class="lead__row">
+        <label class="field">
+          <span>Name <b class="req">*</b></span>
+          <input type="text" name="name" autocomplete="name" required />
+        </label>
+        <label class="field">
+          <span>Phone number <b class="req">*</b></span>
+          <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required />
+        </label>
+      </div>
+      <div class="lead__row">
+        <label class="field">
+          <span>Email <b class="req">*</b></span>
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+        <label class="field">
+          <span>Which Lexus? <b class="req">*</b></span>
+          <select name="dreamcar" id="lexusModel" required><option value="">Select a model…</option></select>
+        </label>
+      </div>
+      <label class="check">
+        <input type="checkbox" name="consent" required />
+        <span>You may contact me by <b>phone, text &amp; email</b> about new Lexus pricing. <b class="req">*</b></span>
+      </label>
+      <div class="lead__foot">
+        <button type="submit" class="btn btn--primary magnetic" id="lexusSubmit">Get new-car pricing</button>
+        <p class="lead__status" id="lexusStatus" role="status"></p>
+      </div>
+    </form>
+
+    <div class="lexustool will-reveal" id="lexusMount" aria-label="2026 Lexus reference, trim comparisons and pricing"></div>
+  </section>
+
+  <!-- ====================== ROOM 6 · REGISTERED & LICENSED (OMVIC) ====================== -->
+  <section class="room room--omvic" id="omvic" aria-labelledby="omvic-h">
+    <div class="room__head">
+      <span class="room__index">Room 06</span>
+      <h2 class="room__title" id="omvic-h"><span class="reveal-line">Registered &amp; Licensed</span></h2>
+    </div>
+    <div class="omvic__lead reveal-line" id="omvicLead"></div>
+    <p class="omvic__body reveal-line" id="omvicBody"></p>
+    <div class="omvic__badges" id="omvicBadges"></div>
+    <p class="omvic__note" id="omvicNote"></p>
+  </section>
+
+  <!-- ====================== ROOM 7 · AUTOMOTIVE NEWS ====================== -->
+  <section class="room room--news" id="news" aria-labelledby="news-h">
+    <div class="room__head">
+      <span class="room__index">Room 07</span>
+      <h2 class="room__title" id="news-h"><span class="reveal-line">Automotive News</span></h2>
+    </div>
+    <div class="news__lead reveal-line" id="newsLead"></div>
+    <p class="news__body reveal-line" id="newsBody"></p>
+    <div class="news__list" id="newsList"></div>
+  </section>
+
+  <!-- ====================== ROOM 8 · THE LOT (members) ====================== -->
+  <section class="room room--members" id="members" aria-labelledby="members-h">
+    <div class="room__head">
+      <span class="room__index">Room 08</span>
+      <h2 class="room__title" id="members-h"><span class="reveal-line">The Lot</span></h2>
+    </div>
+
+    <!-- the lock: shown until the visitor is recognised -->
+    <div class="vaultlock" id="vaultLock">
+      <p class="vaultlock__lead reveal-line">Members only. Quiet listings, first looks and numbers that never reach the public site.</p>
+      <form class="vaultlock__form" id="vaultForm" novalidate>
+        <input name="key" type="text" placeholder="Email or phone number" autocomplete="email" required />
+        <button class="btn btn--primary" type="submit">Unlock</button>
+      </form>
+      <p class="vaultlock__hint">Already enquired with me? Enter the email or phone you used and you're in.</p>
+      <p class="vaultlock__msg" id="vaultMsg" hidden></p>
+      <p class="vaultlock__join">New here? <a href="#contact" data-link>Request a car</a> and access opens automatically.</p>
+    </div>
+
+    <!-- the goods: revealed once unlocked (content injected/embedded here) -->
+    <div class="vault" id="vaultContent" hidden>
+      <p class="vault__welcome">Welcome in. This area is being stocked, first drops land here soon.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot__name">Phil&nbsp;Dave</div>
+  <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
+  <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 1 · Lexus</span></p>
+  <p class="foot__fine" id="modelCredit" hidden></p>
+</footer>
+
+<!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
+<script src="js/vendor/gsap.min.js?v=1" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=1" defer></script>
+<script src="js/vendor/lenis.umd.js?v=1" defer></script>
+
+<!-- site (defer keeps execution order: libs → data → app, all after parse) -->
+<script src="js/data.js?v=1" defer></script>
+<script src="js/silhouettes.js?v=1" defer></script>
+<script src="js/main.js?v=1" defer></script>
+
+<!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
+     reduced-motion, or when WebGL is unavailable) -->
+<script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
+<script type="module" src="js/hero3d.js?v=1"></script>
 </body>
 </html>
