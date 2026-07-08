@@ -41,7 +41,8 @@ var FIELD_MAP = {
   budget:        "$ range",
   timeline:      "Purchase timeline",
   business:      "Business name",
-  met_how:       "Met how"
+  met_how:       "Met how",
+  notes:         "Notes"
   // Customer answers with no matching single column in your sheet
   // (new/used, email opt-in) are ignored for now. Internal columns
   // (Level, Buying, Buyer intent, Notes, Sale - …, etc.) stay blank
