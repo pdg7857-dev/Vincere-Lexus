@@ -56,6 +56,9 @@ function doPost(e) {
     var body = JSON.parse(e.postData.contents);
     if (TOKEN && body.token !== TOKEN) return reply("forbidden");
 
+    // per-user activity log -> its own "Activity" tab
+    if (body.kind === "activity") return logActivity(body);
+
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sh = (SHEET_NAME && ss.getSheetByName(SHEET_NAME)) || ss.getSheets()[0];
     var lastCol = sh.getLastColumn();
@@ -119,6 +122,30 @@ function isMember(val) {
     if (phoneCol > -1 && isPhone && digits10(data[i][phoneCol]) === wantPhone) return true;
   }
   return false;
+}
+
+/**
+ * Per-user activity log -> "Activity" tab (created on first use).
+ * Filter the User column to see one person's journey: what they searched,
+ * which cars they inquired about, price points, and session length.
+ */
+function logActivity(body) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName("Activity");
+  if (!sh) {
+    sh = ss.insertSheet("Activity");
+    sh.appendRow(["Timestamp", "User", "Event", "Detail", "Value", "Session"]);
+    sh.setFrozenRows(1);
+  }
+  sh.appendRow([
+    body.captured_at ? new Date(body.captured_at) : new Date(),
+    body.user || "",
+    body.event || "",
+    body.detail || "",
+    (body.value == null ? "" : body.value),
+    body.session || ""
+  ]);
+  return reply("ok");
 }
 
 function reply(s) {

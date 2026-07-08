@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=49").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=50").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -609,7 +609,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=49").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=50").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -628,7 +628,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=49").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=50").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -676,13 +676,44 @@
   var digits = function (v) { return String(v == null ? "" : v).replace(/\D/g, ""); };
 
   // any successful lead capture makes the visitor a member of The Lot
-  function markMember(email, phone) {
+  function markMember(email, phone, name) {
     try {
       if (email) localStorage.setItem("pd_member", String(email).toLowerCase());
-      localStorage.setItem("pd_subscribed", JSON.stringify({ email: email || "", phone: phone || "", t: Date.now() }));
+      localStorage.setItem("pd_subscribed", JSON.stringify({ email: email || "", phone: phone || "", name: name || "", t: Date.now() }));
     } catch (e) {}
     document.dispatchEvent(new Event("pd:subscribed"));
   }
+  // who we currently know the visitor to be (from any lead form or Lot unlock)
+  function identity() {
+    var id = { email: "", phone: "", name: "" };
+    try {
+      var s = JSON.parse(localStorage.getItem("pd_subscribed") || "null");
+      if (s) { id.email = s.email || ""; id.phone = s.phone || ""; id.name = s.name || ""; }
+      if (!id.email) { var m = localStorage.getItem("pd_member") || ""; if (m.indexOf("@") > 0) id.email = m; else if (m) id.phone = m; }
+    } catch (e) {}
+    return id;
+  }
+  function userKey() { var id = identity(); return id.email || id.phone || ""; }
+
+  /* ---------- per-user activity log (Activity tab of the sheet) --------- */
+  var SESSION = { id: (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)), start: Date.now(), ended: false };
+  function logActivity(event, detail, value) {
+    var user = userKey();
+    if (!user || !S.formEndpoint) return;              // only track identified visitors
+    var payload = { kind: "activity", user: user, event: event, detail: detail || "", value: (value == null ? "" : value), session: SESSION.id, captured_at: new Date().toISOString() };
+    var body = JSON.stringify(payload);
+    try {
+      if (navigator.sendBeacon) navigator.sendBeacon(S.formEndpoint, new Blob([body], { type: "text/plain;charset=utf-8" }));
+      else fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body }).catch(function () {});
+    } catch (e) {}
+  }
+  function endSession() {
+    if (SESSION.ended || !userKey()) return;
+    SESSION.ended = true;
+    logActivity("session", "session length", Math.round((Date.now() - SESSION.start) / 1000) + "s");
+  }
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") endSession(); });
+  window.addEventListener("pagehide", endSession);
 
   function initVault() {
     var lock = $("#vaultLock"), content = $("#vaultContent"), form = $("#vaultForm"), msg = $("#vaultMsg");
@@ -725,7 +756,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=49")
+    fetch("js/lot.json?v=50")
       .then(function (r) { return r.json(); })
       .then(function (cars) { if (cars && cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -753,10 +784,11 @@
     var grid = $("#lotGrid", mount), countEl = $("#lotCount", mount), emptyEl = $("#lotEmpty", mount);
     var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount);
 
-    function cardHTML(c) {
+    var currentList = [];
+    function cardHTML(c, i) {
       var name = c.year + " " + c.make + " " + (c.trim || c.model);
       var meta = [c.km ? c.km.toLocaleString("en-US") + " km" : null, c.ext, c.drive].filter(Boolean).join(" · ");
-      return '<article class="lotcar">' +
+      return '<article class="lotcar" data-idx="' + i + '" tabindex="0" role="button" aria-label="Inquire about ' + esc(name) + '">' +
         '<div class="lotcar__media">' +
           (c.photo ? '<img loading="lazy" decoding="async" src="' + esc(c.photo) + '" alt="' + esc(name) + '" />' : '<div class="lotcar__noimg">' + esc(c.make) + '</div>') +
           (c.certified ? '<span class="lotcar__badge">Lexus Certified</span>' : '') +
@@ -767,7 +799,7 @@
           '<p class="lotcar__meta">' + esc(meta) + '</p>' +
           '<div class="lotcar__actions">' +
             (c.url ? '<a class="lotcar__link" href="' + esc(c.url) + '" target="_blank" rel="noopener">View listing &rsaquo;</a>' : '') +
-            '<button type="button" class="lotcar__inquire" data-make="' + esc(c.make) + '" data-model="' + esc(name) + '">Inquire</button>' +
+            '<button type="button" class="lotcar__inquire">Inquire &rsaquo;</button>' +
           '</div>' +
         '</div>' +
       '</article>';
@@ -785,26 +817,88 @@
         if (sort === "km-asc") return (a.km || 1e9) - (b.km || 1e9);
         return (b.year - a.year) || (b.price - a.price); // year-desc default
       });
+      currentList = list;
       countEl.textContent = list.length + (list.length === 1 ? " vehicle" : " vehicles");
       grid.innerHTML = list.map(cardHTML).join("");
       emptyEl.hidden = list.length > 0;
-      grid.querySelectorAll(".lotcar__inquire").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var mkv = btn.getAttribute("data-make"), mdv = btn.getAttribute("data-model");
-          var makeSel = document.getElementById("leadMake");
-          if (makeSel) {
-            var inList = Array.prototype.some.call(makeSel.options, function (o) { return o.value === mkv; });
-            makeSel.value = inList ? mkv : "Other";
-            makeSel.dispatchEvent(new Event("change", { bubbles: true }));
-          }
-          var model = document.getElementById("leadModel");
-          if (model) model.value = mdv;
-          warpTo("contact");
-        });
-      });
     }
-    [searchEl, makeEl, sortEl].forEach(function (el) { el.addEventListener("input", apply); el.addEventListener("change", apply); });
+    // clicking a card (but not the external "View listing" link) opens the inquiry popup
+    grid.addEventListener("click", function (e) {
+      if (e.target.closest(".lotcar__link")) return;
+      var card = e.target.closest(".lotcar");
+      if (card) openLotModal(currentList[+card.getAttribute("data-idx")]);
+    });
+    grid.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      var card = e.target.closest(".lotcar");
+      if (card) { e.preventDefault(); openLotModal(currentList[+card.getAttribute("data-idx")]); }
+    });
+    // filters + per-user activity tracking
+    var searchTimer;
+    searchEl.addEventListener("input", function () {
+      apply();
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function () { var q = searchEl.value.trim(); if (q.length >= 2) logActivity("search", q, currentList.length + " results"); }, 900);
+    });
+    makeEl.addEventListener("change", function () { apply(); logActivity("filter", "make: " + makeEl.value, currentList.length + " results"); });
+    sortEl.addEventListener("change", function () { apply(); logActivity("sort", sortEl.value); });
     apply();
+  }
+
+  /* ---------- The Lot: inquire-about-this-car popup -------------------- */
+  var lotModalCar = null;
+  function openLotModal(car) {
+    if (!car) return;
+    lotModalCar = car;
+    var m = $("#lotModal"); if (!m) return;
+    var name = car.year + " " + car.make + " " + (car.trim || car.model);
+    var img = $("#lotModalImg");
+    if (car.photo) { img.src = car.photo; img.alt = name; img.style.display = ""; } else { img.removeAttribute("src"); img.style.display = "none"; }
+    $("#lotModalPrice").textContent = money(car.price);
+    $("#lotModalName").textContent = name;
+    $("#lotModalMeta").textContent = [car.km ? car.km.toLocaleString("en-US") + " km" : null, car.ext, car.drive].filter(Boolean).join(" · ");
+    var id = identity();
+    $("#lotModalWho").textContent = (id.email || id.phone) ? ("I'll reach out to " + (id.email || id.phone) + ".") : "";
+    var note = $("#lotModalNote"); if (note) note.value = "";
+    var msg = $("#lotModalMsg"); if (msg) { msg.hidden = true; msg.textContent = ""; }
+    var send = $("#lotModalSend"); if (send) { send.disabled = false; send.textContent = "Inquire about this car"; }
+    m.hidden = false; document.body.classList.add("no-scroll");
+    logActivity("view", name, car.price);
+  }
+  function closeLotModal() { var m = $("#lotModal"); if (m) m.hidden = true; document.body.classList.remove("no-scroll"); }
+  function sendLotInquiry() {
+    var car = lotModalCar; if (!car) return;
+    var id = identity();
+    var name = car.year + " " + car.make + " " + (car.trim || car.model);
+    // no identity on file (shouldn't happen behind the gate) → fall back to the form
+    if (!id.email && !id.phone) {
+      var makeSel = document.getElementById("leadMake");
+      if (makeSel) { var inList = Array.prototype.some.call(makeSel.options, function (o) { return o.value === car.make; }); makeSel.value = inList ? car.make : "Other"; makeSel.dispatchEvent(new Event("change", { bubbles: true })); }
+      var model = document.getElementById("leadModel"); if (model) model.value = name;
+      closeLotModal(); warpTo("contact"); return;
+    }
+    var note = ($("#lotModalNote") || {}).value || "";
+    var data = {
+      name: id.name || "", email: id.email || "", phone: id.phone || "",
+      make: car.make, dreamcar: name, budget: money(car.price),
+      notes: (note ? note + " — " : "") + "Inquiry from The Lot" + (car.url ? " (" + car.url + ")" : ""),
+      source: "The Lot inquiry", consent: "Yes", captured_at: new Date().toISOString()
+    };
+    var send = $("#lotModalSend"), msg = $("#lotModalMsg");
+    if (send) { send.disabled = true; send.textContent = "Sending…"; }
+    if (S.formEndpoint) {
+      try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
+    }
+    logActivity("inquiry", name, car.price);
+    if (msg) { msg.hidden = false; msg.className = "lotmodal__msg ok"; msg.textContent = "Sent — I'll be in touch about this " + car.make + " " + car.model + "."; }
+    if (send) { send.textContent = "Inquiry sent ✓"; }
+    setTimeout(closeLotModal, 2400);
+  }
+  function initLotModal() {
+    var m = $("#lotModal"); if (!m) return;
+    m.addEventListener("click", function (e) { if (e.target.hasAttribute("data-lotclose")) closeLotModal(); });
+    var send = $("#lotModalSend"); if (send) send.addEventListener("click", sendLotInquiry);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !m.hidden) closeLotModal(); });
   }
 
   /* ===================== vehicle lightbox ============================== */
@@ -815,7 +909,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=49").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=50").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
@@ -1195,7 +1289,7 @@
         try {
           fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {});
         } catch (e) {}
-        markMember(data.email, data.phone);
+        markMember(data.email, data.phone, data.name);
         done(true, "Thank you — your request is in. I'll be in touch personally.");
         return;
       }
@@ -1217,7 +1311,7 @@
           "\nHeard via: " + (data.met_how || "-"));
         window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
       }
-      markMember(data.email, data.phone);
+      markMember(data.email, data.phone, data.name);
       done(true, "Opening your email to send the request. (Connect a form endpoint to receive these automatically.)");
     });
   }
@@ -1269,7 +1363,7 @@
       }
       if (S.formEndpoint && !isBot) {
         try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
-        markMember(data.email, data.phone);
+        markMember(data.email, data.phone, data.name);
         done(true, "Thank you — I'll send your Lexus pricing shortly.");
         return;
       }
@@ -1280,7 +1374,7 @@
         var body = encodeURIComponent("Name: " + data.name + "\nPhone: " + data.phone + "\nEmail: " + data.email + "\nModel: " + data.dreamcar);
         window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
       }
-      markMember(data.email, data.phone);
+      markMember(data.email, data.phone, data.name);
       done(true, "Opening your email to send the enquiry.");
     });
   }
@@ -1338,6 +1432,7 @@
     initDots();
     initSheet();
     initVault();
+    initLotModal();
     initForm();
     initLexusForm();
     initLenis();

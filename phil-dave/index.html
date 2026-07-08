@@ -33,8 +33,8 @@
 <link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
 <link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="css/fonts.css?v=49" />
-<link rel="stylesheet" href="css/style.css?v=49" />
+<link rel="stylesheet" href="css/fonts.css?v=50" />
+<link rel="stylesheet" href="css/style.css?v=50" />
 </head>
 <body class="is-loading">
 
@@ -74,6 +74,28 @@
       <div class="sheet__specs" id="sheetSpecs" hidden></div>
       <div class="sheet__story" id="sheetStory" hidden></div>
       <a class="btn btn--primary magnetic" id="sheetCta" href="#contact" data-link>Enquire about this car</a>
+    </div>
+  </div>
+</div>
+
+<!-- The Lot: inquire-about-this-car popup -->
+<div class="lotmodal" id="lotModal" hidden role="dialog" aria-modal="true" aria-labelledby="lotModalName">
+  <div class="lotmodal__backdrop" data-lotclose></div>
+  <div class="lotmodal__panel" role="document">
+    <button class="lotmodal__close" data-lotclose aria-label="Close">&times;</button>
+    <div class="lotmodal__media"><img id="lotModalImg" alt="" /></div>
+    <div class="lotmodal__body">
+      <span class="lotmodal__price" id="lotModalPrice"></span>
+      <h3 class="lotmodal__name" id="lotModalName"></h3>
+      <p class="lotmodal__meta" id="lotModalMeta"></p>
+      <p class="lotmodal__q">Inquire about this car?</p>
+      <p class="lotmodal__who" id="lotModalWho"></p>
+      <textarea id="lotModalNote" rows="2" placeholder="Anything specific? (optional)"></textarea>
+      <div class="lotmodal__actions">
+        <button type="button" class="btn" data-lotclose>Cancel</button>
+        <button type="button" class="btn btn--primary" id="lotModalSend">Inquire about this car</button>
+      </div>
+      <p class="lotmodal__msg" id="lotModalMsg" hidden></p>
     </div>
   </div>
 </div>
@@ -460,23 +482,23 @@
   <div class="foot__name">Phil&nbsp;Dave</div>
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
   <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. <span style="opacity:.45">· build 49</span></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. <span style="opacity:.45">· build 50</span></p>
   <p class="foot__fine" id="modelCredit" hidden></p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
-<script src="js/vendor/gsap.min.js?v=49" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=49" defer></script>
-<script src="js/vendor/lenis.umd.js?v=49" defer></script>
+<script src="js/vendor/gsap.min.js?v=50" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=50" defer></script>
+<script src="js/vendor/lenis.umd.js?v=50" defer></script>
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
-<script src="js/data.js?v=49" defer></script>
-<script src="js/silhouettes.js?v=49" defer></script>
-<script src="js/main.js?v=49" defer></script>
+<script src="js/data.js?v=50" defer></script>
+<script src="js/silhouettes.js?v=50" defer></script>
+<script src="js/main.js?v=50" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
      reduced-motion, or when WebGL is unavailable) -->
 <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="js/hero3d.js?v=49"></script>
+<script type="module" src="js/hero3d.js?v=50"></script>
 </body>
 </html>
