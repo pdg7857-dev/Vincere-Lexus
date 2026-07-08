@@ -29,7 +29,7 @@ window.SITE = {
      endpoint below (looks like "https://formspree.io/f/abcwxyz"). Until you
      set this, the form runs in DEMO mode (shows a success state, logs the
      payload to the console, and offers a mailto: fallback to your email).   */
-  formEndpoint: "", // [PLACEHOLDER — e.g. "https://formspree.io/f/xxxxxxx"]
+  formEndpoint: "https://script.google.com/macros/s/AKfycby4G3GDuFGXaCaZqDL2Jfb8Cj9a1BhcysmdpeMTTNH8F5_nhwL0FxjaT14nFPvb9PYmrQ/exec",
 
   /* --- Newsletter (rendered at the bottom of every bay) -------------------
      Collects name, number, email and city. Until `endpoint` is set it runs
