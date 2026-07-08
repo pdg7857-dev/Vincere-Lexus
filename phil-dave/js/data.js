@@ -54,7 +54,7 @@ window.SITE = {
     { key: "volvo", title: "Volvo" },
     { key: "acura", title: "Acura" },
     { key: "land-rover", title: "Land Rover" },
-    { key: "jaguar", title: "Jaguar", logo: "assets/marques/jaguar.svg" },
+    { key: "jaguar", title: "Jaguar" },
     { key: "lamborghini", title: "Lamborghini" },
     { key: "zenvo", title: "Zenvo" },
     { key: "tedson", title: "Tedson Motors" },

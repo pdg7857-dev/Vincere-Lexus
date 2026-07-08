@@ -533,6 +533,10 @@ em{ font-style:italic; }
 .lead__more > summary span{ color:var(--muted); letter-spacing:.02em; text-transform:none; font-size:.9em; }
 .lead__more-grid{ display:grid; gap:1.4rem; padding:0 1.2rem 1.3rem; }
 
+/* Request-a-Car portrait banner */
+.reqphoto{ max-width:760px; margin:0 0 1.8rem; border:1px solid var(--line-soft); border-radius:5px; overflow:hidden; background:var(--black-2); }
+.reqphoto img{ width:100%; height:auto; display:block; filter:grayscale(1) contrast(1.03); }
+
 /* "any make, any model" reassurance callout above the request form */
 .anymodel{ max-width:760px; margin:0 0 1.8rem; padding:1.15rem 1.4rem; border-left:2px solid var(--platinum); background:linear-gradient(90deg, rgba(201,204,209,.06), transparent); border-radius:0 4px 4px 0; }
 .anymodel__tag{ display:block; font-size:.62rem; letter-spacing:.24em; text-transform:uppercase; color:var(--platinum); margin-bottom:.5rem; }
