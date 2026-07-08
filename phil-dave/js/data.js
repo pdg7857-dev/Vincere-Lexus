@@ -177,7 +177,7 @@ window.SITE = {
     {
       make: "Lexus", model: "LX 600", year: 2024, body: "suv",
       note: "The flagship 4WD. Twin turbo V6, three rows, and presence that needs no introduction.",
-      status: "Available", image: "assets/car-lx.webp",
+      status: "Available", image: "assets/car-lx.webp?v=46",
       spinModel: "models/lexus-lx.glb", spinLength: 5.10,
       specs: [
         { label: "Mileage", value: "On request" }, // [PLACEHOLDER — km from the listing]
