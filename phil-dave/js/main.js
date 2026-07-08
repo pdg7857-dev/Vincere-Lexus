@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=40").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=41").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -424,8 +424,9 @@
     var label = $("#brandsLabel");
     if (label) label.textContent = S.brandsLabel || "Brands I source";
     var strip = (S.brands || []).map(function (b) {
+      var src = b.logo || ("assets/marques/" + esc(b.key) + ".webp");
       return (
-        '<img class="brandimg" src="assets/marques/' + esc(b.key) + '.webp" alt="' +
+        '<img class="brandimg" src="' + esc(src) + '" alt="' +
         esc(b.title) + '" title="' + esc(b.title) + '" loading="lazy" decoding="async" />'
       );
     }).join("");
@@ -608,7 +609,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=40").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=41").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -627,7 +628,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=40").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=41").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -703,7 +704,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=40").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=41").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
@@ -1010,6 +1011,25 @@
     if (newused) newused.addEventListener("change", syncOrder);
     syncOrder();
 
+    // Make dropdown + model typeahead: choosing a make filters the model
+    // suggestions, so what lands in the sheet stays consistent.
+    var makeSel = $("#leadMake"), modelInput = $("#leadModel"), modelList = $("#leadModels");
+    if (makeSel && S.carMakes) {
+      S.carMakes.forEach(function (m) {
+        var o = document.createElement("option"); o.value = m; o.textContent = m; makeSel.appendChild(o);
+      });
+    }
+    function syncModels() {
+      if (!modelList) return;
+      modelList.innerHTML = "";
+      var list = (S.carModels && makeSel && S.carModels[makeSel.value]) || [];
+      list.forEach(function (m) { var o = document.createElement("option"); o.value = m; modelList.appendChild(o); });
+      if (modelInput) modelInput.placeholder = (makeSel && makeSel.value && makeSel.value !== "Other")
+        ? "Start typing a " + makeSel.value + " model…" : "Type the car you want…";
+    }
+    if (makeSel) makeSel.addEventListener("change", function () { if (modelInput) modelInput.value = ""; syncModels(); });
+    syncModels();
+
     var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     form.addEventListener("submit", function (e) {
@@ -1019,7 +1039,7 @@
 
       // validation: required text fields, valid email, contact consent
       var ok = true, firstBad = null;
-      ["name", "phone", "email", "dreamcar"].forEach(function (n) {
+      ["name", "phone", "email", "make", "dreamcar"].forEach(function (n) {
         var f = form.elements[n];
         var bad = !f.value.trim() || (n === "email" && !emailRe.test(f.value.trim()));
         f.classList.toggle("invalid", bad);
@@ -1089,6 +1109,67 @@
     });
   }
 
+  /* ---------- "Find your Lexus" — short new-car enquiry ---------------- */
+  // Contact details + which Lexus they want. Feeds the same sheet as the
+  // main form, tagged source "Find your Lexus", make locked to Lexus.
+  function initLexusForm() {
+    var form = $("#lexusForm");
+    if (!form) return;
+    var statusEl = $("#lexusStatus"), submit = $("#lexusSubmit"), sel = $("#lexusModel");
+    if (sel && S.carModels && S.carModels.Lexus) {
+      S.carModels.Lexus.forEach(function (m) { var o = document.createElement("option"); o.value = m; o.textContent = m; sel.appendChild(o); });
+      var o2 = document.createElement("option"); o2.value = "Not sure — help me choose"; o2.textContent = "Not sure — help me choose"; sel.appendChild(o2);
+    }
+    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      statusEl.className = "lead__status"; statusEl.textContent = "";
+      var ok = true, firstBad = null;
+      ["name", "phone", "email", "dreamcar"].forEach(function (n) {
+        var f = form.elements[n];
+        var bad = !f.value.trim() || (n === "email" && !emailRe.test(f.value.trim()));
+        f.classList.toggle("invalid", bad);
+        if (bad) { ok = false; if (!firstBad) firstBad = f; }
+      });
+      var consent = form.elements["consent"], cw = consent.closest(".check");
+      if (!consent.checked) { if (cw) cw.classList.add("invalid"); ok = false; if (!firstBad) firstBad = consent; }
+      else if (cw) cw.classList.remove("invalid");
+      if (!ok) {
+        statusEl.className = "lead__status err";
+        statusEl.textContent = "Please add your details and pick a model.";
+        if (firstBad && firstBad.focus) firstBad.focus();
+        return;
+      }
+      var hp = form.elements["website"], isBot = hp && hp.value;
+      var data = {};
+      Array.prototype.forEach.call(form.elements, function (el) {
+        if (!el.name || el.name === "website") return;
+        data[el.name] = el.type === "checkbox" ? (el.checked ? "Yes" : "No") : el.value.trim();
+      });
+      data.source = "Find your Lexus";
+      try { data.captured_at = new Date().toISOString(); } catch (e) {}
+      submit.disabled = true; var prev = submit.textContent; submit.textContent = "Sending…";
+      function done(success, msg) {
+        submit.disabled = false; submit.textContent = prev;
+        statusEl.className = "lead__status " + (success ? "ok" : "err");
+        statusEl.textContent = msg; if (success) form.reset();
+      }
+      if (S.formEndpoint && !isBot) {
+        try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
+        done(true, "Thank you — I'll send your Lexus pricing shortly.");
+        return;
+      }
+      if (isBot) { done(true, "Thank you."); return; }
+      var to = (S.contact && S.contact.email) || "";
+      if (to) {
+        var subject = encodeURIComponent("New Lexus enquiry — " + (data.dreamcar || ""));
+        var body = encodeURIComponent("Name: " + data.name + "\nPhone: " + data.phone + "\nEmail: " + data.email + "\nModel: " + data.dreamcar);
+        window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
+      }
+      done(true, "Opening your email to send the enquiry.");
+    });
+  }
+
   /* ===================== intro / boot ================================== */
   /* the opening: the car waits in a dark garage, then the studio lights
      stutter awake (HID-style) and bloom over the podium */
@@ -1143,6 +1224,7 @@
     initSheet();
     initVault();
     initForm();
+    initLexusForm();
     initLenis();
     initReveals();
     initMagnetic();

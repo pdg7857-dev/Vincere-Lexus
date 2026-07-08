@@ -533,6 +533,10 @@ em{ font-style:italic; }
 .lead__more > summary span{ color:var(--muted); letter-spacing:.02em; text-transform:none; font-size:.9em; }
 .lead__more-grid{ display:grid; gap:1.4rem; padding:0 1.2rem 1.3rem; }
 
+/* "Find your Lexus" short enquiry form, above the reference tool */
+.lexlead{ margin:1.4rem 0 2.4rem; padding:1.6rem 1.7rem; border:1px solid var(--line-soft); border-radius:5px; background:linear-gradient(180deg, rgba(22,22,24,.55), transparent); }
+.lexlead__lede{ font-size:1rem; line-height:1.5; color:var(--silver); font-weight:300; margin-bottom:.4rem; }
+
 .lead__foot{ display:flex; align-items:center; gap:1.4rem; flex-wrap:wrap; margin-top:.4rem; }
 .btn{ font-family:var(--sans); font-size:.78rem; letter-spacing:.22em; text-transform:uppercase; padding:1rem 2rem; border-radius:2px; cursor:pointer; border:1px solid var(--line); background:none; color:var(--platinum); transition:background .4s var(--ease), color .4s, transform .3s; }
 .btn--primary{ background:var(--platinum); color:var(--black); border-color:var(--platinum); }

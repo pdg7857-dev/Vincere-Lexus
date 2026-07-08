@@ -33,8 +33,8 @@
 <link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
 <link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="css/fonts.css?v=40" />
-<link rel="stylesheet" href="css/style.css?v=40" />
+<link rel="stylesheet" href="css/fonts.css?v=41" />
+<link rel="stylesheet" href="css/style.css?v=41" />
 </head>
 <body class="is-loading">
 
@@ -237,14 +237,19 @@
       </div>
       <div class="lead__row">
         <label class="field">
-          <span>Email <b class="req">*</b></span>
-          <input type="email" name="email" autocomplete="email" required />
+          <span>Make <b class="req">*</b></span>
+          <select name="make" id="leadMake" required><option value="">Select…</option></select>
         </label>
         <label class="field">
           <span>Dream car <b class="req">*</b></span>
-          <input type="text" name="dreamcar" placeholder="e.g. Lexus RX 500h, or 'help me choose'" required />
+          <input type="text" name="dreamcar" id="leadModel" list="leadModels" autocomplete="off" placeholder="Pick a make, then start typing…" required />
+          <datalist id="leadModels"></datalist>
         </label>
       </div>
+      <label class="field">
+        <span>Email <b class="req">*</b></span>
+        <input type="email" name="email" autocomplete="email" required />
+      </label>
 
       <fieldset class="lead__consent">
         <label class="check">
@@ -277,18 +282,18 @@
               <select name="fuel"><option value="">Select…</option><option>Gas</option><option>Hybrid</option><option>Electric</option><option>No preference</option></select>
             </label>
             <label class="field">
-              <span>Make</span>
-              <input type="text" name="make" placeholder="e.g. Lexus" />
+              <span>Trim</span>
+              <input type="text" name="trim" placeholder="e.g. F Sport" />
             </label>
           </div>
           <div class="lead__row">
             <label class="field">
-              <span>Trim</span>
-              <input type="text" name="trim" placeholder="e.g. F Sport" />
-            </label>
-            <label class="field">
               <span>Budget / price range</span>
               <select name="budget"><option value="">Select…</option><option>Under $40k</option><option>$40k – $60k</option><option>$60k – $85k</option><option>$85k – $120k</option><option>$120k +</option></select>
+            </label>
+            <label class="field">
+              <span>Purchase timeline</span>
+              <select name="timeline"><option value="">Select…</option><option>ASAP</option><option>Within 30 days</option><option>Within 90 days</option><option>Just browsing</option></select>
             </label>
           </div>
           <div class="lead__row">
@@ -303,8 +308,8 @@
           </div>
           <div class="lead__row">
             <label class="field">
-              <span>Purchase timeline</span>
-              <select name="timeline"><option value="">Select…</option><option>ASAP</option><option>Within 30 days</option><option>Within 90 days</option><option>Just browsing</option></select>
+              <span>Business name <span class="opt">(optional)</span></span>
+              <input type="text" name="business" placeholder="For a business or fleet purchase" />
             </label>
             <label class="field lead__order" id="leadOrder" hidden>
               <span>Open to a factory order?</span>
@@ -312,10 +317,6 @@
             </label>
           </div>
           <div class="lead__row">
-            <label class="field">
-              <span>Business name <span class="opt">(optional)</span></span>
-              <input type="text" name="business" placeholder="For a business or fleet purchase" />
-            </label>
             <label class="field">
               <span>How did you hear about me?</span>
               <select name="met_how"><option value="">Select…</option><option>Instagram</option><option>Referral</option><option>Google search</option><option>At the dealership</option><option>Event</option><option>Other</option></select>
@@ -348,6 +349,41 @@
       <h2 class="room__title" id="lexus-h"><span class="reveal-line">Find your Lexus</span></h2>
     </div>
     <p class="room__intro reveal-line">Tell it what matters, compare the 2026 trims side by side and build the numbers. My reference companion, open to everyone.</p>
+
+    <form class="lead lexlead will-reveal" id="lexusForm" novalidate>
+      <p class="lexlead__lede">Know the Lexus you want? Tell me and I'll send new-car pricing and availability, personally.</p>
+      <input class="lead__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website" />
+      <input type="hidden" name="make" value="Lexus" />
+      <div class="lead__row">
+        <label class="field">
+          <span>Name <b class="req">*</b></span>
+          <input type="text" name="name" autocomplete="name" required />
+        </label>
+        <label class="field">
+          <span>Phone number <b class="req">*</b></span>
+          <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required />
+        </label>
+      </div>
+      <div class="lead__row">
+        <label class="field">
+          <span>Email <b class="req">*</b></span>
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+        <label class="field">
+          <span>Which Lexus? <b class="req">*</b></span>
+          <select name="dreamcar" id="lexusModel" required><option value="">Select a model…</option></select>
+        </label>
+      </div>
+      <label class="check">
+        <input type="checkbox" name="consent" required />
+        <span>You may contact me by <b>phone, text &amp; email</b> about new Lexus pricing. <b class="req">*</b></span>
+      </label>
+      <div class="lead__foot">
+        <button type="submit" class="btn btn--primary magnetic" id="lexusSubmit">Get new-car pricing</button>
+        <p class="lead__status" id="lexusStatus" role="status"></p>
+      </div>
+    </form>
+
     <div class="lexustool will-reveal" id="lexusMount" aria-label="2026 Lexus reference, trim comparisons and pricing"></div>
   </section>
 
@@ -404,23 +440,23 @@
   <div class="foot__name">Phil&nbsp;Dave</div>
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
   <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. <span style="opacity:.45">· build 40</span></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. <span style="opacity:.45">· build 41</span></p>
   <p class="foot__fine" id="modelCredit" hidden></p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
-<script src="js/vendor/gsap.min.js?v=40" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=40" defer></script>
-<script src="js/vendor/lenis.umd.js?v=40" defer></script>
+<script src="js/vendor/gsap.min.js?v=41" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=41" defer></script>
+<script src="js/vendor/lenis.umd.js?v=41" defer></script>
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
-<script src="js/data.js?v=40" defer></script>
-<script src="js/silhouettes.js?v=40" defer></script>
-<script src="js/main.js?v=40" defer></script>
+<script src="js/data.js?v=41" defer></script>
+<script src="js/silhouettes.js?v=41" defer></script>
+<script src="js/main.js?v=41" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
      reduced-motion, or when WebGL is unavailable) -->
 <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="js/hero3d.js?v=40"></script>
+<script type="module" src="js/hero3d.js?v=41"></script>
 </body>
 </html>

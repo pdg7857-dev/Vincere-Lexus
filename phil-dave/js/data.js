@@ -54,11 +54,31 @@ window.SITE = {
     { key: "volvo", title: "Volvo" },
     { key: "acura", title: "Acura" },
     { key: "land-rover", title: "Land Rover" },
+    { key: "jaguar", title: "Jaguar", logo: "assets/marques/jaguar.svg" },
     { key: "lamborghini", title: "Lamborghini" },
     { key: "zenvo", title: "Zenvo" },
     { key: "tedson", title: "Tedson Motors" },
   ],
   brandsLabel: "Brands I source",
+
+  /* --- Make → model catalogue (drives the "Request a Car" typeahead) ------
+     Picking a make filters the model suggestions, so what lands in the
+     sheet stays consistent. "Other" lets someone free-type anything.       */
+  carMakes: ["Lexus", "Porsche", "BMW", "Mercedes-Benz", "Audi", "Volvo", "Acura", "Land Rover", "Jaguar", "Lamborghini", "Zenvo", "Other"],
+  carModels: {
+    "Lexus": ["ES 300h", "IS 300", "IS 350", "LS 500", "LS 500h", "LC 500", "RC 350", "UX 250h", "NX 250", "NX 350", "NX 350h", "NX 450h+", "RX 350", "RX 350h", "RX 500h", "RZ 450e", "GX 550", "LX 600", "TX 350", "TX 500h"],
+    "Porsche": ["911 Carrera", "911 Turbo S", "911 GT3", "718 Cayman", "718 Boxster", "Panamera", "Taycan", "Macan", "Cayenne", "Cayenne Coupe"],
+    "BMW": ["2 Series", "3 Series", "4 Series", "5 Series", "7 Series", "8 Series", "X1", "X3", "X5", "X6", "X7", "M2", "M3", "M4", "M5", "M8", "i4", "i5", "i7", "iX", "Z4"],
+    "Mercedes-Benz": ["A-Class", "C-Class", "E-Class", "S-Class", "CLA", "CLE", "GLA", "GLB", "GLC", "GLE", "GLS", "G-Class", "AMG GT", "EQE", "EQS"],
+    "Audi": ["A3", "A4", "A5", "A6", "A7", "A8", "Q3", "Q5", "Q7", "Q8", "e-tron GT", "Q4 e-tron", "S5", "RS5", "RS6", "RS7", "R8", "TT"],
+    "Volvo": ["S60", "S90", "V60", "V90", "XC40", "XC60", "XC90", "C40 Recharge", "EX30", "EX90"],
+    "Acura": ["Integra", "TLX", "RDX", "MDX", "ZDX", "NSX"],
+    "Land Rover": ["Range Rover", "Range Rover Sport", "Range Rover Velar", "Range Rover Evoque", "Discovery", "Discovery Sport", "Defender 90", "Defender 110", "Defender 130"],
+    "Jaguar": ["F-Pace", "E-Pace", "I-Pace", "XE", "XF", "F-Type"],
+    "Lamborghini": ["Urus", "Urus SE", "Huracan", "Revuelto"],
+    "Zenvo": ["TSR-S", "Aurora"],
+    "Other": []
+  },
 
   /* --- Credibility stats (Room 3). Edit freely. -------------------------- */
   stats: [
