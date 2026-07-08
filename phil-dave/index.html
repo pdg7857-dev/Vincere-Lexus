@@ -33,8 +33,8 @@
 <link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
 <link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="css/fonts.css?v=38" />
-<link rel="stylesheet" href="css/style.css?v=38" />
+<link rel="stylesheet" href="css/fonts.css?v=39" />
+<link rel="stylesheet" href="css/style.css?v=39" />
 </head>
 <body class="is-loading">
 
@@ -224,53 +224,106 @@
     </div>
 
     <form class="lead" id="leadForm" novalidate>
+      <input class="lead__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website" />
       <div class="lead__row">
         <label class="field">
-          <span>Name</span>
+          <span>Name <b class="req">*</b></span>
           <input type="text" name="name" autocomplete="name" required />
         </label>
         <label class="field">
-          <span>Contact (email or phone)</span>
-          <input type="text" name="contact" autocomplete="email" required />
+          <span>Phone number <b class="req">*</b></span>
+          <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required />
         </label>
       </div>
       <div class="lead__row">
         <label class="field">
-          <span>Desired make &amp; model</span>
-          <input type="text" name="vehicle" placeholder="e.g. Porsche 911 Carrera S" required />
+          <span>Email <b class="req">*</b></span>
+          <input type="email" name="email" autocomplete="email" required />
         </label>
         <label class="field">
-          <span>Budget range</span>
-          <select name="budget">
-            <option value="">Select…</option>
-            <option>Under $75k</option>
-            <option>$75k – $125k</option>
-            <option>$125k – $200k</option>
-            <option>$200k – $350k</option>
-            <option>$350k +</option>
-          </select>
+          <span>Dream car <b class="req">*</b></span>
+          <input type="text" name="dreamcar" placeholder="e.g. Lexus RX 500h, or 'help me choose'" required />
         </label>
       </div>
-      <div class="lead__row">
-        <label class="field">
-          <span>Timeline</span>
-          <select name="timeline">
-            <option value="">Select…</option>
-            <option>As soon as possible</option>
-            <option>Within 1 month</option>
-            <option>1 – 3 months</option>
-            <option>Just exploring</option>
-          </select>
+
+      <fieldset class="lead__consent">
+        <label class="check">
+          <input type="checkbox" name="consent" required />
+          <span>You may contact me by <b>phone, text &amp; email</b> about my enquiry. <b class="req">*</b></span>
         </label>
-        <label class="field">
-          <span>Preferred contact time</span>
-          <input type="text" name="besttime" placeholder="Optional" />
-        </label>
-      </div>
-      <label class="field">
-        <span>Notes: colour, spec, anything that matters</span>
-        <textarea name="notes" rows="4" placeholder="Tell me about the car you're picturing…"></textarea>
-      </label>
+        <div class="lead__optin">
+          <span class="lead__optin-label">Best ways to reach me</span>
+          <label class="check check--inline"><input type="checkbox" name="text_ok" checked /><span>Text</span></label>
+          <label class="check check--inline"><input type="checkbox" name="email_ok" checked /><span>Email</span></label>
+        </div>
+      </fieldset>
+
+      <details class="lead__more">
+        <summary>Help me find it faster <span>— optional</span></summary>
+        <div class="lead__more-grid">
+          <div class="lead__row">
+            <label class="field">
+              <span>New or used</span>
+              <select name="newused"><option value="">Select…</option><option>New</option><option>Used</option><option>Either</option></select>
+            </label>
+            <label class="field">
+              <span>General type</span>
+              <select name="gentype"><option value="">Select…</option><option>SUV</option><option>Sedan</option><option>Coupe</option><option>Truck</option><option>Convertible</option><option>Not sure</option></select>
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>Gas / Hybrid / EV</span>
+              <select name="fuel"><option value="">Select…</option><option>Gas</option><option>Hybrid</option><option>Electric</option><option>No preference</option></select>
+            </label>
+            <label class="field">
+              <span>Make</span>
+              <input type="text" name="make" placeholder="e.g. Lexus" />
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>Trim</span>
+              <input type="text" name="trim" placeholder="e.g. F Sport" />
+            </label>
+            <label class="field">
+              <span>Budget / price range</span>
+              <select name="budget"><option value="">Select…</option><option>Under $40k</option><option>$40k – $60k</option><option>$60k – $85k</option><option>$85k – $120k</option><option>$120k +</option></select>
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>Exterior colour</span>
+              <input type="text" name="exterior" placeholder="e.g. Ultra White, or 'open'" />
+            </label>
+            <label class="field">
+              <span>Interior colour</span>
+              <input type="text" name="interior" placeholder="e.g. Black, or 'open'" />
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>Purchase timeline</span>
+              <select name="timeline"><option value="">Select…</option><option>ASAP</option><option>Within 30 days</option><option>Within 90 days</option><option>Just browsing</option></select>
+            </label>
+            <label class="field lead__order" id="leadOrder" hidden>
+              <span>Open to a factory order?</span>
+              <select name="factory_order"><option value="">Select…</option><option>Yes</option><option>No</option><option>Not sure</option></select>
+            </label>
+          </div>
+          <div class="lead__row">
+            <label class="field">
+              <span>Business name <span class="opt">(optional)</span></span>
+              <input type="text" name="business" placeholder="For a business or fleet purchase" />
+            </label>
+            <label class="field">
+              <span>How did you hear about me?</span>
+              <select name="met_how"><option value="">Select…</option><option>Instagram</option><option>Referral</option><option>Google search</option><option>At the dealership</option><option>Event</option><option>Other</option></select>
+            </label>
+          </div>
+        </div>
+      </details>
+
       <div class="lead__foot">
         <button type="submit" class="btn btn--primary magnetic" id="leadSubmit">Send my request</button>
         <p class="lead__status" id="leadStatus" role="status"></p>
@@ -351,23 +404,23 @@
   <div class="foot__name">Phil&nbsp;Dave</div>
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
   <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. <span style="opacity:.45">· build 38</span></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. <span style="opacity:.45">· build 39</span></p>
   <p class="foot__fine" id="modelCredit" hidden></p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
-<script src="js/vendor/gsap.min.js?v=38" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=38" defer></script>
-<script src="js/vendor/lenis.umd.js?v=38" defer></script>
+<script src="js/vendor/gsap.min.js?v=39" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=39" defer></script>
+<script src="js/vendor/lenis.umd.js?v=39" defer></script>
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
-<script src="js/data.js?v=38" defer></script>
-<script src="js/silhouettes.js?v=38" defer></script>
-<script src="js/main.js?v=38" defer></script>
+<script src="js/data.js?v=39" defer></script>
+<script src="js/silhouettes.js?v=39" defer></script>
+<script src="js/main.js?v=39" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
      reduced-motion, or when WebGL is unavailable) -->
 <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="js/hero3d.js?v=38"></script>
+<script type="module" src="js/hero3d.js?v=39"></script>
 </body>
 </html>

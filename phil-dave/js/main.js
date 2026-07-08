@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=38").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=39").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -608,7 +608,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=38").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=39").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -627,7 +627,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=38").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=39").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -703,7 +703,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=38").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=39").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
@@ -999,61 +999,93 @@
     if (!form) return;
     var statusEl = $("#leadStatus"), submit = $("#leadSubmit");
 
+    // "Open to a factory order?" only makes sense for a new car — reveal it
+    // when New is selected, hide (and clear) it otherwise.
+    var newused = form.elements["newused"], order = $("#leadOrder");
+    function syncOrder() {
+      if (!order) return;
+      order.hidden = !newused || newused.value !== "New";
+      if (order.hidden) { var s = order.querySelector("select"); if (s) s.value = ""; }
+    }
+    if (newused) newused.addEventListener("change", syncOrder);
+    syncOrder();
+
+    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       statusEl.className = "lead__status";
       statusEl.textContent = "";
 
-      // validation
-      var ok = true;
-      ["name", "contact", "vehicle"].forEach(function (n) {
+      // validation: required text fields, valid email, contact consent
+      var ok = true, firstBad = null;
+      ["name", "phone", "email", "dreamcar"].forEach(function (n) {
         var f = form.elements[n];
-        if (!f.value.trim()) { f.classList.add("invalid"); ok = false; }
-        else f.classList.remove("invalid");
+        var bad = !f.value.trim() || (n === "email" && !emailRe.test(f.value.trim()));
+        f.classList.toggle("invalid", bad);
+        if (bad) { ok = false; if (!firstBad) firstBad = f; }
       });
-      if (!ok) { statusEl.className = "lead__status err"; statusEl.textContent = "Please complete the required fields."; return; }
+      var consent = form.elements["consent"], cw = consent.closest(".check");
+      if (!consent.checked) { if (cw) cw.classList.add("invalid"); ok = false; if (!firstBad) firstBad = consent; }
+      else if (cw) cw.classList.remove("invalid");
+      if (!ok) {
+        statusEl.className = "lead__status err";
+        statusEl.textContent = "Please complete the required fields and agree to be contacted.";
+        if (firstBad && firstBad.focus) firstBad.focus();
+        return;
+      }
 
+      // honeypot: hidden field only bots fill
+      var hp = form.elements["website"], isBot = hp && hp.value;
+
+      // collect — checkboxes as Yes/No, skip the honeypot
       var data = {};
       Array.prototype.forEach.call(form.elements, function (el) {
-        if (el.name) data[el.name] = el.value.trim();
+        if (!el.name || el.name === "website") return;
+        data[el.name] = el.type === "checkbox" ? (el.checked ? "Yes" : "No") : el.value.trim();
       });
+      data.source = "Request a Car";
+      try { data.captured_at = new Date().toISOString(); } catch (e) {}
 
       submit.disabled = true;
       var prev = submit.textContent;
       submit.textContent = "Sending…";
-
       function done(success, msg) {
         submit.disabled = false; submit.textContent = prev;
         statusEl.className = "lead__status " + (success ? "ok" : "err");
         statusEl.textContent = msg;
-        if (success) form.reset();
+        if (success) { form.reset(); syncOrder(); }
       }
 
-      // Real submission if an endpoint is configured…
-      if (S.formEndpoint) {
-        fetch(S.formEndpoint, {
-          method: "POST",
-          headers: { "Accept": "application/json", "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        }).then(function (r) {
-          if (r.ok) done(true, "Thank you — your request is in. I'll be in touch personally.");
-          else done(false, "Something went wrong. Please email me directly.");
-        }).catch(function () { done(false, "Network error. Please email me directly."); });
+      // Live: POST to the Google Apps Script (or Formspree) endpoint. no-cors +
+      // text/plain avoids a CORS preflight Apps Script can't answer; the row
+      // still lands, we just can't read the reply, so we proceed optimistically.
+      if (S.formEndpoint && !isBot) {
+        try {
+          fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {});
+        } catch (e) {}
+        done(true, "Thank you — your request is in. I'll be in touch personally.");
         return;
       }
+      if (isBot) { done(true, "Thank you — your request is in."); return; }
 
-      // …otherwise DEMO mode: log + offer a mailto fallback.
+      // DEMO mode (no endpoint set): log + offer a mailto fallback
       console.log("[Phil Dave lead — DEMO mode, set SITE.formEndpoint to go live]", data);
       var to = (S.contact && S.contact.email) || "";
       if (to) {
-        var subject = encodeURIComponent("Car request — " + (data.vehicle || ""));
+        var subject = encodeURIComponent("Car request — " + (data.dreamcar || ""));
         var body = encodeURIComponent(
-          "Name: " + data.name + "\nContact: " + data.contact + "\nVehicle: " + data.vehicle +
+          "Name: " + data.name + "\nPhone: " + data.phone + "\nEmail: " + data.email +
+          "\nDream car: " + data.dreamcar + "\nText ok: " + data.text_ok + "   Email ok: " + data.email_ok +
+          "\nNew/Used: " + (data.newused || "-") + "\nType: " + (data.gentype || "-") + "\nFuel: " + (data.fuel || "-") +
+          "\nMake: " + (data.make || "-") + "\nTrim: " + (data.trim || "-") +
+          "\nExterior: " + (data.exterior || "-") + "\nInterior: " + (data.interior || "-") +
           "\nBudget: " + (data.budget || "-") + "\nTimeline: " + (data.timeline || "-") +
-          "\nBest time: " + (data.besttime || "-") + "\n\nNotes:\n" + (data.notes || ""));
+          "\nFactory order: " + (data.factory_order || "-") + "\nBusiness: " + (data.business || "-") +
+          "\nHeard via: " + (data.met_how || "-"));
         window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
       }
-      done(true, "Opening your email to send the request. (Tip: connect a form endpoint to receive these automatically.)");
+      done(true, "Opening your email to send the request. (Connect a form endpoint to receive these automatically.)");
     });
   }
 
