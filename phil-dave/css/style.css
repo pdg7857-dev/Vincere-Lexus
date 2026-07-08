@@ -741,6 +741,9 @@ body.is-loading .nextbay{ opacity:0; }
 .vaultlock__form input:focus{ outline:none; border-color:var(--silver); }
 .vaultlock__hint{ color:var(--muted); font-size:.85rem; margin:.9rem 0 0; }
 .vaultlock__msg{ color:var(--silver); margin:.9rem 0 0; }
+.vaultlock__msg.err{ color:#d98; }
+.vaultlock__join{ color:var(--silver-dim); font-size:.9rem; margin:1.4rem 0 0; }
+.vaultlock__join a{ color:var(--platinum); text-decoration:underline; text-underline-offset:3px; }
 .vault__welcome{ font-family:var(--serif); color:var(--platinum); font-size:1.2rem; }
 @media (max-width:520px){ .vaultlock__form{ flex-direction:column; } }
 

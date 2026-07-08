@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=47").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=48").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -609,7 +609,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=47").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=48").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -628,7 +628,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=47").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=48").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -662,6 +662,28 @@
   /* ---------- Bay 08 · The Lot member gate ----------------------------- */
   // open for anyone who subscribed on this device, or whose email the
   // membership endpoint (Google Sheet via Apps Script) recognises
+  // JSONP call (Apps Script GET can't be read cross-origin any other way)
+  function jsonp(url, cb) {
+    var name = "__pdcb" + Date.now() + Math.floor(Math.random() * 1e6);
+    var s = document.createElement("script");
+    var timer = setTimeout(function () { cleanup(); cb(null); }, 9000);
+    function cleanup() { clearTimeout(timer); try { delete window[name]; } catch (e) { window[name] = undefined; } if (s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function (data) { cleanup(); cb(data); };
+    s.onerror = function () { cleanup(); cb(null); };
+    s.src = url + (url.indexOf("?") < 0 ? "?" : "&") + "callback=" + name;
+    document.head.appendChild(s);
+  }
+  var digits = function (v) { return String(v == null ? "" : v).replace(/\D/g, ""); };
+
+  // any successful lead capture makes the visitor a member of The Lot
+  function markMember(email, phone) {
+    try {
+      if (email) localStorage.setItem("pd_member", String(email).toLowerCase());
+      localStorage.setItem("pd_subscribed", JSON.stringify({ email: email || "", phone: phone || "", t: Date.now() }));
+    } catch (e) {}
+    document.dispatchEvent(new Event("pd:subscribed"));
+  }
+
   function initVault() {
     var lock = $("#vaultLock"), content = $("#vaultContent"), form = $("#vaultForm"), msg = $("#vaultMsg");
     if (!lock || !content || !form) return;
@@ -669,30 +691,32 @@
     try {
       if (localStorage.getItem("pd_subscribed") || localStorage.getItem("pd_member")) open();
     } catch (e) {}
-    document.addEventListener("pd:subscribed", open);
+    document.addEventListener("pd:subscribed", open);   // any lead form unlocks it live
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var email = form.elements.email.value.trim().toLowerCase();
+      var raw = form.elements.key.value.trim();
+      var isEmail = raw.indexOf("@") > 0;
+      var isPhone = digits(raw).length >= 10;
       msg.hidden = false;
-      if (!email || email.indexOf("@") < 0) { msg.textContent = "That email does not look right."; return; }
+      if (!raw || (!isEmail && !isPhone)) { msg.className = "vaultlock__msg err"; msg.textContent = "Enter the email or phone number you gave me."; return; }
       var cfg = S.members || {};
-      function denied() { msg.textContent = "I do not recognise that email yet. Subscribe below and the door opens."; }
-      function grant() {
-        try { localStorage.setItem("pd_member", email); } catch (err) {}
-        open();
-      }
-      if (!cfg.endpoint) {
-        // no endpoint configured: the key is a subscription made on this device
-        var sub = null;
-        try { sub = JSON.parse(localStorage.getItem("pd_subscribed") || "null"); } catch (err) {}
-        if (sub && String(sub.email || "").toLowerCase() === email) grant(); else denied();
-        return;
-      }
-      msg.textContent = "Checking…";
-      fetch(cfg.endpoint + (cfg.endpoint.indexOf("?") < 0 ? "?" : "&") + "email=" + encodeURIComponent(email))
-        .then(function (r) { return r.json(); })
-        .then(function (j) { if (j && j.member) grant(); else denied(); })
-        .catch(function () { msg.textContent = "Could not check right now. Try again in a moment."; });
+      function grant() { try { localStorage.setItem("pd_member", raw.toLowerCase()); } catch (err) {} msg.hidden = true; open(); }
+      function denied() { msg.className = "vaultlock__msg err"; msg.textContent = "I don't have that email or phone on file yet. Request a car below and access opens automatically."; }
+
+      // recognise it on this device first (instant), then check the sheet
+      try {
+        var sub = JSON.parse(localStorage.getItem("pd_subscribed") || "null");
+        if (sub && (String(sub.email || "").toLowerCase() === raw.toLowerCase() || (isPhone && digits(sub.phone).slice(-10) === digits(raw).slice(-10)))) { grant(); return; }
+      } catch (err) {}
+      if (!cfg.endpoint) { denied(); return; }
+
+      msg.className = "vaultlock__msg"; msg.textContent = "Checking…";
+      jsonp(cfg.endpoint + "?check=" + encodeURIComponent(raw), function (j) {
+        if (j && j.member) grant();
+        else if (j) denied();
+        else { msg.className = "vaultlock__msg err"; msg.textContent = "Couldn't check right now — try again in a moment, or request a car below."; }
+      });
     });
   }
 
@@ -701,7 +725,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=47")
+    fetch("js/lot.json?v=48")
       .then(function (r) { return r.json(); })
       .then(function (cars) { if (cars && cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -791,7 +815,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=47").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=48").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
@@ -1171,6 +1195,7 @@
         try {
           fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {});
         } catch (e) {}
+        markMember(data.email, data.phone);
         done(true, "Thank you — your request is in. I'll be in touch personally.");
         return;
       }
@@ -1192,6 +1217,7 @@
           "\nHeard via: " + (data.met_how || "-"));
         window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
       }
+      markMember(data.email, data.phone);
       done(true, "Opening your email to send the request. (Connect a form endpoint to receive these automatically.)");
     });
   }
@@ -1243,6 +1269,7 @@
       }
       if (S.formEndpoint && !isBot) {
         try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
+        markMember(data.email, data.phone);
         done(true, "Thank you — I'll send your Lexus pricing shortly.");
         return;
       }
@@ -1253,6 +1280,7 @@
         var body = encodeURIComponent("Name: " + data.name + "\nPhone: " + data.phone + "\nEmail: " + data.email + "\nModel: " + data.dreamcar);
         window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
       }
+      markMember(data.email, data.phone);
       done(true, "Opening your email to send the enquiry.");
     });
   }

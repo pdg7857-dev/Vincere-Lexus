@@ -82,8 +82,44 @@ function doPost(e) {
   }
 }
 
-// lets you open the /exec URL in a browser to confirm it's live
-function doGet() { return reply("Phil Dave lead endpoint is live."); }
+/**
+ * Membership check for "The Lot".
+ *   GET ...?check=<email or phone>&callback=<fn>
+ * Returns JSONP: <fn>({"member":true|false}) so the browser can read it
+ * across origins (Apps Script doesn't send CORS headers). Matches the
+ * value against the Email column (case-insensitive) and the Number column
+ * (digits only, last 10 — so brackets/dashes/spaces don't matter).
+ */
+function doGet(e) {
+  var p = (e && e.parameter) || {};
+  if (p.check) {
+    var result = { member: isMember(p.check) };
+    var out = JSON.stringify(result);
+    if (p.callback) return ContentService.createTextOutput(p.callback + "(" + out + ")").setMimeType(ContentService.MimeType.JAVASCRIPT);
+    return ContentService.createTextOutput(out).setMimeType(ContentService.MimeType.JSON);
+  }
+  return reply("Phil Dave lead endpoint is live.");
+}
+
+function digits10(v) { var d = String(v == null ? "" : v).replace(/\D/g, ""); return d.length >= 10 ? d.slice(-10) : d; }
+
+function isMember(val) {
+  var raw = String(val || "").trim();
+  if (!raw) return false;
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = (SHEET_NAME && ss.getSheetByName(SHEET_NAME)) || ss.getSheets()[0];
+  var headers = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  var emailCol = headers.indexOf("Email"), phoneCol = headers.indexOf("Number");
+  var wantEmail = raw.toLowerCase();
+  var wantPhone = digits10(raw);
+  var isPhone = /\d/.test(raw) && raw.indexOf("@") < 0 && wantPhone.length >= 10;
+  var data = sh.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (emailCol > -1 && raw.indexOf("@") > 0 && String(data[i][emailCol]).trim().toLowerCase() === wantEmail) return true;
+    if (phoneCol > -1 && isPhone && digits10(data[i][phoneCol]) === wantPhone) return true;
+  }
+  return false;
+}
 
 function reply(s) {
   return ContentService.createTextOutput(s).setMimeType(ContentService.MimeType.TEXT);

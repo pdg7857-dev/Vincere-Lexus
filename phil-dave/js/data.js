@@ -467,7 +467,7 @@ window.SITE = {
      Script web app that checks your Google Sheet and answers
      { "member": true | false } for ?email=...                             */
   members: {
-    endpoint: "", // [PLACEHOLDER — Apps Script web app URL]
+    endpoint: "https://script.google.com/macros/s/AKfycby4G3GDuFGXaCaZqDL2Jfb8Cj9a1BhcysmdpeMTTNH8F5_nhwL0FxjaT14nFPvb9PYmrQ/exec",
   },
 
   /* Legacy single-photo fields (used only if bays is empty), plus the
