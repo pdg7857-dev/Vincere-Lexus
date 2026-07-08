@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=46").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=47").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -609,7 +609,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=46").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=47").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -628,7 +628,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=46").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=47").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -665,7 +665,7 @@
   function initVault() {
     var lock = $("#vaultLock"), content = $("#vaultContent"), form = $("#vaultForm"), msg = $("#vaultMsg");
     if (!lock || !content || !form) return;
-    function open() { lock.hidden = true; content.hidden = false; }
+    function open() { lock.hidden = true; content.hidden = false; buildLot(content); }
     try {
       if (localStorage.getItem("pd_subscribed") || localStorage.getItem("pd_member")) open();
     } catch (e) {}
@@ -696,6 +696,93 @@
     });
   }
 
+  /* ---------- The Lot: full used inventory (lazy grid + filters) -------- */
+  var lotBuilt = false;
+  function buildLot(mount) {
+    if (lotBuilt) return;
+    lotBuilt = true;
+    fetch("js/lot.json?v=47")
+      .then(function (r) { return r.json(); })
+      .then(function (cars) { if (cars && cars.length) renderLot(mount, cars); })
+      .catch(function () { /* keep the placeholder if the feed can't load */ });
+  }
+  function money(n) { return "$" + Number(n).toLocaleString("en-US"); }
+  function renderLot(mount, cars) {
+    var makes = ["All makes"].concat(Object.keys(cars.reduce(function (a, c) { a[c.make] = 1; return a; }, {})).sort());
+    mount.innerHTML =
+      '<div class="lotbar">' +
+        '<span class="lot__count" id="lotCount"></span>' +
+        '<div class="lot__controls">' +
+          '<input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search the lot" />' +
+          '<select id="lotMake" aria-label="Filter by make">' + makes.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("") + '</select>' +
+          '<select id="lotSort" aria-label="Sort">' +
+            '<option value="year-desc">Newest first</option>' +
+            '<option value="price-asc">Price: low to high</option>' +
+            '<option value="price-desc">Price: high to low</option>' +
+            '<option value="km-asc">Kilometres: lowest</option>' +
+          '</select>' +
+        '</div>' +
+      '</div>' +
+      '<div class="lotgrid" id="lotGrid"></div>' +
+      '<p class="lot__empty" id="lotEmpty" hidden>No cars match — widen your search.</p>';
+
+    var grid = $("#lotGrid", mount), countEl = $("#lotCount", mount), emptyEl = $("#lotEmpty", mount);
+    var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount);
+
+    function cardHTML(c) {
+      var name = c.year + " " + c.make + " " + (c.trim || c.model);
+      var meta = [c.km ? c.km.toLocaleString("en-US") + " km" : null, c.ext, c.drive].filter(Boolean).join(" · ");
+      return '<article class="lotcar">' +
+        '<div class="lotcar__media">' +
+          (c.photo ? '<img loading="lazy" decoding="async" src="' + esc(c.photo) + '" alt="' + esc(name) + '" />' : '<div class="lotcar__noimg">' + esc(c.make) + '</div>') +
+          (c.certified ? '<span class="lotcar__badge">Lexus Certified</span>' : '') +
+        '</div>' +
+        '<div class="lotcar__body">' +
+          '<span class="lotcar__price">' + money(c.price) + '</span>' +
+          '<h4 class="lotcar__name">' + esc(name) + '</h4>' +
+          '<p class="lotcar__meta">' + esc(meta) + '</p>' +
+          '<div class="lotcar__actions">' +
+            (c.url ? '<a class="lotcar__link" href="' + esc(c.url) + '" target="_blank" rel="noopener">View listing &rsaquo;</a>' : '') +
+            '<button type="button" class="lotcar__inquire" data-make="' + esc(c.make) + '" data-model="' + esc(name) + '">Inquire</button>' +
+          '</div>' +
+        '</div>' +
+      '</article>';
+    }
+    function apply() {
+      var q = (searchEl.value || "").toLowerCase().trim(), mk = makeEl.value, sort = sortEl.value;
+      var list = cars.filter(function (c) {
+        if (mk !== "All makes" && c.make !== mk) return false;
+        if (q) { var hay = (c.year + " " + c.make + " " + c.model + " " + c.trim + " " + c.ext).toLowerCase(); if (hay.indexOf(q) < 0) return false; }
+        return true;
+      });
+      list.sort(function (a, b) {
+        if (sort === "price-asc") return a.price - b.price;
+        if (sort === "price-desc") return b.price - a.price;
+        if (sort === "km-asc") return (a.km || 1e9) - (b.km || 1e9);
+        return (b.year - a.year) || (b.price - a.price); // year-desc default
+      });
+      countEl.textContent = list.length + (list.length === 1 ? " vehicle" : " vehicles");
+      grid.innerHTML = list.map(cardHTML).join("");
+      emptyEl.hidden = list.length > 0;
+      grid.querySelectorAll(".lotcar__inquire").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var mkv = btn.getAttribute("data-make"), mdv = btn.getAttribute("data-model");
+          var makeSel = document.getElementById("leadMake");
+          if (makeSel) {
+            var inList = Array.prototype.some.call(makeSel.options, function (o) { return o.value === mkv; });
+            makeSel.value = inList ? mkv : "Other";
+            makeSel.dispatchEvent(new Event("change", { bubbles: true }));
+          }
+          var model = document.getElementById("leadModel");
+          if (model) model.value = mdv;
+          warpTo("contact");
+        });
+      });
+    }
+    [searchEl, makeEl, sortEl].forEach(function (el) { el.addEventListener("input", apply); el.addEventListener("change", apply); });
+    apply();
+  }
+
   /* ===================== vehicle lightbox ============================== */
   var sheetEl, lastFocus, spinMod = null;
   function startSheetSpin(c) {
@@ -704,7 +791,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=46").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=47").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
