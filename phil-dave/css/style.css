@@ -442,6 +442,7 @@ em{ font-style:italic; }
 
 /* ---------- Room 2 · steps --------------------------------------------- */
 .steps{ list-style:none; display:grid; gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); border-radius:4px; overflow:hidden; }
+.process__cta{ margin-top:2.2rem; display:flex; justify-content:center; }
 .step{ display:grid; grid-template-columns:120px 1fr; gap:2rem; padding:clamp(1.8rem,4vw,3rem); background:var(--black); align-items:start; transition:background .5s; }
 .step:hover{ background:var(--panel); }
 .step__num{ font-family:var(--serif); font-size:clamp(2.4rem,5vw,3.4rem); background:var(--metal-text); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1; }

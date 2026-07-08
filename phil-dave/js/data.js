@@ -108,8 +108,8 @@ window.SITE = {
   process: [
     {
       step: "01",
-      title: "Consultation",
-      body: "We start with a quiet conversation about the car you want: spec, colour, feel, budget and timeline. No pressure, just a plan.",
+      title: "Fill Out the Form",
+      body: "Tell me the car you want right on the request form: make, model, colour, budget and timeline. No calls to book, no pressure. That's all I need to get started.",
     },
     {
       step: "02",
@@ -124,7 +124,7 @@ window.SITE = {
     {
       step: "04",
       title: "Handover",
-      body: "Paperwork prepared and the car detailed, ready for you at the dealership. Everything looked after from first call to keys in hand.",
+      body: "Paperwork prepared and the car detailed, ready for you at the dealership. Everything looked after from first request to keys in hand.",
     },
   ],
 
