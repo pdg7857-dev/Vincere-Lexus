@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=37").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=38").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -465,7 +465,10 @@
           '<span class="card__year">' + esc(c.year) + " · " + esc(c.make) + "</span>" +
           '<h3 class="card__name">' + esc(c.model) + "</h3>" +
           '<p class="card__note">' + esc(c.note || "") + "</p>" +
-          '<span class="card__more">View details &rsaquo;</span>' +
+          '<div class="card__foot">' +
+            '<span class="card__more">View details &rsaquo;</span>' +
+            '<button type="button" class="card__inquire" data-i="' + i + '">Inquire about this car</button>' +
+          "</div>" +
         "</div>" +
       "</article>"
     );
@@ -483,6 +486,16 @@
         card.addEventListener("click", function () { openSheet(inv[+card.getAttribute("data-i")]); });
         card.addEventListener("keydown", function (e) {
           if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openSheet(inv[+card.getAttribute("data-i")]); }
+        });
+      });
+      // "Inquire about this car" → jump to the request form, prefilled with the car
+      grid.querySelectorAll(".card__inquire").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();                       // don't also open the detail sheet
+          var c = inv[+btn.getAttribute("data-i")];
+          var vf = document.querySelector('#leadForm [name="vehicle"]');
+          if (vf && c) vf.value = c.year + " " + c.make + " " + c.model;
+          warpTo("contact");
         });
       });
     }
@@ -595,7 +608,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=37").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=38").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -614,7 +627,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=37").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=38").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -690,7 +703,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=37").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=38").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }

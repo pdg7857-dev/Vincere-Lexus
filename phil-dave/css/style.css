@@ -399,8 +399,14 @@ em{ font-style:italic; }
 .card__art .silo{ position:absolute; left:50%; top:54%; width:86%; transform:translate(-50%,-50%); opacity:.5; transition:opacity .6s var(--ease), transform 1.2s var(--ease); }
 .card:hover .card__art .silo{ opacity:.78; transform:translate(-50%,-50%) scale(1.05); }
 .card__art .card__marque{ position:relative; z-index:1; opacity:.32; }
-.card__more{ display:block; margin-top:1rem; font-size:.66rem; letter-spacing:.24em; text-transform:uppercase; color:var(--silver-dim); opacity:0; transform:translateY(6px); transition:opacity .4s var(--ease), transform .4s var(--ease); }
+.card__foot{ display:flex; align-items:center; justify-content:space-between; gap:.8rem; margin-top:1.1rem; flex-wrap:wrap; }
+.card__more{ font-size:.66rem; letter-spacing:.24em; text-transform:uppercase; color:var(--silver-dim); opacity:0; transform:translateY(6px); transition:opacity .4s var(--ease), transform .4s var(--ease); }
 .card:hover .card__more,.card:focus-visible .card__more{ opacity:1; transform:none; color:var(--platinum); }
+.card__inquire{ font-family:var(--sans); font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--platinum); background:transparent; border:1px solid var(--line); border-radius:2px; padding:.6rem .9rem; cursor:pointer; transition:border-color .3s var(--ease), background .3s var(--ease), color .3s var(--ease); }
+.card__inquire:hover{ background:var(--platinum); color:var(--black); border-color:var(--platinum); }
+.card__inquire:focus-visible{ outline:2px solid var(--silver); outline-offset:3px; }
+/* touch devices have no hover — keep the "view details" hint visible */
+@media (hover:none){ .card__more{ opacity:1; transform:none; } }
 .card{ cursor:pointer; }
 .card:focus-visible{ outline:2px solid var(--silver); outline-offset:4px; }
 

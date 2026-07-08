@@ -18,10 +18,10 @@ window.SITE = {
 
   /* --- Direct contact (used in Room 4 + footer) -------------------------- */
   contact: {
-    phone: "+1 (000) 000-0000",               // [PLACEHOLDER — your phone]
-    email: "hello@phildave.example",          // [PLACEHOLDER — your email]
-    instagram: "@phildave",                   // [PLACEHOLDER — your handle]
-    instagramUrl: "https://instagram.com/",   // [PLACEHOLDER — your IG link]
+    phone: "514-943-3730",
+    email: "pgelinas@northwestlexus.com",
+    instagram: "@lexusphildave",
+    instagramUrl: "https://instagram.com/lexusphildave",
   },
 
   /* --- Lead form destination --------------------------------------------
