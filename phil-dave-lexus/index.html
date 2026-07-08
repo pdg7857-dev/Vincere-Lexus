@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Phil Dave · Your Lexus, Sourced · Greater Toronto Area</title>
+<meta name="description" content="Phil Dave sources and delivers Lexus for clients across the Greater Toronto Area — new and pre-owned, found, vetted and ready. Request yours." />
+<meta name="theme-color" content="#0A0A0B" />
+<link rel="icon" href="../phil-dave/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../phil-dave/css/fonts.css?v=1" />
+<link rel="stylesheet" href="lexus.css?v=1" />
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top">
+    <span class="nav__name">Phil Dave</span>
+    <span class="nav__tag">Lexus Specialist · GTA</span>
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="#find">Find your Lexus</a>
+    <a href="#inventory">Inventory</a>
+    <a class="nav__cta" href="#request">Request a Lexus</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero__copy">
+      <p class="eyebrow">Private Lexus sourcing · Greater Toronto Area</p>
+      <h1 class="hero__title">Your next <em>Lexus</em>,<br />sourced.</h1>
+      <p class="hero__lede">New or pre-owned, I find the exact Lexus you want, verify it properly, and have it ready for you at the dealership. One point of contact, start to finish.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#request">Request a Lexus</a>
+        <a class="btn" href="#inventory">Browse inventory</a>
+      </div>
+    </div>
+    <div class="hero__spin" id="heroSpin" aria-hidden="true"></div>
+  </section>
+
+  <!-- ============ FIND YOUR LEXUS ============ -->
+  <section class="band find" id="find">
+    <div class="band__head">
+      <span class="eyebrow">The reference room</span>
+      <h2>Find your Lexus</h2>
+      <p class="band__lede">Compare every 2026 Lexus trim side by side and build the numbers — lease, finance and cash — in one place. Then tell me which one, and I'll source it.</p>
+      <a class="btn btn--primary" href="../phil-dave/lexus-2026.html">Open the 2026 Lexus guide</a>
+    </div>
+  </section>
+
+  <!-- ============ INVENTORY ============ -->
+  <section class="band inventory" id="inventory">
+    <div class="band__head">
+      <span class="eyebrow">In stock now</span>
+      <h2>Lexus inventory</h2>
+      <p class="band__lede">A live look at Lexus on the lot. See one you like? Tap it and I'll be in touch.</p>
+    </div>
+    <div class="lotbar">
+      <span class="lot__count" id="lotCount"></span>
+      <div class="lot__controls">
+        <input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search inventory" />
+        <select id="lotSort" aria-label="Sort">
+          <option value="year-desc">Newest first</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+          <option value="km-asc">Kilometres: lowest</option>
+        </select>
+      </div>
+    </div>
+    <div class="lotgrid" id="lotGrid"></div>
+    <p class="lot__empty" id="lotEmpty" hidden>No Lexus match — widen your search.</p>
+  </section>
+
+  <!-- ============ REQUEST ============ -->
+  <section class="band request" id="request">
+    <div class="band__head">
+      <span class="eyebrow">Tell me what you want</span>
+      <h2>Request a Lexus</h2>
+      <p class="band__lede">Give me the details and I'll come back to you personally with options and pricing.</p>
+    </div>
+    <form class="lead" id="leadForm" novalidate>
+      <input class="lead__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website" />
+      <div class="lead__row">
+        <label class="field"><span>Name <b>*</b></span><input type="text" name="name" autocomplete="name" required /></label>
+        <label class="field"><span>Phone <b>*</b></span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required /></label>
+      </div>
+      <div class="lead__row">
+        <label class="field"><span>Email <b>*</b></span><input type="email" name="email" autocomplete="email" required /></label>
+        <label class="field"><span>Which Lexus? <b>*</b></span><select name="dreamcar" id="leadModel" required><option value="">Select a model…</option></select></label>
+      </div>
+      <div class="lead__row">
+        <label class="field"><span>New or used</span><select name="newused"><option value="">No preference</option><option>New</option><option>Used</option></select></label>
+        <label class="field"><span>Budget</span><select name="budget"><option value="">Select…</option><option>Under $50k</option><option>$50k – $70k</option><option>$70k – $90k</option><option>$90k – $120k</option><option>$120k +</option></select></label>
+      </div>
+      <label class="field"><span>Anything else? <span class="opt">(colour, timeline, trade-in…)</span></span><textarea name="notes" rows="2" placeholder="e.g. RX 500h F Sport, white on black, needed within 60 days"></textarea></label>
+      <label class="check"><input type="checkbox" name="consent" required /><span>You may contact me by <b>phone, text &amp; email</b> about my Lexus. <b>*</b></span></label>
+      <div class="lead__foot">
+        <button type="submit" class="btn btn--primary" id="leadSubmit">Send my request</button>
+        <p class="lead__status" id="leadStatus" role="status"></p>
+      </div>
+    </form>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot__name">Phil&nbsp;Dave</div>
+  <p class="foot__tag">Your Lexus, sourced.</p>
+  <p class="foot__meta">Lexus specialist · Greater Toronto Area · English &amp; French</p>
+  <p class="foot__contact"><a href="tel:+15149433730">514-943-3730</a> · <a href="mailto:pgelinas@northwestlexus.com">pgelinas@northwestlexus.com</a> · <a href="https://instagram.com/lexusphildave" target="_blank" rel="noopener">@lexusphildave</a></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave. · <a href="../phil-dave/privacy.html">Privacy Policy</a></p>
+</footer>
+
+<!-- inquiry popup -->
+<div class="lotmodal" id="lotModal" hidden role="dialog" aria-modal="true" aria-labelledby="lotModalName">
+  <div class="lotmodal__backdrop" data-lotclose></div>
+  <div class="lotmodal__panel" role="document">
+    <button class="lotmodal__close" data-lotclose aria-label="Close">&times;</button>
+    <div class="lotmodal__media"><img id="lotModalImg" alt="" /></div>
+    <div class="lotmodal__body">
+      <span class="lotmodal__price" id="lotModalPrice"></span>
+      <h3 class="lotmodal__name" id="lotModalName"></h3>
+      <p class="lotmodal__meta" id="lotModalMeta"></p>
+      <p class="lotmodal__q">Inquire about this Lexus?</p>
+      <form class="lotmodal__form" id="lotModalForm" novalidate>
+        <div class="lead__row">
+          <label class="field"><span>Name <b>*</b></span><input name="name" autocomplete="name" required /></label>
+          <label class="field"><span>Phone <b>*</b></span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required /></label>
+        </div>
+        <label class="field"><span>Email <b>*</b></span><input name="email" type="email" autocomplete="email" required /></label>
+        <label class="check"><input type="checkbox" name="consent" required /><span>You may contact me by phone, text &amp; email. <b>*</b></span></label>
+        <div class="lotmodal__actions">
+          <button type="button" class="btn" data-lotclose>Cancel</button>
+          <button type="submit" class="btn btn--primary" id="lotModalSend">Send inquiry</button>
+        </div>
+        <p class="lotmodal__msg" id="lotModalMsg" hidden></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">{ "imports": { "three": "../phil-dave/js/vendor/three/three.module.min.js" } }</script>
+<script type="module" src="lexus.js?v=1"></script>
+</body>
+</html>
