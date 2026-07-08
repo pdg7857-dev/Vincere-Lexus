@@ -23,7 +23,7 @@
 var SHEET_NAME = "";        // "" = first tab, or e.g. "Leads"
 var TOKEN = "";             // "" = no check. Set to require a matching token.
 
-// form field name  ->  your sheet column header (exactly as typed in row 1)
+// form field name  ->  your sheet column header (matched to your row 1 exactly)
 var FIELD_MAP = {
   captured_at:   "Date",
   name:          "Name",
@@ -31,7 +31,6 @@ var FIELD_MAP = {
   email:         "Email",
   dreamcar:      "Dream car",
   text_ok:       "Text?",
-  newused:       "NewUsed",
   gentype:       "General type",
   fuel:          "Gas/Hybrid/EV",
   make:          "Make",
@@ -42,10 +41,11 @@ var FIELD_MAP = {
   budget:        "$ range",
   timeline:      "Purchase timeline",
   business:      "Business name",
-  met_how:       "Met how",
-  source:        "Source"        // add a "Source" column to tell forms apart
-  // Fields with no column here (level, notes, sale columns, etc.) are
-  // ignored and left blank for you to fill in by hand.
+  met_how:       "Met how"
+  // Customer answers with no matching single column in your sheet
+  // (new/used, email opt-in) are ignored for now. Internal columns
+  // (Level, Buying, Buyer intent, Notes, Sale - …, etc.) stay blank
+  // for you to fill in. Add a "Source" column later to tag each form.
 };
 
 function doPost(e) {
