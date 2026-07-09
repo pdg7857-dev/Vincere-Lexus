@@ -782,7 +782,9 @@ body.is-loading .nextbay{ opacity:0; }
 .lotbar{ display:flex; flex-direction:column; align-items:stretch; gap:.9rem; margin-bottom:1.6rem; position:sticky; top:64px; z-index:5; padding:.7rem 0; background:linear-gradient(var(--black) 78%, transparent); }
 .lotbar__row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
 
-/* condition filter — clear buttons for New / CPO / Used */
+/* condition + make filter buttons, kept together on the left */
+.lotfilters{ display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; }
+.lotfilters__div{ width:1px; height:20px; background:var(--line); margin:0 .15rem; }
 .lotcond{ display:flex; flex-wrap:wrap; gap:.5rem; }
 .lotcond__btn{ font-family:var(--sans); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--silver-dim); background:transparent; border:1px solid var(--line); border-radius:999px; padding:.55rem 1.1rem; cursor:pointer; transition:color .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease); }
 .lotcond__btn:hover{ color:var(--platinum); border-color:var(--silver); }

@@ -308,19 +308,6 @@ window.SITE = {
       pins: [{ x: 33, y: 54 }, { x: 62, y: 33 }, { x: 88, y: 48 }, { x: 61, y: 63 }],
       door: { x: 12, y: 18 },
     },
-    {
-      /* Trade-in appraisal bay — its own model (ES 350). */
-      key: "es", bay: "Bay 05", label: "Trade-in", section: "tradein",
-      car: "Lexus ES 350", type: "photo",
-      image: "assets/hero-lc500-1536.webp",
-      srcset: "assets/hero-lc500-600.webp 600w, assets/hero-lc500-900.webp 900w, assets/hero-lc500-1536.webp 1536w",
-      alt: "Lexus ES on a dark studio podium",
-      model: "models/lexus-es.glb",
-      modelLength: 4.98,
-      hideParts: ["Plate", "License"],
-      pins: [{ x: 27, y: 55 }, { x: 57, y: 30 }, { x: 85, y: 49 }, { x: 58, y: 66 }],
-      door: { x: 88, y: 18 },
-    },
   ],
 
   /* --- Bay 06 · Registration & credentials (OMVIC) ------------------------

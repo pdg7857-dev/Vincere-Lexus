@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=13").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=14").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -619,9 +619,9 @@
 
     /* ---------------- in-page chat funnel ---------------- */
     var log = $("#waChatLog"), quickEl = $("#waChatQuick"), form = $("#waChatForm"), input = $("#waChatText"), closeBtn = $("#waChatClose");
-    var started = false, state = "start";
-    var CLOSING = "Awesome, I will get in touch with you shortly. Feel free to text me anything else here, I'll get back to you as soon as I can.";
-    var OPT_LEXUS = "I'm looking to get a Lexus", OPT_OTHER = "I'm looking for another make", OPT_TRADE = "I want to sell or trade in my car";
+    var started = false, state = "start", lead = {};
+    var CLOSING = "Perfect — I'm dropping this into WhatsApp so I've got the full picture. Tap send and I'll get right back to you 👇";
+    var OPT_LEXUS = "I'm looking to get a Lexus", OPT_OTHER = "I'm looking for another make", OPT_QUESTION = "I just have a question";
     var LEXUS_MODELS = ["ES", "IS", "LS", "NX", "RX", "GX", "LX", "RZ", "LC", "RC", "Not sure yet"];
 
     function addMsg(who, text) {
@@ -641,24 +641,66 @@
       quickEl.hidden = !labels || !labels.length;
     }
     function bot(text, after) { setTimeout(function () { addMsg("bot", text); if (after) after(); }, 480); }
-    function greet() { bot(cfg.popup || "Hey 👋 how can I help?", function () { state = "start"; setQuick([OPT_LEXUS, OPT_OTHER, OPT_TRADE]); }); }
+    function greet() { bot(cfg.popup || "Hey 👋 how can I help?", function () { state = "start"; setQuick([OPT_LEXUS, OPT_OTHER, OPT_QUESTION]); }); }
     function askCondition() { state = "condition"; bot("New or used?", function () { setQuick(["New", "Used"]); }); }
     function askModel() { state = "model"; bot("Which model?", function () { setQuick(LEXUS_MODELS); }); }
-    function close() { state = "open"; bot(CLOSING); }
+    function askTrade() { state = "tradeask"; bot("Do you have a trade-in?", function () { setQuick(["Yes", "No"]); }); }
+    function askTradeDetails() { state = "tradedetails"; bot("Nice — what are you driving? Year, make, model and rough km."); }
+
+    // build the WhatsApp message that carries the whole funnel to Phil
+    function composeWA() {
+      var lines = ["Hi Phil, coming from your site 👋", ""];
+      if (lead.interest) lines.push(lead.interest);
+      if (lead.condition) lines.push("New or used: " + lead.condition);
+      if (lead.model) lines.push("Model: " + lead.model);
+      if (lead.make) lines.push("After: " + lead.make);
+      if (lead.question) lines.push("Question: " + lead.question);
+      if (lead.custom) lines.push(lead.custom);
+      if (lead.tradein) lines.push("Trade-in: " + lead.tradein + (lead.tradeDetails ? " (" + lead.tradeDetails + ")" : ""));
+      return lines.join("\n");
+    }
+    function openWA() {
+      if (!num) return "";
+      var url = "https://wa.me/" + num + "?text=" + encodeURIComponent(composeWA());
+      try { window.open(url, "_blank"); } catch (e) {}
+      return url;
+    }
+    // called synchronously inside the click/submit handler so the WhatsApp
+    // tab opens as a user gesture (not blocked by pop-up policies)
+    function finish() {
+      state = "done";
+      var url = openWA();
+      try { logActivity("chat", "handoff to WhatsApp", composeWA().replace(/\n+/g, " | ")); } catch (e) {}
+      bot(CLOSING, function () {
+        if (url && quickEl) {
+          quickEl.innerHTML = "";
+          var b = document.createElement("button"); b.type = "button"; b.className = "wachat__chip"; b.textContent = "Open WhatsApp";
+          b.addEventListener("click", openWA);
+          quickEl.appendChild(b); quickEl.hidden = false;
+        }
+      });
+    }
 
     // advance the funnel from a quick-reply OR a typed message
     function advance(text) {
       addMsg("user", text);
       try { logActivity("chat", text, "step:" + state); } catch (e) {}
       setQuick([]);
-      if (state === "start") {
-        if (text === OPT_LEXUS) askCondition();
-        else if (text === OPT_OTHER) { state = "other"; bot("Tell me the make and model you're after and I'll track it down."); }
-        else if (text === OPT_TRADE) { state = "trade"; bot("Great — what are you driving now? Year, make, model and rough kilometres."); }
-        else close();               // a custom opening message
-      } else if (state === "condition") { askModel(); }
-      else if (state === "model" || state === "other" || state === "trade") { close(); }
-      // state === "open": further messages are just logged for Phil
+      switch (state) {
+        case "start":
+          if (text === OPT_LEXUS) { lead.interest = "Looking to buy a Lexus"; askCondition(); }
+          else if (text === OPT_OTHER) { lead.interest = "Looking for another make"; state = "othermake"; bot("Which make and model are you after?"); }
+          else if (text === OPT_QUESTION) { lead.interest = "Has a question"; state = "question"; bot("Sure — what's your question?"); }
+          else { lead.custom = text; finish(); }        // a custom opening message
+          break;
+        case "condition": lead.condition = text; askModel(); break;
+        case "model": lead.model = text; askTrade(); break;        // ask trade-in when buying
+        case "othermake": lead.make = text; askTrade(); break;      // ask trade-in when buying
+        case "tradeask": lead.tradein = text; if (/^y/i.test(text)) askTradeDetails(); else finish(); break;
+        case "tradedetails": lead.tradeDetails = text; finish(); break;
+        case "question": lead.question = text; finish(); break;
+        // state "done": extra messages are just logged
+      }
     }
 
     function openChat() {
@@ -742,7 +784,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=13").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=14").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -761,7 +803,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=13").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=14").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -895,7 +937,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=13")
+    fetch("js/lot.json?v=14")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -905,17 +947,20 @@
     var makes = ["All makes"].concat(Object.keys(cars.reduce(function (a, c) { a[c.make] = 1; return a; }, {})).sort());
     mount.innerHTML =
       '<div class="lotbar">' +
-        '<div class="lotcond" id="lotCond" role="group" aria-label="Filter by condition">' +
-          '<button type="button" class="lotcond__btn is-active" data-cond="all">All</button>' +
-          '<button type="button" class="lotcond__btn" data-cond="new">New</button>' +
-          '<button type="button" class="lotcond__btn" data-cond="cpo">Certified pre-owned</button>' +
-          '<button type="button" class="lotcond__btn" data-cond="used">Used</button>' +
+        '<div class="lotfilters">' +
+          '<div class="lotcond" id="lotCond" role="group" aria-label="Filter by condition">' +
+            '<button type="button" class="lotcond__btn is-active" data-cond="all">All</button>' +
+            '<button type="button" class="lotcond__btn" data-cond="new">New</button>' +
+            '<button type="button" class="lotcond__btn" data-cond="cpo">Certified pre-owned</button>' +
+            '<button type="button" class="lotcond__btn" data-cond="used">Used</button>' +
+          '</div>' +
+          '<span class="lotfilters__div" aria-hidden="true"></span>' +
+          '<button type="button" class="lotcond__btn" id="lotNonLexus" aria-pressed="false">Non-Lexus</button>' +
         '</div>' +
         '<div class="lotbar__row">' +
           '<span class="lot__count" id="lotCount"></span>' +
           '<div class="lot__controls">' +
             '<input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search the lot" />' +
-            '<button type="button" class="lotchip" id="lotNonLexus" aria-pressed="false">Non-Lexus</button>' +
             '<select id="lotMake" aria-label="Filter by make">' + makes.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("") + '</select>' +
             '<select id="lotSort" aria-label="Sort">' +
               '<option value="year-desc">Newest first</option>' +
@@ -1084,7 +1129,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=13").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=14").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
@@ -1554,84 +1599,6 @@
     });
   }
 
-  /* ---------- Trade-in appraisal — collects the trade vehicle + contact,
-     sent to the sheet so an AutoTrader-based value can be returned. ------ */
-  function initTradeIn() {
-    var form = $("#tradeForm");
-    if (!form) return;
-    var statusEl = $("#tradeStatus"), submit = $("#tradeSubmit");
-
-    // make dropdown + model typeahead (same catalogue as Request a Car)
-    var makeSel = $("#tradeMake"), modelInput = $("#tradeModel"), modelList = $("#tradeModels");
-    if (makeSel && S.carMakes) {
-      S.carMakes.forEach(function (m) { var o = document.createElement("option"); o.value = m; o.textContent = m; makeSel.appendChild(o); });
-    }
-    function syncModels() {
-      if (!modelList) return;
-      modelList.innerHTML = "";
-      var list = (S.carModels && makeSel && S.carModels[makeSel.value]) || [];
-      list.forEach(function (m) { var o = document.createElement("option"); o.value = m; modelList.appendChild(o); });
-    }
-    if (makeSel) makeSel.addEventListener("change", syncModels);
-    syncModels();
-
-    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      statusEl.className = "lead__status"; statusEl.textContent = "";
-      var ok = true, firstBad = null;
-      ["ti_year", "ti_make", "ti_model", "ti_km", "ti_condition", "name", "phone", "email"].forEach(function (n) {
-        var f = form.elements[n]; if (!f) return;
-        var bad = !f.value.trim() || (n === "email" && !emailRe.test(f.value.trim()));
-        f.classList.toggle("invalid", bad);
-        if (bad) { ok = false; if (!firstBad) firstBad = f; }
-      });
-      var consent = form.elements["consent"], cw = consent.closest(".check");
-      if (!consent.checked) { if (cw) cw.classList.add("invalid"); ok = false; if (!firstBad) firstBad = consent; }
-      else if (cw) cw.classList.remove("invalid");
-      if (!ok) {
-        statusEl.className = "lead__status err";
-        statusEl.textContent = "Please complete the required fields and agree to be contacted.";
-        if (firstBad && firstBad.focus) firstBad.focus();
-        return;
-      }
-
-      var hp = form.elements["website"], isBot = hp && hp.value;
-      var v = form.elements, val = function (n) { return v[n] && v[n].value.trim(); };
-      var vehicle = [val("ti_year"), val("ti_make"), val("ti_model"), val("ti_trim")].filter(Boolean).join(" ");
-      var summary = "TRADE-IN: " + vehicle +
-        " | " + val("ti_km") + " km" +
-        " | Condition: " + val("ti_condition") +
-        (val("ti_accidents") ? " | Accidents: " + val("ti_accidents") : "") +
-        (val("ti_colour") ? " | Colour: " + val("ti_colour") : "") +
-        (val("ti_vin") ? " | VIN: " + val("ti_vin") : "") +
-        (val("ti_notes") ? " | Notes: " + val("ti_notes") : "");
-      var data = {
-        name: val("name"), phone: val("phone"), email: val("email"), consent: "Yes",
-        make: val("ti_make"), dreamcar: vehicle, notes: summary, source: "Trade-in appraisal"
-      };
-      try { data.captured_at = new Date().toISOString(); } catch (e) {}
-
-      submit.disabled = true; var prev = submit.textContent; submit.textContent = "Sending…";
-      function done(success, msg) {
-        submit.disabled = false; submit.textContent = prev;
-        statusEl.className = "lead__status " + (success ? "ok" : "err"); statusEl.textContent = msg;
-        if (success) form.reset();
-      }
-      if (S.formEndpoint && !isBot) {
-        try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
-        markMember(data.email, data.phone, data.name);
-        try { logActivity("tradein", vehicle, val("ti_km") + " km"); } catch (e) {}
-        done(true, "Thanks. I'll appraise it against AutoTrader and send your value shortly.");
-        return;
-      }
-      if (isBot) { done(true, "Thanks — your appraisal request is in."); return; }
-      console.log("[Phil Dave trade-in — DEMO mode]", data);
-      markMember(data.email, data.phone, data.name);
-      done(true, "Thanks. (Connect a form endpoint to receive these automatically.)");
-    });
-  }
-
   /* ===================== intro / boot ================================== */
   /* the opening: the car waits in a dark garage, then the studio lights
      stutter awake (HID-style) and bloom over the podium */
@@ -1688,7 +1655,6 @@
     initLotModal();
     initForm();
     initLexusForm();
-    initTradeIn();
     initLenis();
     initReveals();
     initMagnetic();

@@ -33,8 +33,8 @@
 <link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
 <link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="css/fonts.css?v=13" />
-<link rel="stylesheet" href="css/style.css?v=13" />
+<link rel="stylesheet" href="css/fonts.css?v=14" />
+<link rel="stylesheet" href="css/style.css?v=14" />
 </head>
 <body class="is-loading">
 
@@ -157,7 +157,6 @@
     <a href="#about" data-link>About</a>
     <a href="#inventory" data-link>Show Room</a>
     <a href="#lexus" data-link>Find your Lexus</a>
-    <a href="#tradein" data-link>Trade-in</a>
     <a class="nav__cta magnetic" href="#contact" data-link>Request a Car</a>
   </nav>
   <button class="nav__menu" id="navMenu" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span></button>
@@ -484,96 +483,6 @@
     </aside>
   </section>
 
-  <!-- ====================== ROOM 5 · TRADE-IN APPRAISAL ====================== -->
-  <section class="room room--tradein" id="tradein" aria-labelledby="tradein-h">
-    <div class="room__head">
-      <span class="room__index">Room 05</span>
-      <h2 class="room__title" id="tradein-h"><span class="reveal-line">Trade-in appraisal</span></h2>
-      <p class="room__intro reveal-line">Thinking of trading in? Tell me about your vehicle and I'll appraise it against live AutoTrader market values, then send you a real number, personally.</p>
-    </div>
-
-    <form class="lead will-reveal" id="tradeForm" novalidate>
-      <input class="lead__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website" />
-
-      <p class="lead__grouplabel">Your vehicle</p>
-      <div class="lead__row">
-        <label class="field">
-          <span>Year <b class="req">*</b></span>
-          <input type="text" name="ti_year" inputmode="numeric" placeholder="e.g. 2021" required />
-        </label>
-        <label class="field">
-          <span>Make <b class="req">*</b></span>
-          <select name="ti_make" id="tradeMake" required><option value="">Select…</option></select>
-        </label>
-      </div>
-      <div class="lead__row">
-        <label class="field">
-          <span>Model <b class="req">*</b></span>
-          <input type="text" name="ti_model" id="tradeModel" list="tradeModels" autocomplete="off" placeholder="e.g. RX 350" required />
-          <datalist id="tradeModels"></datalist>
-        </label>
-        <label class="field">
-          <span>Trim <span class="opt">(optional)</span></span>
-          <input type="text" name="ti_trim" placeholder="e.g. F Sport" />
-        </label>
-      </div>
-      <div class="lead__row">
-        <label class="field">
-          <span>Kilometres <b class="req">*</b></span>
-          <input type="text" name="ti_km" inputmode="numeric" placeholder="e.g. 72,000" required />
-        </label>
-        <label class="field">
-          <span>Condition <b class="req">*</b></span>
-          <select name="ti_condition" required><option value="">Select…</option><option>Excellent</option><option>Good</option><option>Fair</option><option>Rough</option></select>
-        </label>
-      </div>
-      <div class="lead__row">
-        <label class="field">
-          <span>Accident history</span>
-          <select name="ti_accidents"><option value="">Select…</option><option>None</option><option>Minor</option><option>Major</option><option>Not sure</option></select>
-        </label>
-        <label class="field">
-          <span>Exterior colour</span>
-          <input type="text" name="ti_colour" placeholder="e.g. Ultra White" />
-        </label>
-      </div>
-      <label class="field">
-        <span>VIN <span class="opt">(optional — sharpens the estimate)</span></span>
-        <input type="text" name="ti_vin" placeholder="17-character VIN" />
-      </label>
-
-      <p class="lead__grouplabel">Where to send your appraisal</p>
-      <div class="lead__row">
-        <label class="field">
-          <span>Name <b class="req">*</b></span>
-          <input type="text" name="name" autocomplete="name" required />
-        </label>
-        <label class="field">
-          <span>Phone number <b class="req">*</b></span>
-          <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required />
-        </label>
-      </div>
-      <label class="field">
-        <span>Email <b class="req">*</b></span>
-        <input type="email" name="email" autocomplete="email" required />
-      </label>
-      <label class="field">
-        <span>Notes <span class="opt">(anything else about the car)</span></span>
-        <textarea name="ti_notes" rows="2" placeholder="Service history, tires, options, buying another car from me, etc."></textarea>
-      </label>
-
-      <label class="check">
-        <input type="checkbox" name="consent" required />
-        <span>You may contact me by <b>phone, text &amp; email</b> with my appraisal. <b class="req">*</b></span>
-      </label>
-
-      <div class="lead__foot">
-        <button type="submit" class="btn btn--primary magnetic" id="tradeSubmit">Get my appraisal</button>
-        <p class="lead__status" id="tradeStatus" role="status"></p>
-      </div>
-      <p class="pricing-disclaimer">Appraisals are based on live AutoTrader market data and are an estimate, not a firm offer &mdash; final value is confirmed on inspection. You can check comparable listings any time at <a href="https://www.autotrader.ca" target="_blank" rel="noopener">autotrader.ca</a>.</p>
-    </form>
-  </section>
 
 </main>
 
@@ -581,23 +490,23 @@
   <div class="foot__name">Phil&nbsp;Dave</div>
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
   <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 13 · Lexus</span></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 14 · Lexus</span></p>
   <p class="foot__fine" id="modelCredit" hidden></p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
-<script src="js/vendor/gsap.min.js?v=13" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=13" defer></script>
-<script src="js/vendor/lenis.umd.js?v=13" defer></script>
+<script src="js/vendor/gsap.min.js?v=14" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=14" defer></script>
+<script src="js/vendor/lenis.umd.js?v=14" defer></script>
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
-<script src="js/data.js?v=13" defer></script>
-<script src="js/silhouettes.js?v=13" defer></script>
-<script src="js/main.js?v=13" defer></script>
+<script src="js/data.js?v=14" defer></script>
+<script src="js/silhouettes.js?v=14" defer></script>
+<script src="js/main.js?v=14" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
      reduced-motion, or when WebGL is unavailable) -->
 <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="js/hero3d.js?v=13"></script>
+<script type="module" src="js/hero3d.js?v=14"></script>
 </body>
 </html>
