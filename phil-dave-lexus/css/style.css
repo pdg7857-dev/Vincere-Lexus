@@ -886,3 +886,8 @@ body.is-loading .nextbay{ opacity:0; }
 .wabubble__icon{ display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:#25D366; color:#fff; flex:0 0 auto; }
 .wabubble__label{ white-space:nowrap; padding-right:.35rem; }
 @media (max-width:520px){ .wabubble__label{ display:none; } .wabubble{ padding:.5rem; } }
+
+/* --- pricing disclaimer under the Lexus tool -------------------------- */
+.pricing-disclaimer{ margin:1.4rem auto 0; max-width:var(--maxw); font-size:.78rem; line-height:1.6; color:var(--muted); }
+.pricing-disclaimer a{ color:var(--silver); text-decoration:underline; text-underline-offset:2px; }
+.pricing-disclaimer a:hover{ color:var(--platinum); }
