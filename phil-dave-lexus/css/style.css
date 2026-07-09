@@ -952,3 +952,7 @@ body.is-loading .nextbay{ opacity:0; }
 .wachat__send:hover{ filter:brightness(1.08); }
 body.wachat-open .wabubble, body.wachat-open .wapop{ opacity:0; pointer-events:none; }
 @media (max-width:520px){ .wachat{ right:8px; left:8px; width:auto; bottom:8px; height:min(80vh,580px); } }
+
+/* --- trade-in form group labels --------------------------------------- */
+.lead__grouplabel{ font-family:var(--sans); font-size:.62rem; letter-spacing:.24em; text-transform:uppercase; color:var(--silver-dim); margin:.4rem 0 -.4rem; }
+.lead__grouplabel:first-child{ margin-top:0; }
