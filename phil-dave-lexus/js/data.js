@@ -130,7 +130,7 @@ window.SITE = {
     lead: "I source cars for people who value their time and their taste.",
     body: [
       "Phil Dave is a luxury car sourcing specialist based in the Greater Toronto Area. I'm not a private seller. I work within an established luxury dealership group, and I'm your personal way in: I find the right car, verify it properly, and have everything ready before you walk through the door.",
-      "And because clients trade in cars of every marque, what comes through my hands runs well past any single brand: Mercedes, Audi, or something rarer. When the right car surfaces, the purchase completes at the dealership, fully licensed, with financing and warranty available and the paperwork as clean as the car. Every deal has a full dealership standing behind it, but you deal with me.",
+      "I primarily focus on Lexus, but I can source any car from any make. When the right car surfaces, the purchase completes at the dealership, fully licensed, with financing and warranty available and the paperwork as clean as the car. Every deal has a full dealership standing behind it, but you deal with me.",
       "I grew up in Atlantic Canada and speak fluent French. Service available in English and French, across the GTA and beyond.",
     ],
   },
@@ -306,7 +306,26 @@ window.SITE = {
       door: { x: 10, y: 22 },
     },
     {
-      key: "es", bay: "Bay 03", label: "Request a Car", section: "contact",
+      /* the Lexus tool bay: trim comparisons and the pricing calculator.
+         Reuses Bay 02's LC 500 model, so it costs no extra download.      */
+      key: "lexus", bay: "Bay 03", label: "Find your Lexus", section: "lexus",
+      car: "Lexus LC 500", type: "photo",
+      image: "assets/hero-lc500-1536.webp",
+      srcset: "assets/hero-lc500-600.webp 600w, assets/hero-lc500-900.webp 900w, assets/hero-lc500-1536.webp 1536w",
+      alt: "Red Lexus LC 500 on a dark studio podium",
+      model: "models/lc500.glb",
+      modelLength: 4.77,
+      paintTune: [
+        { match: "PaletteMaterial001",
+          metalness: 0.3, roughness: 0.42, envMapIntensity: 0.35 },
+        { match: "material_8", color: "#101114",
+          metalness: 0.5, roughness: 0.5, envMapIntensity: 0.4 },
+      ],
+      pins: [{ x: 26, y: 54 }, { x: 60, y: 29 }, { x: 85, y: 47 }, { x: 53, y: 64 }],
+      door: { x: 10, y: 22 },
+    },
+    {
+      key: "es", bay: "Bay 04", label: "Request a Car", section: "contact",
       car: "Lexus ES 350", type: "photo",
       image: "assets/hero-lc500-1536.webp",
       srcset: "assets/hero-lc500-600.webp 600w, assets/hero-lc500-900.webp 900w, assets/hero-lc500-1536.webp 1536w",

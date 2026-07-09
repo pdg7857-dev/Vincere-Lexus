@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=4").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=5").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -481,7 +481,7 @@
     var grid = $("#inventoryGrid");
     var inv = S.inventory || [];
     if (!inv.length) {
-      grid.innerHTML = '<div class="empty">Nouveautés en route — new arrivals incoming.</div>';
+      grid.innerHTML = '<div class="empty">Nouveautés en route. New arrivals incoming.</div>';
     } else {
       grid.innerHTML = inv.map(cardHTML).join("");
       // card → lightbox
@@ -611,7 +611,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=4").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=5").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -630,7 +630,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=4").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=5").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -737,9 +737,9 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=4")
+    fetch("js/lot.json?v=5")
       .then(function (r) { return r.json(); })
-      .then(function (cars) { cars = (cars || []).filter(function (c) { return c.make === "Lexus"; }); if (cars.length) renderLot(mount, cars); })
+      .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
   }
   function money(n) { return "$" + Number(n).toLocaleString("en-US"); }
@@ -760,7 +760,7 @@
         '</div>' +
       '</div>' +
       '<div class="lotgrid" id="lotGrid"></div>' +
-      '<p class="lot__empty" id="lotEmpty" hidden>No cars match — widen your search.</p>';
+      '<p class="lot__empty" id="lotEmpty" hidden>No cars match. Widen your search.</p>';
 
     var grid = $("#lotGrid", mount), countEl = $("#lotCount", mount), emptyEl = $("#lotEmpty", mount);
     var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount);
@@ -871,7 +871,7 @@
       try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
     }
     logActivity("inquiry", name, car.price);
-    if (msg) { msg.hidden = false; msg.className = "lotmodal__msg ok"; msg.textContent = "Sent — I'll be in touch about this " + car.make + " " + car.model + "."; }
+    if (msg) { msg.hidden = false; msg.className = "lotmodal__msg ok"; msg.textContent = "Sent. I'll be in touch about this " + car.make + " " + car.model + "."; }
     if (send) { send.textContent = "Inquiry sent ✓"; }
     setTimeout(closeLotModal, 2400);
   }
@@ -890,7 +890,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=4").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=5").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
@@ -1271,10 +1271,10 @@
           fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {});
         } catch (e) {}
         markMember(data.email, data.phone, data.name);
-        done(true, "Thank you — your request is in. I'll be in touch personally.");
+        done(true, "Thank you. Your request is in. I'll be in touch personally.");
         return;
       }
-      if (isBot) { done(true, "Thank you — your request is in."); return; }
+      if (isBot) { done(true, "Thank you. Your request is in."); return; }
 
       // DEMO mode (no endpoint set): log + offer a mailto fallback
       console.log("[Phil Dave lead — DEMO mode, set SITE.formEndpoint to go live]", data);
@@ -1306,7 +1306,7 @@
     var statusEl = $("#lexusStatus"), submit = $("#lexusSubmit"), sel = $("#lexusModel");
     if (sel && S.carModels && S.carModels.Lexus) {
       S.carModels.Lexus.forEach(function (m) { var o = document.createElement("option"); o.value = m; o.textContent = m; sel.appendChild(o); });
-      var o2 = document.createElement("option"); o2.value = "Not sure — help me choose"; o2.textContent = "Not sure — help me choose"; sel.appendChild(o2);
+      var o2 = document.createElement("option"); o2.value = "Not sure, help me choose"; o2.textContent = "Not sure, help me choose"; sel.appendChild(o2);
     }
     var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     form.addEventListener("submit", function (e) {
@@ -1345,7 +1345,7 @@
       if (S.formEndpoint && !isBot) {
         try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
         markMember(data.email, data.phone, data.name);
-        done(true, "Thank you — I'll send your Lexus pricing shortly.");
+        done(true, "Thank you. I'll send your Lexus pricing shortly.");
         return;
       }
       if (isBot) { done(true, "Thank you."); return; }
