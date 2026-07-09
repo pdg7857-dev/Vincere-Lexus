@@ -459,7 +459,7 @@ em{ font-style:italic; }
 .about--portrait{
   max-width:var(--maxw);
   grid-template-columns:minmax(260px,380px) 1fr;
-  grid-template-areas:"photo text" "stats stats";
+  grid-template-areas:"photo text";
   align-items:start; column-gap:clamp(2rem,5vw,4rem);
 }
 .about__photo{ grid-area:photo; margin:0; position:relative; }
@@ -475,13 +475,41 @@ em{ font-style:italic; }
 .about__text{ grid-area:text; display:grid; gap:2rem; }
 .about--portrait .about__stats{ grid-area:stats; }
 @media (max-width:860px){
-  .about--portrait{ grid-template-columns:1fr; grid-template-areas:"photo" "text" "stats"; }
+  .about--portrait{ grid-template-columns:1fr; grid-template-areas:"photo" "text"; }
   .about__photo{ max-width:420px; margin:0 auto; }
 }
 .about__stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); border-radius:4px; overflow:hidden; margin-top:1rem; }
 .stat{ background:var(--black); padding:1.6rem 1.2rem; text-align:center; }
 .stat__value{ font-family:var(--serif); font-size:clamp(1.8rem,4vw,2.6rem); background:var(--metal-text); -webkit-background-clip:text; background-clip:text; color:transparent; }
-.stat__label{ font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--silver-dim); margin-top:.4rem; }
+.stat__label{ font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--silver-dim); margin-top:.4rem; line-height:1.4; }
+
+/* --- stat band, above the About story -------------------------------- */
+.statband{ max-width:var(--maxw); margin:0 auto clamp(2.4rem,5vw,3.6rem); }
+.statband__kicker{ font-size:.68rem; letter-spacing:.42em; text-transform:uppercase; color:var(--platinum); margin-bottom:1.1rem; text-align:center; }
+.statband__stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); border-radius:4px; overflow:hidden; }
+@media (max-width:720px){ .statband__stats{ grid-template-columns:repeat(2,1fr); } }
+
+/* --- the lot, under the show room ------------------------------------ */
+.lotwrap{ max-width:var(--maxw); margin:clamp(3rem,6vw,4.5rem) auto 0; }
+.lotwrap__head{ margin-bottom:1.6rem; padding-top:clamp(2rem,4vw,3rem); border-top:1px solid var(--line-soft); }
+.lotwrap__title{ font-family:var(--serif); font-size:clamp(1.5rem,3vw,2.2rem); color:var(--platinum); }
+.lotwrap__intro{ margin-top:.6rem; color:var(--silver-dim); max-width:660px; font-weight:300; }
+
+/* --- Request a Car: sourcing steps merged in ------------------------- */
+.sourcing{ max-width:var(--maxw); margin:0 auto clamp(2.4rem,5vw,3.4rem); }
+.sourcing__title{ font-family:var(--serif); font-size:clamp(1.4rem,2.8vw,2rem); color:var(--platinum); }
+.sourcing__intro{ margin:.5rem 0 1.4rem; color:var(--silver-dim); font-weight:300; }
+
+/* --- Request a Car: form left, Phil + Mustang right ------------------ */
+.reqmerge{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:1fr minmax(300px,410px); gap:clamp(2rem,4vw,3.4rem); align-items:start; }
+.reqmerge__form.lead{ max-width:none; min-width:0; }
+.reqmerge__aside{ display:grid; gap:1.4rem; position:sticky; top:90px; }
+.reqmerge__aside .reqphoto{ max-width:none; margin:0; }
+.reqmerge__aside .anymodel{ max-width:none; margin:0; }
+@media (max-width:900px){
+  .reqmerge{ grid-template-columns:1fr; }
+  .reqmerge__aside{ position:static; order:-1; }
+}
 
 .marquee{ margin:clamp(3rem,7vh,5rem) 0; padding:1.6rem 0; border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft); overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); }
 .marquee__track{ display:flex; gap:clamp(2.5rem,6vw,5rem); width:max-content; animation:marquee 32s linear infinite; }

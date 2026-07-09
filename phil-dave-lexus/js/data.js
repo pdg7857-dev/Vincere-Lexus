@@ -70,12 +70,13 @@ window.SITE = {
     "Other": []
   },
 
-  /* --- Credibility stats (Room 3). Edit freely. -------------------------- */
+  /* --- Credibility stats (shown above About). Edit freely. --------------- */
+  statsKicker: "Access to",
   stats: [
-    { value: "150+", label: "Cars sourced" },        // [PLACEHOLDER]
-    { value: "12 yrs", label: "In the trade" },       // [PLACEHOLDER]
-    { value: "11", label: "Marques" },
-    { value: "100%", label: "Discretion" },
+    { value: "50+", label: "Brand-new Lexus" },
+    { value: "30+", label: "Certified pre-owned Lexus" },
+    { value: "100+", label: "Used cars" },
+    { value: "100%", label: "Customer satisfaction" },
   ],
 
   /* --- Client quotes (Room 3). Add/remove freely. ------------------------ */
@@ -146,7 +147,7 @@ window.SITE = {
     {
       make: "Lexus", model: "LC 500", year: 2024, body: "coupe",
       note: "The grand tourer Lexus built to prove a point. A naturally aspirated V8 and a shape like nothing else on the road.",
-      status: "Available", image: "assets/car-lc500.webp",
+      status: "Available", image: "assets/car-lc500.webp?v=3",
       /* opening the card streams this model in and it spins over the still */
       spinModel: "models/lc500.glb", spinLength: 4.77, spinHide: ["Plate", "License"],
       specs: [
@@ -164,7 +165,7 @@ window.SITE = {
     {
       make: "Lexus", model: "LX 600", year: 2024, body: "suv",
       note: "The flagship 4WD. Twin turbo V6, three rows, and presence that needs no introduction.",
-      status: "Available", image: "assets/car-lx.webp?v=46",
+      status: "Available", image: "assets/car-lx.webp?v=3",
       spinModel: "models/lexus-lx.glb", spinLength: 5.10,
       specs: [
         { label: "Mileage", value: "On request" }, // [PLACEHOLDER — km from the listing]
@@ -181,7 +182,7 @@ window.SITE = {
     {
       make: "Lexus", model: "ES 350", year: 2024, body: "sedan",
       note: "The quiet executive sedan that outsells its rivals on merit. Effortless, comfortable, and built to last.",
-      status: "Available", image: "assets/car-es.webp",
+      status: "Available", image: "assets/car-es.webp?v=3",
       spinModel: "models/lexus-es.glb", spinLength: 4.98, spinHide: ["Plate", "License"],
       specs: [
         { label: "Mileage", value: "On request" },
@@ -198,7 +199,7 @@ window.SITE = {
     {
       make: "Lexus", model: "GX 550", year: 2024, body: "suv",
       note: "The body-on-frame Lexus that goes anywhere and comes back in comfort. Twin turbo V6, proper off-road hardware.",
-      status: "Available", image: "assets/car-gx.webp",
+      status: "Available", image: "assets/car-gx.webp?v=3",
       spinModel: "models/lexus-gx.glb", spinLength: 4.95, spinHide: ["Plate", "License"],
       specs: [
         { label: "Mileage", value: "On request" },
@@ -305,19 +306,7 @@ window.SITE = {
       door: { x: 10, y: 22 },
     },
     {
-      key: "gx", bay: "Bay 03", label: "Sourcing", section: "process",
-      car: "Lexus GX 550", type: "photo",
-      image: "assets/hero-lc500-1536.webp",
-      srcset: "assets/hero-lc500-600.webp 600w, assets/hero-lc500-900.webp 900w, assets/hero-lc500-1536.webp 1536w",
-      alt: "Lexus on a dark studio podium",
-      model: "models/lexus-gx.glb",
-      modelLength: 4.95,
-      hideParts: ["Plate", "License"],
-      pins: [{ x: 27, y: 55 }, { x: 57, y: 30 }, { x: 85, y: 49 }, { x: 58, y: 66 }],
-      door: { x: 88, y: 18 },
-    },
-    {
-      key: "es", bay: "Bay 04", label: "Request a Car", section: "contact",
+      key: "es", bay: "Bay 03", label: "Request a Car", section: "contact",
       car: "Lexus ES 350", type: "photo",
       image: "assets/hero-lc500-1536.webp",
       srcset: "assets/hero-lc500-600.webp 600w, assets/hero-lc500-900.webp 900w, assets/hero-lc500-1536.webp 1536w",
@@ -331,7 +320,7 @@ window.SITE = {
     {
       /* the Lexus tool bay: trim comparisons and the pricing calculator.
          Reuses Bay 02's LC 500 model, so it costs no extra download.      */
-      key: "lexus", bay: "Bay 05", label: "Find your Lexus", section: "lexus",
+      key: "lexus", bay: "Bay 04", label: "Find your Lexus", section: "lexus",
       car: "Lexus LC 500", type: "photo",
       image: "assets/hero-lc500-1536.webp",
       srcset: "assets/hero-lc500-600.webp 600w, assets/hero-lc500-900.webp 900w, assets/hero-lc500-1536.webp 1536w",
@@ -347,16 +336,9 @@ window.SITE = {
     },
     {
       /* trust bay: registration + credentials, empty lit pedestal          */
-      key: "omvic", bay: "Bay 06", label: "Registered & Licensed", section: "omvic",
+      key: "omvic", bay: "Bay 05", label: "Registered & Licensed", section: "omvic",
       car: "Registered & Licensed", type: "ghost",
       image: "", srcset: "", alt: "Empty lit pedestal behind the credentials bay",
-    },
-    {
-      /* members only bay: the pedestal sits empty (ghost) and the section
-         is locked until the visitor subscribes or verifies their email    */
-      key: "vault", bay: "Bay 07", label: "The Lot", section: "members",
-      car: "Members only", type: "ghost",
-      image: "", srcset: "", alt: "Empty lit pedestal behind the members bay",
     },
   ],
 

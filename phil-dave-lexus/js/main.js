@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=2").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=3").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -368,6 +368,7 @@
           (S.about.photoCaption ? '<figcaption>' + esc(S.about.photoCaption) + "</figcaption>" : "");
       } else if (ph) { ph.style.display = "none"; }
     }
+    if ($("#statsKicker")) $("#statsKicker").textContent = S.statsKicker || "";
     $("#aboutStats").innerHTML = (S.stats || []).map(function (s) {
       return '<div class="stat"><div class="stat__value">' + esc(s.value) + '</div><div class="stat__label">' + esc(s.label) + "</div></div>";
     }).join("");
@@ -610,7 +611,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=2").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=3").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -629,7 +630,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=2").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=3").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -695,13 +696,20 @@
     return id;
   }
   function userKey() { var id = identity(); return id.email || id.phone || ""; }
+  // stable anonymous id so open-lot browsing (clicks, searches, filters) can be
+  // grouped per visitor even before they identify themselves.
+  var ANON = (function () {
+    try { var a = localStorage.getItem("pd_anon"); if (!a) { a = "anon-" + Math.random().toString(36).slice(2, 10); localStorage.setItem("pd_anon", a); } return a; }
+    catch (e) { return "anon"; }
+  })();
+  function trackKey() { return userKey() || ANON; }
 
   /* ---------- per-user activity log (Activity tab of the sheet) --------- */
   var SESSION = { id: (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)), start: Date.now(), ended: false };
   function logActivity(event, detail, value) {
-    var user = userKey();
-    if (!user || !S.formEndpoint) return;              // only track identified visitors
-    var payload = { kind: "activity", user: user, event: event, detail: detail || "", value: (value == null ? "" : value), session: SESSION.id, captured_at: new Date().toISOString() };
+    var user = trackKey();
+    if (!S.formEndpoint) return;
+    var payload = { kind: "activity", user: user, identified: (userKey() ? "yes" : "no"), event: event, detail: detail || "", value: (value == null ? "" : value), session: SESSION.id, captured_at: new Date().toISOString() };
     var body = JSON.stringify(payload);
     try {
       if (navigator.sendBeacon) navigator.sendBeacon(S.formEndpoint, new Blob([body], { type: "text/plain;charset=utf-8" }));
@@ -709,7 +717,7 @@
     } catch (e) {}
   }
   function endSession() {
-    if (SESSION.ended || !userKey()) return;
+    if (SESSION.ended) return;
     SESSION.ended = true;
     logActivity("session", "session length", Math.round((Date.now() - SESSION.start) / 1000) + "s");
   }
@@ -729,7 +737,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=2")
+    fetch("js/lot.json?v=3")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = (cars || []).filter(function (c) { return c.make === "Lexus"; }); if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -882,7 +890,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=2").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=3").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
