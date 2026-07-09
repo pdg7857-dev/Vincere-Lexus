@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=9").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=10").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -626,7 +626,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=9").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=10").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -645,7 +645,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=9").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=10").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -779,7 +779,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=9")
+    fetch("js/lot.json?v=10")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -789,22 +789,24 @@
     var makes = ["All makes"].concat(Object.keys(cars.reduce(function (a, c) { a[c.make] = 1; return a; }, {})).sort());
     mount.innerHTML =
       '<div class="lotbar">' +
-        '<span class="lot__count" id="lotCount"></span>' +
-        '<div class="lot__controls">' +
-          '<input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search the lot" />' +
-          '<select id="lotCond" aria-label="Filter by condition">' +
-            '<option value="all">All vehicles</option>' +
-            '<option value="new">New</option>' +
-            '<option value="cpo">Certified pre-owned</option>' +
-            '<option value="used">Used</option>' +
-          '</select>' +
-          '<select id="lotMake" aria-label="Filter by make">' + makes.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("") + '</select>' +
-          '<select id="lotSort" aria-label="Sort">' +
-            '<option value="year-desc">Newest first</option>' +
-            '<option value="price-asc">Price: low to high</option>' +
-            '<option value="price-desc">Price: high to low</option>' +
-            '<option value="km-asc">Kilometres: lowest</option>' +
-          '</select>' +
+        '<div class="lotcond" id="lotCond" role="group" aria-label="Filter by condition">' +
+          '<button type="button" class="lotcond__btn is-active" data-cond="all">All</button>' +
+          '<button type="button" class="lotcond__btn" data-cond="new">New</button>' +
+          '<button type="button" class="lotcond__btn" data-cond="cpo">Certified pre-owned</button>' +
+          '<button type="button" class="lotcond__btn" data-cond="used">Used</button>' +
+        '</div>' +
+        '<div class="lotbar__row">' +
+          '<span class="lot__count" id="lotCount"></span>' +
+          '<div class="lot__controls">' +
+            '<input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search the lot" />' +
+            '<select id="lotMake" aria-label="Filter by make">' + makes.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("") + '</select>' +
+            '<select id="lotSort" aria-label="Sort">' +
+              '<option value="year-desc">Newest first</option>' +
+              '<option value="price-asc">Price: low to high</option>' +
+              '<option value="price-desc">Price: high to low</option>' +
+              '<option value="km-asc">Kilometres: lowest</option>' +
+            '</select>' +
+          '</div>' +
         '</div>' +
       '</div>' +
       '<div class="lotgrid" id="lotGrid"></div>' +
@@ -812,6 +814,7 @@
 
     var grid = $("#lotGrid", mount), countEl = $("#lotCount", mount), emptyEl = $("#lotEmpty", mount);
     var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount), condEl = $("#lotCond", mount);
+    var cond = "all";   // active condition, driven by the button group
     // "New" = essentially delivery-mileage stock; "Used" is everything else and includes CPO.
     function isNew(c) { return c.km != null && c.km <= 1000; }
 
@@ -836,7 +839,7 @@
       '</article>';
     }
     function apply() {
-      var q = (searchEl.value || "").toLowerCase().trim(), mk = makeEl.value, sort = sortEl.value, cond = condEl.value;
+      var q = (searchEl.value || "").toLowerCase().trim(), mk = makeEl.value, sort = sortEl.value;
       var list = cars.filter(function (c) {
         if (mk !== "All makes" && c.make !== mk) return false;
         if (cond === "new" && !isNew(c)) return false;
@@ -875,7 +878,14 @@
       searchTimer = setTimeout(function () { var q = searchEl.value.trim(); if (q.length >= 2) logActivity("search", q, currentList.length + " results"); }, 900);
     });
     makeEl.addEventListener("change", function () { apply(); logActivity("filter", "make: " + makeEl.value, currentList.length + " results"); });
-    condEl.addEventListener("change", function () { apply(); logActivity("filter", "condition: " + condEl.value, currentList.length + " results"); });
+    condEl.addEventListener("click", function (e) {
+      var btn = e.target.closest(".lotcond__btn"); if (!btn) return;
+      cond = btn.getAttribute("data-cond");
+      condEl.querySelectorAll(".lotcond__btn").forEach(function (b) {
+        var on = b === btn; b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      apply(); logActivity("filter", "condition: " + cond, currentList.length + " results");
+    });
     sortEl.addEventListener("change", function () { apply(); logActivity("sort", sortEl.value); });
     apply();
   }
@@ -944,7 +954,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=9").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=10").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
