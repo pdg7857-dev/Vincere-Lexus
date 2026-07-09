@@ -33,8 +33,8 @@
 <link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
 <link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="css/fonts.css?v=11" />
-<link rel="stylesheet" href="css/style.css?v=11" />
+<link rel="stylesheet" href="css/fonts.css?v=12" />
+<link rel="stylesheet" href="css/style.css?v=12" />
 </head>
 <body class="is-loading">
 
@@ -112,8 +112,25 @@
   </div>
 </div>
 
-<!-- floating WhatsApp "send me a text" bubble (wired up by JS from SITE.whatsapp) -->
-<a class="wabubble" id="waBubble" href="#" target="_blank" rel="noopener" hidden aria-label="Send me a text on WhatsApp">
+<!-- in-page chat box (opens from the bubble / pop-up) -->
+<div class="wachat" id="waChat" hidden role="dialog" aria-label="Chat with Phil Dave" aria-modal="false">
+  <div class="wachat__head">
+    <span class="wachat__avatar" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="20" height="20"><path fill="#fff" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.6c1.7.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm6.1 14.9c-.3-.2-1.9-1-2.2-1.1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.3-.2-.3 0-.5.1-.7.1-.1.3-.4.5-.6.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1.1 1-1.1 2.5s1.1 2.9 1.3 3.1c.2.2 2.2 3.4 5.4 4.7.8.3 1.3.5 1.8.7.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>
+    </span>
+    <div class="wachat__id"><b>Phil Dave</b><span>Private Lexus sourcing · replies quickly</span></div>
+    <button class="wachat__close" id="waChatClose" type="button" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="wachat__log" id="waChatLog" aria-live="polite"></div>
+  <div class="wachat__quick" id="waChatQuick" hidden></div>
+  <form class="wachat__input" id="waChatForm" novalidate>
+    <input id="waChatText" type="text" placeholder="Type a message…" autocomplete="off" aria-label="Type a message" />
+    <button type="submit" class="wachat__send" aria-label="Send">&rsaquo;</button>
+  </form>
+</div>
+
+<!-- floating WhatsApp "send me a text" bubble (opens the chat box) -->
+<a class="wabubble" id="waBubble" href="#" role="button" hidden aria-label="Chat with Phil Dave">
   <span class="wabubble__icon" aria-hidden="true">
     <svg viewBox="0 0 32 32" width="26" height="26"><path fill="currentColor" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.6c1.7.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-4.9.9.9-4.7-.3-.4c-1-1.6-1.5-3.4-1.5-5.3C4.8 9.9 9.9 4.8 16 4.8S27.2 9.9 27.2 16 22.1 24.8 16 24.8zm6.1-7.9c-.3-.2-1.9-1-2.2-1.1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.3-.2-.3 0-.5.1-.7.1-.1.3-.4.5-.6.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1.1 1-1.1 2.5s1.1 2.9 1.3 3.1c.2.2 2.2 3.4 5.4 4.7.8.3 1.3.5 1.8.7.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>
   </span>
@@ -472,23 +489,23 @@
   <div class="foot__name">Phil&nbsp;Dave</div>
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
   <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 11 · Lexus</span></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave. Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 12 · Lexus</span></p>
   <p class="foot__fine" id="modelCredit" hidden></p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
-<script src="js/vendor/gsap.min.js?v=11" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=11" defer></script>
-<script src="js/vendor/lenis.umd.js?v=11" defer></script>
+<script src="js/vendor/gsap.min.js?v=12" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=12" defer></script>
+<script src="js/vendor/lenis.umd.js?v=12" defer></script>
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
-<script src="js/data.js?v=11" defer></script>
-<script src="js/silhouettes.js?v=11" defer></script>
-<script src="js/main.js?v=11" defer></script>
+<script src="js/data.js?v=12" defer></script>
+<script src="js/silhouettes.js?v=12" defer></script>
+<script src="js/main.js?v=12" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
      reduced-motion, or when WebGL is unavailable) -->
 <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="js/hero3d.js?v=11"></script>
+<script type="module" src="js/hero3d.js?v=12"></script>
 </body>
 </html>

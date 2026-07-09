@@ -789,7 +789,10 @@ body.is-loading .nextbay{ opacity:0; }
 .lotcond__btn.is-active{ color:var(--black); background:var(--platinum); border-color:var(--platinum); }
 @media (max-width:520px){ .lotcond__btn{ flex:1 1 auto; text-align:center; padding:.55rem .7rem; } }
 .lot__count{ font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--silver-dim); white-space:nowrap; }
-.lot__controls{ display:flex; gap:.6rem; flex-wrap:wrap; }
+.lot__controls{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
+.lotchip{ font-family:var(--sans); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--silver-dim); background:transparent; border:1px solid var(--line); border-radius:999px; padding:.55rem 1rem; cursor:pointer; transition:color .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease); }
+.lotchip:hover{ color:var(--platinum); border-color:var(--silver); }
+.lotchip.is-active{ color:var(--black); background:var(--platinum); border-color:var(--platinum); }
 .lot__controls input, .lot__controls select{ font-family:var(--sans); font-size:.82rem; color:var(--silver); background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:.55rem .9rem; }
 .lot__controls input:focus, .lot__controls select:focus{ outline:none; border-color:var(--silver); }
 .lot__controls select{ appearance:none; padding-right:1.8rem; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9ea6' fill='none' stroke-width='1.4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .7rem center; }
@@ -917,3 +920,35 @@ body.is-loading .nextbay{ opacity:0; }
 .wapop__close{ position:absolute; top:-9px; right:-9px; width:22px; height:22px; border-radius:50%; border:1px solid var(--line); background:var(--black); color:var(--silver); font-size:15px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
 .wapop__close:hover{ color:var(--platinum); border-color:var(--silver); }
 @media (max-width:520px){ .wapop{ bottom:calc(clamp(14px,3vw,26px) + 56px); } }
+
+/* --- in-page chat box ------------------------------------------------- */
+.wachat{ position:fixed; right:clamp(14px,3vw,26px); bottom:calc(clamp(14px,3vw,26px) + 62px); z-index:82;
+  width:min(360px,92vw); height:min(520px,72vh); display:flex; flex-direction:column;
+  background:rgba(16,16,18,.98); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.6);
+  transform:translateY(16px) scale(.98); opacity:0; transform-origin:bottom right;
+  transition:opacity .3s var(--ease), transform .3s var(--ease); }
+.wachat.is-in{ opacity:1; transform:none; }
+.wachat__head{ display:flex; align-items:center; gap:.6rem; padding:.8rem .9rem; background:linear-gradient(180deg,rgba(37,211,102,.14),transparent); border-bottom:1px solid var(--line-soft); }
+.wachat__avatar{ width:36px; height:36px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
+.wachat__id{ display:flex; flex-direction:column; line-height:1.25; min-width:0; }
+.wachat__id b{ font-family:var(--sans); font-size:.9rem; color:var(--platinum); font-weight:600; }
+.wachat__id span{ font-size:.64rem; color:var(--silver-dim); }
+.wachat__close{ margin-left:auto; background:none; border:0; color:var(--silver-dim); font-size:22px; line-height:1; cursor:pointer; padding:.1rem .35rem; }
+.wachat__close:hover{ color:var(--platinum); }
+.wachat__log{ flex:1; overflow-y:auto; padding:1rem .9rem; display:flex; flex-direction:column; gap:.5rem; }
+.wachat__msg{ display:flex; }
+.wachat__msg--user{ justify-content:flex-end; }
+.wachat__bubble{ max-width:82%; padding:.6rem .85rem; border-radius:14px; font-size:.9rem; line-height:1.45; white-space:pre-wrap; }
+.wachat__msg--bot .wachat__bubble{ background:var(--panel); color:var(--silver); border-bottom-left-radius:4px; }
+.wachat__msg--user .wachat__bubble{ background:#25D366; color:#08240f; border-bottom-right-radius:4px; }
+.wachat__quick{ display:flex; flex-wrap:wrap; gap:.4rem; padding:0 .9rem .6rem; }
+.wachat__chip{ font-family:var(--sans); font-size:.78rem; color:var(--platinum); background:transparent; border:1px solid var(--silver); border-radius:999px; padding:.45rem .85rem; cursor:pointer; transition:background .25s var(--ease), border-color .25s var(--ease); }
+.wachat__chip:hover{ background:rgba(232,234,237,.1); border-color:var(--platinum); }
+.wachat__input{ display:flex; gap:.5rem; padding:.6rem .7rem; border-top:1px solid var(--line-soft); }
+.wachat__input input{ flex:1; min-width:0; background:var(--black-2); border:1px solid var(--line); border-radius:999px; padding:.6rem .9rem; color:var(--platinum); font:inherit; font-size:.9rem; }
+.wachat__input input:focus{ outline:none; border-color:var(--silver); }
+.wachat__send{ flex:0 0 auto; width:40px; height:40px; border-radius:50%; border:0; background:#25D366; color:#fff; font-size:20px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.wachat__send:hover{ filter:brightness(1.08); }
+body.wachat-open .wabubble, body.wachat-open .wapop{ opacity:0; pointer-events:none; }
+@media (max-width:520px){ .wachat{ right:8px; left:8px; width:auto; bottom:8px; height:min(80vh,580px); } }

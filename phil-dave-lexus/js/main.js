@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=11").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=12").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -184,9 +184,10 @@
   // only desktop glides down to the text. Nav-menu links force the glide
   // on every device because there the destination IS the text.
   function wantsGlide(opts) {
-    if (opts.scroll === false) return false;
     if (opts.scroll === "force") return true;
-    return window.matchMedia("(min-width: 821px)").matches;
+    // Switching bays keeps you where you are on the hero (desktop & mobile);
+    // only an explicit navigation (warpTo, nav links, CTAs) glides to a section.
+    return false;
   }
   function enterBay(next, opts) {
     opts = opts || {};
@@ -604,42 +605,90 @@
   }
 
   function buildWhatsApp() {
-    var cfg = S.whatsapp, el = $("#waBubble");
+    var cfg = S.whatsapp || {}, el = $("#waBubble"), chat = $("#waChat");
     if (!el) return;
-    var num = cfg && (cfg.number || "").replace(/[^0-9]/g, "");
-    if (!num) { el.remove(); var pp = $("#waPop"); if (pp) pp.remove(); return; }
-    var msg = (cfg && cfg.text) || "Hi, I'd like to ask about a car.";
-    var href = "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
-    el.href = href;
-    var lab = $("#waBubbleLabel"); if (lab) lab.textContent = (cfg && cfg.label) || "Send me a text";
+    var num = (cfg.number || "").replace(/[^0-9]/g, "");
+    if (!num && !chat) { el.remove(); var pp0 = $("#waPop"); if (pp0) pp0.remove(); return; }
+    var waHref = num ? ("https://wa.me/" + num + "?text=" + encodeURIComponent(cfg.text || "Hi, I'd like to ask about a car.")) : "";
+    var lab = $("#waBubbleLabel"); if (lab) lab.textContent = cfg.label || "Send me a text";
     el.hidden = false;
-    el.addEventListener("click", function () { try { logActivity("whatsapp", "opened WhatsApp"); } catch (e) {} });
 
     // prime audio on the first interaction so the chime can play later
     var primeOnce = function () { primeAudio(); ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (ev) { window.removeEventListener(ev, primeOnce); }); };
     ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (ev) { window.addEventListener(ev, primeOnce, { passive: true }); });
 
-    // the chat pop-up
+    /* ---------------- in-page chat funnel ---------------- */
+    var log = $("#waChatLog"), quickEl = $("#waChatQuick"), form = $("#waChatForm"), input = $("#waChatText"), closeBtn = $("#waChatClose");
+    var started = false, state = "start";
+    var CLOSING = "Awesome, I will get in touch with you shortly. Feel free to text me anything else here, I'll get back to you as soon as I can.";
+    var OPT_LEXUS = "I'm looking to get a Lexus", OPT_OTHER = "I'm looking for another make", OPT_TRADE = "I want to sell or trade in my car";
+    var LEXUS_MODELS = ["ES", "IS", "LS", "NX", "RX", "GX", "LX", "RZ", "LC", "RC", "Not sure yet"];
+
+    function addMsg(who, text) {
+      if (!log) return;
+      var row = document.createElement("div"); row.className = "wachat__msg wachat__msg--" + who;
+      var bub = document.createElement("span"); bub.className = "wachat__bubble"; bub.textContent = text;
+      row.appendChild(bub); log.appendChild(row); log.scrollTop = log.scrollHeight;
+    }
+    function setQuick(labels) {
+      if (!quickEl) return;
+      quickEl.innerHTML = "";
+      (labels || []).forEach(function (l) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "wachat__chip"; b.textContent = l;
+        b.addEventListener("click", function () { advance(l); });
+        quickEl.appendChild(b);
+      });
+      quickEl.hidden = !labels || !labels.length;
+    }
+    function bot(text, after) { setTimeout(function () { addMsg("bot", text); if (after) after(); }, 480); }
+    function greet() { bot(cfg.popup || "Hey 👋 how can I help?", function () { state = "start"; setQuick([OPT_LEXUS, OPT_OTHER, OPT_TRADE]); }); }
+    function askCondition() { state = "condition"; bot("New or used?", function () { setQuick(["New", "Used"]); }); }
+    function askModel() { state = "model"; bot("Which model?", function () { setQuick(LEXUS_MODELS); }); }
+    function close() { state = "open"; bot(CLOSING); }
+
+    // advance the funnel from a quick-reply OR a typed message
+    function advance(text) {
+      addMsg("user", text);
+      try { logActivity("chat", text, "step:" + state); } catch (e) {}
+      setQuick([]);
+      if (state === "start") {
+        if (text === OPT_LEXUS) askCondition();
+        else if (text === OPT_OTHER) { state = "other"; bot("Tell me the make and model you're after and I'll track it down."); }
+        else if (text === OPT_TRADE) { state = "trade"; bot("Great — what are you driving now? Year, make, model and rough kilometres."); }
+        else close();               // a custom opening message
+      } else if (state === "condition") { askModel(); }
+      else if (state === "model" || state === "other" || state === "trade") { close(); }
+      // state === "open": further messages are just logged for Phil
+    }
+
+    function openChat() {
+      var pp = $("#waPop"); if (pp) { pp.classList.remove("is-in"); pp.hidden = true; }
+      if (!chat) { if (waHref) window.open(waHref, "_blank", "noopener"); return; }
+      chat.hidden = false; requestAnimationFrame(function () { chat.classList.add("is-in"); });
+      document.body.classList.add("wachat-open");
+      if (!started) { started = true; greet(); try { logActivity("chat", "chat opened"); } catch (e) {} }
+      setTimeout(function () { if (input) input.focus(); }, 320);
+    }
+    function closeChat() { if (!chat) return; chat.classList.remove("is-in"); document.body.classList.remove("wachat-open"); setTimeout(function () { chat.hidden = true; }, 250); }
+
+    if (closeBtn) closeBtn.addEventListener("click", closeChat);
+    if (form) form.addEventListener("submit", function (e) { e.preventDefault(); var t = (input.value || "").trim(); if (!t) return; input.value = ""; advance(t); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && chat && !chat.hidden) closeChat(); });
+    el.addEventListener("click", function (e) { e.preventDefault(); openChat(); });
+
+    /* ---------------- 30s pop-up teaser (opens the chat) ---------------- */
     var pop = $("#waPop"), popMsg = $("#waPopMsg"), popClose = $("#waPopClose");
-    if (!pop || !(cfg && cfg.popup)) return;
+    if (!pop || !cfg.popup) return;
     popMsg.textContent = cfg.popup;
     var dismissed = false;
     try { dismissed = sessionStorage.getItem("pd_wapop") === "1"; } catch (e) {}
-    function hidePop(remember) {
-      pop.classList.remove("is-in"); pop.hidden = true;
-      if (remember) { try { sessionStorage.setItem("pd_wapop", "1"); } catch (e) {} }
-    }
+    function hidePop(remember) { pop.classList.remove("is-in"); pop.hidden = true; if (remember) { try { sessionStorage.setItem("pd_wapop", "1"); } catch (e) {} } }
     if (popClose) popClose.addEventListener("click", function (e) { e.stopPropagation(); hidePop(true); });
-    // clicking the message opens WhatsApp
-    pop.addEventListener("click", function () {
-      try { logActivity("whatsapp", "opened WhatsApp (pop-up)"); } catch (e) {}
-      window.open(href, "_blank", "noopener");
-      hidePop(true);
-    });
+    pop.addEventListener("click", function () { hidePop(true); openChat(); });
     if (!dismissed) {
       var delay = ((cfg.popupDelaySeconds != null ? cfg.popupDelaySeconds : 30) * 1000);
       setTimeout(function () {
-        if (dismissed || !pop || document.hidden) return;
+        if (dismissed || !pop || document.hidden || (chat && !chat.hidden)) return;
         pop.hidden = false;
         requestAnimationFrame(function () { pop.classList.add("is-in"); });
         if (cfg.popupSound !== false) playDing();
@@ -693,7 +742,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=11").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=12").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -712,7 +761,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=11").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=12").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -846,7 +895,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=11")
+    fetch("js/lot.json?v=12")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -866,6 +915,7 @@
           '<span class="lot__count" id="lotCount"></span>' +
           '<div class="lot__controls">' +
             '<input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search the lot" />' +
+            '<button type="button" class="lotchip" id="lotNonLexus" aria-pressed="false">Non-Lexus</button>' +
             '<select id="lotMake" aria-label="Filter by make">' + makes.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("") + '</select>' +
             '<select id="lotSort" aria-label="Sort">' +
               '<option value="year-desc">Newest first</option>' +
@@ -880,8 +930,9 @@
       '<p class="lot__empty" id="lotEmpty" hidden>No cars match. Widen your search.</p>';
 
     var grid = $("#lotGrid", mount), countEl = $("#lotCount", mount), emptyEl = $("#lotEmpty", mount);
-    var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount), condEl = $("#lotCond", mount);
+    var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount), condEl = $("#lotCond", mount), nonLexEl = $("#lotNonLexus", mount);
     var cond = "all";   // active condition, driven by the button group
+    var nonLexus = false;   // "Non-Lexus" quick toggle
     // "New" = essentially delivery-mileage stock; "Used" is everything else and includes CPO.
     function isNew(c) { return c.km != null && c.km <= 1000; }
 
@@ -908,6 +959,7 @@
     function apply() {
       var q = (searchEl.value || "").toLowerCase().trim(), mk = makeEl.value, sort = sortEl.value;
       var list = cars.filter(function (c) {
+        if (nonLexus && c.make === "Lexus") return false;
         if (mk !== "All makes" && c.make !== mk) return false;
         if (cond === "new" && !isNew(c)) return false;
         if (cond === "cpo" && !c.certified) return false;
@@ -944,7 +996,18 @@
       clearTimeout(searchTimer);
       searchTimer = setTimeout(function () { var q = searchEl.value.trim(); if (q.length >= 2) logActivity("search", q, currentList.length + " results"); }, 900);
     });
-    makeEl.addEventListener("change", function () { apply(); logActivity("filter", "make: " + makeEl.value, currentList.length + " results"); });
+    makeEl.addEventListener("change", function () {
+      // picking a specific make cancels the Non-Lexus toggle to avoid a contradiction
+      if (makeEl.value !== "All makes" && nonLexus) { nonLexus = false; nonLexEl.classList.remove("is-active"); nonLexEl.setAttribute("aria-pressed", "false"); }
+      apply(); logActivity("filter", "make: " + makeEl.value, currentList.length + " results");
+    });
+    if (nonLexEl) nonLexEl.addEventListener("click", function () {
+      nonLexus = !nonLexus;
+      nonLexEl.classList.toggle("is-active", nonLexus);
+      nonLexEl.setAttribute("aria-pressed", nonLexus ? "true" : "false");
+      if (nonLexus) makeEl.value = "All makes";   // clear any specific-make filter
+      apply(); logActivity("filter", "non-lexus: " + (nonLexus ? "on" : "off"), currentList.length + " results");
+    });
     condEl.addEventListener("click", function (e) {
       var btn = e.target.closest(".lotcond__btn"); if (!btn) return;
       cond = btn.getAttribute("data-cond");
@@ -1021,7 +1084,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=11").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=12").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
