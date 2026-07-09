@@ -317,29 +317,6 @@ window.SITE = {
       pins: [{ x: 33, y: 54 }, { x: 62, y: 33 }, { x: 88, y: 48 }, { x: 61, y: 63 }],
       door: { x: 12, y: 18 },
     },
-    {
-      /* the Lexus tool bay: trim comparisons and the pricing calculator.
-         Reuses Bay 02's LC 500 model, so it costs no extra download.      */
-      key: "lexus", bay: "Bay 04", label: "Find your Lexus", section: "lexus",
-      car: "Lexus LC 500", type: "photo",
-      image: "assets/hero-lc500-1536.webp",
-      srcset: "assets/hero-lc500-600.webp 600w, assets/hero-lc500-900.webp 900w, assets/hero-lc500-1536.webp 1536w",
-      alt: "Red Lexus LC 500 on a dark studio podium",
-      model: "models/lc500.glb",
-      modelLength: 4.77,
-      paintTune: [
-        { match: "PaletteMaterial001",
-          metalness: 0.3, roughness: 0.42, envMapIntensity: 0.35 },
-        { match: "material_8", color: "#101114",
-          metalness: 0.5, roughness: 0.5, envMapIntensity: 0.4 },
-      ],
-    },
-    {
-      /* trust bay: registration + credentials, empty lit pedestal          */
-      key: "omvic", bay: "Bay 05", label: "Registered & Licensed", section: "omvic",
-      car: "Registered & Licensed", type: "ghost",
-      image: "", srcset: "", alt: "Empty lit pedestal behind the credentials bay",
-    },
   ],
 
   /* --- Bay 06 · Registration & credentials (OMVIC) ------------------------

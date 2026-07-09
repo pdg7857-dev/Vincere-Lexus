@@ -847,6 +847,17 @@ body.is-loading .nextbay{ opacity:0; }
 .omvic__ref{ display:inline-block; margin-top:.7rem; font-size:.7rem; letter-spacing:.24em; text-transform:uppercase; color:var(--muted); }
 .omvic__note{ color:var(--muted); font-size:.82rem; margin:1.6rem 0 0; }
 
+/* ---------- Registered & Licensed as a compact trust strip -------------- */
+.truststrip{ margin-top:clamp(3rem,7vh,4.5rem); padding-top:clamp(2rem,4vw,3rem); border-top:1px solid var(--line-soft); }
+.truststrip__title{ font-family:var(--serif); font-size:clamp(1.3rem,2.6vw,1.8rem); color:var(--platinum); margin:0; }
+.truststrip__lead{ color:var(--silver-dim); margin:.5rem 0 1.4rem; max-width:64ch; font-weight:300; }
+.truststrip__badges{ grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); }
+.truststrip__badges .omvic__badge{ padding:1.1rem 1.2rem; }
+.truststrip__badges .omvic__badge h4{ font-size:1rem; }
+
+/* explore-the-lineup block (Lexus tool under the show room) */
+.lexplore{ margin-top:clamp(3rem,6vw,4.5rem); }
+
 /* ---------- Bay 07 · Automotive News ------------------------------------- */
 .news__lead{ font-family:var(--serif); font-size:clamp(1.3rem,2.6vw,1.9rem); color:var(--platinum); margin:.4rem 0 1rem; }
 .news__body{ color:var(--silver-dim); max-width:64ch; margin:0 0 2rem; }
