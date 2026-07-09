@@ -31,6 +31,9 @@ window.SITE = {
     number: "15149433730",           // +1 514 943 3730
     label: "Send me a text",
     text: "Hi Phil, I'm on your site and I'd like to ask about a car.",
+    popup: "Hey 👋 how can I help?", // chat bubble that pops up after a delay
+    popupDelaySeconds: 30,           // when it appears (with a soft chime)
+    popupSound: true,
   },
 
   /* --- Lead form destination --------------------------------------------

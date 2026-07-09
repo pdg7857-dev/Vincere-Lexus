@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=10").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=11").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -569,16 +569,83 @@
   }
 
   /* ---------- floating WhatsApp "send me a text" bubble ---------------- */
+  // Web-Audio notification chime (a soft tri-tone, synthesised so it needs no
+  // asset and respects the CSP). Primed on the first user gesture so autoplay
+  // policies let it sound when the pop-up appears.
+  var waCtx = null, waAudioReady = false;
+  function primeAudio() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!waCtx) waCtx = new AC();
+      if (waCtx.state === "suspended") waCtx.resume();
+      waAudioReady = true;
+    } catch (e) {}
+  }
+  function playDing() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!waCtx) waCtx = new AC();
+      if (waCtx.state === "suspended") waCtx.resume();
+      var t0 = waCtx.currentTime;
+      // three quick bell notes — an iPhone-ish tri-tone
+      [[0, 1244.5], [0.12, 1661.2], [0.24, 1108.7]].forEach(function (n) {
+        var osc = waCtx.createOscillator(), g = waCtx.createGain();
+        osc.type = "triangle"; osc.frequency.value = n[1];
+        var t = t0 + n[0];
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.22, t + 0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+        osc.connect(g); g.connect(waCtx.destination);
+        osc.start(t); osc.stop(t + 0.45);
+      });
+    } catch (e) {}
+  }
+
   function buildWhatsApp() {
     var cfg = S.whatsapp, el = $("#waBubble");
     if (!el) return;
     var num = cfg && (cfg.number || "").replace(/[^0-9]/g, "");
-    if (!num) { el.remove(); return; }
+    if (!num) { el.remove(); var pp = $("#waPop"); if (pp) pp.remove(); return; }
     var msg = (cfg && cfg.text) || "Hi, I'd like to ask about a car.";
-    el.href = "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
+    var href = "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
+    el.href = href;
     var lab = $("#waBubbleLabel"); if (lab) lab.textContent = (cfg && cfg.label) || "Send me a text";
     el.hidden = false;
     el.addEventListener("click", function () { try { logActivity("whatsapp", "opened WhatsApp"); } catch (e) {} });
+
+    // prime audio on the first interaction so the chime can play later
+    var primeOnce = function () { primeAudio(); ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (ev) { window.removeEventListener(ev, primeOnce); }); };
+    ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (ev) { window.addEventListener(ev, primeOnce, { passive: true }); });
+
+    // the chat pop-up
+    var pop = $("#waPop"), popMsg = $("#waPopMsg"), popClose = $("#waPopClose");
+    if (!pop || !(cfg && cfg.popup)) return;
+    popMsg.textContent = cfg.popup;
+    var dismissed = false;
+    try { dismissed = sessionStorage.getItem("pd_wapop") === "1"; } catch (e) {}
+    function hidePop(remember) {
+      pop.classList.remove("is-in"); pop.hidden = true;
+      if (remember) { try { sessionStorage.setItem("pd_wapop", "1"); } catch (e) {} }
+    }
+    if (popClose) popClose.addEventListener("click", function (e) { e.stopPropagation(); hidePop(true); });
+    // clicking the message opens WhatsApp
+    pop.addEventListener("click", function () {
+      try { logActivity("whatsapp", "opened WhatsApp (pop-up)"); } catch (e) {}
+      window.open(href, "_blank", "noopener");
+      hidePop(true);
+    });
+    if (!dismissed) {
+      var delay = ((cfg.popupDelaySeconds != null ? cfg.popupDelaySeconds : 30) * 1000);
+      setTimeout(function () {
+        if (dismissed || !pop || document.hidden) return;
+        pop.hidden = false;
+        requestAnimationFrame(function () { pop.classList.add("is-in"); });
+        if (cfg.popupSound !== false) playDing();
+        try { logActivity("whatsapp", "pop-up shown"); } catch (e) {}
+      }, delay);
+    }
   }
 
   /* ---------- Bay 06 · Registered & Licensed --------------------------- */
@@ -626,7 +693,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=10").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=11").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -645,7 +712,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=10").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=11").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -779,7 +846,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=10")
+    fetch("js/lot.json?v=11")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -954,7 +1021,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=10").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=11").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
