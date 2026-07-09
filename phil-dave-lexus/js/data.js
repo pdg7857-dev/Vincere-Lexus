@@ -24,6 +24,15 @@ window.SITE = {
     instagramUrl: "https://instagram.com/lexusphildave",
   },
 
+  /* --- WhatsApp "send me a text" bubble ----------------------------------
+     `number` in international format, digits only (country code + number).
+     Opens a WhatsApp chat to you, prefilled with `text`.                   */
+  whatsapp: {
+    number: "15149433730",           // +1 514 943 3730
+    label: "Send me a text",
+    text: "Hi Phil, I'm on your site and I'd like to ask about a car.",
+  },
+
   /* --- Lead form destination --------------------------------------------
      Easiest option: create a free form at https://formspree.io and paste the
      endpoint below (looks like "https://formspree.io/f/abcwxyz"). Until you
@@ -145,24 +154,6 @@ window.SITE = {
      `status`: "Available", "Sourced" (for a client), or "Sold".            */
   inventory: [
     {
-      make: "Lexus", model: "LC 500", year: 2024, body: "coupe",
-      note: "The grand tourer Lexus built to prove a point. A naturally aspirated V8 and a shape like nothing else on the road.",
-      status: "Available", image: "assets/car-lc500.webp?v=3",
-      /* opening the card streams this model in and it spins over the still */
-      spinModel: "models/lc500.glb", spinLength: 4.77, spinHide: ["Plate", "License"],
-      specs: [
-        { label: "Mileage", value: "On request" },
-        { label: "Engine", value: "5.0L naturally aspirated V8, 471 hp" },
-        { label: "Gearbox", value: "10 speed automatic, rear wheel drive" },
-        { label: "0 to 100", value: "4.4 seconds" },
-        { label: "History", value: "Full history at the dealership" },
-      ],
-      story: [
-        "The LC 500 began as the LF-LC concept, a design study so uncompromised that Lexus decided to build it almost unchanged. It is the car that announced Lexus could make something purely for the love of it.",
-        "Under the long bonnet sits one of the last naturally aspirated V8s in its class, revving to 7,300 rpm through a ten speed automatic. Fast, yes, but really it is about the way it turns an ordinary drive into an occasion.",
-      ],
-    },
-    {
       make: "Lexus", model: "LX 600", year: 2024, body: "suv",
       note: "The flagship 4WD. Twin turbo V6, three rows, and presence that needs no introduction.",
       status: "Available", image: "assets/car-lx.webp?v=3",
@@ -177,23 +168,6 @@ window.SITE = {
       story: [
         "LX is the flagship badge Lexus has reserved for its largest machine since 1996, and every generation has shared bones with the unstoppable Toyota Land Cruiser. This one rides on the newest 300 series platform: full boxed frame, locking centre differential, and the kind of engineering that gets measured in decades, not model years.",
         "Inside it is pure Lexus: three rows, semi aniline leather and a cabin assembled with fanatical care. It is the truck for people who could buy anything and want it to last forever.",
-      ],
-    },
-    {
-      make: "Lexus", model: "ES 350", year: 2024, body: "sedan",
-      note: "The quiet executive sedan that outsells its rivals on merit. Effortless, comfortable, and built to last.",
-      status: "Available", image: "assets/car-es.webp?v=3",
-      spinModel: "models/lexus-es.glb", spinLength: 4.98, spinHide: ["Plate", "License"],
-      specs: [
-        { label: "Mileage", value: "On request" },
-        { label: "Engine", value: "3.5L V6, 302 hp (hybrid available)" },
-        { label: "Gearbox", value: "8 speed automatic, front wheel drive" },
-        { label: "Audio", value: "Available Mark Levinson" },
-        { label: "History", value: "Full history at the dealership" },
-      ],
-      story: [
-        "The ES has been the heart of the Lexus range since 1989, the car that first showed the world what the brand stood for: silence, refinement, and reliability that becomes legend.",
-        "This generation rides on a stiffer platform with a longer wheelbase, a cabin trimmed with obsessive care, and a hybrid option that sips fuel while gliding. The sensible luxury choice that quietly never lets you down.",
       ],
     },
     {

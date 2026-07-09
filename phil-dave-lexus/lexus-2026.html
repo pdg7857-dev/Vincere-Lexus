@@ -330,7 +330,7 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
   <span class="gate__mark">Phil&nbsp;Dave</span>
   <span class="eyebrow">Private Access &middot; The Reference Room</span>
   <h2 id="gate-h">Your 2026 Lexus guide, on the house.</h2>
-  <p class="gate__lede">The complete, fact-checked trim comparison and a live lease &amp; finance desk. Tell me who you are and it&rsquo;s yours &mdash; and I&rsquo;ll be here when you&rsquo;re ready to source one.</p>
+  <p class="gate__lede">The complete, fact-checked trim comparison. Tell me who you are and it&rsquo;s yours &mdash; and I&rsquo;ll be here when you&rsquo;re ready to source one.</p>
   <form id="gate-form" novalidate>
    <input class="gate__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website">
    <div class="gate__f" data-f="name"><label for="g-name">Full name <span class="req">*</span></label><input id="g-name" name="name" autocomplete="name" required><span class="gate__err"></span></div>
@@ -376,7 +376,7 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
 <header class="hero"><div class="wrap">
   <span class="eyebrow">The Reference Room &middot; 2026 Lexus</span>
   <h1>The 2026 Lexus lineup,<br><em class="metal-text">walked through.</em></h1>
-  <p class="lead">Every trim in the current range, compared the way I&rsquo;d take a client through it &mdash; <b>12 models</b>, <b>83 trims</b>, what each step up truly adds, where the substantial upgrades land, and a built-in <b>lease &amp; finance calculator</b> with trade-in tax savings. Coupés (LC) aside. Built from live lexus.ca data, in CAD.</p>
+  <p class="lead">Every trim in the current range, compared the way I&rsquo;d take a client through it &mdash; <b>12 models</b>, <b>83 trims</b>, what each step up truly adds and where the substantial upgrades land. Coupés (LC) aside. Built from live lexus.ca data, in CAD.</p>
   <div class="stats">
     <div class="stat"><div class="n metal-text">12</div><div class="l">Models</div></div>
     <div class="stat"><div class="n metal-text">21</div><div class="l">Powertrains</div></div>
@@ -407,11 +407,15 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
 </div>
 
   
+
+
+</div></header>
+
 <section class="cx" id="compare">
  <div class="cx-top">
   <span class="eyebrow">The Sourcing Desk</span>
-  <h2>Compare two trims &amp; run the numbers</h2>
-  <p class="sub">Set any two trims side by side &mdash; same model or across the range &mdash; to see the exact price, lease and finance gap, and precisely what you gain or give up. Adjust province, cash down, trade-in, rates and term; trade-in <b>tax savings</b> are calculated for both lease and finance.</p>
+  <h2>Compare two trims</h2>
+  <p class="sub">Set any two trims side by side, same model or across the range, to see the starting price gap and precisely what you gain or give up.</p>
  </div>
  <div class="cx-body">
   <div class="cx-selrow">
@@ -421,34 +425,17 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
    <div class="cx-slot b"><span class="tag">Vehicle B</span>
      <div class="cx-selpair"><select id="cx-modelB" aria-label="Model B"></select><select id="cx-trimB" aria-label="Trim B"></select></div></div>
   </div>
-  <div class="cx-controls">
-   <div class="cx-field"><label for="cx-prov">Province</label><select id="cx-prov"></select></div>
-   <div class="cx-field"><label for="cx-down">Cash down</label><div class="cx-inwrap money"><span class="pre">$</span><input id="cx-down" type="number" step="500" value="0" inputmode="numeric"></div></div>
-   <div class="cx-field"><label for="cx-trade">Trade-in value</label><div class="cx-inwrap money"><span class="pre">$</span><input id="cx-trade" type="number" step="500" value="0" inputmode="numeric"></div></div>
-   <div class="cx-field"><label for="cx-owing">Trade still owing</label><div class="cx-inwrap money"><span class="pre">$</span><input id="cx-owing" type="number" step="500" value="0" inputmode="numeric"></div><span class="hint">loan payout on trade</span></div>
-  </div>
-  <details class="cx-more">
-   <summary>Rates &amp; terms &mdash; fine-tune the deal</summary>
-   <div class="cx-controls">
-    <div class="cx-field"><label for="cx-tax">Sales tax</label><div class="cx-inwrap"><input id="cx-tax" type="number" step="0.001" inputmode="decimal"><span class="suf">%</span></div><span class="hint">auto-set by province</span></div>
-    <div class="cx-field"><label for="cx-lterm">Lease term</label><div class="cx-inwrap"><input id="cx-lterm" type="number" step="12" value="48" inputmode="numeric"><span class="suf">mo</span></div></div>
-    <div class="cx-field"><label for="cx-lrate">Lease rate</label><div class="cx-inwrap"><input id="cx-lrate" type="number" step="0.1" placeholder="6.9" inputmode="decimal"><span class="suf">%</span></div><span class="hint">blank = Lexus offer</span></div>
-    <div class="cx-field"><label for="cx-fterm">Finance term</label><div class="cx-inwrap"><input id="cx-fterm" type="number" step="12" value="60" inputmode="numeric"><span class="suf">mo</span></div></div>
-    <div class="cx-field"><label for="cx-apr">Finance APR</label><div class="cx-inwrap"><input id="cx-apr" type="number" step="0.1" value="6.99" inputmode="decimal"><span class="suf">%</span></div></div>
-   </div>
-  </details>
   <div class="cx-results"><div id="cx-cardA"></div><div id="cx-cardB"></div></div>
   <div id="cx-diff" class="cx-diff"></div>
-  <p class="cx-assump"><b>How the math works.</b> Prices are the lexus.ca all-in starting price for the chosen province (incl. freight/PDI; LX figures include federal luxury tax). The <b>lease</b> reverse-engineers each trim&rsquo;s residual value from Lexus&rsquo;s own advertised offer (monthly, $0-down, pre-tax), then re-solves the payment with your cash down + trade equity as a capitalised-cost reduction and your rate/term &mdash; tax is applied to the monthly payment (Canadian lease method), so a trade-in lowers the taxable payment and the shown saving is that tax reduction over the term. Changing the term from the advertised one flags the lease as &ldquo;est.&rdquo; (residual estimated at ~0.6%/mo). <b>Finance</b> taxes the price minus trade-in (trade reduces taxable amount in most provinces), adds it to the amount financed less down/trade, and amortises at your APR. Confirm every figure with the dealer before signing.</p>
+  <p class="cx-assump">Prices are the lexus.ca all-in starting figures for Ontario (incl. freight/PDI; LX incl. federal luxury tax), in CAD. Confirm every figure with the dealer before ordering.</p>
  </div>
 </section>
 
-</div></header>
 
-<nav class="modelnav"><div class="wrap"><a href="#compare" class="jump">&#9776; Compare / Calc</a><span class="mn-group"><span class="mn-label">Sedans</span><a href="#es">ES</a><a href="#is">IS</a><a href="#ls">LS</a></span><span class="mn-group"><span class="mn-label">SUVs</span><a href="#ux">UX</a><a href="#nx">NX</a><a href="#nx-plug-in">NX Plug-in</a><a href="#rx">RX</a><a href="#rx-plug-in">RX Plug-in</a><a href="#rz-all-electric">RZ</a><a href="#tx">TX</a></span><span class="mn-group"><span class="mn-label">Trucks</span><a href="#gx">GX</a><a href="#lx">LX</a></span></div></nav>
+<nav class="modelnav"><div class="wrap"><a href="#compare" class="jump">&#9776; Compare</a><span class="mn-group"><span class="mn-label">Sedans</span><a href="#es">ES</a><a href="#is">IS</a><a href="#ls">LS</a></span><span class="mn-group"><span class="mn-label">SUVs</span><a href="#ux">UX</a><a href="#nx">NX</a><a href="#nx-plug-in">NX Plug-in</a><a href="#rx">RX</a><a href="#rx-plug-in">RX Plug-in</a><a href="#rz-all-electric">RZ</a><a href="#tx">TX</a></span><span class="mn-group"><span class="mn-label">Trucks</span><a href="#gx">GX</a><a href="#lx">LX</a></span></div></nav>
 
 <main class="wrap">
-<div class="section-lead"><span class="eyebrow">The Full Range</span><h2>Pick a model to see its trims</h2><p>Tap any model in the bar above and its full trim ladder and specs open here &mdash; each family&rsquo;s variants shown side by side so you can compare them directly. Send any two up to the desk above to compare payments.</p><p class="model-hint" id="modelHint">&#9776;&nbsp;&nbsp;Choose a model above to begin.</p></div>
+<div class="section-lead"><span class="eyebrow">The Full Range</span><h2>Pick a model to see its trims</h2><p>Tap any model in the bar above and its full trim ladder and specs open here &mdash; each family&rsquo;s variants shown side by side so you can compare them directly. Send any two up to the desk above to compare them.</p><p class="model-hint" id="modelHint">&#9776;&nbsp;&nbsp;Choose a model above to begin.</p></div>
 <section class="model" id="gx">
 <div class="model-head">
 <div class="mh-left"><span class="mh-idx">01</span><h2>GX</h2><p class="mh-sub">Body-on-frame SUV · SUV</p></div>
@@ -2458,7 +2445,7 @@ details.upsell ul{padding:0 26px 22px;margin-top:-2px}
 
 <footer><div class="wrap">
   <span class="fmark">Phil&nbsp;Dave</span>
-  <p><b>Private luxury car sourcing &middot; Greater Toronto Area.</b> Data from lexus.ca (EN) specification + Build&amp;Price pricing APIs, 2026 model year, snapshot 2026-06-16, independently fact-checked against Lexus Canada product summaries &amp; media releases (see Accuracy). Prices are province-specific all-in starting figures incl. freight/PDI (LX incl. luxury tax), in <b>CAD</b>. Excludes LC coupé &amp; Convertible. Calculator figures are estimates for comparison &mdash; confirm all pricing, rates, residuals and taxes before signing.</p>
+  <p><b>Private luxury car sourcing &middot; Greater Toronto Area.</b> Data from lexus.ca (EN) specification + Build&amp;Price pricing APIs, 2026 model year, snapshot 2026-06-16, independently fact-checked against Lexus Canada product summaries &amp; media releases (see Accuracy). Prices are province-specific all-in starting figures incl. freight/PDI (LX incl. luxury tax), in <b>CAD</b>. Excludes LC coupé &amp; Convertible. Confirm all pricing with the dealer before ordering.</p>
 </div></footer>
 
 <script>/* ===== Phil Dave — access gate / lead capture ===== */
@@ -2698,27 +2685,19 @@ function fillTrims(modelIdx, sel, preferKey){
   const m=DATA.models[modelIdx]; let html="";
   m.variants.forEach((v,vi)=>{ v.trims.forEach((t,ti)=>{
     const key=`${modelIdx}.${vi}.${ti}`;
-    const price=priceOf(t,$("cx-prov").value);
+    const price=priceOf(t,"ON");
     html+=`<option value="${key}">${esc(v.name)} · ${esc(t.name)} — ${fmt(price)}</option>`;
   });});
   sel.innerHTML=html;
   if(preferKey && byKey(preferKey) && byKey(preferKey).mi==modelIdx) sel.value=preferKey;
 }
 
-/* ---- render output ---- */
-function card(side,q,tinfo){
-  if(!q) return `<div class="cx-out"><div class="cx-outhd">${esc(tinfo.label)}</div><p class="cx-none">No pricing in this province.</p></div>`;
-  const L=q.lease, F=q.finance;
+/* ---- render output (comparison only — no pricing calculator) ---- */
+function card(side,price,tinfo){
+  if(price==null) return `<div class="cx-out"><div class="cx-outhd">${esc(tinfo.label)}</div><p class="cx-none">No price on file.</p></div>`;
   return `<div class="cx-out">
     <div class="cx-outhd"><span class="cx-side">${side}</span>${esc(tinfo.model)} <b>${esc(tinfo.variant)} · ${esc(tinfo.trim)}</b></div>
-    <div class="cx-price">${fmt(q.P)}<span> vehicle price</span></div>
-    <div class="cx-pgrid">
-      <div class="cx-pay"><div class="l">Lease / mo${L&&L.est?' <em>est.</em>':''}</div><div class="v">${L?fmt(L.monthly):'—'}</div><div class="s">${L?`${L.term} mo · ${L.rate}%<br>taxes in`:''}</div></div>
-      <div class="cx-pay"><div class="l">Finance / mo</div><div class="v">${fmt(F.monthly)}</div><div class="s">${F.fterm} mo · ${F.apr}%<br>taxes in</div></div>
-    </div>
-    ${L?`<div class="cx-meta">Residual ${Math.round(L.residPct*100)}% (${fmt(L.resid)}) · lease tax ${fmt(L.totalTax)} over term</div>`:''}
-    ${(L&&L.taxSavings>1)?`<div class="cx-save">↓ Trade-in lease tax saving: <b>${fmt(L.taxSavings)}</b></div>`:''}
-    ${(F.tradeSave>1)?`<div class="cx-save">↓ Trade-in finance tax saving: <b>${fmt(F.tradeSave)}</b></div>`:''}
+    <div class="cx-price">${fmt(price)}<span> starting price</span></div>
   </div>`;
 }
 
@@ -2726,24 +2705,16 @@ function render(){
   const kA=$("cx-trimA").value, kB=$("cx-trimB").value;
   const A=byKey(kA), B=byKey(kB);
   if(!A||!B) return;
-  // sync default lease rate placeholder from A
-  const ldA=leaseData(A.t,$("cx-prov").value);
-  if(ldA){ $("cx-lrate").placeholder=ldA.r; $("cx-lterm").dataset.adv=ldA.n; }
-  const qA=quote(A.t), qB=quote(B.t);
-  $("cx-cardA").innerHTML=card("A",qA,A);
-  $("cx-cardB").innerHTML=card("B",qB,B);
-  // diff
-  if(qA&&qB){
-    const dPrice=qB.P-qA.P;
-    const dLease=(qA.lease&&qB.lease)? qB.lease.monthly-qA.lease.monthly : null;
-    const dFin=qB.finance.monthly-qA.finance.monthly;
+  const PA=priceOf(A.t,"ON"), PB=priceOf(B.t,"ON");
+  $("cx-cardA").innerHTML=card("A",PA,A);
+  $("cx-cardB").innerHTML=card("B",PB,B);
+  if(PA!=null&&PB!=null){
+    const dPrice=PB-PA;
     const fd=featDiff(A,B);
     $("cx-diff").innerHTML=`
       <div class="cx-diffhd">Moving A → B <span>(${esc(B.trim)} vs ${esc(A.trim)})</span></div>
       <div class="cx-dgrid">
-        <div class="cx-d"><div class="l">Price</div><div class="v ${dPrice>0?'up':'dn'}">${signed(dPrice)}</div></div>
-        <div class="cx-d"><div class="l">Lease / mo</div><div class="v ${dLease>0?'up':'dn'}">${dLease==null?'—':signed(dLease)}</div></div>
-        <div class="cx-d"><div class="l">Finance / mo</div><div class="v ${dFin>0?'up':'dn'}">${signed(dFin)}</div></div>
+        <div class="cx-d"><div class="l">Starting price</div><div class="v ${dPrice>0?'up':'dn'}">${signed(dPrice)}</div></div>
       </div>
       <div class="cx-feat">
         <div class="cx-fcol"><div class="fh add">B gains over A</div>${chips(fd.adds)}</div>
@@ -2754,9 +2725,7 @@ function render(){
 
 /* ---- wire up ---- */
 function init(){
-  const secExists=$("cx-prov"); if(!secExists) return;
-  // province options
-  $("cx-prov").innerHTML=DATA.provinces.map(p=>`<option value="${p}"${p==="ON"?" selected":""}>${esc(PROVNAME[p]||p)} (${p})</option>`).join("");
+  const secExists=$("cx-modelA"); if(!secExists) return;
   fillModels($("cx-modelA")); fillModels($("cx-modelB"));
   // sensible defaults: RX 350 Luxury vs Executive
   const rxi=DATA.models.findIndex(m=>m.name==="RX");
@@ -2765,15 +2734,10 @@ function init(){
   const lux=TRIMS.find(x=>x.model==="RX"&&x.trim==="Luxury");
   const exe=TRIMS.find(x=>x.model==="RX"&&x.trim==="Executive");
   if(lux)$("cx-trimA").value=lux.key; if(exe)$("cx-trimB").value=exe.key;
-  // tax default
-  $("cx-tax").value=TAX["ON"];
 
-  $("cx-prov").addEventListener("change",()=>{ $("cx-tax").value=TAX[$("cx-prov").value]??13;
-    fillTrims(+$("cx-modelA").value,$("cx-trimA"),$("cx-trimA").value);
-    fillTrims(+$("cx-modelB").value,$("cx-trimB"),$("cx-trimB").value); render();});
   $("cx-modelA").addEventListener("change",()=>{fillTrims(+$("cx-modelA").value,$("cx-trimA"));render();});
   $("cx-modelB").addEventListener("change",()=>{fillTrims(+$("cx-modelB").value,$("cx-trimB"));render();});
-  ["cx-trimA","cx-trimB","cx-tax","cx-down","cx-trade","cx-owing","cx-lterm","cx-lrate","cx-apr","cx-fterm"]
+  ["cx-trimA","cx-trimB"]
     .forEach(id=>{const e=$(id); e.addEventListener("input",render); e.addEventListener("change",render);});
   $("cx-swap").addEventListener("click",()=>{
     const mA=$("cx-modelA").value,tA=$("cx-trimA").value,mB=$("cx-modelB").value,tB=$("cx-trimB").value;

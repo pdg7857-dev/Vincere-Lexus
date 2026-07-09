@@ -164,7 +164,7 @@
       return;
     }
     if (!miniReady) return;
-    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=7").then(function (m) { miniMod = m; return m; }))
+    (miniMod ? Promise.resolve(miniMod) : import("./minispin.js?v=8").then(function (m) { miniMod = m; return m; }))
       .then(function (m) { return m.show(mount, nxt); })
       .catch(function () { /* no WebGL / fetch failed → photo thumb stays */ });
   }
@@ -341,6 +341,7 @@
     buildNewsletter();
     buildOmvic();
     buildNews();
+    buildWhatsApp();
     loadLexusTool();
 
     // process
@@ -373,8 +374,9 @@
       return '<div class="stat"><div class="stat__value">' + esc(s.value) + '</div><div class="stat__label">' + esc(s.label) + "</div></div>";
     }).join("");
 
-    // quotes
-    $("#quotes").innerHTML = (S.testimonials || []).map(function (q) {
+    // quotes (removed from the page for now — guard in case the element is absent)
+    var quotesEl = $("#quotes");
+    if (quotesEl) quotesEl.innerHTML = (S.testimonials || []).map(function (q) {
       return (
         '<figure class="quote will-reveal">' +
           '<div class="quote__mark" aria-hidden="true">&ldquo;</div>' +
@@ -566,6 +568,19 @@
     });
   }
 
+  /* ---------- floating WhatsApp "send me a text" bubble ---------------- */
+  function buildWhatsApp() {
+    var cfg = S.whatsapp, el = $("#waBubble");
+    if (!el) return;
+    var num = cfg && (cfg.number || "").replace(/[^0-9]/g, "");
+    if (!num) { el.remove(); return; }
+    var msg = (cfg && cfg.text) || "Hi, I'd like to ask about a car.";
+    el.href = "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
+    var lab = $("#waBubbleLabel"); if (lab) lab.textContent = (cfg && cfg.label) || "Send me a text";
+    el.hidden = false;
+    el.addEventListener("click", function () { try { logActivity("whatsapp", "opened WhatsApp"); } catch (e) {} });
+  }
+
   /* ---------- Bay 06 · Registered & Licensed --------------------------- */
   function buildOmvic() {
     var cfg = S.omvic; if (!cfg) return;
@@ -611,7 +626,7 @@
   var lexSpin = null;
   window.__pdLexusSpin = function (id, sectionEl) {
     if (reduce || !sectionEl) return;
-    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=7").then(function (m) { lexSpin = m; return m; }))
+    (lexSpin ? Promise.resolve(lexSpin) : import("./lexusspin.js?v=8").then(function (m) { lexSpin = m; return m; }))
       .then(function (m) {
         if (!m.has(id)) { m.stop(); return; }
         var box = sectionEl.querySelector(".pd-spin");
@@ -630,7 +645,7 @@
     var mount = $("#lexusMount");
     if (!mount || mount.__loaded) return;
     mount.__loaded = true;
-    fetch("lexus-2026.html?v=7").then(function (r) { return r.text(); }).then(function (txt) {
+    fetch("lexus-2026.html?v=8").then(function (r) { return r.text(); }).then(function (txt) {
       var doc = new DOMParser().parseFromString(txt, "text/html");
       // drop the tool's own standalone hero + footer so it starts at the UI
       var hero = doc.querySelector("header.hero"); if (hero) hero.parentNode.removeChild(hero);
@@ -716,6 +731,33 @@
       else fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body }).catch(function () {});
     } catch (e) {}
   }
+  /* ---------- analytics + site performance (one row per visit) --------- */
+  var pageviewLogged = false;
+  function logPageview() {
+    if (pageviewLogged || !S.formEndpoint) return;
+    pageviewLogged = true;
+    var loadMs = 0, domMs = 0;
+    try {
+      var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+      if (nav) { loadMs = Math.round(nav.loadEventEnd - nav.startTime); domMs = Math.round(nav.domContentLoadedEventEnd - nav.startTime); }
+      else if (performance.timing) { var t = performance.timing; loadMs = t.loadEventEnd - t.navigationStart; domMs = t.domContentLoadedEventEnd - t.navigationStart; }
+    } catch (e) {}
+    var conn = "";
+    try { conn = (navigator.connection && navigator.connection.effectiveType) || ""; } catch (e) {}
+    var detail = [
+      "ref:" + (document.referrer || "direct"),
+      "path:" + location.pathname,
+      "screen:" + screen.width + "x" + screen.height,
+      "vp:" + window.innerWidth + "x" + window.innerHeight,
+      "dpr:" + (window.devicePixelRatio || 1),
+      conn ? "net:" + conn : "",
+      "lang:" + (navigator.language || "")
+    ].filter(Boolean).join(" | ");
+    logActivity("pageview", detail, "load " + (loadMs > 0 ? loadMs : "?") + "ms / dom " + (domMs > 0 ? domMs : "?") + "ms");
+  }
+  if (document.readyState === "complete") setTimeout(logPageview, 300);
+  else window.addEventListener("load", function () { setTimeout(logPageview, 300); });
+
   function endSession() {
     if (SESSION.ended) return;
     SESSION.ended = true;
@@ -737,7 +779,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=7")
+    fetch("js/lot.json?v=8")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -750,6 +792,12 @@
         '<span class="lot__count" id="lotCount"></span>' +
         '<div class="lot__controls">' +
           '<input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search the lot" />' +
+          '<select id="lotCond" aria-label="Filter by condition">' +
+            '<option value="all">All vehicles</option>' +
+            '<option value="new">New</option>' +
+            '<option value="cpo">Certified pre-owned</option>' +
+            '<option value="used">Used</option>' +
+          '</select>' +
           '<select id="lotMake" aria-label="Filter by make">' + makes.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("") + '</select>' +
           '<select id="lotSort" aria-label="Sort">' +
             '<option value="year-desc">Newest first</option>' +
@@ -763,7 +811,9 @@
       '<p class="lot__empty" id="lotEmpty" hidden>No cars match. Widen your search.</p>';
 
     var grid = $("#lotGrid", mount), countEl = $("#lotCount", mount), emptyEl = $("#lotEmpty", mount);
-    var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount);
+    var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount), condEl = $("#lotCond", mount);
+    // "New" = essentially delivery-mileage stock; "Used" is everything else and includes CPO.
+    function isNew(c) { return c.km != null && c.km <= 1000; }
 
     var currentList = [];
     function cardHTML(c, i) {
@@ -786,9 +836,12 @@
       '</article>';
     }
     function apply() {
-      var q = (searchEl.value || "").toLowerCase().trim(), mk = makeEl.value, sort = sortEl.value;
+      var q = (searchEl.value || "").toLowerCase().trim(), mk = makeEl.value, sort = sortEl.value, cond = condEl.value;
       var list = cars.filter(function (c) {
         if (mk !== "All makes" && c.make !== mk) return false;
+        if (cond === "new" && !isNew(c)) return false;
+        if (cond === "cpo" && !c.certified) return false;
+        if (cond === "used" && isNew(c)) return false;   // used = everything not new (CPO included)
         if (q) { var hay = (c.year + " " + c.make + " " + c.model + " " + c.trim + " " + c.ext).toLowerCase(); if (hay.indexOf(q) < 0) return false; }
         return true;
       });
@@ -822,6 +875,7 @@
       searchTimer = setTimeout(function () { var q = searchEl.value.trim(); if (q.length >= 2) logActivity("search", q, currentList.length + " results"); }, 900);
     });
     makeEl.addEventListener("change", function () { apply(); logActivity("filter", "make: " + makeEl.value, currentList.length + " results"); });
+    condEl.addEventListener("change", function () { apply(); logActivity("filter", "condition: " + condEl.value, currentList.length + " results"); });
     sortEl.addEventListener("change", function () { apply(); logActivity("sort", sortEl.value); });
     apply();
   }
@@ -890,7 +944,7 @@
     var media = $("#sheetMedia");
     media.setAttribute("data-spin-for", c.spinModel || "");
     if (!c.spinModel || reduce) return;
-    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=7").then(function (m) { spinMod = m; return m; }))
+    (spinMod ? Promise.resolve(spinMod) : import("./sheetspin.js?v=8").then(function (m) { spinMod = m; return m; }))
       .then(function (m) { return m.start(media, c); })
       .catch(function () { /* no WebGL / fetch failed → still image remains */ });
   }
