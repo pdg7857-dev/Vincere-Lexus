@@ -81,18 +81,21 @@ trail and to compute "newer than last import."
 
 ## DATA INGESTION — iPhone BACKUP
 
-### Locate the backup
-- macOS: `~/Library/Application Support/MobileSync/Backup/<UDID>/`
-- Windows: `%APPDATA%\Apple\MobileSync\Backup\<UDID>\`
+### Locate the backup (macOS)
+- Path: `~/Library/Application Support/MobileSync/Backup/<UDID>/`
+- Finder-encrypted backups only (the owner uses "Encrypt local backup"). Handle this
+  as the primary/only path — don't build an unencrypted fallback beyond a clear error.
 
 Files are stored under hashed names. Use **`Manifest.db`** (SQLite mapping
 `domain` + `relativePath` → `fileID`) to resolve each source DB.
 
-- **Encrypted backups (recommended):** decrypt using the backup password — use a
-  maintained library such as `iphone_backup_decrypt`, or implement the documented
-  AES key-unwrap from `Manifest.plist`. Password entered per-import, never stored.
-- **Unencrypted backups:** read files directly (but WhatsApp/full history may be
-  missing).
+- **Decryption:** the backup is encrypted, so `Manifest.db` and every source file must
+  be decrypted with the backup password. Use a maintained library such as
+  `iphone_backup_decrypt`, or implement the documented AES key-unwrap from
+  `Manifest.plist` + `Manifest.db`. Password is entered per-import and held in memory
+  only — never written to disk or logged.
+- Note: macOS may need Full Disk Access granted to Terminal/the app to read the
+  `MobileSync/Backup` folder — surface a clear message if the read is denied.
 
 | Source | Domain | Relative path |
 |---|---|---|
