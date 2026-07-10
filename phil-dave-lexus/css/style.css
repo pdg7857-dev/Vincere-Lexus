@@ -24,6 +24,9 @@
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
+/* the hidden attribute must always win, even over component display rules —
+   otherwise invisible overlays (chat, pop-up, next-bay) still catch taps. */
+[hidden]{ display:none !important; }
 html{ scroll-behavior:auto; -webkit-text-size-adjust:100%; }
 /* iOS Safari freezes vertical scrolling when the BODY has overflow-x:hidden
    (it becomes a broken scroll container). Contain horizontal overflow on
@@ -714,10 +717,9 @@ body.no-scroll{ overflow:hidden; }
   background:rgba(10,10,12,.74); border:1px solid var(--line); border-radius:999px;
   backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
   cursor:pointer; color:inherit; text-align:left;
-  opacity:0; animation:nextbayIn .8s var(--ease) 2.4s forwards;
-  transition:border-color .3s, transform .3s;
+  opacity:1;
+  transition:border-color .3s, transform .3s, opacity .3s;
 }
-@keyframes nextbayIn{ to{ opacity:1; } }
 .nextbay:hover{ border-color:var(--platinum); transform:translateX(-50%) translateY(-2px); }
 .nextbay__spin{
   position:relative; width:96px; height:58px; border-radius:999px; overflow:hidden;
