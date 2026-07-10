@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Bonded, licensed and insured">
+  <path d="M24 3l16 6v10c0 11-7 18-16 23C15 37 8 30 8 19V9l16-6z" fill="#0d2436"/>
+  <path d="M24 3l16 6v10c0 11-7 18-16 23C15 37 8 30 8 19V9l16-6z" fill="none" stroke="#e0a838" stroke-width="1.6"/>
+  <path d="M24 13l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10v-5l7-3z" fill="none" stroke="#e0a838" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M21 24l2 2 4-4.5" fill="none" stroke="#e0a838" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

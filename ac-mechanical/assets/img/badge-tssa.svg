@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="TSSA Certified">
+  <path d="M24 3l16 6v10c0 11-7 18-16 23C15 37 8 30 8 19V9l16-6z" fill="#0d2436"/>
+  <path d="M24 3l16 6v10c0 11-7 18-16 23C15 37 8 30 8 19V9l16-6z" fill="none" stroke="#e0a838" stroke-width="1.6"/>
+  <path d="M16 24l5 5 11-12" fill="none" stroke="#e0a838" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

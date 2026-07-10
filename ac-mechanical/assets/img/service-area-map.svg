@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" role="img" aria-labelledby="mapTitle mapDesc">
+  <title id="mapTitle">Service area — Ottawa and eastern Ontario</title>
+  <desc id="mapDesc">Schematic map showing Ottawa as the service hub with communities served across eastern Ontario, including Pembroke, Petawawa, Deep River, Carleton Place, Brockville, Cornwall and Hawkesbury.</desc>
+  <rect width="640" height="460" fill="#eef3f7"/>
+  <g stroke="#d6e0e8" stroke-width="1">
+    <path d="M0 60 H640 M0 120 H640 M0 180 H640 M0 240 H640 M0 300 H640 M0 360 H640 M0 420 H640"/>
+    <path d="M80 0 V460 M160 0 V460 M240 0 V460 M320 0 V460 M400 0 V460 M480 0 V460 M560 0 V460"/>
+  </g>
+  <!-- stylised land / rivers -->
+  <path d="M40 250 C120 210 200 200 280 170 C360 140 430 130 520 150 C580 165 610 200 600 250 C585 320 520 360 420 380 C320 400 200 400 120 360 C60 330 20 300 40 250 Z"
+        fill="#dfeae0" stroke="#c2d3c6" stroke-width="1.5"/>
+  <path d="M470 120 C440 170 380 210 300 235 C230 258 150 275 90 320"
+        fill="none" stroke="#9dc3e6" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+  <text x="300" y="228" font-family="Inter, Arial, sans-serif" font-size="11" fill="#5a86ab" transform="rotate(-14 300 228)">Ottawa River</text>
+
+  <!-- service radius -->
+  <circle cx="330" cy="250" r="150" fill="#0d2436" opacity=".05"/>
+  <circle cx="330" cy="250" r="150" fill="none" stroke="#0d2436" stroke-width="1.2" stroke-dasharray="5 6" opacity=".35"/>
+
+  <!-- points -->
+  <g font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#0d2436">
+    <!-- hub: Ottawa -->
+    <circle cx="330" cy="250" r="9" fill="#e0a838" stroke="#0d2436" stroke-width="2"/>
+    <text x="330" y="272" text-anchor="middle" font-weight="800">Ottawa (HQ)</text>
+
+    <g fill="#143349">
+      <circle cx="200" cy="150" r="4.5"/><text x="208" y="147">Pembroke</text>
+      <circle cx="220" cy="172" r="4.5"/><text x="228" y="188">Petawawa</text>
+      <circle cx="170" cy="128" r="4.5"/><text x="60" y="126" text-anchor="end">Deep River</text>
+      <circle cx="286" cy="222" r="4.5"/><text x="278" y="219" text-anchor="end">Carleton Place</text>
+      <circle cx="262" cy="238" r="4.5"/><text x="254" y="243" text-anchor="end">Mississippi Mills</text>
+      <circle cx="300" cy="322" r="4.5"/><text x="300" y="340" text-anchor="middle">Brockville</text>
+      <circle cx="430" cy="300" r="4.5"/><text x="438" y="304">Cornwall</text>
+      <circle cx="452" cy="212" r="4.5"/><text x="460" y="209">Hawkesbury</text>
+      <circle cx="392" cy="252" r="4.5"/><text x="400" y="248">Casselman</text>
+      <circle cx="356" cy="292" r="4.5"/><text x="364" y="305">Metcalfe</text>
+      <circle cx="352" cy="330" r="4.5"/><text x="360" y="344">S. Dundas</text>
+    </g>
+  </g>
+  <text x="20" y="440" font-family="Inter, Arial, sans-serif" font-size="10" fill="#8897a3">Illustrative — not to scale. Replace with mapped coverage graphic.</text>
+</svg>

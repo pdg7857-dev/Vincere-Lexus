@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact · Request a Quote · Invite Us to Bid | AC Mechanical Refrigeration</title>
+<meta name="description" content="Request a quote, add AC Mechanical to your bidders list, or invite us to an RFQ/tender. Ottawa mechanical, HVAC-R & refrigeration contractor. Procurement contact, 24/7 emergency line, and an RFQ form with document upload.">
+<meta name="keywords" content="request a quote mechanical contractor Ottawa, invite to bid HVAC, RFQ mechanical eastern Ontario, procurement contact AC Mechanical, 24/7 emergency HVAC Ottawa">
+<link rel="canonical" href="https://www.acmechanical.example/contact.html">
+<meta property="og:title" content="Contact · Request a Quote · Invite Us to Bid | AC Mechanical">
+<meta property="og:description" content="Low-friction RFQ and bid-invitation form. Procurement contact and 24/7 emergency line.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="emergency no-print">24/7 emergency service for critical mechanical &amp; refrigeration systems — <a href="tel:+10000000000">[INSERT: 24/7 emergency line]</a></div>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="index.html" aria-label="AC Mechanical Refrigeration Ltd. — home">
+      <img class="brand__logo" src="assets/img/logo.svg" alt="">
+      <span><span class="brand__name">AC Mechanical Refrigeration&nbsp;Ltd.</span><span class="brand__tag">Mechanical · HVAC-R · Refrigeration</span></span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">☰&nbsp;Menu</button>
+    <nav class="main-nav" id="primary-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="government.html">Government</a></li>
+        <li><a href="certifications.html">Certifications</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="service-area.html">Service&nbsp;Area</a></li>
+        <li><a href="contact.html" aria-current="page">Contact</a></li>
+        <li class="header-cta"><a class="btn btn--primary" href="#invite">Invite&nbsp;Us&nbsp;to&nbsp;Bid</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <p class="breadcrumb"><a href="index.html">Home</a><span>/</span>Contact</p>
+      <h1 id="invite">Request a quote · Invite us to bid</h1>
+      <p class="lead">Tell us about your facility and scope. We respond to quote requests and bid invitations within one business day. For urgent equipment failures, call our 24/7 emergency line.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <!-- Form -->
+      <div>
+        <div class="form-card">
+          <h2 class="mt-0">RFQ / bid-invitation form</h2>
+          <p class="hint" style="color:var(--steel-500)">Fields marked <span class="req">*</span> are required. Attach drawings, specifications or a solicitation document if you have one.</p>
+          <form id="rfq-form" action="[INSERT: form endpoint URL]" method="post" enctype="multipart/form-data" data-mailto="[INSERT: procurement email]" novalidate>
+            <!-- Honeypot (spam protection) -->
+            <div class="honeypot" aria-hidden="true">
+              <label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label>
+            </div>
+
+            <fieldset style="border:0;padding:0;margin:0">
+              <legend class="visually-hidden">Your request</legend>
+
+              <div class="field">
+                <label for="request_type">Request type <span class="req">*</span></label>
+                <select id="request_type" name="request_type" required>
+                  <option value="">Please select…</option>
+                  <option>Request a quote (RFQ)</option>
+                  <option>Invite us to bid / add to bidders list</option>
+                  <option>Preventive maintenance program</option>
+                  <option>Emergency / urgent service</option>
+                  <option>General enquiry</option>
+                </select>
+              </div>
+
+              <div class="field-2">
+                <div class="field">
+                  <label for="name">Contact name <span class="req">*</span></label>
+                  <input type="text" id="name" name="name" autocomplete="name" required>
+                </div>
+                <div class="field">
+                  <label for="org">Organization / department <span class="req">*</span></label>
+                  <input type="text" id="org" name="organization" autocomplete="organization" required>
+                </div>
+              </div>
+
+              <div class="field-2">
+                <div class="field">
+                  <label for="email">Email <span class="req">*</span></label>
+                  <input type="email" id="email" name="email" autocomplete="email" required>
+                </div>
+                <div class="field">
+                  <label for="phone">Phone</label>
+                  <input type="tel" id="phone" name="phone" autocomplete="tel">
+                </div>
+              </div>
+
+              <div class="field-2">
+                <div class="field">
+                  <label for="sector">Sector</label>
+                  <select id="sector" name="sector">
+                    <option value="">Please select…</option>
+                    <option>Federal government</option>
+                    <option>Provincial government</option>
+                    <option>Municipal government</option>
+                    <option>University / college</option>
+                    <option>Hospital / healthcare</option>
+                    <option>School board</option>
+                    <option>Transit</option>
+                    <option>Prime / general contractor</option>
+                    <option>Commercial</option>
+                    <option>Industrial</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="project_type">Project / service type</label>
+                  <select id="project_type" name="project_type">
+                    <option value="">Please select…</option>
+                    <option>Industrial refrigeration / ice plant</option>
+                    <option>HVAC-R</option>
+                    <option>Chillers / process cooling (ammonia/gas/propane)</option>
+                    <option>Heating (boilers, hydronic, RTU, AHU, MUA)</option>
+                    <option>Full mechanical (single source)</option>
+                    <option>Preventive maintenance</option>
+                    <option>Emergency service</option>
+                    <option>Other / multiple</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field-2">
+                <div class="field">
+                  <label for="facility">Facility &amp; location</label>
+                  <input type="text" id="facility" name="facility_location" placeholder="Facility type and city/community">
+                </div>
+                <div class="field">
+                  <label for="timeline">Timeline</label>
+                  <select id="timeline" name="timeline">
+                    <option value="">Please select…</option>
+                    <option>Emergency / immediate</option>
+                    <option>Within 30 days</option>
+                    <option>1–3 months</option>
+                    <option>3–6 months</option>
+                    <option>Bid / tender in progress</option>
+                    <option>Planning / budgeting</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="details">Scope &amp; details <span class="req">*</span></label>
+                <textarea id="details" name="details" required placeholder="Describe the systems, scope of work, and any solicitation/reference numbers. Include bid closing dates if applicable."></textarea>
+              </div>
+
+              <div class="field">
+                <label for="upload">Attach documents <span class="hint">(drawings, specs, solicitation — optional)</span></label>
+                <input type="file" id="upload" name="attachment" accept=".pdf,.doc,.docx,.xls,.xlsx,.dwg,.zip,.jpg,.png" multiple>
+                <span class="hint">Accepted: PDF, Word, Excel, DWG, ZIP, images. <span class="insert">[INSERT: confirm max upload size on your form backend]</span></span>
+              </div>
+
+              <div class="field" style="display:flex;gap:10px;align-items:flex-start">
+                <input type="checkbox" id="consent" name="consent" required style="width:auto;margin-top:6px">
+                <label for="consent" style="font-weight:500">I consent to AC Mechanical contacting me about this request. <span class="req">*</span></label>
+              </div>
+
+              <button type="submit" class="btn btn--primary btn--lg btn--block">Send request</button>
+              <div id="form-status" class="form-status" aria-live="polite"></div>
+              <p class="hint" style="color:var(--steel-500);margin-top:12px">
+                This form is spam-protected. <span class="insert">[INSERT: connect to a form backend / email service and add CAPTCHA (e.g. reCAPTCHA/hCaptcha/Turnstile) before going live.]</span>
+              </p>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+
+      <!-- Contact details -->
+      <aside>
+        <div class="panel">
+          <h2 class="mt-0">Contact details</h2>
+          <ul class="contact-list">
+            <li><span class="ico" aria-hidden="true">☎</span><span><b>Office</b><span class="insert">[INSERT: office phone]</span></span></li>
+            <li><span class="ico" aria-hidden="true">⚠</span><span><b>24/7 emergency line</b><a href="tel:+10000000000"><span class="insert">[INSERT: emergency phone]</span></a></span></li>
+            <li><span class="ico" aria-hidden="true">✉</span><span><b>General email</b><span class="insert">[INSERT: email]</span></span></li>
+            <li><span class="ico" aria-hidden="true">▹</span><span><b>Procurement / bids contact</b><span class="insert">[INSERT: name, title]</span> · <span class="insert">[INSERT: procurement email]</span></span></li>
+            <li><span class="ico" aria-hidden="true">⌂</span><span><b>Address</b><span class="insert">[INSERT: street address]</span>, Ottawa, ON <span class="insert">[INSERT: postal code]</span></span></li>
+            <li><span class="ico" aria-hidden="true">◷</span><span><b>Hours</b><span class="insert">[INSERT: business hours]</span> · Emergency service 24/7</span></li>
+          </ul>
+        </div>
+
+        <div class="panel panel--navy mt-3" id="bidders">
+          <h3 class="mt-0">Add us to your bidders list</h3>
+          <p>We actively monitor and bid public-sector opportunities. Include us on your solicitation distribution or qualified-supplier list.</p>
+          <p style="margin-bottom:8px"><strong style="color:#fff">Active on:</strong></p>
+          <ul class="feature-list on-dark">
+            <li>CanadaBuys (Government of Canada)</li>
+            <li>MERX</li>
+            <li>bids&amp;tenders</li>
+            <li><span class="insert">[INSERT: other platforms / VOR arrangements]</span></li>
+          </ul>
+          <p class="mb-0"><em>"Active on CanadaBuys, MERX and <span class="insert">[INSERT]</span> — invite us to your bidders list."</em></p>
+        </div>
+
+        <div class="panel mt-3">
+          <h3 class="mt-0">Capability statement</h3>
+          <p>Download our one-page B2G capability statement for your procurement file.</p>
+          <p class="mb-0"><a class="btn btn--outline btn--block" href="downloads/AC-Mechanical-Capability-Statement.pdf">Download PDF</a></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="AC Mechanical Refrigeration Ltd. — home" style="margin-bottom:14px">
+          <img class="brand__logo" src="assets/img/logo.svg" alt=""><span><span class="brand__name">AC Mechanical Refrigeration Ltd.</span></span>
+        </a>
+        <p class="footer-cred">Mechanical, HVAC-R &amp; refrigeration contractor serving government, institutional and industrial clients across Ottawa and eastern Ontario since 1972.</p>
+        <p class="footer-cred"><span class="dot">✦</span> TSSA Certified &nbsp; <span class="dot">✦</span> Security Cleared<br><span class="dot">✦</span> Bonded, Licensed &amp; Insured &nbsp; <span class="dot">✦</span> Est. 1972</p>
+      </div>
+      <div><h4>Company</h4><ul class="footer-nav">
+        <li><a href="services.html">Services</a></li>
+        <li><a href="government.html">Government &amp; Institutional</a></li>
+        <li><a href="certifications.html">Certifications &amp; Compliance</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul></div>
+      <div><h4>Get Started</h4><ul class="footer-nav">
+        <li><a href="contact.html">Request a Quote</a></li>
+        <li><a href="contact.html#invite">Invite Us to Bid</a></li>
+        <li><a href="service-area.html">Service Area</a></li>
+        <li><a href="downloads/AC-Mechanical-Capability-Statement.pdf">Capability Statement (PDF)</a></li>
+        <li><a href="tel:+10000000000">24/7 Emergency Line</a></li>
+      </ul></div>
+      <div><h4>Contact &amp; Vendor Identifiers</h4>
+        <p class="footer-cred"><b>Phone:</b> <span class="insert">[INSERT: phone]</span><br><b>Email:</b> <span class="insert">[INSERT: email]</span><br><b>Address:</b> <span class="insert">[INSERT: address]</span>, Ottawa, ON</p>
+        <p class="footer-vendor">Business Number: <span class="insert">[INSERT: BN]</span><br>CanadaBuys / PSPC supplier reg.: <span class="insert">[INSERT: #]</span><br>Vendor of Record / MERX: <span class="insert">[INSERT: #]</span></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> AC Mechanical Refrigeration Ltd. All rights reserved.</span>
+      <span>Ottawa &amp; Eastern Ontario · <a href="service-area.html">Service Area</a> · <a href="contact.html">Contact</a></span>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
