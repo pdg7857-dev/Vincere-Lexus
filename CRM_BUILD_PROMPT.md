@@ -81,9 +81,12 @@ trail and to compute "newer than last import."
 
 ## DATA INGESTION — iPhone BACKUP
 
-### Locate the backup (macOS)
-- Path: `~/Library/Application Support/MobileSync/Backup/<UDID>/`
-- Finder-encrypted backups only (the owner uses "Encrypt local backup"). Handle this
+### Locate the backup (Windows)
+- Backup lives under one of these, depending on how iTunes was installed:
+  - Microsoft Store iTunes: `%USERPROFILE%\Apple\MobileSync\Backup\<UDID>\`
+  - Classic/Apple-download iTunes: `%APPDATA%\Apple Computer\MobileSync\Backup\<UDID>\`
+  - Auto-detect: check both, and let the owner override the path in the Import screen.
+- iTunes-encrypted backups only (the owner ticks "Encrypt local backup"). Handle this
   as the primary/only path — don't build an unencrypted fallback beyond a clear error.
 
 Files are stored under hashed names. Use **`Manifest.db`** (SQLite mapping
@@ -94,8 +97,8 @@ Files are stored under hashed names. Use **`Manifest.db`** (SQLite mapping
   `iphone_backup_decrypt`, or implement the documented AES key-unwrap from
   `Manifest.plist` + `Manifest.db`. Password is entered per-import and held in memory
   only — never written to disk or logged.
-- Note: macOS may need Full Disk Access granted to Terminal/the app to read the
-  `MobileSync/Backup` folder — surface a clear message if the read is denied.
+- Use `pathlib` / `os.path` and expand `%USERPROFILE%` / `%APPDATA%` via
+  `os.path.expandvars` — keep all path handling Windows-correct (no POSIX assumptions).
 
 | Source | Domain | Relative path |
 |---|---|---|
