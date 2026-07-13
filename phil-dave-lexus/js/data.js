@@ -318,12 +318,14 @@ window.SITE = {
     lead: "Every deal is done by the book.",
     body: "I'm a registered salesperson working through a licensed Ontario dealership, so every purchase is covered by the same rules and protections as any franchised showroom, not a private sale.",
     badges: [
-      { title: "OMVIC registered", text: "Registered salesperson under the Ontario Motor Vehicle Industry Council.", ref: "Reg. #000000" }, // [PLACEHOLDER — your OMVIC number]
-      { title: "Licensed dealership", text: "Deals complete through a licensed Ontario motor vehicle dealer, bonded and in good standing." },
+      { title: "OMVIC registered salesperson", text: "Registered salesperson under the Ontario Motor Vehicle Industry Council.", ref: "Salesperson Reg. #000000" }, // [PLACEHOLDER — your OMVIC salesperson number]
+      { title: "Licensed dealership", text: "Deals complete through [Dealership Legal Name], a licensed Ontario motor vehicle dealer in good standing.", ref: "Dealer Reg. #00000000" }, // [PLACEHOLDER — dealership legal name + OMVIC dealer number]
+      { title: "Registered office", text: "[Street address], [City], Ontario [Postal code].", ref: "Tel. (000) 000-0000" }, // [PLACEHOLDER — dealership address + phone]
+      { title: "UCDA member", text: "Dealership is a member of the Used Car Dealers Association of Ontario.", ref: "Member #000000" }, // [PLACEHOLDER — UCDA membership number]
+      { title: "HST registrant", text: "Registered for Canadian sales tax (GST/HST).", ref: "HST #000000000 RT0001" }, // [PLACEHOLDER — dealership HST/GST number]
       { title: "Consumer protection", text: "Backed by the Motor Vehicle Dealers Act and the OMVIC Compensation Fund." },
-      { title: "UCDA member", text: "Dealership is a member of the Used Car Dealers Association of Ontario." }, // [PLACEHOLDER — confirm]
     ],
-    note: "Verify any Ontario registration at omvic.on.ca.",
+    note: "Placeholders above — replace with the dealership's real registration details before launch. Verify any Ontario registration at omvic.on.ca.",
   },
 
   /* --- Members area (Bay 05) ----------------------------------------------

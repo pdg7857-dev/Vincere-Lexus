@@ -747,14 +747,20 @@
   /* ---------- Bay 06 · Registered & Licensed --------------------------- */
   function buildOmvic() {
     var cfg = S.omvic; if (!cfg) return;
-    var lead = $("#omvicLead"); if (lead) lead.textContent = cfg.lead || "";
-    var body = $("#omvicBody"); if (body) body.textContent = cfg.body || "";
-    var note = $("#omvicNote"); if (note) note.textContent = cfg.note || "";
-    var box = $("#omvicBadges"); if (!box) return;
-    box.innerHTML = (cfg.badges || []).map(function (b) {
+    var badgesHTML = (cfg.badges || []).map(function (b) {
       return '<div class="omvic__badge will-reveal"><h4>' + esc(b.title) + "</h4><p>" + esc(b.text) + "</p>" +
         (b.ref ? '<span class="omvic__ref">' + esc(b.ref) + "</span>" : "") + "</div>";
     }).join("");
+    // the credentials render in two places: the About bay and the contact trust strip
+    [
+      { lead: "#omvicLead", body: "#omvicBody", note: "#omvicNote", box: "#omvicBadges" },
+      { lead: "#aboutLicenseLead", body: null, note: "#aboutLicenseNote", box: "#aboutLicenseBadges" }
+    ].forEach(function (sel) {
+      var lead = $(sel.lead); if (lead) lead.textContent = cfg.lead || "";
+      var body = sel.body && $(sel.body); if (body) body.textContent = cfg.body || "";
+      var note = $(sel.note); if (note) note.textContent = cfg.note || "";
+      var box = $(sel.box); if (box) box.innerHTML = badgesHTML;
+    });
   }
 
   /* ---------- Bay 07 · Automotive News --------------------------------- */
@@ -934,17 +940,18 @@
     var content = $("#vaultContent");
     if (!content) return;
     content.hidden = false;
-    buildLot(content);
+    // the finder sits beside the highlights (right column); the lot fills the width below
+    buildLot($("#finderMount") || content, content);
   }
 
   /* ---------- The Lot: full used inventory (lazy grid + filters) -------- */
   var lotBuilt = false;
-  function buildLot(mount) {
+  function buildLot(quizMount, lotMount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=18")
+    fetch("js/lot.json?v=19")
       .then(function (r) { return r.json(); })
-      .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
+      .then(function (cars) { cars = cars || []; if (cars.length) renderLot(quizMount, lotMount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
   }
   function money(n) { return "$" + Number(n).toLocaleString("en-US"); }
@@ -981,16 +988,13 @@
         { v: "value", label: "Best value" } ] },
   ];
 
-  function renderLot(mount, cars) {
+  function renderLot(quizMount, lotMount, cars) {
     var makes = ["All makes"].concat(Object.keys(cars.reduce(function (a, c) { a[c.make] = 1; return a; }, {})).sort());
-    mount.innerHTML =
+    quizMount.innerHTML =
       '<div class="lotquiz" id="lotQuiz">' +
-        '<div class="lotquiz__head">' +
-          '<span class="lotquiz__kick">Vehicle finder</span>' +
-          '<p class="lotquiz__lede">Answer a few quick questions and I\'ll show the cars that fit — not the whole lot.</p>' +
-        '</div>' +
         '<div id="lotQuizBody"></div>' +
-      '</div>' +
+      '</div>';
+    lotMount.innerHTML =
       '<div class="lotresult" id="lotResult" hidden></div>' +
       '<div class="lotbrowse" id="lotBrowse">' +
         '<div class="lotbrowse__lead" id="lotBrowseLead">Or browse the whole lot</div>' +
@@ -1024,10 +1028,11 @@
         '<p class="lot__empty" id="lotEmpty" hidden>No cars match. Widen your search.</p>' +
       '</div>';
 
-    var quizEl = $("#lotQuiz", mount), quizBody = $("#lotQuizBody", mount), resultEl = $("#lotResult", mount), browseEl = $("#lotBrowse", mount), leadEl = $("#lotBrowseLead", mount), barEl = mount.querySelector(".lotbar");
-    var grid = $("#lotGrid", mount), countEl = $("#lotCount", mount), emptyEl = $("#lotEmpty", mount);
+    var quizEl = $("#lotQuiz", quizMount), quizBody = $("#lotQuizBody", quizMount);
+    var resultEl = $("#lotResult", lotMount), browseEl = $("#lotBrowse", lotMount), leadEl = $("#lotBrowseLead", lotMount);
+    var grid = $("#lotGrid", lotMount), countEl = $("#lotCount", lotMount), emptyEl = $("#lotEmpty", lotMount);
     var matchMode = false;   // true while the grid is showing the finder's matches
-    var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount), condEl = $("#lotCond", mount), nonLexEl = $("#lotNonLexus", mount);
+    var searchEl = $("#lotSearch", lotMount), makeEl = $("#lotMake", lotMount), sortEl = $("#lotSort", lotMount), condEl = $("#lotCond", lotMount), nonLexEl = $("#lotNonLexus", lotMount);
     var cond = "all";   // active condition, driven by the button group
     var nonLexus = false;   // "Non-Lexus" quick toggle
     // "New" = essentially delivery-mileage stock; "Used" is everything else and includes CPO.
@@ -1121,8 +1126,8 @@
             '<button type="button" class="lotresult__btn lotresult__btn--ghost" id="quizAll">Show all vehicles &rsaquo;</button>' +
           '</div>' +
         '</div>';
-      $("#quizRedo", mount).addEventListener("click", startOver);
-      $("#quizAll", mount).addEventListener("click", showAll);
+      $("#quizRedo", lotMount).addEventListener("click", startOver);
+      $("#quizAll", lotMount).addEventListener("click", showAll);
       logActivity("finder", sum, matches.length + " matches");
       try { resultEl.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {}
     }
