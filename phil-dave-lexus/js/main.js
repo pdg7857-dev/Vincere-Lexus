@@ -942,7 +942,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=17")
+    fetch("js/lot.json?v=18")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -992,7 +992,8 @@
         '<div id="lotQuizBody"></div>' +
       '</div>' +
       '<div class="lotresult" id="lotResult" hidden></div>' +
-      '<div class="lotbrowse" id="lotBrowse" hidden>' +
+      '<div class="lotbrowse" id="lotBrowse">' +
+        '<div class="lotbrowse__lead" id="lotBrowseLead">Or browse the whole lot</div>' +
         '<div class="lotbar">' +
           '<div class="lotfilters">' +
             '<div class="lotcond" id="lotCond" role="group" aria-label="Filter by condition">' +
@@ -1023,8 +1024,9 @@
         '<p class="lot__empty" id="lotEmpty" hidden>No cars match. Widen your search.</p>' +
       '</div>';
 
-    var quizEl = $("#lotQuiz", mount), quizBody = $("#lotQuizBody", mount), resultEl = $("#lotResult", mount), browseEl = $("#lotBrowse", mount), barEl = mount.querySelector(".lotbar");
+    var quizEl = $("#lotQuiz", mount), quizBody = $("#lotQuizBody", mount), resultEl = $("#lotResult", mount), browseEl = $("#lotBrowse", mount), leadEl = $("#lotBrowseLead", mount), barEl = mount.querySelector(".lotbar");
     var grid = $("#lotGrid", mount), countEl = $("#lotCount", mount), emptyEl = $("#lotEmpty", mount);
+    var matchMode = false;   // true while the grid is showing the finder's matches
     var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount), condEl = $("#lotCond", mount), nonLexEl = $("#lotNonLexus", mount);
     var cond = "all";   // active condition, driven by the button group
     var nonLexus = false;   // "Non-Lexus" quick toggle
@@ -1060,7 +1062,7 @@
         }).join("") + '</div>' +
         '<div class="lotquiz__nav">' +
           (qi > 0 ? '<button type="button" class="lotquiz__back">&lsaquo; Back</button>' : '<span></span>') +
-          '<button type="button" class="lotquiz__skip">Skip — browse all vehicles &rsaquo;</button>' +
+          '<button type="button" class="lotquiz__skip">See the full lot &darr;</button>' +
         '</div>';
     }
     function bucketOf(p) { return p < 40000 ? 0 : p < 70000 ? 1 : p < 100000 ? 2 : 3; }
@@ -1101,17 +1103,13 @@
       if (ans.priority && pr[ans.priority]) parts.push(pr[ans.priority]);
       return parts.join(" · ") || "anything on the lot";
     }
-    function presetFilters() {
-      if (ans.cond === "new" || ans.cond === "cpo" || ans.cond === "used") {
-        cond = ans.cond;
-        condEl.querySelectorAll(".lotcond__btn").forEach(function (b) { var on = b.getAttribute("data-cond") === cond; b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on ? "true" : "false"); });
-      }
-      if (ans.make === "Lexus" && Array.prototype.some.call(makeEl.options, function (o) { return o.value === "Lexus"; })) makeEl.value = "Lexus";
-    }
+    // leave matched mode and return the grid to the normal filter view
+    function exitMatch() { if (!matchMode) return; matchMode = false; resultEl.hidden = true; if (leadEl) leadEl.hidden = false; }
     function finishQuiz() {
       var matches = computeMatches();
-      quizEl.hidden = true; browseEl.hidden = false; barEl.hidden = true;   // matched mode: grid only
-      paint(matches);
+      matchMode = true;
+      paint(matches);                       // the always-visible grid now shows the matches
+      if (leadEl) leadEl.hidden = true;
       var sum = summaryStr();
       resultEl.hidden = false;
       resultEl.innerHTML =
@@ -1120,21 +1118,22 @@
           '<p class="lotresult__sum"><b>' + matches.length + (matches.length === 1 ? " vehicle" : " vehicles") + '</b> that fit ' + esc(sum) + '</p></div>' +
           '<div class="lotresult__act">' +
             '<button type="button" class="lotresult__btn" id="quizRedo">Start over</button>' +
-            '<button type="button" class="lotresult__btn lotresult__btn--ghost" id="quizAll">Browse the full lot &rsaquo;</button>' +
+            '<button type="button" class="lotresult__btn lotresult__btn--ghost" id="quizAll">Show all vehicles &rsaquo;</button>' +
           '</div>' +
         '</div>';
       $("#quizRedo", mount).addEventListener("click", startOver);
-      $("#quizAll", mount).addEventListener("click", openBrowseAll);
+      $("#quizAll", mount).addEventListener("click", showAll);
       logActivity("finder", sum, matches.length + " matches");
+      try { resultEl.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {}
     }
-    function startOver() { ans = {}; qi = 0; resultEl.hidden = true; browseEl.hidden = true; quizEl.hidden = false; renderQuiz(); }
-    function openBrowseAll() { resultEl.hidden = true; quizEl.hidden = true; browseEl.hidden = false; barEl.hidden = false; presetFilters(); apply(); }
-    function skipQuiz() { quizEl.hidden = true; resultEl.hidden = true; browseEl.hidden = false; barEl.hidden = false; apply(); logActivity("finder", "skipped to full lot", ""); }
+    function startOver() { ans = {}; qi = 0; renderQuiz(); exitMatch(); apply(); try { quizEl.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }
+    function showAll() { exitMatch(); apply(); try { browseEl.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }
+    function scrollToLot() { try { browseEl.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }
     quizEl.addEventListener("click", function (e) {
       var opt = e.target.closest(".lotquiz__opt");
       if (opt) { var Q = QUIZ[qi]; ans[Q.key] = opt.getAttribute("data-v"); if (qi < QUIZ.length - 1) { qi++; renderQuiz(); } else finishQuiz(); return; }
       if (e.target.closest(".lotquiz__back")) { if (qi > 0) { qi--; renderQuiz(); } return; }
-      if (e.target.closest(".lotquiz__skip")) { skipQuiz(); return; }
+      if (e.target.closest(".lotquiz__skip")) { scrollToLot(); return; }
     });
 
     function cardHTML(c, i) {
@@ -1197,21 +1196,21 @@
     // filters + per-user activity tracking
     var searchTimer;
     searchEl.addEventListener("input", function () {
-      apply();
+      exitMatch(); apply();
       clearTimeout(searchTimer);
       searchTimer = setTimeout(function () { var q = searchEl.value.trim(); if (q.length >= 2) logActivity("search", q, currentList.length + " results"); }, 900);
     });
     makeEl.addEventListener("change", function () {
       // picking a specific make cancels the Non-Lexus toggle to avoid a contradiction
       if (makeEl.value !== "All makes" && nonLexus) { nonLexus = false; nonLexEl.classList.remove("is-active"); nonLexEl.setAttribute("aria-pressed", "false"); }
-      apply(); logActivity("filter", "make: " + makeEl.value, currentList.length + " results");
+      exitMatch(); apply(); logActivity("filter", "make: " + makeEl.value, currentList.length + " results");
     });
     if (nonLexEl) nonLexEl.addEventListener("click", function () {
       nonLexus = !nonLexus;
       nonLexEl.classList.toggle("is-active", nonLexus);
       nonLexEl.setAttribute("aria-pressed", nonLexus ? "true" : "false");
       if (nonLexus) makeEl.value = "All makes";   // clear any specific-make filter
-      apply(); logActivity("filter", "non-lexus: " + (nonLexus ? "on" : "off"), currentList.length + " results");
+      exitMatch(); apply(); logActivity("filter", "non-lexus: " + (nonLexus ? "on" : "off"), currentList.length + " results");
     });
     condEl.addEventListener("click", function (e) {
       var btn = e.target.closest(".lotcond__btn"); if (!btn) return;
@@ -1219,10 +1218,11 @@
       condEl.querySelectorAll(".lotcond__btn").forEach(function (b) {
         var on = b === btn; b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on ? "true" : "false");
       });
-      apply(); logActivity("filter", "condition: " + cond, currentList.length + " results");
+      exitMatch(); apply(); logActivity("filter", "condition: " + cond, currentList.length + " results");
     });
-    sortEl.addEventListener("change", function () { apply(); logActivity("sort", sortEl.value); });
-    renderQuiz();   // start on the guided finder; the full lot is one tap away
+    sortEl.addEventListener("change", function () { exitMatch(); apply(); logActivity("sort", sortEl.value); });
+    renderQuiz();   // the guided finder up top …
+    apply();        // … with the full lot already shown right below it
   }
 
   /* ---------- The Lot: inquire-about-this-car popup -------------------- */
