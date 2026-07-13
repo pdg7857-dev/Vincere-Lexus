@@ -942,7 +942,7 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=16")
+    fetch("js/lot.json?v=17")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
@@ -1000,6 +1000,7 @@
               '<button type="button" class="lotcond__btn" data-cond="new">New</button>' +
               '<button type="button" class="lotcond__btn" data-cond="cpo">Certified pre-owned</button>' +
               '<button type="button" class="lotcond__btn" data-cond="used">Used</button>' +
+              '<button type="button" class="lotcond__btn lotcond__btn--rare" data-cond="rare">Rare finds</button>' +
             '</div>' +
             '<span class="lotfilters__div" aria-hidden="true"></span>' +
             '<button type="button" class="lotcond__btn" id="lotNonLexus" aria-pressed="false">Non-Lexus</button>' +
@@ -1029,6 +1030,20 @@
     var nonLexus = false;   // "Non-Lexus" quick toggle
     // "New" = essentially delivery-mileage stock; "Used" is everything else and includes CPO.
     function isNew(c) { return c.km != null && c.km <= 1000; }
+    // "Rare finds" — the genuinely special cars that stand out on the lot:
+    // exotic/premium-sport marques, halo performance trims, and flagship Lexus.
+    function isRare(c) {
+      var mk = c.make || "";
+      var t = " " + ((c.trim || "") + " " + (c.model || "")).toLowerCase() + " ";
+      if (/porsche|land rover|jaguar|maserati|bentley|aston|lamborghini|ferrari|mclaren|alfa romeo|lotus/i.test(mk)) return true;
+      if (/mercedes/i.test(mk) && /amg/i.test(t)) return true;
+      if (/bmw/i.test(mk) && /\bm[2345678]\b/.test(t)) return true;
+      if (/audi/i.test(mk) && /\brs\s?[0-9]\b/.test(t)) return true;
+      if (/lexus/i.test(mk) && /\b(rc\s?f|gs\s?f|is\s?500|lc\s?500|lfa)\b/.test(t)) return true;
+      if (/type r|\bsvr\b|trackhawk|hellcat|nismo|\bsti\b|\bgt-?r\b|\bz06\b|shelby/i.test(t)) return true;
+      if (/lexus/i.test(mk) && c.price >= 95000) return true;   // flagship LX territory
+      return false;
+    }
 
     var currentList = [];
 
@@ -1156,6 +1171,7 @@
         if (cond === "new" && !isNew(c)) return false;
         if (cond === "cpo" && !c.certified) return false;
         if (cond === "used" && isNew(c)) return false;   // used = everything not new (CPO included)
+        if (cond === "rare" && !isRare(c)) return false; // the special stuff, any make or age
         if (q) { var hay = (c.year + " " + c.make + " " + c.model + " " + c.trim + " " + c.ext).toLowerCase(); if (hay.indexOf(q) < 0) return false; }
         return true;
       });

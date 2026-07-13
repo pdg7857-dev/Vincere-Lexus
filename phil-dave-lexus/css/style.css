@@ -820,6 +820,10 @@ body.is-loading .nextbay{ opacity:0; }
 .lotcond__btn{ font-family:var(--sans); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--silver-dim); background:transparent; border:1px solid var(--line); border-radius:999px; padding:.55rem 1.1rem; cursor:pointer; transition:color .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease); }
 .lotcond__btn:hover{ color:var(--platinum); border-color:var(--silver); }
 .lotcond__btn.is-active{ color:var(--black); background:var(--platinum); border-color:var(--platinum); }
+/* "Rare finds" — a quiet accent so it reads as the special tab */
+.lotcond__btn--rare{ color:var(--platinum); border-color:var(--silver-dim); }
+.lotcond__btn--rare::before{ content:"\2726"; margin-right:.4em; opacity:.7; }
+.lotcond__btn--rare.is-active{ color:var(--black); background:var(--platinum); border-color:var(--platinum); }
 @media (max-width:520px){ .lotcond__btn{ flex:1 1 auto; text-align:center; padding:.55rem .7rem; } }
 .lot__count{ font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--silver-dim); white-space:nowrap; }
 .lot__controls{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
