@@ -780,6 +780,35 @@ body.is-loading .nextbay{ opacity:0; }
 .vault__welcome{ font-family:var(--serif); color:var(--platinum); font-size:1.2rem; }
 @media (max-width:520px){ .vaultlock__form{ flex-direction:column; } }
 
+/* ---------- The Lot: the guided vehicle finder ---------- */
+.lotquiz{ max-width:640px; margin:0 auto 1rem; padding:2rem 1.6rem 2.2rem; border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg,rgba(20,20,22,.7),rgba(10,10,11,.4)); }
+.lotquiz__head{ text-align:center; margin-bottom:1.8rem; }
+.lotquiz__kick{ display:inline-block; font-size:.64rem; letter-spacing:.28em; text-transform:uppercase; color:var(--muted); margin-bottom:.5rem; }
+.lotquiz__lede{ font-family:var(--serif); font-size:1.25rem; line-height:1.4; color:var(--silver); margin:0; font-style:italic; }
+.lotquiz__prog{ font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; }
+.lotquiz__track{ flex:1; height:2px; background:var(--line); border-radius:2px; overflow:hidden; }
+.lotquiz__track i{ display:block; height:100%; background:var(--platinum); transition:width .4s var(--ease); }
+.lotquiz__q{ font-family:var(--serif); font-weight:500; font-size:clamp(1.5rem,4vw,2rem); line-height:1.15; color:var(--platinum); margin:0 0 1.3rem; text-align:center; }
+.lotquiz__opts{ display:flex; flex-direction:column; gap:.6rem; }
+.lotquiz__opt{ font-family:var(--sans); font-size:.95rem; color:var(--silver); background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:1rem 1.2rem; text-align:left; cursor:pointer; transition:color .25s var(--ease), border-color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease); }
+.lotquiz__opt:hover{ color:var(--platinum); border-color:var(--silver); transform:translateY(-1px); }
+.lotquiz__opt.is-sel{ color:var(--black); background:var(--platinum); border-color:var(--platinum); }
+.lotquiz__nav{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:1.4rem; }
+.lotquiz__back, .lotquiz__skip{ font-family:var(--sans); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:none; border:none; cursor:pointer; padding:.4rem 0; transition:color .25s var(--ease); }
+.lotquiz__back:hover, .lotquiz__skip:hover{ color:var(--platinum); }
+/* finder results banner */
+.lotresult{ margin:0 0 1.4rem; padding:1.1rem 1.3rem; border:1px solid var(--line); border-radius:14px; background:linear-gradient(90deg,rgba(201,204,209,.06),transparent); }
+.lotresult__in{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+.lotresult__kick{ display:block; font-size:.62rem; letter-spacing:.26em; text-transform:uppercase; color:var(--muted); margin-bottom:.25rem; }
+.lotresult__sum{ margin:0; font-family:var(--serif); font-size:1.15rem; color:var(--silver); }
+.lotresult__sum b{ color:var(--platinum); font-weight:600; }
+.lotresult__act{ display:flex; gap:.6rem; flex-wrap:wrap; }
+.lotresult__btn{ font-family:var(--sans); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--black); background:var(--platinum); border:1px solid var(--platinum); border-radius:999px; padding:.55rem 1.1rem; cursor:pointer; transition:opacity .25s var(--ease); }
+.lotresult__btn:hover{ opacity:.85; }
+.lotresult__btn--ghost{ color:var(--silver-dim); background:transparent; border-color:var(--line); }
+.lotresult__btn--ghost:hover{ color:var(--platinum); border-color:var(--silver); opacity:1; }
+@media (max-width:520px){ .lotresult__in{ flex-direction:column; align-items:stretch; } .lotresult__act{ justify-content:stretch; } .lotresult__btn{ flex:1 1 auto; text-align:center; } }
+
 /* ---------- The Lot: full inventory grid ---------- */
 .lotbar{ display:flex; flex-direction:column; align-items:stretch; gap:.9rem; margin-bottom:1.6rem; position:sticky; top:64px; z-index:5; padding:.7rem 0; background:linear-gradient(var(--black) 78%, transparent); }
 .lotbar__row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }

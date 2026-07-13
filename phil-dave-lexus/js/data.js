@@ -155,14 +155,82 @@ window.SITE = {
   /* A curated selection — highlight 3 or 4 cars, no more. The full
      inventory stays private; the panel below the grid invites a request.
      `status`: "Available", "Sourced" (for a client), or "Sold".            */
+  /* A hand-picked showcase — the halo trims (one per model) and a few
+     rare finds. Not the full book; the panel below invites a request. */
   inventory: [
     {
-      make: "Lexus", model: "LX 600", year: 2024, body: "suv",
+      make: "Lexus", model: "LC 500", year: 2025, body: "coupe",
+      note: "The 5.0 V8 grand tourer. A naturally aspirated masterpiece Lexus builds almost by hand — and the coolest car it makes.",
+      status: "Available", image: "assets/car-lc500.webp?v=3",
+      spinModel: "models/lc500.glb", spinLength: 4.77,
+      specs: [
+        { label: "Mileage", value: "On request" },
+        { label: "Engine", value: "5.0L naturally aspirated V8, 471 hp" },
+        { label: "Gearbox", value: "10 speed automatic, rear wheel drive" },
+        { label: "0–100", value: "4.4 seconds" },
+        { label: "History", value: "Full history at the dealership" },
+      ],
+      story: [
+        "The LC 500 is the car that proved Lexus could build emotion. It took the LF-LC concept to production almost unchanged, kept the free-breathing 5.0 V8 when the rest of the world turned to turbos, and wrapped it in one of the most beautiful bodies of the decade.",
+        "It is hand-finished, rear-driven, and sounds like nothing else on the road. The flagship coupé for someone who wants presence without a badge that shouts.",
+      ],
+    },
+    {
+      make: "Lexus", model: "IS 500 F SPORT Performance", year: 2025, body: "sedan",
+      note: "A V8 sleeper. 472 hp of naturally aspirated muscle in a compact sedan — the last of a dying breed.",
+      status: "Available", image: "",
+      specs: [
+        { label: "Mileage", value: "On request" },
+        { label: "Engine", value: "5.0L naturally aspirated V8, 472 hp" },
+        { label: "Gearbox", value: "8 speed automatic, rear wheel drive" },
+        { label: "0–100", value: "4.4 seconds" },
+        { label: "History", value: "Full history at the dealership" },
+      ],
+      story: [
+        "Lexus slotted its 5.0 V8 into the compact IS body and left the outside almost anonymous. The result is a proper sleeper: a limited-slip differential, adaptive dampers, and a soundtrack that turns heads long before the badge does.",
+        "In an era of turbo fours, an atmospheric V8 sedan is a genuine collector's pick. This is one for the enthusiast who's done showing off.",
+      ],
+    },
+    {
+      make: "Lexus", model: "RC F", year: 2024, body: "coupe",
+      note: "The V8 coupé. Track-bred, hand-built engine, and a howl only a naturally aspirated Lexus makes.",
+      status: "Available", image: "",
+      specs: [
+        { label: "Mileage", value: "On request" },
+        { label: "Engine", value: "5.0L naturally aspirated V8, 472 hp" },
+        { label: "Gearbox", value: "8 speed automatic, Torsen LSD" },
+        { label: "Chassis", value: "Adaptive dampers, Brembo brakes" },
+        { label: "History", value: "Full history at the dealership" },
+      ],
+      story: [
+        "The RC F is Lexus's answer to the German coupés, and it goes its own way: no turbos, no downsizing, just a hand-assembled 5.0 V8 that pulls to 7,300 rpm.",
+        "A Torsen limited-slip diff, big Brembos and a torque-vectoring rear axle make it a genuine driver's car — one that will only get rarer.",
+      ],
+    },
+    {
+      make: "Lexus", model: "RX 500h F SPORT Performance", year: 2025, body: "suv",
+      note: "The performance hybrid RX. Turbo-electric power, F SPORT chassis, and Direct4 all-wheel drive.",
+      status: "Available", image: "",
+      spinModel: "models/lexus-rx.glb", spinLength: 4.89, spinHide: ["Plate", "License"],
+      specs: [
+        { label: "Mileage", value: "On request" },
+        { label: "Engine", value: "2.4L turbo hybrid, 366 hp combined" },
+        { label: "Gearbox", value: "6 speed automatic, Direct4 AWD" },
+        { label: "Chassis", value: "F SPORT adaptive suspension" },
+        { label: "History", value: "Full history at the dealership" },
+      ],
+      story: [
+        "The 500h is the RX with the volume turned up: a turbocharged hybrid driveline, the Direct4 all-wheel-drive system, and rear-wheel steering to shrink it in corners.",
+        "It keeps everything that makes an RX effortless — the quiet, the quality, the ease — and adds a genuine turn of pace. The daily luxury SUV with a performance heart.",
+      ],
+    },
+    {
+      make: "Lexus", model: "LX 600 F SPORT", year: 2024, body: "suv",
       note: "The flagship 4WD. Twin turbo V6, three rows, and presence that needs no introduction.",
       status: "Available", image: "assets/car-lx.webp?v=3",
-      spinModel: "models/lexus-lx.glb", spinLength: 5.10,
+      spinModel: "models/lexus-lx.glb", spinLength: 5.10, spinHide: ["Plate", "License"],
       specs: [
-        { label: "Mileage", value: "On request" }, // [PLACEHOLDER — km from the listing]
+        { label: "Mileage", value: "On request" },
         { label: "Engine", value: "3.4L twin turbo V6, 409 hp" },
         { label: "Gearbox", value: "10 speed automatic, full time 4WD" },
         { label: "Audio", value: "25 speaker Mark Levinson" },
@@ -170,11 +238,11 @@ window.SITE = {
       ],
       story: [
         "LX is the flagship badge Lexus has reserved for its largest machine since 1996, and every generation has shared bones with the unstoppable Toyota Land Cruiser. This one rides on the newest 300 series platform: full boxed frame, locking centre differential, and the kind of engineering that gets measured in decades, not model years.",
-        "Inside it is pure Lexus: three rows, semi aniline leather and a cabin assembled with fanatical care. It is the truck for people who could buy anything and want it to last forever.",
+        "Inside it is pure Lexus: semi aniline leather and a cabin assembled with fanatical care. It is the truck for people who could buy anything and want it to last forever.",
       ],
     },
     {
-      make: "Lexus", model: "GX 550", year: 2024, body: "suv",
+      make: "Lexus", model: "GX 550 Overtrail", year: 2024, body: "suv",
       note: "The body-on-frame Lexus that goes anywhere and comes back in comfort. Twin turbo V6, proper off-road hardware.",
       status: "Available", image: "assets/car-gx.webp?v=3",
       spinModel: "models/lexus-gx.glb", spinLength: 4.95, spinHide: ["Plate", "License"],
@@ -182,12 +250,60 @@ window.SITE = {
         { label: "Mileage", value: "On request" },
         { label: "Engine", value: "3.4L twin turbo V6, 349 hp" },
         { label: "Gearbox", value: "10 speed automatic, full time 4WD" },
-        { label: "Capability", value: "Locking centre diff, low range" },
+        { label: "Capability", value: "Locking diffs, low range, 33\" tyres" },
         { label: "History", value: "Full history at the dealership" },
       ],
       story: [
         "The GX is the Lexus for people who actually go where the road ends. Built on a boxed ladder frame and sharing its bones with the Land Cruiser, it is engineered to outlast the pavement.",
-        "The 550 brings a torquey twin turbo V6, a proper two speed transfer case, and a cabin that shrugs off corrugations in leather-lined silence. Old-school toughness wrapped in modern Lexus calm.",
+        "Overtrail spec adds locking front and rear diffs, all-terrain tyres and a disconnecting sway bar — proper hardware, wrapped in leather-lined Lexus calm.",
+      ],
+    },
+    {
+      make: "Mercedes-AMG", model: "GT 63 S 4-Door", year: 2023, body: "coupe",
+      note: "A rare trade-in. Hand-built 4.0 twin turbo V8, 630 hp, and everyday usability. The kind of car that doesn't sit long.",
+      status: "Available", image: "",
+      specs: [
+        { label: "Mileage", value: "Low — on request" },
+        { label: "Engine", value: "4.0L twin turbo V8, 630 hp" },
+        { label: "Gearbox", value: "9 speed, AMG Performance 4MATIC+" },
+        { label: "0–100", value: "3.2 seconds" },
+        { label: "History", value: "Full history, inspected" },
+      ],
+      story: [
+        "Not everything I place wears a Lexus badge. This AMG GT 63 S came through a trade and it's exactly the sort of car worth featuring: a hand-assembled twin-turbo V8, four proper doors, and supercar pace with room for the family.",
+        "Cars like this move on relationships, not listings. If it speaks to you, ask — it won't be here long.",
+      ],
+    },
+    {
+      make: "Porsche", model: "911 Carrera S (992)", year: 2022, body: "coupe",
+      note: "The benchmark sports car. Flat-six, rear-engined, and endlessly usable. A clean example, quietly available.",
+      status: "Available", image: "",
+      specs: [
+        { label: "Mileage", value: "Low — on request" },
+        { label: "Engine", value: "3.0L twin turbo flat-six, 443 hp" },
+        { label: "Gearbox", value: "8 speed PDK, rear wheel drive" },
+        { label: "0–100", value: "3.5 seconds" },
+        { label: "History", value: "Full history, inspected" },
+      ],
+      story: [
+        "The 992-generation 911 is the sports car every other sports car is measured against — fast, precise, and genuinely liveable every day of the year.",
+        "A well-kept Carrera S rarely reaches the open market. This is one of the quiet ones. Ask and I'll tell you everything about it.",
+      ],
+    },
+    {
+      make: "BMW", model: "M4 Competition", year: 2023, body: "coupe",
+      note: "A rare find. Twin turbo straight-six, 503 hp, and one of the sharpest chassis in the class.",
+      status: "Available", image: "",
+      specs: [
+        { label: "Mileage", value: "Low — on request" },
+        { label: "Engine", value: "3.0L twin turbo inline-six, 503 hp" },
+        { label: "Gearbox", value: "8 speed automatic, rear wheel drive" },
+        { label: "0–100", value: "3.9 seconds" },
+        { label: "History", value: "Full history, inspected" },
+      ],
+      story: [
+        "The Competition-spec M4 is BMW at its most focused: a 503 hp straight-six, an adaptive chassis, and the kind of steering feel that's getting harder to find.",
+        "This is the sort of car that comes to me through the network before it's ever advertised. If it's on your list, let's talk.",
       ],
     },
   ],

@@ -942,43 +942,87 @@
   function buildLot(mount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=15")
+    fetch("js/lot.json?v=16")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = cars || []; if (cars.length) renderLot(mount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });
   }
   function money(n) { return "$" + Number(n).toLocaleString("en-US"); }
+
+  /* ---------- The Lot: the guided vehicle finder (questionnaire) --------
+     A few tap-only questions, then we score every car on the lot and show
+     just the ones that fit — with the full filterable lot as a fallback. */
+  var QUIZ = [
+    { key: "body", q: "What kind of vehicle are you after?", opts: [
+        { v: "SUV", label: "SUV / crossover" },
+        { v: "Sedan", label: "Sedan" },
+        { v: "Coupe", label: "Coupe / sports" },
+        { v: "Van", label: "Van / people-mover" },
+        { v: "", label: "No preference" } ] },
+    { key: "cond", q: "New or pre-owned?", opts: [
+        { v: "new", label: "New / nearly new" },
+        { v: "cpo", label: "Certified pre-owned" },
+        { v: "used", label: "Pre-owned" },
+        { v: "", label: "No preference" } ] },
+    { key: "budget", q: "What's your budget?", opts: [
+        { v: "b1", label: "Under $40,000" },
+        { v: "b2", label: "$40,000 – $70,000" },
+        { v: "b3", label: "$70,000 – $100,000" },
+        { v: "b4", label: "$100,000 +" },
+        { v: "", label: "No preference" } ] },
+    { key: "make", q: "Which brand?", opts: [
+        { v: "Lexus", label: "Lexus" },
+        { v: "", label: "Open to any make" } ] },
+    { key: "priority", q: "What matters most?", opts: [
+        { v: "family", label: "Space for the family" },
+        { v: "hybrid", label: "Fuel efficiency / hybrid" },
+        { v: "awd", label: "All-weather grip" },
+        { v: "performance", label: "Performance" },
+        { v: "value", label: "Best value" } ] },
+  ];
+
   function renderLot(mount, cars) {
     var makes = ["All makes"].concat(Object.keys(cars.reduce(function (a, c) { a[c.make] = 1; return a; }, {})).sort());
     mount.innerHTML =
-      '<div class="lotbar">' +
-        '<div class="lotfilters">' +
-          '<div class="lotcond" id="lotCond" role="group" aria-label="Filter by condition">' +
-            '<button type="button" class="lotcond__btn is-active" data-cond="all">All</button>' +
-            '<button type="button" class="lotcond__btn" data-cond="new">New</button>' +
-            '<button type="button" class="lotcond__btn" data-cond="cpo">Certified pre-owned</button>' +
-            '<button type="button" class="lotcond__btn" data-cond="used">Used</button>' +
-          '</div>' +
-          '<span class="lotfilters__div" aria-hidden="true"></span>' +
-          '<button type="button" class="lotcond__btn" id="lotNonLexus" aria-pressed="false">Non-Lexus</button>' +
+      '<div class="lotquiz" id="lotQuiz">' +
+        '<div class="lotquiz__head">' +
+          '<span class="lotquiz__kick">Vehicle finder</span>' +
+          '<p class="lotquiz__lede">Answer a few quick questions and I\'ll show the cars that fit — not the whole lot.</p>' +
         '</div>' +
-        '<div class="lotbar__row">' +
-          '<span class="lot__count" id="lotCount"></span>' +
-          '<div class="lot__controls">' +
-            '<input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search the lot" />' +
-            '<select id="lotMake" aria-label="Filter by make">' + makes.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("") + '</select>' +
-            '<select id="lotSort" aria-label="Sort">' +
-              '<option value="year-desc">Newest first</option>' +
-              '<option value="price-asc">Price: low to high</option>' +
-              '<option value="price-desc">Price: high to low</option>' +
-              '<option value="km-asc">Kilometres: lowest</option>' +
-            '</select>' +
-          '</div>' +
-        '</div>' +
+        '<div id="lotQuizBody"></div>' +
       '</div>' +
-      '<div class="lotgrid" id="lotGrid"></div>' +
-      '<p class="lot__empty" id="lotEmpty" hidden>No cars match. Widen your search.</p>';
+      '<div class="lotresult" id="lotResult" hidden></div>' +
+      '<div class="lotbrowse" id="lotBrowse" hidden>' +
+        '<div class="lotbar">' +
+          '<div class="lotfilters">' +
+            '<div class="lotcond" id="lotCond" role="group" aria-label="Filter by condition">' +
+              '<button type="button" class="lotcond__btn is-active" data-cond="all">All</button>' +
+              '<button type="button" class="lotcond__btn" data-cond="new">New</button>' +
+              '<button type="button" class="lotcond__btn" data-cond="cpo">Certified pre-owned</button>' +
+              '<button type="button" class="lotcond__btn" data-cond="used">Used</button>' +
+            '</div>' +
+            '<span class="lotfilters__div" aria-hidden="true"></span>' +
+            '<button type="button" class="lotcond__btn" id="lotNonLexus" aria-pressed="false">Non-Lexus</button>' +
+          '</div>' +
+          '<div class="lotbar__row">' +
+            '<span class="lot__count" id="lotCount"></span>' +
+            '<div class="lot__controls">' +
+              '<input type="search" id="lotSearch" placeholder="Search model, trim, colour…" aria-label="Search the lot" />' +
+              '<select id="lotMake" aria-label="Filter by make">' + makes.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("") + '</select>' +
+              '<select id="lotSort" aria-label="Sort">' +
+                '<option value="year-desc">Newest first</option>' +
+                '<option value="price-asc">Price: low to high</option>' +
+                '<option value="price-desc">Price: high to low</option>' +
+                '<option value="km-asc">Kilometres: lowest</option>' +
+              '</select>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="lotgrid" id="lotGrid"></div>' +
+        '<p class="lot__empty" id="lotEmpty" hidden>No cars match. Widen your search.</p>' +
+      '</div>';
 
+    var quizEl = $("#lotQuiz", mount), quizBody = $("#lotQuizBody", mount), resultEl = $("#lotResult", mount), browseEl = $("#lotBrowse", mount), barEl = mount.querySelector(".lotbar");
     var grid = $("#lotGrid", mount), countEl = $("#lotCount", mount), emptyEl = $("#lotEmpty", mount);
     var searchEl = $("#lotSearch", mount), makeEl = $("#lotMake", mount), sortEl = $("#lotSort", mount), condEl = $("#lotCond", mount), nonLexEl = $("#lotNonLexus", mount);
     var cond = "all";   // active condition, driven by the button group
@@ -987,6 +1031,97 @@
     function isNew(c) { return c.km != null && c.km <= 1000; }
 
     var currentList = [];
+
+    /* ---- the finder: state machine, scoring, matches ---- */
+    var ans = {}, qi = 0;
+    function renderQuiz() {
+      var Q = QUIZ[qi];
+      quizBody.innerHTML =
+        '<div class="lotquiz__prog">Question ' + (qi + 1) + ' of ' + QUIZ.length +
+          '<span class="lotquiz__track"><i style="width:' + Math.round(qi / QUIZ.length * 100) + '%"></i></span></div>' +
+        '<h3 class="lotquiz__q">' + esc(Q.q) + '</h3>' +
+        '<div class="lotquiz__opts">' + Q.opts.map(function (o) {
+          return '<button type="button" class="lotquiz__opt' + (ans[Q.key] === o.v ? " is-sel" : "") + '" data-v="' + esc(o.v) + '">' + esc(o.label) + '</button>';
+        }).join("") + '</div>' +
+        '<div class="lotquiz__nav">' +
+          (qi > 0 ? '<button type="button" class="lotquiz__back">&lsaquo; Back</button>' : '<span></span>') +
+          '<button type="button" class="lotquiz__skip">Skip — browse all vehicles &rsaquo;</button>' +
+        '</div>';
+    }
+    function bucketOf(p) { return p < 40000 ? 0 : p < 70000 ? 1 : p < 100000 ? 2 : 3; }
+    var BQ = { b1: 0, b2: 1, b3: 2, b4: 3 };
+    function scoreCar(c) {
+      var s = 0;
+      if (ans.body) s += (c.body === ans.body) ? 45 : -70;
+      if (ans.cond === "new") s += isNew(c) ? 30 : -20;
+      else if (ans.cond === "cpo") s += c.certified ? 35 : -25;
+      else if (ans.cond === "used") s += !isNew(c) ? 15 : -8;
+      if (ans.budget && BQ[ans.budget] != null) { var d = Math.abs(bucketOf(c.price) - BQ[ans.budget]); s += d === 0 ? 35 : d === 1 ? 10 : -35; }
+      if (ans.make === "Lexus") s += (c.make === "Lexus") ? 25 : -80;
+      var eng = (c.engine || "") + " " + (c.trim || "") + " " + (c.model || "");
+      if (ans.priority === "family") s += (c.body === "SUV" || c.body === "Van") ? 25 : -8;
+      else if (ans.priority === "hybrid") s += /hybrid|electric/i.test((c.fuel || "") + eng) ? 45 : -15;
+      else if (ans.priority === "awd") s += /awd|4×4|4x4/i.test(c.drive || "") ? 28 : -10;
+      else if (ans.priority === "performance") s += /v6|v8|6 cyl|8 cyl|f sport|\bf\b|amg|\bm[0-9]?\b|\brs\b|type r|\bgt\b/i.test(eng) ? 30 : /4 cyl/i.test(eng) ? -8 : 0;
+      else if (ans.priority === "value") s += Math.max(0, 25 - Math.round(c.price / 6000));
+      return s;
+    }
+    function computeMatches() {
+      var ranked = cars.map(function (c) { return { c: c, s: scoreCar(c) }; })
+        .sort(function (a, b) { return (b.s - a.s) || (b.c.year - a.c.year); });
+      var pos = ranked.filter(function (x) { return x.s > 0; });
+      // show the genuine matches; only if nothing scores positive, fall back to the closest few
+      return (pos.length ? pos : ranked.slice(0, 3)).slice(0, 8).map(function (x) { return x.c; });
+    }
+    function summaryStr() {
+      var parts = [];
+      var bl = { SUV: "SUV", Sedan: "Sedan", Coupe: "Coupe / sports", Van: "Van" };
+      if (ans.body && bl[ans.body]) parts.push(bl[ans.body]);
+      var cl = { "new": "New / nearly new", cpo: "Certified pre-owned", used: "Pre-owned" };
+      if (ans.cond && cl[ans.cond]) parts.push(cl[ans.cond]);
+      var bg = { b1: "Under $40k", b2: "$40k–$70k", b3: "$70k–$100k", b4: "$100k+" };
+      if (ans.budget && bg[ans.budget]) parts.push(bg[ans.budget]);
+      if (ans.make === "Lexus") parts.push("Lexus");
+      var pr = { family: "Family space", hybrid: "Efficiency", awd: "All-weather", performance: "Performance", value: "Value" };
+      if (ans.priority && pr[ans.priority]) parts.push(pr[ans.priority]);
+      return parts.join(" · ") || "anything on the lot";
+    }
+    function presetFilters() {
+      if (ans.cond === "new" || ans.cond === "cpo" || ans.cond === "used") {
+        cond = ans.cond;
+        condEl.querySelectorAll(".lotcond__btn").forEach(function (b) { var on = b.getAttribute("data-cond") === cond; b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on ? "true" : "false"); });
+      }
+      if (ans.make === "Lexus" && Array.prototype.some.call(makeEl.options, function (o) { return o.value === "Lexus"; })) makeEl.value = "Lexus";
+    }
+    function finishQuiz() {
+      var matches = computeMatches();
+      quizEl.hidden = true; browseEl.hidden = false; barEl.hidden = true;   // matched mode: grid only
+      paint(matches);
+      var sum = summaryStr();
+      resultEl.hidden = false;
+      resultEl.innerHTML =
+        '<div class="lotresult__in">' +
+          '<div class="lotresult__txt"><span class="lotresult__kick">Your matches</span>' +
+          '<p class="lotresult__sum"><b>' + matches.length + (matches.length === 1 ? " vehicle" : " vehicles") + '</b> that fit ' + esc(sum) + '</p></div>' +
+          '<div class="lotresult__act">' +
+            '<button type="button" class="lotresult__btn" id="quizRedo">Start over</button>' +
+            '<button type="button" class="lotresult__btn lotresult__btn--ghost" id="quizAll">Browse the full lot &rsaquo;</button>' +
+          '</div>' +
+        '</div>';
+      $("#quizRedo", mount).addEventListener("click", startOver);
+      $("#quizAll", mount).addEventListener("click", openBrowseAll);
+      logActivity("finder", sum, matches.length + " matches");
+    }
+    function startOver() { ans = {}; qi = 0; resultEl.hidden = true; browseEl.hidden = true; quizEl.hidden = false; renderQuiz(); }
+    function openBrowseAll() { resultEl.hidden = true; quizEl.hidden = true; browseEl.hidden = false; barEl.hidden = false; presetFilters(); apply(); }
+    function skipQuiz() { quizEl.hidden = true; resultEl.hidden = true; browseEl.hidden = false; barEl.hidden = false; apply(); logActivity("finder", "skipped to full lot", ""); }
+    quizEl.addEventListener("click", function (e) {
+      var opt = e.target.closest(".lotquiz__opt");
+      if (opt) { var Q = QUIZ[qi]; ans[Q.key] = opt.getAttribute("data-v"); if (qi < QUIZ.length - 1) { qi++; renderQuiz(); } else finishQuiz(); return; }
+      if (e.target.closest(".lotquiz__back")) { if (qi > 0) { qi--; renderQuiz(); } return; }
+      if (e.target.closest(".lotquiz__skip")) { skipQuiz(); return; }
+    });
+
     function cardHTML(c, i) {
       var name = c.year + " " + c.make + " " + (c.trim || c.model);
       var meta = [c.km ? c.km.toLocaleString("en-US") + " km" : null, c.ext, c.drive].filter(Boolean).join(" · ");
@@ -1006,6 +1141,13 @@
         '</div>' +
       '</article>';
     }
+    // shared render — used by both the manual filters and the finder matches
+    function paint(list) {
+      currentList = list;
+      countEl.textContent = list.length + (list.length === 1 ? " vehicle" : " vehicles");
+      grid.innerHTML = list.map(cardHTML).join("");
+      emptyEl.hidden = list.length > 0;
+    }
     function apply() {
       var q = (searchEl.value || "").toLowerCase().trim(), mk = makeEl.value, sort = sortEl.value;
       var list = cars.filter(function (c) {
@@ -1023,10 +1165,7 @@
         if (sort === "km-asc") return (a.km || 1e9) - (b.km || 1e9);
         return (b.year - a.year) || (b.price - a.price); // year-desc default
       });
-      currentList = list;
-      countEl.textContent = list.length + (list.length === 1 ? " vehicle" : " vehicles");
-      grid.innerHTML = list.map(cardHTML).join("");
-      emptyEl.hidden = list.length > 0;
+      paint(list);
     }
     // clicking a card (but not the external "View listing" link) opens the inquiry popup
     grid.addEventListener("click", function (e) {
@@ -1067,7 +1206,7 @@
       apply(); logActivity("filter", "condition: " + cond, currentList.length + " results");
     });
     sortEl.addEventListener("change", function () { apply(); logActivity("sort", sortEl.value); });
-    apply();
+    renderQuiz();   // start on the guided finder; the full lot is one tap away
   }
 
   /* ---------- The Lot: inquire-about-this-car popup -------------------- */
