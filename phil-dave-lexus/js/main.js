@@ -424,6 +424,7 @@
     if (c.phone) items.push('<li><a href="tel:' + esc(c.phone.replace(/[^+\d]/g, "")) + '"><span class="direct__k">Phone</span><span class="direct__v">' + esc(c.phone) + "</span></a></li>");
     if (c.email) items.push('<li><a href="mailto:' + esc(c.email) + '"><span class="direct__k">Email</span><span class="direct__v">' + esc(c.email) + "</span></a></li>");
     if (c.instagram) items.push('<li><a href="' + esc(c.instagramUrl || "#") + '" target="_blank" rel="noopener"><span class="direct__k">Instagram</span><span class="direct__v">' + esc(c.instagram) + "</span></a></li>");
+    if (c.website) items.push('<li><a href="' + esc(c.websiteUrl || ("https://" + c.website)) + '" target="_blank" rel="noopener"><span class="direct__k">Web</span><span class="direct__v">' + esc(c.website) + "</span></a></li>");
     $("#directList").innerHTML = items.join("");
   }
 
@@ -949,7 +950,7 @@
   function buildLot(quizMount, lotMount) {
     if (lotBuilt) return;
     lotBuilt = true;
-    fetch("js/lot.json?v=19")
+    fetch("js/lot.json?v=20")
       .then(function (r) { return r.json(); })
       .then(function (cars) { cars = cars || []; if (cars.length) renderLot(quizMount, lotMount, cars); })
       .catch(function () { /* keep the placeholder if the feed can't load */ });

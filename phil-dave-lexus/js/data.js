@@ -20,8 +20,10 @@ window.SITE = {
   contact: {
     phone: "514-943-3730",
     email: "pgelinas@northwestlexus.com",
-    instagram: "@lexusphildave",
-    instagramUrl: "https://instagram.com/lexusphildave",
+    instagram: "@phildavemotors",                       // [PLACEHOLDER — reserve this handle]
+    instagramUrl: "https://instagram.com/phildavemotors",
+    website: "phildavemotors.com",                       // [PLACEHOLDER — register + point DNS here]
+    websiteUrl: "https://phildavemotors.com",
   },
 
   /* --- WhatsApp "send me a text" bubble ----------------------------------
