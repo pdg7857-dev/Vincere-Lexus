@@ -53,7 +53,8 @@ window.SITE = {
     title: "New stock in your inbox, before anyone else.",
     body: "One email a day: the newest vehicles in stock and tips worth reading. Tell me who you are and where you are, and you're in.",
     button: "Subscribe",
-    endpoint: "", // [PLACEHOLDER — e.g. a Formspree endpoint for the list]
+    // same Google Sheet as the lead forms; rows are tagged source "newsletter"
+    endpoint: "https://script.google.com/macros/s/AKfycbyNDlgwsTBHuUcnRWreNkLqr2S_y5-6CZ7Z_kz3Zwq34MmEvB3EsjHEuZ9WPiNlVFjPFg/exec",
   },
 
   /* --- The marques you source --------------------------------------------
