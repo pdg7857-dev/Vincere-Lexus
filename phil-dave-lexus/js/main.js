@@ -476,6 +476,7 @@
         '<div class="card__body">' +
           '<span class="card__year">' + esc(c.year) + " · " + esc(c.make) + "</span>" +
           '<h3 class="card__name">' + esc(c.model) + "</h3>" +
+          (c.price ? '<span class="card__price">' + money(c.price) + "</span>" : "") +
           '<p class="card__note">' + esc(c.note || "") + "</p>" +
           '<div class="card__foot">' +
             '<span class="card__more">View details &rsaquo;</span>' +
@@ -1327,6 +1328,8 @@
     $("#sheetYear").textContent = c.year + " · " + c.make;
     $("#sheetName").textContent = c.model;
     $("#sheetNote").textContent = c.note || "";
+    var lst = $("#sheetListing");
+    if (lst) { if (c.url) { lst.href = c.url; lst.hidden = false; } else { lst.hidden = true; } }
     sheetSpecs(c);
     startSheetSpin(c);
     sheetEl.classList.add("is-open");

@@ -780,17 +780,15 @@ body.is-loading .nextbay{ opacity:0; }
 .vault__welcome{ font-family:var(--serif); color:var(--platinum); font-size:1.2rem; }
 @media (max-width:520px){ .vaultlock__form{ flex-direction:column; } }
 
-/* ---------- The Show Room: highlights left, finder right ---------- */
-.showroom{ display:grid; grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr); gap:clamp(1.4rem,3vw,2.6rem); align-items:start; margin-top:1.4rem; }
-.showroom__cars.grid--stack{ display:flex; flex-direction:column; gap:1.1rem; margin:0; }
-.showroom__finder{ display:flex; flex-direction:column; }
-.showroom__finder .lotwrap__head{ margin:0 0 1rem; text-align:left; }
-.showroom__finder .lotwrap__intro{ margin-top:.5rem; }
-@media (max-width:820px){ .showroom{ grid-template-columns:1fr; } .showroom__finder{ margin-top:.4rem; } }
+/* ---------- The Show Room: featured live vehicles ---------- */
+.showroom__cars{ margin-top:1.4rem; }
+.card__price{ display:block; font-family:var(--sans); font-weight:500; font-size:1.05rem; color:var(--platinum); letter-spacing:.01em; margin:-.2rem 0 .5rem; }
+.card__price::before{ content:"From "; font-size:.7em; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.sheet__listing{ display:inline-block; margin-top:1rem; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--silver-dim); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:2px; transition:color .3s var(--ease), border-color .3s var(--ease); }
+.sheet__listing:hover{ color:var(--platinum); border-color:var(--silver); }
 
 /* ---------- The Lot: the guided vehicle finder ---------- */
 .lotquiz{ max-width:640px; margin:0 auto 1rem; padding:2rem 1.6rem 2.2rem; border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg,rgba(20,20,22,.7),rgba(10,10,11,.4)); }
-.showroom__finder .lotquiz{ max-width:none; margin:0; height:100%; }
 .lotquiz__head{ text-align:center; margin-bottom:1.8rem; }
 .lotquiz__kick{ display:inline-block; font-size:.64rem; letter-spacing:.28em; text-transform:uppercase; color:var(--muted); margin-bottom:.5rem; }
 .lotquiz__lede{ font-family:var(--serif); font-size:1.25rem; line-height:1.4; color:var(--silver); margin:0; font-style:italic; }

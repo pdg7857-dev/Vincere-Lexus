@@ -35,8 +35,8 @@
 <link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
 <link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="css/fonts.css?v=23" />
-<link rel="stylesheet" href="css/style.css?v=23" />
+<link rel="stylesheet" href="css/fonts.css?v=24" />
+<link rel="stylesheet" href="css/style.css?v=24" />
 </head>
 <body class="is-loading">
 
@@ -76,6 +76,7 @@
       <div class="sheet__specs" id="sheetSpecs" hidden></div>
       <div class="sheet__story" id="sheetStory" hidden></div>
       <a class="btn btn--primary magnetic" id="sheetCta" href="#contact" data-link>Enquire about this car</a>
+      <a class="sheet__listing" id="sheetListing" href="#" target="_blank" rel="noopener" hidden>View this listing on northwestlexus.com &#8599;</a>
     </div>
   </div>
 </div>
@@ -158,7 +159,6 @@
   <nav class="nav__links" aria-label="Primary">
     <a href="#about" data-link>About</a>
     <a href="#inventory" data-link>Show Room</a>
-    <a href="#lexus" data-link>Find your Lexus</a>
     <a class="nav__cta magnetic" href="#contact" data-link>Request a Car</a>
   </nav>
   <button class="nav__menu" id="navMenu" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span></button>
@@ -256,7 +256,7 @@
     </aside>
 
     <div class="about__cta will-reveal">
-      <a class="btn btn--primary magnetic" href="#lexus" data-link>Find your Lexus</a>
+      <a class="btn btn--primary magnetic" href="#inventory" data-link>Explore the Show Room</a>
     </div>
 
     <div class="marquee marquee--logos" aria-hidden="true">
@@ -271,71 +271,23 @@
       <h2 class="room__title" id="inventory-h"><span class="reveal-line">The Show Room</span></h2>
       <p class="room__intro reveal-line">A curated selection. A few highlights, recently sourced or awaiting the right owner.</p>
     </div>
-    <!-- highlights stacked on the left, the finder alongside on the right -->
-    <div class="showroom">
-      <div class="grid grid--stack showroom__cars" id="inventoryGrid" aria-live="polite"></div>
-      <div class="showroom__finder">
-        <div class="lotwrap__head">
-          <h3 class="lotwrap__title reveal-line">Find your match</h3>
-          <p class="lotwrap__intro reveal-line">Answer a few quick questions and I'll narrow the whole lot down to the cars that fit — or browse everything yourself below.</p>
-        </div>
-        <div id="finderMount"></div>
-      </div>
-    </div>
+    <!-- featured vehicles, live from Northwest Lexus -->
+    <div class="grid showroom__cars" id="inventoryGrid" aria-live="polite"></div>
 
-    <!-- the full lot: every vehicle on the ground, filterable -->
+    <!-- the guided finder + the full filterable lot -->
     <div class="lotwrap" id="lotWrap">
+      <div class="lotwrap__head">
+        <h3 class="lotwrap__title reveal-line">Find your match</h3>
+        <p class="lotwrap__intro reveal-line">Answer a few quick questions and I'll narrow the whole lot down to the cars that fit — or browse everything yourself below.</p>
+      </div>
+      <div id="finderMount"></div>
       <div class="vault" id="vaultContent">
         <p class="vault__welcome">Loading the lot&hellip;</p>
       </div>
     </div>
   </section>
 
-  <!-- ====================== ROOM 3 · FIND YOUR LEXUS ====================== -->
-  <section class="room room--lexus" id="lexus" aria-labelledby="lexus-h">
-    <div class="room__head">
-      <span class="room__index">Room 03</span>
-      <h2 class="room__title" id="lexus-h"><span class="reveal-line">Find your Lexus</span></h2>
-    </div>
-    <p class="room__intro reveal-line">Tell it what matters and compare the 2026 trims side by side. My reference companion, open to everyone.</p>
-
-    <form class="lead lexlead will-reveal" id="lexusForm" novalidate>
-      <p class="lexlead__lede">Know the Lexus you want? Tell me and I'll send new-car pricing and availability, personally.</p>
-      <input class="lead__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" placeholder="Website" />
-      <input type="hidden" name="make" value="Lexus" />
-      <div class="lead__row">
-        <label class="field">
-          <span>Name <b class="req">*</b></span>
-          <input type="text" name="name" autocomplete="name" required />
-        </label>
-        <label class="field">
-          <span>Phone number <b class="req">*</b></span>
-          <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(416) 000-0000" required />
-        </label>
-      </div>
-      <div class="lead__row">
-        <label class="field">
-          <span>Email <b class="req">*</b></span>
-          <input type="email" name="email" autocomplete="email" required />
-        </label>
-        <label class="field">
-          <span>Which Lexus? <b class="req">*</b></span>
-          <select name="dreamcar" id="lexusModel" required><option value="">Select a model&hellip;</option></select>
-        </label>
-      </div>
-      <label class="check">
-        <input type="checkbox" name="consent" required />
-        <span>You may contact me by <b>phone, text &amp; email</b> about new Lexus pricing. <b class="req">*</b></span>
-      </label>
-      <div class="lead__foot">
-        <button type="submit" class="btn btn--primary magnetic" id="lexusSubmit">Get new-car pricing</button>
-        <p class="lead__status" id="lexusStatus" role="status"></p>
-      </div>
-    </form>
-
-    <div class="lexustool will-reveal" id="lexusMount" aria-label="2026 Lexus reference and trim comparisons"></div>
-    <p class="pricing-disclaimer reveal-line">Pricing shown is indicative only and may be out of date or inaccurate &mdash; it is not a quote or an offer. Always confirm current pricing at <a href="https://www.lexus.ca" target="_blank" rel="noopener">lexus.ca</a> before deciding.</p>
-  </section>
+  <!-- Room 03 (Find your Lexus) temporarily removed for proofing; tool file kept at lexus-2026.html -->
 
   <!-- ============= ROOM 4 · REQUEST A CAR (sourcing merged in) ============= -->
   <section class="room room--contact" id="contact" aria-labelledby="contact-h">
@@ -507,23 +459,23 @@
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
   <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
   <p class="foot__fine">Northwest Lexus · 2280 Queen Street East, Brampton, ON L6S 5X9 · OMVIC salesperson #5955778 · Dealer #4793550</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave Motors · phildavemotors.com · Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 23 · Lexus</span></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave Motors · phildavemotors.com · Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 24 · Lexus</span></p>
   <p class="foot__fine" id="modelCredit" hidden></p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
-<script src="js/vendor/gsap.min.js?v=23" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=23" defer></script>
-<script src="js/vendor/lenis.umd.js?v=23" defer></script>
+<script src="js/vendor/gsap.min.js?v=24" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=24" defer></script>
+<script src="js/vendor/lenis.umd.js?v=24" defer></script>
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
-<script src="js/data.js?v=23" defer></script>
-<script src="js/silhouettes.js?v=23" defer></script>
-<script src="js/main.js?v=23" defer></script>
+<script src="js/data.js?v=24" defer></script>
+<script src="js/silhouettes.js?v=24" defer></script>
+<script src="js/main.js?v=24" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
      reduced-motion, or when WebGL is unavailable) -->
 <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="js/hero3d.js?v=23"></script>
+<script type="module" src="js/hero3d.js?v=24"></script>
 </body>
 </html>
