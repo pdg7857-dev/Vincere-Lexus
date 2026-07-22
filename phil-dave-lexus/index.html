@@ -35,8 +35,8 @@
 <link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
 <link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="css/fonts.css?v=25" />
-<link rel="stylesheet" href="css/style.css?v=25" />
+<link rel="stylesheet" href="css/fonts.css?v=26" />
+<link rel="stylesheet" href="css/style.css?v=26" />
 </head>
 <body class="is-loading">
 
@@ -277,17 +277,11 @@
     <div class="room__head">
       <span class="room__index">Room 02</span>
       <h2 class="room__title" id="inventory-h"><span class="reveal-line">The Show Room</span></h2>
-      <p class="room__intro reveal-line">A curated selection. A few highlights, recently sourced or awaiting the right owner.</p>
+      <p class="room__intro reveal-line">Every vehicle on the ground right now — new, certified pre-owned and used. Filter to find yours, then tap any car to enquire.</p>
     </div>
-    <!-- featured vehicles, live from Northwest Lexus -->
-    <div class="grid showroom__cars" id="inventoryGrid" aria-live="polite"></div>
 
-    <!-- the guided finder + the full filterable lot -->
+    <!-- the full filterable lot (the finder mount stays for JS, kept hidden) -->
     <div class="lotwrap" id="lotWrap">
-      <div class="lotwrap__head">
-        <h3 class="lotwrap__title reveal-line">Find your match</h3>
-        <p class="lotwrap__intro reveal-line">Answer a few quick questions and I'll narrow the whole lot down to the cars that fit — or browse everything yourself below.</p>
-      </div>
       <div id="finderMount"></div>
       <div class="vault" id="vaultContent">
         <p class="vault__welcome">Loading the lot&hellip;</p>
@@ -467,23 +461,23 @@
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
   <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
   <p class="foot__fine">Northwest Lexus · 2280 Queen Street East, Brampton, ON L6S 5X9 · OMVIC salesperson #5955778 · Dealer #4793550</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave Motors · phildavemotors.com · Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 25 · Lexus</span></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave Motors · phildavemotors.com · Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 26 · Lexus</span></p>
   <p class="foot__fine" id="modelCredit" hidden></p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
-<script src="js/vendor/gsap.min.js?v=25" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=25" defer></script>
-<script src="js/vendor/lenis.umd.js?v=25" defer></script>
+<script src="js/vendor/gsap.min.js?v=26" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=26" defer></script>
+<script src="js/vendor/lenis.umd.js?v=26" defer></script>
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
-<script src="js/data.js?v=25" defer></script>
-<script src="js/silhouettes.js?v=25" defer></script>
-<script src="js/main.js?v=25" defer></script>
+<script src="js/data.js?v=26" defer></script>
+<script src="js/silhouettes.js?v=26" defer></script>
+<script src="js/main.js?v=26" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
      reduced-motion, or when WebGL is unavailable) -->
 <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="js/hero3d.js?v=25"></script>
+<script type="module" src="js/hero3d.js?v=26"></script>
 </body>
 </html>

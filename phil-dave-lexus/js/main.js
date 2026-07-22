@@ -489,6 +489,7 @@
 
   function buildInventory() {
     var grid = $("#inventoryGrid");
+    if (!grid) return;   // Show Room is listings-only now; no featured grid
     var inv = S.inventory || [];
     if (!inv.length) {
       grid.innerHTML = '<div class="empty">Nouveautés en route. New arrivals incoming.</div>';
@@ -1041,18 +1042,15 @@
     var nonLexus = false;   // "Non-Lexus" quick toggle
     // "New" = essentially delivery-mileage stock; "Used" is everything else and includes CPO.
     function isNew(c) { return c.km != null && c.km <= 1000; }
-    // "Rare finds" — the genuinely special cars that stand out on the lot:
-    // exotic/premium-sport marques, halo performance trims, and flagship Lexus.
+    // "Rare finds" — every luxury/premium marque on the lot, plus any car
+    // worth $80k+ (flagship Lexus, loaded trucks, exotics). Lexus itself is
+    // the house brand so it's surfaced by price / performance, not by make.
     function isRare(c) {
-      var mk = c.make || "";
+      var mk = (c.make || "").toLowerCase();
+      if (/mercedes|bmw|audi|porsche|land rover|range rover|jaguar|maserati|bentley|aston|lamborghini|ferrari|mclaren|alfa romeo|lotus|rolls|genesis|volvo|infiniti|acura|lincoln|cadillac|polestar|lucid|tesla/.test(mk)) return true;
+      if (c.price >= 80000) return true;
       var t = " " + ((c.trim || "") + " " + (c.model || "")).toLowerCase() + " ";
-      if (/porsche|land rover|jaguar|maserati|bentley|aston|lamborghini|ferrari|mclaren|alfa romeo|lotus/i.test(mk)) return true;
-      if (/mercedes/i.test(mk) && /amg/i.test(t)) return true;
-      if (/bmw/i.test(mk) && /\bm[2345678]\b/.test(t)) return true;
-      if (/audi/i.test(mk) && /\brs\s?[0-9]\b/.test(t)) return true;
-      if (/lexus/i.test(mk) && /\b(rc\s?f|gs\s?f|is\s?500|lc\s?500|lfa)\b/.test(t)) return true;
-      if (/type r|\bsvr\b|trackhawk|hellcat|nismo|\bsti\b|\bgt-?r\b|\bz06\b|shelby/i.test(t)) return true;
-      if (/lexus/i.test(mk) && c.price >= 95000) return true;   // flagship LX territory
+      if (/lexus/.test(mk) && /\b(rc\s?f|gs\s?f|is\s?500|lc\s?500|lfa)\b/.test(t)) return true;
       return false;
     }
 

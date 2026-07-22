@@ -780,14 +780,11 @@ body.is-loading .nextbay{ opacity:0; }
 .vault__welcome{ font-family:var(--serif); color:var(--platinum); font-size:1.2rem; }
 @media (max-width:520px){ .vaultlock__form{ flex-direction:column; } }
 
-/* ---------- The Show Room: featured live vehicles ---------- */
-.showroom__cars{ margin-top:1.4rem; }
-/* On phones, skip the guided finder and drop straight to the filters + live
-   stock — quicker to what's actually on the ground. */
-@media (max-width:700px){
-  #finderMount, .lotwrap__head, .lotbrowse__lead{ display:none !important; }
-  .lotbar{ top:56px; }
-}
+/* ---------- The Show Room: listings + filters only ---------- */
+/* the finder mount stays in the DOM for the lot JS, but is not shown; the
+   Show Room is just the filterable live listings. */
+#finderMount, .lotbrowse__lead{ display:none !important; }
+@media (max-width:700px){ .lotbar{ top:56px; } }
 .card__price{ display:block; font-family:var(--sans); font-weight:500; font-size:1.05rem; color:var(--platinum); letter-spacing:.01em; margin:-.2rem 0 .5rem; }
 .card__price::before{ content:"From "; font-size:.7em; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
 .sheet__listing{ display:inline-block; margin-top:1rem; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--silver-dim); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:2px; transition:color .3s var(--ease), border-color .3s var(--ease); }
