@@ -298,10 +298,11 @@ em{ font-style:italic; }
 }
 .baynav__label b{ color:var(--platinum); font-weight:500; }
 .baynav__tabs{
-  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  display:flex; gap:1px;
   background:var(--line-soft); border:1px solid var(--line-soft); border-radius:3px; overflow:hidden;
 }
 .baytab{
+  flex:1 1 0; min-width:0;
   display:flex; flex-direction:column; align-items:center; gap:.28rem;
   padding:.9rem .6rem .8rem; background:rgba(12,12,14,.82); border:0; cursor:pointer;
   color:var(--silver-dim); transition:background .35s var(--ease), color .35s;
@@ -316,9 +317,8 @@ em{ font-style:italic; }
 .baytab.is-active .baytab__cta{ color:var(--platinum); }
 .baytab:focus-visible{ outline:2px solid var(--silver); outline-offset:-2px; }
 @media (max-width:640px){
-  .baynav__tabs{ grid-template-columns:repeat(2,1fr); }
-  .baytab{ padding:.7rem .4rem .6rem; }
-  .baytab__name{ font-size:.66rem; }
+  .baytab{ padding:.7rem .35rem .6rem; }
+  .baytab__name{ font-size:.62rem; letter-spacing:.06em; }
 }
 
 /* prev / next bay arrows on the stage edges */
@@ -735,9 +735,9 @@ body.no-scroll{ overflow:hidden; }
 body.no-scroll .nextbay{ opacity:0 !important; pointer-events:none; }
 body.is-loading .nextbay{ opacity:0; }
 @media (max-width:640px){
-  .nextbay{ bottom:10px; gap:.6rem; padding:.4rem .9rem .4rem .4rem; }
-  .nextbay__spin{ width:74px; height:46px; }
-  .nextbay__name{ font-size:.86rem; }
+  /* the bottom is reserved for the Request-a-Car + WhatsApp CTAs on phones;
+     bay switching stays available via the tabs and side dots */
+  .nextbay{ display:none !important; }
 }
 @media (prefers-reduced-motion: reduce){ .nextbay{ animation:none; opacity:1; } }
 
@@ -782,6 +782,12 @@ body.is-loading .nextbay{ opacity:0; }
 
 /* ---------- The Show Room: featured live vehicles ---------- */
 .showroom__cars{ margin-top:1.4rem; }
+/* On phones, skip the guided finder and drop straight to the filters + live
+   stock — quicker to what's actually on the ground. */
+@media (max-width:700px){
+  #finderMount, .lotwrap__head, .lotbrowse__lead{ display:none !important; }
+  .lotbar{ top:56px; }
+}
 .card__price{ display:block; font-family:var(--sans); font-weight:500; font-size:1.05rem; color:var(--platinum); letter-spacing:.01em; margin:-.2rem 0 .5rem; }
 .card__price::before{ content:"From "; font-size:.7em; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
 .sheet__listing{ display:inline-block; margin-top:1rem; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--silver-dim); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:2px; transition:color .3s var(--ease), border-color .3s var(--ease); }
@@ -931,6 +937,17 @@ body.is-loading .nextbay{ opacity:0; }
 .news__more{ display:inline-block; margin-top:.7rem; color:var(--silver); font-size:.85rem; text-decoration:underline; text-underline-offset:3px; }
 @media (max-width:640px){ .lexustool__frame{ height:min(1200px,92vh); } }
 
+
+/* --- sticky "Request a Car" CTA (every bay) ---------------------------- */
+.reqfab{ position:fixed; left:clamp(14px,3vw,26px); bottom:clamp(14px,3vw,26px); z-index:80;
+  display:inline-flex; align-items:center; gap:.5rem; padding:.62rem 1.15rem .62rem .85rem;
+  background:var(--platinum); color:var(--black); border-radius:999px; text-decoration:none;
+  font-family:var(--sans); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; font-weight:600;
+  box-shadow:0 12px 34px rgba(0,0,0,.5); transition:transform .3s var(--ease), box-shadow .3s var(--ease), opacity .3s; }
+.reqfab:hover{ transform:translateY(-2px); box-shadow:0 16px 40px rgba(0,0,0,.6); color:var(--black); }
+.reqfab__icon{ display:inline-flex; align-items:center; }
+body.is-loading .reqfab{ opacity:0; pointer-events:none; }
+body.no-scroll .reqfab, body.wachat-open .reqfab{ opacity:0; pointer-events:none; }
 
 /* --- WhatsApp "send me a text" bubble ---------------------------------- */
 .wabubble{ position:fixed; right:clamp(14px,3vw,26px); bottom:clamp(14px,3vw,26px); z-index:80;

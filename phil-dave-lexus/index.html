@@ -35,8 +35,8 @@
 <link rel="preload" as="image" imagesrcset="assets/hero-car-600.webp 600w, assets/hero-car-900.webp 900w, assets/hero-car-1536.webp 1536w" imagesizes="(max-width: 860px) 96vw, 1100px" />
 <link rel="preload" href="assets/fonts/cormorant-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/inter-300.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="css/fonts.css?v=24" />
-<link rel="stylesheet" href="css/style.css?v=24" />
+<link rel="stylesheet" href="css/fonts.css?v=25" />
+<link rel="stylesheet" href="css/style.css?v=25" />
 </head>
 <body class="is-loading">
 
@@ -131,6 +131,14 @@
     <button type="submit" class="wachat__send" aria-label="Send">&rsaquo;</button>
   </form>
 </div>
+
+<!-- sticky "Request a Car" call-to-action, present on every bay -->
+<a class="reqfab" id="reqFab" href="#contact" data-link aria-label="Request a car">
+  <span class="reqfab__icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l1.8-4.6A2 2 0 0 1 6.7 7h10.6a2 2 0 0 1 1.9 1.4L21 13"/><path d="M3 13h18v4h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3z"/><circle cx="7" cy="17" r="0.4"/><circle cx="17" cy="17" r="0.4"/></svg>
+  </span>
+  <span class="reqfab__label">Request a Car</span>
+</a>
 
 <!-- floating WhatsApp "send me a text" bubble (opens the chat box) -->
 <a class="wabubble" id="waBubble" href="#" role="button" hidden aria-label="Chat with Phil Dave">
@@ -459,23 +467,23 @@
   <p class="foot__tag" data-tagline>Your dream car, sourced.</p>
   <p class="foot__meta">Private luxury car sourcing · <span data-region>Greater Toronto Area</span> · By appointment</p>
   <p class="foot__fine">Northwest Lexus · 2280 Queen Street East, Brampton, ON L6S 5X9 · OMVIC salesperson #5955778 · Dealer #4793550</p>
-  <p class="foot__fine">© <span id="year"></span> Phil Dave Motors · phildavemotors.com · Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 24 · Lexus</span></p>
+  <p class="foot__fine">© <span id="year"></span> Phil Dave Motors · phildavemotors.com · Discretion guaranteed · English &amp; French. · <a href="privacy.html" style="color:var(--silver-dim);text-decoration:underline;text-underline-offset:2px">Privacy Policy</a> <span style="opacity:.45">· build 25 · Lexus</span></p>
   <p class="foot__fine" id="modelCredit" hidden></p>
 </footer>
 
 <!-- libraries (self-hosted, no build step, no third-party CDN dependency) -->
-<script src="js/vendor/gsap.min.js?v=24" defer></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=24" defer></script>
-<script src="js/vendor/lenis.umd.js?v=24" defer></script>
+<script src="js/vendor/gsap.min.js?v=25" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=25" defer></script>
+<script src="js/vendor/lenis.umd.js?v=25" defer></script>
 
 <!-- site (defer keeps execution order: libs → data → app, all after parse) -->
-<script src="js/data.js?v=24" defer></script>
-<script src="js/silhouettes.js?v=24" defer></script>
-<script src="js/main.js?v=24" defer></script>
+<script src="js/data.js?v=25" defer></script>
+<script src="js/silhouettes.js?v=25" defer></script>
+<script src="js/main.js?v=25" defer></script>
 
 <!-- 3D hero (self-hosted Three.js; falls back to the 2D hero on mobile,
      reduced-motion, or when WebGL is unavailable) -->
 <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js" } }</script>
-<script type="module" src="js/hero3d.js?v=24"></script>
+<script type="module" src="js/hero3d.js?v=25"></script>
 </body>
 </html>
