@@ -1,3 +1,10 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# Raw CRM workbook — holds far more third-party PII (hundreds of client and
+# sales records) than the app needs. Keep it local; the app ships the
+# generated crm/data.js (active opportunities + inventory only). Rebuild with
+# scripts/build_crm_data.py path/to/workbook.xlsx
+data/VincereLexus_CRM.xlsx
+scripts/_*.png
