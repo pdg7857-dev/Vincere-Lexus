@@ -32,6 +32,14 @@
   function vehOf(deal) { return invByStock[deal.invStock] || INV[0]; }
 
   // ---- state ----------------------------------------------------------------
+  var IMPORT_COLS = [
+    { k: "name", label: "Customer name", w: 150 }, { k: "phone", label: "Phone", w: 120, mono: true },
+    { k: "email", label: "Email", w: 160 }, { k: "source", label: "Source", w: 100 },
+    { k: "pay", label: "Paying", w: 84 }, { k: "buying", label: "New/Used", w: 78 },
+    { k: "body", label: "Body", w: 78 }, { k: "make", label: "Make/model", w: 100 },
+    { k: "trim", label: "Trim", w: 96 }, { k: "budget", label: "Budget", w: 90, mono: true },
+    { k: "notes", label: "Notes", w: 220 }
+  ];
   var S = {
     view: "board",
     deals: D.deals.map(function (d) { return Object.assign({}, d, { notes: d.notes.slice() }); }),
@@ -47,8 +55,19 @@
     weights: { body: 3, color: 1, interior: 3, trim: 1, km: 3, price: 3 },
     form: { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" },
     vinResult: undefined, vinMsg: "",
-    adUrl: "", adImport: undefined, adMsg: ""
+    adUrl: "", adImport: undefined, adMsg: "",
+    vehicleStock: null,                         // open vehicle detail drawer
+    showInvAdv: false,                          // advanced inventory filter panel
+    invAdv: blankInvAdv(),
+    importRows: blankImportRows(6), importMsg: ""
   };
+
+  function blankInvAdv() {
+    return { q: "", make: "All", fuel: "All", minPrice: "", maxPrice: "",
+             maxKm: "", minYear: "", maxYear: "", maxDays: "", leadsOnly: false, matchedOnly: false };
+  }
+  function blankImportRow() { var o = {}; IMPORT_COLS.forEach(function (c) { o[c.k] = ""; }); return o; }
+  function blankImportRows(n) { var a = []; for (var i = 0; i < n; i++) a.push(blankImportRow()); return a; }
 
   function initQuest(buyer) {
     var p = buyer && buyer.preload || {};
@@ -100,6 +119,29 @@
   function dealById(id) { return S.deals.find(function (d) { return d.id === id; }); }
   function apptOfToday(dealId) { return S.appts.find(function (a) { return a.dealId === dealId && a.day === 0; }); }
 
+  // every customer linked to a stock #: vehicle-of-interest, shortlisted, or auto-matched
+  function customersFor(stock) {
+    var out = [], seen = {};
+    function add(name, via, dealId) {
+      var key = name.toLowerCase();
+      if (seen[key]) { if (via === "Vehicle of interest") { seen[key].via = via; seen[key].dealId = dealId; } return; }
+      seen[key] = { name: name, via: via, dealId: dealId || 0 }; out.push(seen[key]);
+    }
+    S.deals.forEach(function (d) { if (d.invStock === stock) add(d.name, "Vehicle of interest", d.id); });
+    S.deals.forEach(function (d) { if ((d.matchedStocks || []).indexOf(stock) >= 0) add(d.name, "Shortlisted", d.id); });
+    (D.matches || []).forEach(function (m) {
+      if (m.stock === stock) { var dl = S.deals.find(function (d) { return d.name === m.client; }); add(m.client, "Auto-match" + (m.fit ? " · " + m.fit : ""), dl ? dl.id : 0); }
+    });
+    return out;
+  }
+  // stocks the workbook auto-matched to a given customer name
+  function matchesForClient(name) { return (D.matches || []).filter(function (m) { return m.client === name; }); }
+  function leadsCount(stock) { return S.deals.filter(function (d) { return d.invStock === stock; }).length; }
+  function isMatched(stock) {
+    return S.deals.some(function (d) { return d.invStock === stock || (d.matchedStocks || []).indexOf(stock) >= 0; }) ||
+      (D.matches || []).some(function (m) { return m.stock === stock; });
+  }
+
   // ==========================================================================
   // RENDER
   // ==========================================================================
@@ -121,7 +163,8 @@
     var nav = [
       ["board", "Pipeline", vis.length], ["today", "Today", ""], ["calendar", "Calendar", S.appts.length],
       ["customers", "Customers", S.deals.length], ["match", "Matchmaker", ""], ["inventory", "Inventory", INV.length],
-      ["ads", "Marketplace ads", S.ads.length], ["deal", "Opportunity", ""], ["reports", "Reports", ""], ["new", "New lead", ""]
+      ["ads", "Marketplace ads", S.ads.length], ["deal", "Opportunity", ""], ["reports", "Reports", ""],
+      ["new", "New lead", ""], ["import", "Import leads", ""]
     ].map(function (n) {
       var active = S.view === n[0];
       return '<div class="h-nav clickable" data-act="nav" data-view="' + n[0] + '" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:4px;background:' + (active ? "oklch(0.24 0.01 250)" : "transparent") + ';color:' + (active ? "oklch(0.97 0.004 250)" : "oklch(0.74 0.008 250)") + '">' +
@@ -130,7 +173,7 @@
         '<div class="mono" style="font-size:10.5px;color:oklch(0.58 0.008 250)">' + n[2] + '</div></div>';
     }).join("");
 
-    var titles = { board: "Pipeline", deal: "Opportunity", today: "Today", inventory: "Inventory", reports: "Reports", "new": "New lead", customers: "Customers", calendar: "Appointment calendar", match: "Matchmaker", ads: "Marketplace ads" };
+    var titles = { board: "Pipeline", deal: "Opportunity", today: "Today", inventory: "Inventory", reports: "Reports", "new": "New lead", customers: "Customers", calendar: "Appointment calendar", match: "Matchmaker", ads: "Marketplace ads", "import": "Import leads" };
 
     var rail =
       '<div style="width:194px;flex:none;border-right:1px solid oklch(0.26 0.008 250);background:oklch(0.14 0.005 250);display:flex;flex-direction:column">' +
@@ -168,7 +211,75 @@
       '</div>';
 
     return '<div style="display:flex;height:100vh;width:100%;background:#0a0b0d;overflow:hidden">' + rail +
-      '<div style="flex:1;min-width:0;display:flex;flex-direction:column">' + topbar + inner + '</div></div>';
+      '<div style="flex:1;min-width:0;display:flex;flex-direction:column">' + topbar + inner + '</div>' + vehicleDrawer() + '</div>';
+  }
+
+  // ---- vehicle detail drawer -----------------------------------------------
+  function vehicleDrawer() {
+    if (!S.vehicleStock) return "";
+    var v = invByStock[S.vehicleStock];
+    if (!v) return "";
+    var typeFg = v.type === "Incoming" ? "oklch(0.80 0.14 95)" : v.type === "New" ? "oklch(0.85 0.13 200)" : "oklch(0.72 0.008 250)";
+    var typeLabel = v.type === "New" && v.condition === "Demo" ? "Demo" : v.type;
+
+    var spec = [
+      ["Stock #", v.stock], ["VIN", v.vin || "—"], ["Year", v.year], ["Body", v.body],
+      ["Trim", v.trim || "—"], ["Fuel", v.fuel],
+      ["Exterior", v.colour || "—"], ["Interior", v.interior || "—"],
+      ["Asking", money(v.price)], ["AT value", money(v.atValue)],
+      [v.type === "Incoming" ? "ETA" : "Days in stock", v.type === "Incoming" ? v.eta : v.days + " days"],
+      ["Odometer", v.km]
+    ].map(function (f, i) {
+      var accent = f[0] === "Asking" ? "oklch(0.95 0.004 250)" : f[0] === "AT value" ? "oklch(0.85 0.13 200)" : f[0] === "Days in stock" && v.days > 60 ? "oklch(0.78 0.15 40)" : "oklch(0.90 0.004 250)";
+      return '<div style="padding:9px 12px;border-right:' + (i % 2 === 0 ? "1px solid oklch(0.22 0.008 250)" : "none") + ';border-bottom:1px solid oklch(0.22 0.008 250)">' +
+        '<div style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.56 0.008 250)">' + f[0] + '</div>' +
+        '<div class="mono" style="font-size:12.5px;margin-top:3px;color:' + accent + '">' + esc(f[1]) + '</div></div>';
+    }).join("");
+
+    var det = v.detail || {};
+    var detRows = Object.keys(det).map(function (k) {
+      return '<div style="display:flex;gap:10px;padding:6px 0;border-top:1px solid oklch(0.20 0.008 250)">' +
+        '<div style="width:130px;flex:none;font-size:10.5px;letter-spacing:0.04em;text-transform:uppercase;color:oklch(0.58 0.008 250)">' + esc(k) + '</div>' +
+        '<div class="mono" style="font-size:11.5px;color:oklch(0.84 0.004 250);text-wrap:pretty">' + esc(det[k] == null ? "—" : det[k]) + '</div></div>';
+    }).join("");
+
+    var cust = customersFor(v.stock);
+    var custRows = cust.length ? cust.map(function (c) {
+      var viaColor = c.via.indexOf("Vehicle") === 0 ? "oklch(0.85 0.13 200)" : c.via.indexOf("Shortlist") === 0 ? "oklch(0.80 0.13 155)" : "oklch(0.78 0.14 95)";
+      return '<div class="' + (c.dealId ? "clickable h-row2" : "") + '" ' + (c.dealId ? 'data-act="openDeal" data-id="' + c.dealId + '"' : "") + ' style="padding:9px 12px;border-top:1px solid oklch(0.20 0.008 250);display:flex;align-items:center;gap:10px">' +
+        '<div style="flex:1"><div style="font-size:12.5px;font-weight:500">' + esc(c.name) + '</div>' +
+        '<div style="font-size:10.5px;color:' + viaColor + ';margin-top:2px">' + esc(c.via) + '</div></div>' +
+        (c.dealId ? '<div style="font-size:10px;color:oklch(0.62 0.008 250)">open →</div>' : '<div style="font-size:10px;color:oklch(0.50 0.008 250)">no open deal</div>') + '</div>';
+    }).join("") : '<div style="padding:12px;font-size:11.5px;color:oklch(0.55 0.008 250)">No customer linked to this vehicle yet.</div>';
+
+    var incoming = v.type === "Incoming" ? '<div style="margin:0 0 12px 0;border:1px solid oklch(0.40 0.06 95);border-radius:6px;background:oklch(0.18 0.03 95);padding:11px 12px">' +
+      '<div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.80 0.10 95)">Incoming — in the pipeline</div>' +
+      '<div style="font-size:13px;font-weight:600;margin-top:5px;color:oklch(0.92 0.06 95)">' + esc(v.orderStatus || v.from) + '</div>' +
+      '<div class="mono" style="font-size:11.5px;color:oklch(0.82 0.05 95);margin-top:3px">ETA ' + esc(v.eta) + (v.allocatedTo ? " · allocated to " + esc(v.allocatedTo) : " · open stock") + '</div></div>' : "";
+
+    var newLeadBtn = v.vin ? '<div class="clickable h-btn-cyan" data-act="leadOnVeh" data-vin="' + esc(v.vin) + '" style="padding:8px 13px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600;white-space:nowrap">+ New lead on this car</div>' : "";
+    var linkBtn = v.link ? '<a href="' + esc(v.link) + '" target="_blank" class="clickable" style="padding:8px 13px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:12px;color:oklch(0.80 0.13 200);white-space:nowrap">View listing ↗</a>' : "";
+
+    var body =
+      '<div style="padding:14px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">' +
+        (v.link ? '<div>' + '</div>' : '') +
+        '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;overflow:hidden"><div style="display:grid;grid-template-columns:1fr 1fr">' + spec + '</div></div>' +
+        incoming +
+        '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);padding:11px 13px">' +
+          '<div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250);margin-bottom:4px">Straight from the sheet</div>' + detRows + '</div>' +
+        '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250)">' +
+          '<div style="padding:11px 13px;border-bottom:1px solid oklch(0.22 0.008 250);display:flex;align-items:center;gap:8px"><div style="flex:1;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250)">Matched customers</div><div class="mono" style="font-size:11px;color:oklch(0.62 0.008 250)">' + cust.length + '</div></div>' + custRows + '</div>' +
+        ((newLeadBtn || linkBtn) ? '<div style="display:flex;gap:8px">' + newLeadBtn + linkBtn + '</div>' : '') +
+      '</div>';
+
+    return '<div data-act="closeVeh" style="position:absolute;inset:0;background:rgba(0,0,0,0.55);z-index:40"></div>' +
+      '<div style="position:absolute;top:0;right:0;bottom:0;width:440px;max-width:92vw;z-index:41;background:oklch(0.135 0.005 250);border-left:1px solid oklch(0.30 0.008 250);display:flex;flex-direction:column;box-shadow:-20px 0 40px rgba(0,0,0,0.4)">' +
+        '<div style="padding:14px;border-bottom:1px solid oklch(0.26 0.008 250);display:flex;align-items:flex-start;gap:10px">' +
+          '<div style="flex:1"><div style="display:flex;align-items:center;gap:8px"><div style="font-size:17px;font-weight:600">' + esc(v.car) + '</div><span style="font-size:10px;padding:2px 7px;border-radius:3px;background:oklch(0.22 0.01 250);color:' + typeFg + '">' + typeLabel + '</span></div>' +
+            '<div style="font-size:12px;color:oklch(0.70 0.008 250);margin-top:3px">' + esc(v.trim || "") + (v.trim ? " · " : "") + esc(v.fuel) + ' · ' + esc(v.body) + '</div></div>' +
+          '<div class="clickable h-btn-raised" data-act="closeVeh" style="width:26px;height:26px;flex:none;border-radius:4px;border:1px solid oklch(0.30 0.008 250);display:flex;align-items:center;justify-content:center;font-size:15px;color:oklch(0.75 0.008 250)">✕</div>' +
+        '</div>' + body +
+      '</div>';
   }
 
   function viewHtml() {
@@ -183,6 +294,7 @@
       case "ads": return adsView();
       case "reports": return reportsView();
       case "new": return newLeadView();
+      case "import": return importView();
       default: return boardView();
     }
   }
@@ -477,7 +589,7 @@
       var typeFg = r.v.type === "Incoming" ? "oklch(0.80 0.14 95)" : "oklch(0.64 0.008 250)";
       var missTxt = r.misses.length ? "off on " + r.misses.map(function (c) { return c.label.toLowerCase(); }).join(", ") : "meets every priority";
       var missFg = r.misses.length ? "oklch(0.78 0.14 60)" : "oklch(0.84 0.13 155)";
-      return '<div style="padding:10px 13px;border-bottom:1px solid oklch(0.22 0.008 250);display:grid;grid-template-columns:1fr 92px 56px;gap:10px;align-items:center">' +
+      return '<div class="clickable h-row2" data-act="openVeh" data-stock="' + esc(r.v.stock) + '" style="padding:10px 13px;border-bottom:1px solid oklch(0.22 0.008 250);display:grid;grid-template-columns:1fr 92px 56px;gap:10px;align-items:center">' +
         '<div style="min-width:0"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(r.v.car) + '</div>' +
           '<div style="font-size:10.5px;color:' + missFg + ';margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(missTxt) + '</div>' +
           '<div class="mono" style="font-size:10px;color:oklch(0.60 0.008 250);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(r.v.colour) + ' · ' + esc(r.v.interior) + ' · ' + esc(r.v.stock) + ' · ' + esc(r.v.km) + ' · <span style="color:' + typeFg + '">' + esc(typeTxt) + '</span></div></div>' +
@@ -554,8 +666,10 @@
     var right = S.importStep === 2
       ? '<div class="clickable" data-act="resetImport" style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:4px;border:1px solid oklch(0.42 0.08 155);background:oklch(0.22 0.04 155);color:oklch(0.88 0.12 155);font-size:11.5px;white-space:nowrap">Synced 9:14am · pull again</div>'
       : '<div class="clickable h-btn-cyan" data-act="runImport" style="padding:6px 11px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600;white-space:nowrap">Pull inventory</div>';
+    var advActive = countAdv();
+    var filtChip = '<div class="clickable" data-act="toggleInvAdv" style="padding:5px 10px;border-radius:4px;font-size:11.5px;white-space:nowrap;border:1px solid ' + (S.showInvAdv || advActive ? "oklch(0.46 0.08 200)" : "oklch(0.28 0.008 250)") + ';background:' + (S.showInvAdv || advActive ? "oklch(0.24 0.04 200)" : "transparent") + ';color:' + (S.showInvAdv || advActive ? "oklch(0.90 0.06 200)" : "oklch(0.72 0.008 250)") + '">⚲ Filters' + (advActive ? ' <span class="mono" style="font-size:10px">' + advActive + '</span>' : '') + '</div>';
     var bar =
-      '<div style="padding:9px 14px;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.13 0.005 250);display:flex;align-items:center;gap:8px;flex-wrap:wrap">' + tabs +
+      '<div style="padding:9px 14px;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.13 0.005 250);display:flex;align-items:center;gap:8px;flex-wrap:wrap">' + tabs + filtChip +
         '<div style="margin-left:auto;display:flex;align-items:center;gap:7px"><div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.56 0.008 250)">Import from</div>' +
           '<select data-act="setFeed" style="background:oklch(0.18 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:5px 7px;font-size:12px;outline:none">' + IMPORT_FEEDS.map(function (o) { return '<option' + (S.importFeed === o ? " selected" : "") + '>' + o + '</option>'; }).join("") + '</select>' + right + '</div></div>';
 
@@ -579,13 +693,14 @@
     var header = '<div style="display:grid;grid-template-columns:' + cols + ';min-width:1420px;padding:8px 14px;position:sticky;top:0;background:oklch(0.13 0.005 250);border-bottom:1px solid oklch(0.28 0.008 250);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.60 0.008 250);gap:10px">' +
       head.map(function (h, i) { return '<div style="' + ([5, 6, 7, 8].indexOf(i) >= 0 ? "text-align:right" : "") + '">' + h + '</div>'; }).join("") + '</div>';
 
-    var list = INV.filter(function (v) { return S.invFilter === "All" || v.type === S.invFilter; });
+    var list = INV.filter(function (v) { return S.invFilter === "All" || v.type === S.invFilter; }).filter(passAdv);
     var rows = list.map(function (v) {
       var leads = S.deals.filter(function (d) { return d.invStock === v.stock; });
       var typeFg = v.type === "Incoming" ? "oklch(0.80 0.14 95)" : v.type === "New" ? "oklch(0.85 0.13 200)" : "oklch(0.70 0.008 250)";
       var daysFg = v.days > 60 ? "oklch(0.78 0.15 40)" : v.days > 40 ? "oklch(0.80 0.14 95)" : "oklch(0.82 0.004 250)";
       var typeLabel = v.type === "New" && v.condition === "Demo" ? "Demo" : v.type;
-      return '<div class="h-row" style="display:grid;grid-template-columns:' + cols + ';min-width:1420px;gap:10px;padding:9px 14px;border-bottom:1px solid oklch(0.20 0.008 250);align-items:center;font-size:12.5px">' +
+      var interested = customersFor(v.stock);
+      return '<div class="clickable h-row" data-act="openVeh" data-stock="' + esc(v.stock) + '" style="display:grid;grid-template-columns:' + cols + ';min-width:1420px;gap:10px;padding:9px 14px;border-bottom:1px solid oklch(0.20 0.008 250);align-items:center;font-size:12.5px">' +
         '<div class="mono" style="font-size:11.5px;color:oklch(0.72 0.008 250)">' + esc(v.stock) + '</div>' +
         '<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(v.car) + (v.trim ? ' <span style="color:oklch(0.60 0.008 250)">' + esc(v.trim) + '</span>' : '') + '</div>' +
         '<div style="font-size:11px;color:' + typeFg + '">' + typeLabel + '</div>' +
@@ -594,12 +709,71 @@
         '<div class="mono" style="text-align:right">' + money(v.price) + '</div>' +
         '<div class="mono" style="text-align:right;color:oklch(0.85 0.13 200)">' + money(v.atValue) + '</div>' +
         '<div class="mono" style="font-size:11.5px;text-align:right;color:' + daysFg + '">' + (v.type === "Incoming" ? "ETA " + esc(v.eta) : v.days + "d") + '</div>' +
-        '<div class="mono" style="text-align:right;color:' + (leads.length ? "oklch(0.85 0.13 200)" : "oklch(0.50 0.008 250)") + '">' + leads.length + '</div>' +
-        '<div style="font-size:11.5px;color:oklch(0.70 0.008 250);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (leads.length ? esc(leads.map(function (d) { return firstLast(d.name); }).join(", ")) : "—") + '</div></div>';
-    }).join("");
+        '<div class="mono" style="text-align:right;color:' + (interested.length ? "oklch(0.85 0.13 200)" : "oklch(0.50 0.008 250)") + '">' + interested.length + '</div>' +
+        '<div style="font-size:11.5px;color:oklch(0.70 0.008 250);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (interested.length ? esc(interested.map(function (c) { return firstLast(c.name); }).join(", ")) : "—") + '</div></div>';
+    }).join("") || '<div style="padding:24px 14px;font-size:12px;color:oklch(0.55 0.008 250)">No vehicles match these filters. <span class="clickable" data-act="clearInvAdv" style="color:oklch(0.80 0.13 200)">Clear filters</span></div>';
 
-    return '<div style="flex:1;min-height:0;display:flex;flex-direction:column">' + bar + review +
+    return '<div style="flex:1;min-height:0;display:flex;flex-direction:column">' + bar + advPanel() + review +
+      '<div style="padding:6px 14px;font-size:10.5px;color:oklch(0.56 0.008 250);background:oklch(0.115 0.005 250);border-bottom:1px solid oklch(0.20 0.008 250)" class="mono">' + list.length + ' of ' + INV.length + ' vehicles · click a row for full detail</div>' +
       '<div style="flex:1;min-height:0;overflow:auto;background:#0a0b0d">' + header + rows + '</div></div>';
+  }
+
+  // advanced inventory filter helpers
+  function countAdv() {
+    var a = S.invAdv, n = 0;
+    if (a.q.trim()) n++;
+    if (a.make !== "All") n++;
+    if (a.fuel !== "All") n++;
+    if (a.minPrice) n++; if (a.maxPrice) n++;
+    if (a.maxKm) n++; if (a.minYear) n++; if (a.maxYear) n++; if (a.maxDays) n++;
+    if (a.leadsOnly) n++; if (a.matchedOnly) n++;
+    return n;
+  }
+  function passAdv(v) {
+    var a = S.invAdv;
+    var q = a.q.trim().toLowerCase();
+    if (q && (v.stock + " " + v.vin + " " + v.car + " " + v.trim + " " + v.colour + " " + v.interior).toLowerCase().indexOf(q) < 0) return false;
+    if (a.make !== "All" && v.make !== a.make) return false;
+    if (a.fuel !== "All" && v.fuel !== a.fuel) return false;
+    if (a.minPrice && v.price < +a.minPrice) return false;
+    if (a.maxPrice && v.price > +a.maxPrice) return false;
+    if (a.maxKm && v.kmNum > +a.maxKm) return false;
+    if (a.minYear && v.year < +a.minYear) return false;
+    if (a.maxYear && v.year > +a.maxYear) return false;
+    if (a.maxDays && v.type !== "Incoming" && v.days > +a.maxDays) return false;
+    if (a.leadsOnly && leadsCount(v.stock) === 0) return false;
+    if (a.matchedOnly && !isMatched(v.stock)) return false;
+    return true;
+  }
+  function advPanel() {
+    if (!S.showInvAdv) return "";
+    var a = S.invAdv;
+    var makes = ["All"].concat(Array.from(new Set(INV.map(function (v) { return v.make; }))).sort());
+    var fuels = ["All"].concat(Array.from(new Set(INV.map(function (v) { return v.fuel; }))).sort());
+    function num(label, key, ph) {
+      return '<div><div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.56 0.008 250);margin-bottom:4px">' + label + '</div>' +
+        '<input data-act="invAdv" data-key="' + key + '" data-focus="ia-' + key + '" value="' + esc(a[key]) + '" placeholder="' + ph + '" inputmode="numeric" class="mono" style="width:100%;background:oklch(0.16 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:6px 7px;color:oklch(0.95 0.004 250);font-size:11.5px;outline:none" /></div>';
+    }
+    function sel(label, key, opts) {
+      return '<div><div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.56 0.008 250);margin-bottom:4px">' + label + '</div>' +
+        '<select data-act="invAdvSel" data-key="' + key + '" style="width:100%;background:oklch(0.16 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:6px 7px;font-size:11.5px;outline:none">' +
+        opts.map(function (o) { return '<option' + (a[key] === o ? " selected" : "") + '>' + esc(o) + '</option>'; }).join("") + '</select></div>';
+    }
+    function chk(label, key) {
+      var on = a[key];
+      return '<div class="clickable" data-act="invAdvChk" data-key="' + key + '" style="display:flex;align-items:center;gap:6px;padding:6px 9px;border-radius:4px;border:1px solid ' + (on ? "oklch(0.46 0.08 200)" : "oklch(0.28 0.008 250)") + ';background:' + (on ? "oklch(0.24 0.04 200)" : "oklch(0.16 0.006 250)") + ';color:' + (on ? "oklch(0.90 0.06 200)" : "oklch(0.72 0.008 250)") + ';font-size:11.5px;white-space:nowrap;align-self:end">' +
+        '<div style="width:13px;height:13px;border-radius:3px;border:1px solid ' + (on ? "oklch(0.78 0.13 200)" : "oklch(0.40 0.01 250)") + ';background:' + (on ? "oklch(0.78 0.13 200)" : "transparent") + '"></div>' + label + '</div>';
+    }
+    return '<div style="padding:11px 14px;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.155 0.005 250);display:grid;grid-template-columns:repeat(6, minmax(0,1fr));gap:9px;align-items:end">' +
+      '<div style="grid-column:span 2"><div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.56 0.008 250);margin-bottom:4px">Search stock / VIN / colour / trim</div>' +
+        '<input data-act="invAdv" data-key="q" data-focus="ia-q" value="' + esc(a.q) + '" placeholder="e.g. white F Sport, JTJ…" style="width:100%;background:oklch(0.16 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:6px 8px;color:oklch(0.95 0.004 250);font-size:11.5px;outline:none" /></div>' +
+      sel("Make", "make", makes) + sel("Fuel", "fuel", fuels) +
+      num("Min price", "minPrice", "$") + num("Max price", "maxPrice", "$") +
+      num("Max km", "maxKm", "km") + num("Min year", "minYear", "YYYY") + num("Max year", "maxYear", "YYYY") +
+      num("Max days in stock", "maxDays", "days") +
+      chk("Has a lead", "leadsOnly") + chk("Matched to a customer", "matchedOnly") +
+      '<div class="clickable h-btn-raised" data-act="clearInvAdv" style="align-self:end;text-align:center;padding:6px 9px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:11.5px;color:oklch(0.80 0.008 250)">Clear</div>' +
+      '</div>';
   }
 
   // ---- 8. Marketplace ads ---------------------------------------------------
@@ -747,6 +921,72 @@
     return '<div style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start">' + left + right + '</div>';
   }
 
+  // ---- 11. Import leads (spreadsheet-style entry) ---------------------------
+  function importView() {
+    var filled = S.importRows.filter(function (r) { return r.name.trim(); }).length;
+    var colHead = IMPORT_COLS.map(function (c) {
+      return '<div style="min-width:' + c.w + 'px;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.60 0.008 250)">' + c.label + '</div>';
+    }).join("");
+    var gridCols = IMPORT_COLS.map(function (c) { return c.w + "px"; }).join(" ") + " 34px";
+    var minW = IMPORT_COLS.reduce(function (a, c) { return a + c.w; }, 0) + 60;
+
+    var body = S.importRows.map(function (r, ri) {
+      var cells = IMPORT_COLS.map(function (c) {
+        var isSel = c.k === "source" || c.k === "pay" || c.k === "buying" || c.k === "body";
+        if (isSel) {
+          var opts = c.k === "source" ? [""].concat(SOURCES) : c.k === "pay" ? ["", "Finance", "Cash", "Lease"] : c.k === "buying" ? ["", "New", "Used"] : ["", "SUV", "Sedan", "Truck", "Van", "Coupe"];
+          return '<select data-act="impSel" data-row="' + ri + '" data-key="' + c.k + '" style="min-width:' + c.w + 'px;background:oklch(0.16 0.006 250);border:1px solid oklch(0.26 0.008 250);border-radius:3px;padding:6px 6px;font-size:11.5px;outline:none;color:oklch(0.92 0.004 250)">' +
+            opts.map(function (o) { return '<option' + (r[c.k] === o ? " selected" : "") + '>' + (o || "—") + '</option>'; }).join("") + '</select>';
+        }
+        return '<input data-act="imp" data-row="' + ri + '" data-key="' + c.k + '" data-focus="imp-' + ri + '-' + c.k + '" value="' + esc(r[c.k]) + '"' + (c.mono ? ' class="mono"' : '') + ' style="min-width:' + c.w + 'px;background:oklch(0.16 0.006 250);border:1px solid oklch(0.26 0.008 250);border-radius:3px;padding:6px 7px;font-size:11.5px;outline:none;color:oklch(0.95 0.004 250)" />';
+      }).join("");
+      return '<div style="display:grid;grid-template-columns:' + gridCols + ';gap:6px;padding:5px 14px;align-items:center;border-bottom:1px solid oklch(0.18 0.008 250)">' + cells +
+        '<div class="clickable h-btn-raised" data-act="impDelRow" data-row="' + ri + '" title="Remove row" style="width:26px;height:26px;border-radius:4px;border:1px solid oklch(0.28 0.008 250);display:flex;align-items:center;justify-content:center;font-size:13px;color:oklch(0.60 0.008 250)">✕</div></div>';
+    }).join("");
+
+    var msg = S.importMsg ? '<div style="font-size:12px;color:' + (S.importMsg.indexOf("Imported") === 0 ? "oklch(0.84 0.13 155)" : "oklch(0.78 0.15 40)") + '">' + esc(S.importMsg) + '</div>' : "";
+
+    return '<div style="flex:1;min-height:0;display:flex;flex-direction:column">' +
+      '<div style="padding:12px 14px;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.13 0.005 250);display:flex;align-items:center;gap:12px;flex-wrap:wrap">' +
+        '<div><div style="font-size:13px;font-weight:600">Import customers</div><div style="font-size:11px;color:oklch(0.62 0.008 250);margin-top:2px">Type a row per customer, or paste rows straight from a spreadsheet (Tab / comma separated). Only <b>Customer name</b> is required.</div></div>' +
+        '<div style="margin-left:auto;display:flex;gap:8px;align-items:center">' + msg +
+          '<div class="clickable h-btn-raised" data-act="impAddRow" style="padding:7px 12px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:12px;color:oklch(0.82 0.008 250);white-space:nowrap">+ Add row</div>' +
+          '<div class="clickable" data-act="impClear" style="padding:7px 12px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:12px;color:oklch(0.72 0.008 250);white-space:nowrap">Clear</div>' +
+          '<div class="clickable h-btn-cyan" data-act="impSubmit" style="padding:7px 13px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600;white-space:nowrap">Import ' + filled + ' lead' + (filled === 1 ? "" : "s") + '</div>' +
+        '</div></div>' +
+      '<div id="impGrid" style="flex:1;min-height:0;overflow:auto;background:#0a0b0d">' +
+        '<div style="min-width:' + minW + 'px">' +
+          '<div style="display:grid;grid-template-columns:' + gridCols + ';gap:6px;padding:8px 14px;position:sticky;top:0;background:oklch(0.13 0.005 250);border-bottom:1px solid oklch(0.28 0.008 250);z-index:1">' + colHead + '<div></div></div>' +
+          body +
+        '</div>' +
+        '<div style="padding:10px 14px;font-size:10.5px;color:oklch(0.55 0.008 250)">Vehicle of interest is auto-matched from make / body / budget when you import; refine it later on the opportunity.</div>' +
+      '</div></div>';
+  }
+
+  // resolve a vehicle for an imported/typed lead (JS mirror of the build script)
+  function matchVehicle(row) {
+    var body = row.body || "";
+    var mk = (row.make || "").toLowerCase().trim();
+    var budget = parseInt(String(row.budget).replace(/[^0-9]/g, ""), 10) || 0;
+    var toks = (row.make + " " + row.trim).toLowerCase().split(/[^a-z0-9]+/).filter(function (w) { return w.length >= 2 && ["any", "used", "new", "lexus"].indexOf(w) < 0; });
+    function score(v) {
+      if (v.type === "Incoming" || v.price < 8000) return -1;
+      if (body && v.body !== body) return -1;
+      var hay = (v.model + " " + v.make + " " + v.trim).toLowerCase();
+      if (mk && ["other", "any", "lexus"].indexOf(mk) < 0 && hay.indexOf(mk) < 0) return -1;
+      var s = 0; toks.forEach(function (t) { if (hay.indexOf(t) >= 0) s++; });
+      if (budget) s += (v.price <= budget * 1.08 ? 1 : 0);
+      return s;
+    }
+    var best = null, bestScore = -1;
+    STOCKED.forEach(function (v) { var sc = score(v); if (sc > bestScore || (sc === bestScore && best && v.price < best.price)) { bestScore = sc; best = v; } });
+    if (bestScore < 0) {
+      var pool = STOCKED.filter(function (v) { return v.price >= 8000 && (!body || v.body === body); });
+      best = pool.length ? pool.reduce(function (a, v) { return Math.abs(v.price - (budget || 40000)) < Math.abs(a.price - (budget || 40000)) ? v : a; }) : STOCKED[0];
+    }
+    return best;
+  }
+
   // ==========================================================================
   // EVENTS
   // ==========================================================================
@@ -757,9 +997,23 @@
     if (!t) return;
     var act = t.dataset.act, id = t.dataset;
     switch (act) {
-      case "nav": setS({ view: id.view, noteDraft: "" }); break;
+      case "nav": setS({ view: id.view, noteDraft: "", vehicleStock: null }); break;
       case "toggleHot": setS({ hotOnly: !S.hotOnly }); break;
-      case "openDeal": setS({ view: "deal", selected: +id.id, noteDraft: "" }); break;
+      case "openDeal": setS({ view: "deal", selected: +id.id, noteDraft: "", vehicleStock: null }); break;
+      case "openVeh": setS({ vehicleStock: id.stock }); break;
+      case "closeVeh": setS({ vehicleStock: null }); break;
+      case "leadOnVeh": {
+        var lv = INV.find(function (x) { return x.vin && x.vin.toUpperCase() === id.vin.toUpperCase(); });
+        setS({ view: "new", vehicleStock: null, form: Object.assign(blankForm(), { vin: id.vin }), vinResult: lv, vinMsg: lv ? "Matched stock " + lv.stock + " — pulled from inventory." : "" });
+        break;
+      }
+      case "toggleInvAdv": setS({ showInvAdv: !S.showInvAdv }); break;
+      case "clearInvAdv": setS({ invAdv: blankInvAdv() }); break;
+      case "invAdvChk": { var ia = Object.assign({}, S.invAdv); ia[id.key] = !ia[id.key]; setS({ invAdv: ia }); break; }
+      case "impAddRow": S.importRows = S.importRows.concat([blankImportRow()]); render(); break;
+      case "impDelRow": S.importRows = S.importRows.filter(function (_, i) { return i !== +id.row; }); if (!S.importRows.length) S.importRows = blankImportRows(1); render(); break;
+      case "impClear": setS({ importRows: blankImportRows(6), importMsg: "" }); break;
+      case "impSubmit": submitImport(); break;
       case "setStage": updateDeal(S.selected, { stage: +id.stage }); break;
       case "swap": {
         var v = invByStock[id.stock];
@@ -845,6 +1099,8 @@
       case "quest": S.quest = Object.assign({}, S.quest, keyVal(key, val)); render(); break;
       case "questKm": S.quest = Object.assign({}, S.quest, { maxKm: parseInt(val, 10) }); render(); break;
       case "questPrice": S.quest = Object.assign({}, S.quest, { priceMax: parseInt(val, 10) }); render(); break;
+      case "invAdv": S.invAdv = Object.assign({}, S.invAdv, keyVal(key, val)); render(); break;
+      case "imp": S.importRows[+t.dataset.row][key] = val; break;   // no re-render (keeps caret)
     }
   });
 
@@ -857,7 +1113,30 @@
       case "setFeed": setS({ importFeed: val, importStep: 0 }); break;
       case "questBody": S.quest = Object.assign({}, S.quest, { body: val }); render(); break;
       case "formSel": S.form = Object.assign({}, S.form, keyVal(t.dataset.key, val)); break;
+      case "invAdvSel": S.invAdv = Object.assign({}, S.invAdv, keyVal(t.dataset.key, val)); render(); break;
+      case "impSel": S.importRows[+t.dataset.row][t.dataset.key] = (val === "—" ? "" : val); break;
     }
+  });
+
+  // paste into the import grid — fill cells from tab/comma-separated clipboard
+  app.addEventListener("paste", function (e) {
+    var t = e.target.closest('[data-act="imp"]');
+    if (!t) return;
+    var text = (e.clipboardData || window.clipboardData).getData("text");
+    if (!text || !/[\t\n,]/.test(text)) return;   // single value: let default paste happen
+    e.preventDefault();
+    var startRow = +t.dataset.row, startCol = IMPORT_COLS.findIndex(function (c) { return c.k === t.dataset.key; });
+    var lines = text.replace(/\r/g, "").split("\n").filter(function (l) { return l.trim() !== ""; });
+    lines.forEach(function (line, li) {
+      var cells = line.indexOf("\t") >= 0 ? line.split("\t") : line.split(",");
+      var ri = startRow + li;
+      while (S.importRows.length <= ri) S.importRows.push(blankImportRow());
+      cells.forEach(function (cell, ci) {
+        var col = IMPORT_COLS[startCol + ci];
+        if (col) S.importRows[ri][col.k] = cell.trim();
+      });
+    });
+    render();
   });
 
   // drag and drop
@@ -887,22 +1166,49 @@
 
   function keyVal(k, v) { var o = {}; o[k] = v; return o; }
   function updateDeal(id, patch) { var d = dealById(id); if (d) Object.assign(d, patch); render(); }
+  function blankForm() { return { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" }; }
+  function nextId() { return Math.max.apply(null, S.deals.map(function (d) { return d.id; })) + 1; }
+
+  function makeDeal(id, o) {
+    var v = o.veh;
+    return {
+      id: id, name: o.name, phone: o.phone || "—",
+      email: o.email || o.name.toLowerCase().replace(/[^a-z ]/g, "").trim().split(/\s+/).join(".") + "@gmail.com",
+      address: o.address || "", stage: 0, invStock: v.stock, matchedStocks: [],
+      trade: "None", allowance: 0, appraisal: 0,
+      pay: o.pay || "Finance", source: o.source || "Walk-in", testDrive: false,
+      lastContact: D.today, nextFollowUp: fmtISOraw(addDays(NOW, 1)), expectedClose: fmtISOraw(addDays(NOW, 21)),
+      value: v.price, gross: Math.round(v.price * 0.06), hot: false,
+      wantBody: o.wantBody || v.body, wantMax: o.wantMax || v.price,
+      wantMake: o.wantMake || "", wantTrim: o.wantTrim || "", level: "New",
+      notes: [{ date: D.today, text: o.note || ("New lead from " + (o.source || "Walk-in") + ". Interested in " + v.car + " (" + v.stock + ").") }]
+    };
+  }
 
   function saveLead() {
     var f = S.form;
     if (!f.name.trim()) { setS({ vinMsg: "Enter a customer name to save the lead." }); return; }
     var v = S.vinResult || INV[0];
-    var nid = Math.max.apply(null, S.deals.map(function (d) { return d.id; })) + 1;
-    S.deals = [{
-      id: nid, name: f.name.trim(), phone: f.phone || "—",
-      email: f.email || f.name.toLowerCase().replace(/[^a-z ]/g, "").trim().split(/\s+/).join(".") + "@gmail.com",
-      address: f.address, stage: 0, invStock: v.stock, trade: "None", allowance: 0, appraisal: 0,
-      pay: f.pay, source: f.source, testDrive: false,
-      lastContact: D.today, nextFollowUp: fmtISOraw(addDays(NOW, 1)), expectedClose: fmtISOraw(addDays(NOW, 21)),
-      value: v.price, gross: Math.round(v.price * 0.06), hot: false, wantBody: v.body, wantMax: v.price,
-      notes: [{ date: D.today, text: "New lead from " + f.source + ". Interested in " + v.car + " (" + v.stock + ")." }]
-    }].concat(S.deals);
-    setS({ view: "board", form: { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" }, vinResult: undefined, vinMsg: "" });
+    S.deals = [makeDeal(nextId(), { name: f.name.trim(), phone: f.phone, email: f.email, address: f.address, source: f.source, pay: f.pay, veh: v })].concat(S.deals);
+    setS({ view: "board", form: blankForm(), vinResult: undefined, vinMsg: "" });
+  }
+
+  function submitImport() {
+    var rows = S.importRows.filter(function (r) { return r.name.trim(); });
+    if (!rows.length) { setS({ importMsg: "Add at least one row with a customer name." }); return; }
+    var id = nextId();
+    var made = rows.map(function (r) {
+      var veh = matchVehicle(r);
+      var budget = parseInt(String(r.budget).replace(/[^0-9]/g, ""), 10) || 0;
+      var note = (r.notes || "").trim() || ("Imported lead" + (r.buying ? " — wants " + r.buying.toLowerCase() : "") + (r.make ? " " + r.make : "") + ". Matched to " + veh.car + " (" + veh.stock + ").");
+      return makeDeal(id++, {
+        name: r.name.trim(), phone: r.phone, email: r.email, source: r.source || "Walk-in",
+        pay: r.pay || "Finance", veh: veh, wantBody: r.body || veh.body, wantMax: budget || veh.price,
+        wantMake: r.make, wantTrim: r.trim, note: note
+      });
+    });
+    S.deals = made.concat(S.deals);
+    setS({ view: "board", importRows: blankImportRows(6), importMsg: "" });
   }
   function fmtISOraw(d) { return d.toISOString().slice(0, 10); }
 

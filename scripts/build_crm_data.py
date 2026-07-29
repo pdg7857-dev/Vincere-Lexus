@@ -250,6 +250,15 @@ def build_used(wb, referenced):
             "eta": "", "from": "",
             "link": str(v[17]) if v[17] else "",
             "car": f"{year} {make} {model}".strip(),
+            "detail": {
+                "In-stock date": iso(v[0]),
+                "Condition": status or "Used",
+                "Delivery board": str(v[14] or "").strip() or "—",
+                "Keys": (str(int(num(v[11]))) if num(v[11]) else "—"),
+                "Recon sent": str(v[12] or "—").strip(),
+                "Tires": str(v[15] or "—").strip(),
+                "Carfax / owners": str(v[9] or "—").strip(),
+            },
         })
     return out
 
@@ -272,8 +281,21 @@ def build_new(wb, pricing, sheet, kind):
         ext = strip_color_code(v[10])
         price = price_lookup(pricing, series, trim, model)
         eta_from, eta_to = v[12], v[13]
+        order_status = str(v[3] or "").strip()
+        allocated = str(v[14]).strip() if len(v) > 14 and v[14] else ""
+        comments = str(v[15]).strip() if len(v) > 15 and v[15] else ""
         interior = (f"{material} {int_colour}").strip() or int_colour or material
         is_demo = "demo" in order_type.lower() or "loaner" in order_type.lower()
+        detail = {
+            "Order #": stock,
+            "Order type": order_type or "—",
+            "Order status": order_status or "—",
+            "Package (suffix)": str(v[9] or "—").strip(),
+            "Accessory": str(v[11] or "—").strip(),
+            "ETA window": ((iso(eta_from) or "?") + " → " + (iso(eta_to) or "?")) if (eta_from or eta_to) else "—",
+            "Allocated to": allocated or "Open stock",
+            "Comments": comments or "—",
+        }
         rec = {
             "stock": stock, "vin": vin, "year": year, "make": "Lexus",
             "model": model, "trim": trim or "Premium",
@@ -284,6 +306,9 @@ def build_new(wb, pricing, sheet, kind):
             "fuel": fuel_for(series, model, trim),
             "link": "",
             "car": f"{year} Lexus {model}".strip(),
+            "detail": detail,
+            "allocatedTo": allocated,
+            "orderStatus": order_status,
         }
         if kind == "New":
             rec.update({
@@ -298,11 +323,11 @@ def build_new(wb, pricing, sheet, kind):
             eta = eta_to or eta_from
             rec.update({
                 "type": "Incoming",
-                "condition": "In transit",
+                "condition": order_status or "In transit",
                 "days": 0,
                 "km": "0 km", "kmNum": 0,
                 "eta": eta.strftime("%b %d") if isinstance(eta, (datetime.date, datetime.datetime)) else "",
-                "from": str(v[15]).title() if len(v) > 15 and v[15] else "Factory order",
+                "from": order_status or "Factory order",
             })
         out.append(rec)
     return out
@@ -454,21 +479,57 @@ def build_deals(wb, inv_by_stock, inv_by_vin, inventory):
             (" around $%s" % f"{budget:,}") if budget else "")
         note_entries.append({"date": iso(created) or iso(TODAY), "text": want_line})
 
+        # every stock the salesperson hand-matched to this client (resolved to inventory)
+        matched_stocks = []
+        for tok in STOCK_RE.findall(matched):
+            key = tok if tok in inv_by_stock else None
+            if not key and tok.upper() in inv_by_vin:
+                key = inv_by_vin[tok.upper()]["stock"]
+            if key and key not in matched_stocks:
+                matched_stocks.append(key)
+
         deals.append({
             "id": did, "name": name, "phone": fmt_phone(v[1]),
             "email": email or (re.sub(r"[^a-z ]", "", name.lower()).strip().replace(" ", ".") + "@gmail.com"),
             "address": "", "stage": stage, "invStock": veh["stock"],
+            "matchedStocks": matched_stocks,
             "trade": "None", "allowance": 0, "appraisal": 0,
             "pay": pay, "source": source, "testDrive": test_drove,
             "lastContact": iso(created) or iso(TODAY),
             "nextFollowUp": iso(nxt), "expectedClose": iso(close),
             "value": value, "gross": gross, "hot": hot,
             "wantBody": body, "wantMax": budget or int(round(value * 1.1)),
-            "wantMake": make, "wantTrim": trim,
+            "wantMake": make, "wantTrim": trim, "buying": buying,
+            "fuelPref": str(v[13] or ""), "colorPref": str(v[17] or ""),
             "level": str(v[2] or "").strip(),
             "notes": note_entries,
         })
     return deals
+
+
+def build_matches(wb, names):
+    """Customer <-> vehicle matches the workbook already computed (`_UsedMatches`)."""
+    out = []
+    ws = wb["_UsedMatches"]
+    for _, v in rows(ws):
+        client = v[0]
+        if not client or str(client).strip() not in names:
+            continue
+        stock = v[4]
+        if not stock:
+            continue
+        out.append({
+            "client": str(client).strip(),
+            "stock": str(stock).strip(),
+            "car": (" ".join(str(x) for x in [int(num(v[7])) if num(v[7]) else "", v[8] or v[9]] if x)).strip(),
+            "colour": str(v[10] or "").strip(),
+            "km": int(num(v[11])) if num(v[11]) else 0,
+            "price": int(num(v[12])) if num(v[12]) else 0,
+            "fit": str(v[13] or "").strip(),
+            "status": str(v[14] or "").strip(),
+            "source": str(v[3] or "").strip(),
+        })
+    return out
 
 
 def fmt_phone(p):
@@ -596,12 +657,20 @@ def main():
     xlsx = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_XLSX
     wb = openpyxl.load_workbook(xlsx, data_only=True)
 
-    # referenced stocks (so deal vehicles are never dropped as "sold")
+    # client names + referenced stocks (so matched vehicles are never dropped
+    # from inventory even when the source marks them sold)
     referenced = set()
+    names = set()
     ws = wb["Clients"]
     for _, v in rows(ws):
+        if v[0]:
+            names.add(str(v[0]).strip())
         for tok in STOCK_RE.findall(str(v[26] or "")):
             referenced.add(tok)
+    ws = wb["_UsedMatches"]
+    for _, v in rows(ws):
+        if v[0] and str(v[0]).strip() in names and v[4]:
+            referenced.add(str(v[4]).strip())
 
     pricing = build_pricing(wb)
     inventory = []
@@ -626,6 +695,7 @@ def main():
     appts = build_appointments(deals)
     ads = build_ads(wb, inventory, inv_by_stock)
     buyers = build_repeat_buyers(wb, deals, inventory)
+    matches = build_matches(wb, names)
 
     data = {
         "today": TODAY.isoformat(),
@@ -636,6 +706,7 @@ def main():
         "appointments": appts,
         "ads": ads,
         "repeatBuyers": buyers,
+        "matches": matches,
     }
 
     out = ROOT / "crm" / "data.js"
@@ -653,6 +724,7 @@ def main():
     print(f"  appts     : {len(appts)}")
     print(f"  ads       : {len(ads)}")
     print(f"  buyers    : {len(buyers)}")
+    print(f"  matches   : {len(matches)}")
 
 
 if __name__ == "__main__":

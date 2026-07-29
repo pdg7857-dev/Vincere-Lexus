@@ -50,12 +50,22 @@ e.g. `https://raw.githack.com/pdg7857-dev/vincere-lexus/<sha>/crm/index.html`.
    Ignore → Prefer → Must-have. Scores every unit (incoming included) into
    *perfect matches* and *worth showing anyway*.
 7. **Inventory** — All / Used / New / Incoming with a simulated feed-import
-   review step; leads-per-unit and who's interested.
+   review step; leads-per-unit and who's interested. **Click any row** for a
+   full detail drawer showing every field pulled from the sheet (VIN, trim,
+   colour/interior, asking + AT value, days in stock; for incoming units the
+   order status, ETA window and who it's allocated to) plus the matched
+   customers. A **Filters** panel adds hyper-precise filtering: free-text
+   (stock / VIN / colour / trim), make, fuel, price / km / year ranges, max
+   days-in-stock, *has a lead*, and *matched to a customer*.
 8. **Marketplace ads** — KPIs, paste-a-link importer (matched to stock by VIN),
    the ad tracker with CRM price-drift flags, and an *in stock with no ad* list.
 9. **Reports** — five KPIs, a stage funnel, and a lead-source breakdown.
 10. **New lead** — capture a customer, decode a VIN against inventory, and save
     into the pipeline.
+11. **Import leads** — a spreadsheet-style grid: type a row per customer (or
+    paste rows straight from Excel/Sheets — Tab or comma separated) and hit
+    *Import*. Each row becomes a New-lead opportunity with its vehicle of
+    interest auto-matched from make / body / budget.
 
 The top-bar search / lead-source / **Hot only** filters apply to Pipeline and
 Customers.
@@ -70,7 +80,15 @@ Customers.
 | **inventory**    | `Used` (pre-owned) + `Inventory` (new/demo) + `Pipeline` (incoming) |
 | **repeat buyers**| the Purchased/Repeat client + `Leads - With Vehicle` (upsell targets) |
 | **ads**          | `FB_Log` (+ seeded ads for aged used stock)                |
+| **matches**      | `_UsedMatches` — the workbook's own customer↔vehicle matches (72) |
 | new-vehicle price| joined to the `Pricing` (MSRP) sheet by series + trim      |
+
+Each inventory record also carries a `detail` object with the raw sheet fields
+surfaced in the drawer (in-stock date, condition, keys, recon, Carfax for used;
+order type / status, package suffix, ETA window, allocation for new & incoming).
+Each deal carries `matchedStocks` (the stock #s the salesperson shortlisted), and
+a vehicle's *matched customers* combine that, the vehicle-of-interest link, and
+the `_UsedMatches` auto-matches.
 
 Mapping notes:
 
