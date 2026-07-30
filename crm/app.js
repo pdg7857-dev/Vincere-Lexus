@@ -6,7 +6,20 @@
   "use strict";
 
   var D = window.CRM_DATA;
-  var NOW = parseISO(D.today);
+  // "today" tracks the real local date (not the frozen data snapshot). The seeded
+  // demo records are shifted by SHIFT_DAYS so their relative freshness (who's due
+  // today, who's going cold) stays correct on whatever day you open the app; your
+  // own imported/entered records use real absolute dates.
+  var TODAY = (function () { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
+  var NOW = parseISO(TODAY);
+  var SHIFT_DAYS = D.today ? Math.round((NOW - parseISO(D.today)) / 86400000) : 0;
+  function shiftISO(s) { return s ? isoOf(addDays(parseISO(s), SHIFT_DAYS)) : s; }
+  function shiftTs(s) {
+    if (!s || SHIFT_DAYS === 0) return s;
+    var t = s.indexOf("T"); if (t < 0) return shiftISO(s);
+    return shiftISO(s.slice(0, t)) + s.slice(t);
+  }
+  function isoOf(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
 
   // ---- design constants ----------------------------------------------------
   var STAGES = ["New lead", "Contacted", "Appointment", "Test drive", "Negotiation", "Financing", "BM – Delivered"];
@@ -23,11 +36,17 @@
     return { date: d, day: d.toLocaleDateString("en-US", { weekday: "short" }), label: fmtMD(d) };
   });
 
-  // ---- inventory index ------------------------------------------------------
-  var INV = D.inventory;
-  var invByStock = {};
-  INV.forEach(function (v) { invByStock[v.stock] = v; });
-  var STOCKED = INV.filter(function (v) { return v.type !== "Incoming"; });
+  // ---- inventory index (D.inventory + persisted CSV imports, upserted by stock) --
+  var INV, invByStock, STOCKED;
+  function refreshInv() {
+    var map = {};
+    D.inventory.forEach(function (v) { map[v.stock] = v; });
+    ((typeof S !== "undefined" && S.invAdd) || []).forEach(function (v) { map[v.stock] = v; });
+    INV = Object.keys(map).map(function (k) { return map[k]; });
+    invByStock = {}; INV.forEach(function (v) { invByStock[v.stock] = v; });
+    STOCKED = INV.filter(function (v) { return v.type !== "Incoming" && v.type !== "Delivery"; });
+  }
+  refreshInv();
 
   // Fail safe: a persisted deal can reference a stock that a later inventory
   // rebuild removed. Return a clearly-empty placeholder rather than a random
@@ -61,7 +80,15 @@
   function loadStore() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
   var STORE = loadStore();
 
-  function seedDeals() { return D.deals.map(function (d) { return Object.assign({}, d, { notes: d.notes.slice(), matchedStocks: (d.matchedStocks || []).slice() }); }); }
+  function seedDeals() {
+    return D.deals.map(function (d) {
+      return Object.assign({}, d, {
+        lastContact: shiftISO(d.lastContact), nextFollowUp: shiftISO(d.nextFollowUp), expectedClose: shiftISO(d.expectedClose),
+        notes: d.notes.map(function (n) { return { date: shiftISO(n.date), text: n.text }; }),
+        matchedStocks: (d.matchedStocks || []).slice()
+      });
+    });
+  }
   // Only deals the user has actually edited (tracked in STORE.dirty) override the
   // committed seed; untouched deals are always taken fresh from data.js, so an
   // edit Claude/the build pushes to an existing deal shows up on Pull latest.
@@ -85,9 +112,15 @@
   }
   function committedConvos() {
     var map = {};
-    (D.conversations || []).forEach(function (c) { map[c.dealId] = { sample: c.sample !== false, messages: c.messages.slice() }; });
+    (D.conversations || []).forEach(function (c) {
+      map[c.dealId] = {
+        sample: c.sample !== false,
+        messages: c.messages.map(function (m) { return { from: m.from, text: m.text, ts: shiftTs(m.ts) }; }),
+        calls: (c.calls || []).map(function (k) { return { dir: k.dir, ts: shiftTs(k.ts), duration: k.duration, answered: k.answered }; })
+      };
+    });
     var real = window.CRM_MESSAGES && window.CRM_MESSAGES.byDealId;
-    if (real) Object.keys(real).forEach(function (k) { map[+k] = { sample: false, messages: (real[k].messages || []).slice() }; });
+    if (real) Object.keys(real).forEach(function (k) { map[+k] = { sample: false, messages: (real[k].messages || []).slice(), calls: (real[k].calls || []).slice() }; });
     return map;
   }
   function mergeConvos() {
@@ -100,7 +133,7 @@
       var all = c.messages.concat(lm), seen = {}, uniq = [];
       all.forEach(function (m) { var key = m.from + "|" + m.text + "|" + (m.ts || ""); if (!seen[key]) { seen[key] = 1; uniq.push(m); } });
       uniq.sort(function (a, b) { return String(a.ts || "").localeCompare(String(b.ts || "")); });
-      map[k] = { sample: c.sample && !lm.length, messages: uniq };
+      map[k] = { sample: c.sample && !lm.length, messages: uniq, calls: (c.calls || []).slice() };
     });
     return map;
   }
@@ -118,7 +151,7 @@
     try {
       localStorage.setItem(STORE_KEY, JSON.stringify({
         v: 1, deals: S.deals, dirty: S.dirtyDeals, appts: S.appts, ads: S.ads, done: S.done,
-        localMsgs: extractLocalMsgs(S.convos), savedAt: now
+        invAdd: S.invAdd, localMsgs: extractLocalMsgs(S.convos), savedAt: now
       }));
       STORE.savedAt = now;   // so the "Saved …" label stays current within the session
     } catch (e) { /* quota / private mode — run without persistence */ }
@@ -149,8 +182,11 @@
     navOpen: false,                             // mobile slide-in nav
     convos: mergeConvos(),                      // dealId -> {sample, messages:[]}
     msgThread: null, msgDraft: "",              // Messages view + composer
-    dirtyDeals: (STORE.dirty && typeof STORE.dirty === "object") ? Object.assign({}, STORE.dirty) : {}
+    dirtyDeals: (STORE.dirty && typeof STORE.dirty === "object") ? Object.assign({}, STORE.dirty) : {},
+    invAdd: Array.isArray(STORE.invAdd) ? STORE.invAdd.slice() : [],   // CSV-imported inventory
+    csvOpen: false, csvType: "Auto", csvText: "", csvPreview: null, csvMsg: ""
   };
+  refreshInv();   // fold persisted CSV imports into INV now that S exists
 
   function blankInvAdv() {
     return { q: "", make: "All", fuel: "All", minPrice: "", maxPrice: "",
@@ -171,7 +207,7 @@
   function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
   function fmtMD(d) { return d ? d.toLocaleDateString("en-US", { month: "short", day: "2-digit" }) : "—"; }
   function fmtISO(s) { return s ? fmtMD(parseISO(s)) : "—"; }
-  function isToday(s) { return s === D.today; }
+  function isToday(s) { return s === TODAY; }
   function money(n) { return "$" + Math.round(n || 0).toLocaleString("en-US"); }
   function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
   function esc(s) {
@@ -214,7 +250,13 @@
   function telHref(p) { var n = e164(p); return n ? "tel:" + n : ""; }
   function smsHref(p) { var n = e164(p); return n ? "sms:" + n : ""; }
   function mailHref(e) { return e ? "mailto:" + e : ""; }
-  function convoOf(deal) { return S.convos[deal.id] || { sample: true, messages: [] }; }
+  function convoOf(deal) { return S.convos[deal.id] || { sample: true, messages: [], calls: [] }; }
+  function fmtDur(sec) {
+    sec = sec || 0;
+    if (sec < 60) return sec + "s";
+    var m = Math.floor(sec / 60), s = sec % 60;
+    return m + "m" + (s ? " " + s + "s" : "");
+  }
   function lastMsg(deal) { var m = convoOf(deal).messages; return m.length ? m[m.length - 1] : null; }
   function fmtMsgTs(ts) {
     if (!ts) return "";
@@ -295,7 +337,7 @@
       ["new", "New lead", ""], ["import", "Import leads", ""]
     ].map(function (n) {
       var active = S.view === n[0];
-      return '<div class="h-nav clickable" data-act="nav" data-view="' + n[0] + '" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:4px;background:' + (active ? "oklch(0.24 0.01 250)" : "transparent") + ';color:' + (active ? "oklch(0.97 0.004 250)" : "oklch(0.74 0.008 250)") + '">' +
+      return '<div class="h-nav clickable" data-act="nav" data-view="' + n[0] + '" tabindex="0" role="button" aria-label="' + esc(n[1]) + '"' + (active ? ' aria-current="page"' : '') + ' style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:4px;background:' + (active ? "oklch(0.24 0.01 250)" : "transparent") + ';color:' + (active ? "oklch(0.97 0.004 250)" : "oklch(0.74 0.008 250)") + '">' +
         '<div style="width:2px;height:14px;border-radius:2px;background:' + (active ? "oklch(0.78 0.13 200)" : "transparent") + '"></div>' +
         '<div style="flex:1;font-size:12.5px;font-weight:500">' + n[1] + '</div>' +
         '<div class="mono" style="font-size:10.5px;color:oklch(0.58 0.008 250)">' + n[2] + '</div></div>';
@@ -331,7 +373,7 @@
     var hotOn = S.hotOnly;
     var mobtop =
       '<div class="crm-mobtop">' +
-        '<div class="clickable" data-act="toggleNav" style="width:30px;height:30px;flex:none;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 4px">' +
+        '<div class="clickable" data-act="toggleNav" tabindex="0" role="button" aria-label="Open menu" style="width:30px;height:30px;flex:none;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 4px">' +
           '<div style="height:2px;background:oklch(0.85 0.004 250);border-radius:2px"></div><div style="height:2px;background:oklch(0.85 0.004 250);border-radius:2px"></div><div style="height:2px;background:oklch(0.85 0.004 250);border-radius:2px"></div></div>' +
         '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + titles[S.view] + '</div></div>' +
         '<div class="clickable h-btn-cyan" data-act="nav" data-view="new" style="padding:6px 11px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600;white-space:nowrap">+ Lead</div>' +
@@ -426,7 +468,7 @@
         '<div style="padding:14px;border-bottom:1px solid oklch(0.26 0.008 250);display:flex;align-items:flex-start;gap:10px">' +
           '<div style="flex:1"><div style="display:flex;align-items:center;gap:8px"><div style="font-size:17px;font-weight:600">' + esc(v.car) + '</div><span style="font-size:10px;padding:2px 7px;border-radius:3px;background:oklch(0.22 0.01 250);color:' + typeFg + '">' + typeLabel + '</span></div>' +
             '<div style="font-size:12px;color:oklch(0.70 0.008 250);margin-top:3px">' + esc(v.trim || "") + (v.trim ? " · " : "") + esc(v.fuel) + ' · ' + esc(v.body) + '</div></div>' +
-          '<div class="clickable h-btn-raised" data-act="closeVeh" style="width:26px;height:26px;flex:none;border-radius:4px;border:1px solid oklch(0.30 0.008 250);display:flex;align-items:center;justify-content:center;font-size:15px;color:oklch(0.75 0.008 250)">✕</div>' +
+          '<div class="clickable h-btn-raised" data-act="closeVeh" tabindex="0" role="button" aria-label="Close" style="width:26px;height:26px;flex:none;border-radius:4px;border:1px solid oklch(0.30 0.008 250);display:flex;align-items:center;justify-content:center;font-size:15px;color:oklch(0.75 0.008 250)">✕</div>' +
         '</div>' + body +
       '</div>';
   }
@@ -473,7 +515,10 @@
           '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:7px;padding-top:6px;border-top:1px solid oklch(0.26 0.008 250)">' +
             '<div class="mono" style="font-size:11.5px;font-weight:500;color:oklch(0.92 0.004 250)">' + money(d.value) + '</div>' +
             '<div style="font-size:10.5px;color:' + dueFg(d.nextFollowUp) + '">' + dueLabel(d.nextFollowUp) + '</div>' +
-          '</div></div>';
+          '</div>' +
+          '<select class="mobile-stage" data-act="mobileStage" data-id="' + d.id + '" aria-label="Move ' + esc(d.name) + ' to stage" style="width:100%;margin-top:7px;background:oklch(0.16 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:6px 7px;font-size:11.5px;outline:none;color:oklch(0.88 0.004 250)">' +
+            STAGES.map(function (nm, si) { return '<option value="' + si + '"' + (d.stage === si ? " selected" : "") + '>→ ' + nm + '</option>'; }).join("") +
+          '</select></div>';
       }).join("");
       return '<div class="dropcol kanban-col" data-stage="' + i + '" style="width:236px;flex:none;display:flex;flex-direction:column;border-radius:6px;border:1px solid ' + (hovering ? "oklch(0.50 0.10 200)" : "oklch(0.24 0.008 250)") + ';background:' + (hovering ? "oklch(0.19 0.02 200)" : "oklch(0.135 0.005 250)") + '">' +
         '<div style="padding:9px 10px;border-bottom:1px solid oklch(0.24 0.008 250);display:flex;align-items:center;gap:7px">' +
@@ -808,37 +853,23 @@
   // ---- 7. Inventory ---------------------------------------------------------
   function inventoryView() {
     var cols = "86px 1fr 72px 74px 1fr 92px 92px 84px 52px 0.85fr";
-    var tabs = ["All", "Used", "New", "Incoming"].map(function (t) {
+    var tabs = ["All", "New", "Used", "Incoming", "Delivery"].map(function (t) {
       var on = S.invFilter === t;
       var count = t === "All" ? INV.length : INV.filter(function (v) { return v.type === t; }).length;
       return '<div class="clickable" data-act="invTab" data-tab="' + t + '" style="padding:5px 10px;border-radius:4px;font-size:11.5px;white-space:nowrap;border:1px solid ' + (on ? "oklch(0.46 0.08 200)" : "oklch(0.28 0.008 250)") + ';background:' + (on ? "oklch(0.28 0.04 200)" : "transparent") + ';color:' + (on ? "oklch(0.96 0.02 200)" : "oklch(0.72 0.008 250)") + '">' + t + ' <span class="mono" style="font-size:10.5px;opacity:0.7">' + count + '</span></div>';
     }).join("");
 
-    var right = S.importStep === 2
-      ? '<div class="clickable" data-act="resetImport" style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:4px;border:1px solid oklch(0.42 0.08 155);background:oklch(0.22 0.04 155);color:oklch(0.88 0.12 155);font-size:11.5px;white-space:nowrap">Synced 9:14am · pull again</div>'
-      : '<div class="clickable h-btn-cyan" data-act="runImport" style="padding:6px 11px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600;white-space:nowrap">Pull inventory</div>';
+    var impN = S.invAdd.length;
+    var right =
+      (impN ? '<div class="clickable" data-act="clearCsv" title="Remove CSV-imported vehicles" style="padding:6px 9px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:11px;color:oklch(0.70 0.008 250);white-space:nowrap">' + impN + ' imported · clear</div>' : '') +
+      '<div class="clickable h-btn-cyan" data-act="openCsv" style="padding:6px 11px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600;white-space:nowrap">⬆ Import CSV</div>';
     var advActive = countAdv();
     var filtChip = '<div class="clickable" data-act="toggleInvAdv" style="padding:5px 10px;border-radius:4px;font-size:11.5px;white-space:nowrap;border:1px solid ' + (S.showInvAdv || advActive ? "oklch(0.46 0.08 200)" : "oklch(0.28 0.008 250)") + ';background:' + (S.showInvAdv || advActive ? "oklch(0.24 0.04 200)" : "transparent") + ';color:' + (S.showInvAdv || advActive ? "oklch(0.90 0.06 200)" : "oklch(0.72 0.008 250)") + '">⚲ Filters' + (advActive ? ' <span class="mono" style="font-size:10px">' + advActive + '</span>' : '') + '</div>';
     var bar =
       '<div style="padding:9px 14px;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.13 0.005 250);display:flex;align-items:center;gap:8px;flex-wrap:wrap">' + tabs + filtChip +
-        '<div style="margin-left:auto;display:flex;align-items:center;gap:7px"><div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.56 0.008 250)">Import from</div>' +
-          '<select data-act="setFeed" style="background:oklch(0.18 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:5px 7px;font-size:12px;outline:none">' + IMPORT_FEEDS.map(function (o) { return '<option' + (S.importFeed === o ? " selected" : "") + '>' + o + '</option>'; }).join("") + '</select>' + right + '</div></div>';
+        '<div style="margin-left:auto;display:flex;align-items:center;gap:7px">' + right + '</div></div>';
 
-    var review = "";
-    if (S.importStep === 1) {
-      var rc = [
-        ["Used vehicles", INV.filter(function (v) { return v.type === "Used"; }).length, "3 new, 8 updated"],
-        ["New vehicles", INV.filter(function (v) { return v.type === "New"; }).length, "1 new, 3 updated"],
-        ["Incoming / in transit", INV.filter(function (v) { return v.type === "Incoming"; }).length, "ETAs from factory order sheet"],
-        ["Sold — removed", 2, "flagged in feed"]
-      ].map(function (r) {
-        return '<div style="border:1px solid oklch(0.34 0.04 200);border-radius:4px;padding:6px 10px;background:oklch(0.20 0.02 200)"><div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.66 0.02 200)">' + r[0] + '</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:2px"><div class="mono" style="font-size:14px;font-weight:700">' + r[1] + '</div><div style="font-size:10.5px;color:oklch(0.70 0.01 200)">' + r[2] + '</div></div></div>';
-      }).join("");
-      review = '<div style="padding:11px 14px;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.17 0.015 200);display:flex;align-items:center;gap:14px;flex-wrap:wrap">' +
-        '<div style="font-size:12px;color:oklch(0.90 0.02 200)">Found in ' + esc(S.importFeed) + ' — review before it writes to inventory</div>' + rc +
-        '<div class="clickable h-btn-white" data-act="confirmImport" style="margin-left:auto;padding:7px 13px;border-radius:4px;background:oklch(0.92 0.004 250);color:oklch(0.16 0.005 250);font-size:12px;font-weight:600;white-space:nowrap">Confirm import</div>' +
-        '<div class="clickable" data-act="resetImport" style="padding:7px 13px;border-radius:4px;border:1px solid oklch(0.32 0.01 250);font-size:12px;color:oklch(0.78 0.008 250);white-space:nowrap">Discard</div></div>';
-    }
+    var review = S.csvOpen ? csvPanel() : "";
 
     var head = ["Stock", "Vehicle", "Type", "Body", "Colour / interior", "Asking", "AT value", "Days / ETA", "Leads", "Interested"];
     var header = '<div style="display:grid;grid-template-columns:' + cols + ';min-width:1420px;padding:8px 14px;position:sticky;top:0;background:oklch(0.13 0.005 250);border-bottom:1px solid oklch(0.28 0.008 250);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.60 0.008 250);gap:10px">' +
@@ -846,10 +877,11 @@
 
     var list = INV.filter(function (v) { return S.invFilter === "All" || v.type === S.invFilter; }).filter(passAdv);
     var rows = list.map(function (v) {
-      var typeFg = v.type === "Incoming" ? "oklch(0.80 0.14 95)" : v.type === "New" ? "oklch(0.85 0.13 200)" : "oklch(0.70 0.008 250)";
+      var typeFg = v.type === "Incoming" ? "oklch(0.80 0.14 95)" : v.type === "Delivery" ? "oklch(0.80 0.13 155)" : v.type === "New" ? "oklch(0.85 0.13 200)" : "oklch(0.70 0.008 250)";
       var daysFg = v.days > 60 ? "oklch(0.78 0.15 40)" : v.days > 40 ? "oklch(0.80 0.14 95)" : "oklch(0.82 0.004 250)";
       var typeLabel = v.type === "New" && v.condition === "Demo" ? "Demo" : v.type;
       if (v.sold) { typeLabel = "Sold"; typeFg = "oklch(0.78 0.14 40)"; }
+      var transit = v.type === "Incoming" || v.type === "Delivery";
       var interested = customersFor(v.stock);
       return '<div class="clickable h-row" data-act="openVeh" data-stock="' + esc(v.stock) + '" style="display:grid;grid-template-columns:' + cols + ';min-width:1420px;gap:10px;padding:9px 14px;border-bottom:1px solid oklch(0.20 0.008 250);align-items:center;font-size:12.5px">' +
         '<div class="mono" style="font-size:11.5px;color:oklch(0.72 0.008 250)">' + esc(v.stock) + '</div>' +
@@ -859,7 +891,7 @@
         '<div style="font-size:11.5px;color:oklch(0.74 0.008 250);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(v.colour) + (v.interior ? " · " + esc(v.interior) : "") + '</div>' +
         '<div class="mono" style="text-align:right">' + money(v.price) + '</div>' +
         '<div class="mono" style="text-align:right;color:oklch(0.85 0.13 200)">' + money(v.atValue) + '</div>' +
-        '<div class="mono" style="font-size:11.5px;text-align:right;color:' + daysFg + '">' + (v.type === "Incoming" ? "ETA " + esc(v.eta) : v.days + "d") + '</div>' +
+        '<div class="mono" style="font-size:11.5px;text-align:right;color:' + daysFg + '">' + (transit ? "ETA " + esc(v.eta || "—") : v.days + "d") + '</div>' +
         '<div class="mono" style="text-align:right;color:' + (interested.length ? "oklch(0.85 0.13 200)" : "oklch(0.50 0.008 250)") + '">' + interested.length + '</div>' +
         '<div style="font-size:11.5px;color:oklch(0.70 0.008 250);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (interested.length ? esc(interested.map(function (c) { return firstLast(c.name); }).join(", ")) : "—") + '</div></div>';
     }).join("") || '<div style="padding:24px 14px;font-size:12px;color:oklch(0.55 0.008 250)">No vehicles match these filters. <span class="clickable" data-act="clearInvAdv" style="color:oklch(0.80 0.13 200)">Clear filters</span></div>';
@@ -1155,12 +1187,24 @@
     opts = opts || {};
     var c = convoOf(deal);
     var banner = (c.sample && c.messages.length) ? '<div style="padding:8px 12px;background:oklch(0.20 0.03 95);border:1px solid oklch(0.38 0.05 95);border-radius:6px;font-size:11px;color:oklch(0.88 0.08 95);margin-bottom:10px">Sample thread — drop a screenshot to Claude (or run <span class="mono">import_iphone_backup.py</span>) to load ' + esc(deal.name.split(" ")[0]) + '\'s real messages.</div>' : "";
-    var bubbles = c.messages.length ? c.messages.map(function (m) {
-      var me = m.from === "me";
+    // interleave messages and call-log entries into one timeline
+    var items = c.messages.map(function (m) { return { k: "msg", ts: m.ts, m: m }; })
+      .concat((c.calls || []).map(function (cl) { return { k: "call", ts: cl.ts, c: cl }; }))
+      .sort(function (a, b) { return String(a.ts || "").localeCompare(String(b.ts || "")); });
+    var bubbles = items.length ? items.map(function (it) {
+      if (it.k === "call") {
+        var cl = it.c, out = cl.dir === "out";
+        var missed = !cl.answered;
+        var label = (out ? "Outgoing" : missed ? "Missed" : "Incoming") + " call" + (cl.answered && cl.duration ? " · " + fmtDur(cl.duration) : "");
+        var col = missed ? "oklch(0.78 0.13 40)" : "oklch(0.72 0.05 155)";
+        return '<div style="display:flex;justify-content:center;margin-bottom:8px"><div style="display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;background:oklch(0.18 0.006 250);border:1px solid oklch(0.26 0.008 250);font-size:11px;color:' + col + '">' +
+          '<span>' + (out ? "↗" : "↙") + " ☏</span>" + esc(label) + '<span class="mono" style="color:oklch(0.50 0.008 250);font-size:9px">' + esc(fmtMsgTs(cl.ts)) + '</span></div></div>';
+      }
+      var m = it.m, me = m.from === "me";
       return '<div style="display:flex;justify-content:' + (me ? "flex-end" : "flex-start") + ';margin-bottom:8px">' +
         '<div style="max-width:76%"><div class="' + (me ? "bubble-me" : "bubble-them") + '" style="padding:8px 11px;font-size:13px;line-height:1.35;word-wrap:break-word">' + esc(m.text) + '</div>' +
         '<div class="mono" style="font-size:9px;color:oklch(0.52 0.008 250);margin-top:2px;text-align:' + (me ? "right" : "left") + '">' + esc(fmtMsgTs(m.ts)) + '</div></div></div>';
-    }).join("") : '<div style="padding:20px;text-align:center;font-size:12px;color:oklch(0.55 0.008 250)">No messages yet. Text ' + esc(deal.name.split(" ")[0]) + ' to start the thread.</div>';
+    }).join("") : '<div style="padding:20px;text-align:center;font-size:12px;color:oklch(0.55 0.008 250)">No messages or calls yet. Text ' + esc(deal.name.split(" ")[0]) + ' to start the thread.</div>';
 
     var contactLine = '<div class="mono" style="font-size:11.5px;color:oklch(0.72 0.008 250)">' + esc(deal.phone) + (deal.email ? '  ·  ' + esc(deal.email) : '') + '</div>';
 
@@ -1215,6 +1259,178 @@
     return (p[0] ? p[0][0] : "") + (p[1] ? p[1][0] : "");
   }
 
+  // ---- CSV inventory import -------------------------------------------------
+  function parseDelimited(text) {
+    text = text.replace(/^﻿/, "");
+    var head = (text.split(/\r?\n/)[0] || "");
+    var delim = (head.split("\t").length > head.split(",").length) ? "\t" : ",";
+    var rows = [], row = [], cur = "", inq = false;
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (inq) {
+        if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else inq = false; }
+        else cur += ch;
+      } else if (ch === '"') inq = true;
+      else if (ch === delim) { row.push(cur); cur = ""; }
+      else if (ch === "\n") { row.push(cur); rows.push(row); row = []; cur = ""; }
+      else if (ch === "\r") { /* skip */ }
+      else cur += ch;
+    }
+    if (cur !== "" || row.length) { row.push(cur); rows.push(row); }
+    return rows.filter(function (r) { return r.some(function (c) { return String(c).trim() !== ""; }); });
+  }
+  function csvBody(model, series) {
+    var hay = (String(series || "") + " " + String(model || "")).toUpperCase();
+    var toks = hay.split(/[^A-Z0-9]+/).filter(Boolean), pref = {};
+    toks.forEach(function (t) { pref[t] = 1; var m = t.match(/^([A-Z]{2,})/); if (m) pref[m[1]] = 1; });
+    if (pref.RC || pref.LC) return "Coupe";
+    var has = function (a) { for (var i = 0; i < a.length; i++) if (hay.indexOf(a[i]) >= 0) return true; return false; };
+    var pre = function (a) { for (var i = 0; i < a.length; i++) if (pref[a[i]]) return true; return false; };
+    if (has(["M240I", "M2 ", "M4 ", "SUPRA", "GR86", "BRZ"])) return "Coupe";
+    if (has(["F-150", "F150", "SILVERADO", "SIERRA", "TACOMA", "TUNDRA", "RAM ", "RIDGELINE", "FRONTIER", "COLORADO"])) return "Truck";
+    if (has(["SIENNA", "ODYSSEY", "PACIFICA", "CARNIVAL", "SEDONA"])) return "Van";
+    if (pre(["ES", "IS", "LS", "RC", "ILX", "TLX", "CIVIC", "ACCORD", "COROLLA", "CAMRY", "CROWN", "JETTA", "A4", "A6", "C300", "CHARGER", "300", "G70", "Q50", "ALTIMA", "MAXIMA", "SENTRA", "ELANTRA", "SONATA", "MALIBU", "FUSION", "LEGACY", "GHIBLI"])) return "Sedan";
+    if (pre(["NX", "RX", "RZ", "GX", "LX", "TX", "UX"]) || has(["RAV4", "HIGHLANDER", "4RUNNER", "SEQUOIA", "TAHOE", "PILOT", "CR-V", "CRV", "ROGUE", "TUCSON", "OUTBACK", "ESCAPE", "EXPLORER", "CHEROKEE", "WRANGLER", "MACAN", "CAYENNE", "QX", "GLC", "GLE", "Q5", "X3", "X5", "RDX", "MDX", "CX-5"])) return "SUV";
+    return "SUV";
+  }
+  function csvFuel() {
+    var hay = Array.prototype.join.call(arguments, " ").toLowerCase();
+    if (/\brz\b|electric|\bev\b/.test(hay)) return "Electric";
+    if (hay.indexOf("+") >= 0 || hay.indexOf("plug") >= 0) return "Plug-in Hybrid";
+    if (/\d+h\b|hybrid|450h|350h|300h|250h|500h|600h/.test(hay)) return "Hybrid";
+    return "Gas";
+  }
+  var CSV_SPEC = [
+    { f: "stock", keys: ["stock #", "stock", "stk#", "stk", "order number", "order #", "order#", "vtn"] },
+    { f: "vin", keys: ["vin"] },
+    { f: "year", keys: ["model year", "year"] },
+    { f: "make", keys: ["make"] },
+    { f: "series", keys: ["series"] },
+    { f: "model", keys: ["model"], avoid: ["year"] },
+    { f: "trim", keys: ["trim", "package", "suffix", "grade"] },
+    { f: "price", keys: ["retail price", "retail", "asking", "selling price", "msrp", "list price", "price"] },
+    { f: "km", keys: ["odometer", "mileage", "km", "kms"] },
+    { f: "colour", keys: ["colour (ext/int)", "colour", "color", "exterior"] },
+    { f: "interior", keys: ["interior"] },
+    { f: "status", keys: ["order type", "delivery board", "status", "condition"] },
+    { f: "eta", keys: ["eta to", "eta", "arrival"] },
+    { f: "date", keys: ["in-stock date", "in stock date", "instock", "stock date"] },
+    { f: "link", keys: ["website link", "link", "url", "website"] }
+  ];
+  function findCol(hs, keys, avoid) {
+    for (var k = 0; k < keys.length; k++) { var i = hs.indexOf(keys[k]); if (i >= 0) return i; }
+    for (k = 0; k < keys.length; k++) for (i = 0; i < hs.length; i++) {
+      if (hs[i].indexOf(keys[k]) >= 0 && !(avoid && avoid.some(function (a) { return hs[i].indexOf(a) >= 0; }))) return i;
+    }
+    return -1;
+  }
+  function csvNum(s) { var n = parseFloat(String(s).replace(/[^0-9.]/g, "")); return isNaN(n) ? 0 : n; }
+  function cleanCode(s) { return String(s || "").replace(/^\s*[0-9A-Z]{3,4}[-]\s*/, "").trim(); }
+  function cleanTrim(s) {
+    s = String(s || "").replace(/^[0-9A-Z]{1,4}-/, "").split("/")[0];
+    return s.replace(/\s*\(.*?\)/g, "").replace(/ Package/gi, "").replace(/\s*-\s*Premium Paint/i, "").trim();
+  }
+  function buildCsvRecords(rows, chosenType) {
+    if (rows.length < 2) return { records: [], map: {}, unmapped: [] };
+    var hs = rows[0].map(function (h) { return String(h || "").trim().toLowerCase(); });
+    var map = {};
+    CSV_SPEC.forEach(function (sp) { map[sp.f] = findCol(hs, sp.keys, sp.avoid); });
+    var records = [];
+    for (var ri = 1; ri < rows.length; ri++) {
+      var r = rows[ri];
+      var g = function (f) { var i = map[f]; return i >= 0 && r[i] != null ? String(r[i]).trim() : ""; };
+      var stock = g("stock"); if (!stock) continue;
+      var series = g("series");
+      var make = g("make") || (series ? "Lexus" : "");
+      var modelRaw = g("model");
+      var model = modelRaw.indexOf("-") >= 0 ? modelRaw.split("-").slice(1).join("-").trim() : modelRaw;
+      var trim = cleanTrim(g("trim"));
+      var col = g("colour"), ext = cleanCode(col.indexOf("/") >= 0 ? col.split("/")[0] : col);
+      var interior = g("interior") ? cleanCode(g("interior")) : (col.indexOf("/") >= 0 ? col.split("/")[1].trim() : "");
+      var price = Math.round(csvNum(g("price")));
+      var km = Math.round(csvNum(g("km")));
+      var statusTxt = g("status");
+      var type = chosenType && chosenType !== "Auto" ? chosenType : detectType(statusTxt, g("eta"), km, make);
+      var demo = /demo|loaner/i.test(statusTxt);
+      var sold = /\bsold\b|wholesale|deposit|pending|\bpend\b/i.test(statusTxt);
+      var days = 0; var ds = g("date");
+      if (ds) { var dd = new Date(ds); if (!isNaN(dd)) days = Math.max(0, Math.round((NOW - dd) / 86400000)); }
+      var yr = parseInt(csvNum(g("year")), 10) || "";
+      records.push({
+        stock: stock, vin: g("vin").toUpperCase(), year: yr, make: make, model: model,
+        trim: trim, body: csvBody(model, series),
+        price: price, atValue: type === "Used" ? Math.round(price * 0.95) : price,
+        days: days, km: km ? km.toLocaleString("en-US") + " km" : (type === "Used" ? "—" : "0 km"), kmNum: km,
+        colour: ext.replace(/\b\w/g, function (c) { return c.toUpperCase(); }), interior: interior,
+        fuel: csvFuel(series, model, trim), type: type,
+        condition: sold ? "Sold" : demo ? "Demo" : type === "Incoming" || type === "Delivery" ? (statusTxt || "In transit") : (statusTxt || type),
+        sold: sold, eta: g("eta"), from: statusTxt || "CSV import", link: sold ? "" : g("link"),
+        car: [yr, make, model].filter(Boolean).join(" ").trim() || stock,
+        imported: true,
+        detail: { "Imported from": "CSV (" + type + ")", "Status": statusTxt || "—", "VIN": g("vin") || "—", "Odometer": km ? km.toLocaleString("en-US") + " km" : "—", "Colour": ext || "—" }
+      });
+    }
+    return { records: records, map: map, headers: rows[0] };
+  }
+  function detectType(status, eta, km, make) {
+    var s = String(status || "").toLowerCase();
+    if (/deliver/.test(s)) return "Delivery";
+    if (/transit|production|yard|port|inbound/.test(s) || (eta && !km)) return "Incoming";
+    if (/demo|loaner|new/.test(s)) return "New";
+    if (km > 0 || (make && make.toLowerCase() !== "lexus")) return "Used";
+    return "New";
+  }
+
+  function csvPanel() {
+    var pv = S.csvPreview;
+    var types = ["Auto", "New", "Used", "Incoming", "Delivery"];
+    var typeSel = types.map(function (t) {
+      var on = S.csvType === t;
+      return '<div class="clickable" data-act="csvType" data-t="' + t + '" style="padding:5px 11px;border-radius:4px;font-size:11.5px;white-space:nowrap;border:1px solid ' + (on ? "oklch(0.46 0.08 200)" : "oklch(0.28 0.008 250)") + ';background:' + (on ? "oklch(0.28 0.04 200)" : "transparent") + ';color:' + (on ? "oklch(0.96 0.02 200)" : "oklch(0.72 0.008 250)") + '">' + t + '</div>';
+    }).join("");
+
+    var preview = "";
+    if (pv && pv.records.length) {
+      var counts = {}; pv.records.forEach(function (r) { counts[r.type] = (counts[r.type] || 0) + 1; });
+      var chips = Object.keys(counts).map(function (k) { return k + " " + counts[k]; }).join(" · ");
+      var rowsHtml = pv.records.slice(0, 6).map(function (r) {
+        return '<div style="display:grid;grid-template-columns:80px 1fr 70px 90px 1fr;gap:8px;padding:5px 0;border-top:1px solid oklch(0.20 0.008 250);font-size:11.5px">' +
+          '<div class="mono" style="color:oklch(0.72 0.008 250)">' + esc(r.stock) + '</div>' +
+          '<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(r.car) + (r.trim ? " " + esc(r.trim) : "") + '</div>' +
+          '<div style="color:oklch(0.70 0.01 200)">' + esc(r.type) + '</div>' +
+          '<div class="mono" style="text-align:right">' + money(r.price) + '</div>' +
+          '<div style="color:oklch(0.66 0.008 250);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(r.colour || "—") + '</div></div>';
+      }).join("");
+      preview =
+        '<div style="margin-top:11px;border-top:1px solid oklch(0.24 0.008 250);padding-top:10px">' +
+          '<div style="font-size:12px;color:oklch(0.86 0.11 155);margin-bottom:6px">Parsed ' + pv.records.length + ' vehicles · ' + esc(chips) + '</div>' + rowsHtml +
+          (pv.records.length > 6 ? '<div style="font-size:10.5px;color:oklch(0.58 0.008 250);margin-top:5px">+ ' + (pv.records.length - 6) + ' more…</div>' : '') +
+          '<div style="display:flex;gap:8px;margin-top:12px"><div class="clickable h-btn-white" data-act="csvAdd" style="padding:8px 14px;border-radius:4px;background:oklch(0.92 0.004 250);color:oklch(0.16 0.005 250);font-size:12.5px;font-weight:600">Add ' + pv.records.length + ' to inventory</div>' +
+            '<div class="clickable" data-act="csvCancel" style="padding:8px 14px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:12.5px;color:oklch(0.78 0.008 250)">Cancel</div></div>' +
+        '</div>';
+    } else if (pv) {
+      preview = '<div style="margin-top:10px;font-size:12px;color:oklch(0.78 0.15 40)">Couldn\'t find any rows with a stock/order number. Check the file has a header row.</div>';
+    }
+
+    return '<div id="csvdrop" data-act="csvDropZone" style="padding:13px 14px;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.16 0.012 200)">' +
+      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:12.5px;font-weight:600">Import inventory from CSV</div>' +
+        '<div style="font-size:11px;color:oklch(0.66 0.01 200)">New · Used · Incoming · Delivery — drop a file, or paste rows from Excel/Sheets</div>' +
+        '<div class="clickable" data-act="closeCsv" style="margin-left:auto;font-size:12px;color:oklch(0.72 0.008 250)">✕ Close</div></div>' +
+      '<div style="display:flex;align-items:center;gap:7px;margin-top:10px;flex-wrap:wrap"><div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.60 0.01 200)">Type</div>' + typeSel +
+        '<label class="clickable h-btn-raised" style="margin-left:auto;padding:6px 11px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:11.5px;color:oklch(0.82 0.008 250)">Choose file…<input type="file" data-act="csvFile" accept=".csv,.tsv,.txt" style="display:none" /></label></div>' +
+      '<textarea data-act="csvText" data-focus="csvText" placeholder="…or paste CSV / TSV rows here (first row = column headers: Stock, VIN, Year, Make, Model, Trim, Price, KM, Colour, Status/ETA…)" style="width:100%;margin-top:9px;min-height:78px;background:oklch(0.13 0.005 250);border:1px solid oklch(0.28 0.008 250);border-radius:5px;padding:9px;color:oklch(0.92 0.004 250);font-size:11.5px;font-family:JetBrains Mono,monospace;outline:none;resize:vertical">' + esc(S.csvText) + '</textarea>' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="clickable h-btn-cyan" data-act="csvParse" style="padding:7px 13px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600">Parse &amp; preview</div>' +
+        (S.csvMsg ? '<div style="font-size:11.5px;color:oklch(0.78 0.15 40)">' + esc(S.csvMsg) + '</div>' : '') + '</div>' + preview +
+      '</div>';
+  }
+
+  function csvDoParse() {
+    var txt = (S.csvText || "").trim();
+    if (!txt) { setS({ csvPreview: null, csvMsg: "Paste some rows or choose a file first." }); return; }
+    var res = buildCsvRecords(parseDelimited(txt), S.csvType);
+    setS({ csvPreview: res, csvMsg: res.records.length ? "" : "No rows with a stock / order number found (is the first row a header?)." });
+  }
+
   // ==========================================================================
   // EVENTS
   // ==========================================================================
@@ -1240,6 +1456,8 @@
       case "openDeal": setS({ view: "deal", selected: +id.id, noteDraft: "", vehicleStock: null, navOpen: false }); break;
       case "openVeh": setS({ vehicleStock: id.stock }); break;
       case "closeVeh": setS({ vehicleStock: null }); break;
+      case "mobileStage": break;   // tapping the stage picker must not open the deal
+
       case "openThread": setS({ msgThread: +id.id, msgDraft: "" }); break;
       case "msgBack": setS({ msgThread: null }); break;
       case "msgSend": {
@@ -1248,7 +1466,7 @@
         var md = dealById(+id.id);
         var conv = S.convos[md.id] || (S.convos[md.id] = { sample: false, messages: [] });
         conv.messages = conv.messages.concat([{ from: "me", text: mt, ts: nowISO(), origin: "local" }]);
-        md.lastContact = D.today;
+        md.lastContact = TODAY;
         markDirty(md.id);
         setS({ msgDraft: "" });
         break;
@@ -1275,8 +1493,8 @@
         var txt = S.noteDraft.trim();
         if (!txt) return;
         var d = dealById(S.selected);
-        d.notes = [{ date: D.today, text: txt }].concat(d.notes);
-        d.lastContact = D.today;
+        d.notes = [{ date: TODAY, text: txt }].concat(d.notes);
+        d.lastContact = TODAY;
         markDirty(d.id);
         setS({ noteDraft: "" });
         break;
@@ -1299,6 +1517,27 @@
         break;
       }
       case "invTab": setS({ invFilter: id.tab }); break;
+      case "openCsv": setS({ csvOpen: true, csvPreview: null, csvMsg: "" }); break;
+      case "closeCsv": setS({ csvOpen: false }); break;
+      case "csvType": setS({ csvType: id.t, csvPreview: null }); break;
+      case "csvParse": csvDoParse(); break;
+      case "csvCancel": setS({ csvPreview: null, csvMsg: "" }); break;
+      case "csvAdd": {
+        var recs = S.csvPreview && S.csvPreview.records || [];
+        if (!recs.length) return;
+        var byStock = {}; S.invAdd.forEach(function (x) { byStock[x.stock] = x; });
+        recs.forEach(function (x) { byStock[x.stock] = x; });
+        S.invAdd = Object.keys(byStock).map(function (k) { return byStock[k]; });
+        refreshInv();
+        setS({ csvOpen: false, csvPreview: null, csvText: "", csvMsg: "" });
+        break;
+      }
+      case "clearCsv": {
+        if (S.invAdd.length && window.confirm("Remove all " + S.invAdd.length + " CSV-imported vehicles from inventory?")) {
+          S.invAdd = []; refreshInv(); setS({});
+        }
+        break;
+      }
       case "runImport": setS({ importStep: 1 }); break;
       case "confirmImport": setS({ importStep: 2 }); break;
       case "resetImport": setS({ importStep: 0 }); break;
@@ -1313,14 +1552,14 @@
       case "saveAd": {
         var veh2 = S.adImport;
         if (!veh2) return;
-        S.ads = [{ stock: veh2.stock, url: S.adUrl.replace(/^https?:\/\//, ""), posted: D.today, status: "Live", views: 0, saves: 0, messages: 0, listedPrice: veh2.price }].concat(S.ads);
+        S.ads = [{ stock: veh2.stock, url: S.adUrl.replace(/^https?:\/\//, ""), posted: TODAY, status: "Live", views: 0, saves: 0, messages: 0, listedPrice: veh2.price }].concat(S.ads);
         setS({ adUrl: "", adImport: undefined, adMsg: "" });
         break;
       }
       case "renew": {
         var ad = S.ads.find(function (x) { return x.stock === id.stock; });
         var vv = invByStock[id.stock];
-        ad.status = "Live"; ad.posted = D.today; if (vv) ad.listedPrice = vv.price;
+        ad.status = "Live"; ad.posted = TODAY; if (vv) ad.listedPrice = vv.price;
         render();
         break;
       }
@@ -1339,6 +1578,16 @@
     }
   });
 
+  // keyboard: Enter/Space activates a focused control (nav items, icon buttons)
+  app.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var t = e.target;
+    if (t && t.getAttribute && t.getAttribute("tabindex") === "0" && t.dataset && t.dataset.act) {
+      e.preventDefault();
+      t.click();
+    }
+  });
+
   app.addEventListener("input", function (e) {
     var t = e.target.closest("[data-act]");
     if (!t) return;
@@ -1354,6 +1603,7 @@
       case "invAdv": S.invAdv = Object.assign({}, S.invAdv, keyVal(key, val)); render(); break;
       case "imp": S.importRows[+t.dataset.row][key] = val; break;   // no re-render (keeps caret)
       case "msgDraft": S.msgDraft = val; break;                     // no re-render (keeps caret)
+      case "csvText": S.csvText = val; break;                       // no re-render (keeps caret)
     }
   });
 
@@ -1368,6 +1618,15 @@
       case "formSel": S.form = Object.assign({}, S.form, keyVal(t.dataset.key, val)); break;
       case "invAdvSel": S.invAdv = Object.assign({}, S.invAdv, keyVal(t.dataset.key, val)); render(); break;
       case "impSel": S.importRows[+t.dataset.row][t.dataset.key] = (val === "—" ? "" : val); break;
+      case "mobileStage": updateDeal(+t.dataset.id, { stage: +val }); break;
+      case "csvFile": {
+        var file = e.target.files && e.target.files[0];
+        if (!file) return;
+        var rd = new FileReader();
+        rd.onload = function () { S.csvText = String(rd.result || ""); csvDoParse(); };
+        rd.readAsText(file);
+        break;
+      }
     }
   });
 
@@ -1417,6 +1676,19 @@
     if (id != null) updateDeal(id, { stage: stage }); else render();
   });
 
+  // file drop onto the CSV import panel
+  app.addEventListener("dragover", function (e) { if (e.target.closest && e.target.closest("#csvdrop")) e.preventDefault(); });
+  app.addEventListener("drop", function (e) {
+    var z = e.target.closest && e.target.closest("#csvdrop");
+    if (!z) return;
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (!f) return;
+    e.preventDefault();
+    var rd = new FileReader();
+    rd.onload = function () { S.csvText = String(rd.result || ""); csvDoParse(); };
+    rd.readAsText(f);
+  });
+
   function keyVal(k, v) { var o = {}; o[k] = v; return o; }
   function updateDeal(id, patch) { var d = dealById(id); if (d) { Object.assign(d, patch); markDirty(id); } render(); }
   function blankForm() { return { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" }; }
@@ -1430,11 +1702,11 @@
       address: o.address || "", stage: 0, invStock: v.stock, matchedStocks: [],
       trade: "None", allowance: 0, appraisal: 0,
       pay: o.pay || "Finance", source: o.source || "Walk-in", testDrive: false,
-      lastContact: D.today, nextFollowUp: fmtISOraw(addDays(NOW, 1)), expectedClose: fmtISOraw(addDays(NOW, 21)),
+      lastContact: TODAY, nextFollowUp: fmtISOraw(addDays(NOW, 1)), expectedClose: fmtISOraw(addDays(NOW, 21)),
       value: v.price, gross: Math.round(v.price * 0.06), hot: false,
       wantBody: o.wantBody || v.body, wantMax: o.wantMax || v.price,
       wantMake: o.wantMake || "", wantTrim: o.wantTrim || "", level: "New",
-      notes: [{ date: D.today, text: o.note || ("New lead from " + (o.source || "Walk-in") + ". Interested in " + v.car + " (" + v.stock + ").") }]
+      notes: [{ date: TODAY, text: o.note || ("New lead from " + (o.source || "Walk-in") + ". Interested in " + v.car + " (" + v.stock + ").") }]
     };
   }
 

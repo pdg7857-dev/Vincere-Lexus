@@ -46,6 +46,30 @@ APPLE_EPOCH_OFFSET = 978307200  # seconds between 1970-01-01 and 2001-01-01
 
 SMS_RELPATH = "Library/SMS/sms.db"
 AB_RELPATH = "Library/AddressBook/AddressBook.sqlitedb"
+CALL_RELPATH = "Library/CallHistoryDB/CallHistory.storedata"
+
+
+def decode_attributed_body(blob):
+    """Best-effort plain text from a message's `attributedBody` (a typedstream
+    NSAttributedString) for the many modern-iOS rows where `text` is NULL.
+    Heuristic — good for the common case, not a full typedstream parser."""
+    if not blob:
+        return None
+    try:
+        i = blob.find(b"NSString")
+        if i < 0:
+            return None
+        i += len(b"NSString") + 5           # skip class name + version bytes
+        if i >= len(blob):
+            return None
+        if blob[i] == 0x81:                 # 0x81 -> 2-byte little-endian length
+            length = int.from_bytes(blob[i + 1:i + 3], "little"); i += 3
+        else:
+            length = blob[i]; i += 1
+        text = blob[i:i + length].decode("utf-8", "ignore").strip()
+        return text or None
+    except Exception:
+        return None
 
 
 def default_backup_dir():
@@ -177,15 +201,17 @@ def read_messages(sms_path, tmpdir):
             return None
 
     chat_q = """
-        SELECT c.chat_identifier AS ident, m.is_from_me AS mine, m.text AS text, m.date AS mdate
+        SELECT c.chat_identifier AS ident, m.is_from_me AS mine, m.text AS text,
+               m.attributedBody AS abody, m.date AS mdate
         FROM message m
         JOIN chat_message_join cmj ON cmj.message_id = m.ROWID
         JOIN chat c ON c.ROWID = cmj.chat_id
-        WHERE m.text IS NOT NULL AND m.text <> ''
+        WHERE (m.text IS NOT NULL AND m.text <> '') OR m.attributedBody IS NOT NULL
         ORDER BY m.date ASC
     """
     fallback_q = """
-        SELECT h.id AS ident, m.is_from_me AS mine, m.text AS text, m.date AS mdate
+        SELECT h.id AS ident, m.is_from_me AS mine, m.text AS text,
+               NULL AS abody, m.date AS mdate
         FROM message m LEFT JOIN handle h ON m.handle_id = h.ROWID
         WHERE m.text IS NOT NULL AND m.text <> ''
         ORDER BY m.date ASC
@@ -203,13 +229,52 @@ def read_messages(sms_path, tmpdir):
         key = norm_phone(ident) if re.search(r"\d", ident) else ident.lower()
         if not key:
             continue
+        text = r["text"] or decode_attributed_body(r["abody"] if "abody" in r.keys() else None)
+        if not text:
+            continue
         threads.setdefault(key, []).append({
             "from": "me" if r["mine"] else "them",
-            "text": r["text"],
+            "text": text,
             "ts": to_ts(r["mdate"]),
         })
     con.close()
     return threads
+
+
+def read_calls(call_path, tmpdir):
+    """phone-key -> [ {dir:'in'|'out', ts, duration(sec), answered} ] from
+    CallHistory.storedata (Core Data). ZDATE is CFAbsoluteTime (seconds since
+    2001); ZADDRESS holds the number (often a blob)."""
+    import datetime as _dt
+    con = open_sqlite_copy(call_path, tmpdir)
+    con.row_factory = sqlite3.Row
+    calls = {}
+    try:
+        rows = con.execute(
+            "SELECT ZADDRESS as addr, ZDATE as zdate, ZDURATION as dur, "
+            "ZORIGINATED as originated, ZANSWERED as answered FROM ZCALLRECORD").fetchall()
+    except sqlite3.Error:
+        con.close()
+        return calls
+    for r in rows:
+        addr = r["addr"]
+        if isinstance(addr, (bytes, bytearray)):
+            addr = addr.decode("utf-8", "ignore")
+        key = norm_phone(addr)
+        if not key:
+            continue
+        try:
+            ts = _dt.datetime.fromtimestamp((r["zdate"] or 0) + APPLE_EPOCH_OFFSET).isoformat(timespec="minutes")
+        except (OverflowError, OSError, ValueError):
+            ts = None
+        calls.setdefault(key, []).append({
+            "dir": "out" if r["originated"] else "in",
+            "ts": ts,
+            "duration": int(r["dur"] or 0),
+            "answered": bool(r["answered"]),
+        })
+    con.close()
+    return calls
 
 
 # --------------------------------------------------------------------------- #
@@ -256,10 +321,16 @@ def main():
         eb.extract_file(relative_path=RelativePath.SMS_DB, output_filename=str(sms_path))
         eb.extract_file(relative_path="Library/AddressBook/AddressBook.sqlitedb",
                         output_filename=str(ab_path))
+        call_path = Path(tmp) / "CallHistory.storedata"
+        try:
+            eb.extract_file(relative_path=CALL_RELPATH, output_filename=str(call_path))
+        except Exception:
+            call_path = None
     else:
         tmp = tempfile.mkdtemp()
         sms_path = file_in_backup(backup, "HomeDomain", SMS_RELPATH)
         ab_path = file_in_backup(backup, "HomeDomain", AB_RELPATH)
+        call_path = file_in_backup(backup, "HomeDomain", CALL_RELPATH)
         if not sms_path:
             sys.exit("Couldn't find sms.db in the backup (is Messages included?).")
 
@@ -269,16 +340,20 @@ def main():
         print("Contacts read:", len(contacts))
     threads = read_messages(sms_path, tmp)
     print("Conversation threads in backup:", len(threads))
+    calls = read_calls(call_path, tmp) if call_path else {}
+    print("Call histories in backup:", len(calls))
 
     clients = load_client_phones(args.clients)
-    by_deal, matched_contacts, matched = {}, {}, 0
+    by_deal, matched_contacts, matched, matched_calls = {}, {}, 0, 0
     for c in clients:
         thread = threads.get(c["phoneKey"]) or threads.get(c["emailKey"])
+        clg = calls.get(c["phoneKey"])
         cname = by_phone.get(c["phoneKey"]) or by_email.get(c["emailKey"])
-        if thread:
-            by_deal[str(c["dealId"])] = {"sample": False, "messages": thread,
-                                         "contactName": cname or c["name"]}
-            matched += 1
+        if thread or clg:
+            by_deal[str(c["dealId"])] = {"sample": False, "messages": thread or [],
+                                         "calls": clg or [], "contactName": cname or c["name"]}
+            matched += 1 if thread else 0
+            matched_calls += 1 if clg else 0
         if cname:
             rec = contacts.get(cname, {})
             matched_contacts[str(c["dealId"])] = {
@@ -286,7 +361,7 @@ def main():
                 "phones": sorted(rec.get("phones", [])),
                 "emails": sorted(rec.get("emails", [])),
             }
-    print("Clients matched to a conversation:", matched, "of", len(clients))
+    print("Clients matched to a conversation:", matched, "· with call history:", matched_calls, "of", len(clients))
 
     import datetime as _dt
     payload = {"source": "iphone-backup", "byDealId": by_deal, "contacts": matched_contacts}

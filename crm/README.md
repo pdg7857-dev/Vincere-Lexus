@@ -51,8 +51,11 @@ e.g. `https://raw.githack.com/pdg7857-dev/vincere-lexus/<sha>/crm/index.html`.
    body / colour / interior / trim / mileage / price and mark each criterion
    Ignore → Prefer → Must-have. Scores every unit (incoming included) into
    *perfect matches* and *worth showing anyway*.
-7. **Inventory** — All / Used / New / Incoming with a simulated feed-import
-   review step; leads-per-unit and who's interested. **Click any row** for a
+7. **Inventory** — All / New / Used / Incoming / Delivery with a real **CSV
+   import** (drop a file or paste rows from Excel/Sheets; columns are auto-mapped,
+   the type is auto-detected, you preview, then it upserts by stock and persists
+   on the device — "clear imported" removes them). Leads-per-unit and who's
+   interested. **Click any row** for a
    full detail drawer showing every field pulled from the sheet (VIN, trim,
    colour/interior, asking + AT value, days in stock; for incoming units the
    order status, ETA window and who it's allocated to) plus the matched
@@ -68,12 +71,18 @@ e.g. `https://raw.githack.com/pdg7857-dev/vincere-lexus/<sha>/crm/index.html`.
     paste rows straight from Excel/Sheets — Tab or comma separated) and hit
     *Import*. Each row becomes a New-lead opportunity with its vehicle of
     interest auto-matched from make / body / budget.
-12. **Messages** — a conversation inbox plus an iMessage-style thread per client,
-    with **tap-to-Call / Text / Email** (native `tel:` / `sms:` / `mailto:`
-    deep links that launch the iPhone's own apps). Threads are the client's real
-    iMessage/SMS history once you import a backup (see below), or clearly-labelled
-    sample threads until then. The same thread + quick-actions appear on each
-    Opportunity.
+12. **Messages** — a conversation inbox plus an iMessage-style thread per client
+    that interleaves **texts and call-log entries** (outgoing / incoming / missed,
+    with durations), with **tap-to-Call / Text / Email** (native `tel:` / `sms:` /
+    `mailto:` deep links that launch the iPhone's own apps). Threads and calls are
+    the client's real history once you import a backup (see below), or
+    clearly-labelled sample data until then. The same thread + quick-actions appear
+    on each Opportunity.
+
+The whole app **works on desktop and phone** and **remembers your work on the
+device** (stage moves — drag on desktop, a stage picker on each card on mobile —
+plus notes, logged messages, new/imported leads, and CSV inventory all persist).
+"Today" tracks the real date. Keyboard: Tab to nav items and press Enter.
 
 ## Saving your work (localStorage) + Claude-managed messages
 
@@ -124,11 +133,13 @@ python3 scripts/import_iphone_backup.py /path/to/Backup/<UDID>
 # -> writes crm/messages.js (real threads, matched to clients by phone number)
 ```
 
-The CRM loads `crm/messages.js` if present and shows each client's real
-conversation; re-run after each backup to refresh. Without it, the Messages view
-falls back to the sample threads seeded in `data.js`. Matching is on the last 10
-digits of the phone number, so a client's CRM phone must match their number in
-Messages.
+The importer reads **Messages** (`sms.db`, keyed by chat so your sent messages
+come through, with best-effort `attributedBody` decoding), **Contacts**
+(`AddressBook`), and **call history** (`CallHistory.storedata` — outgoing /
+incoming / missed with durations), and links them all to clients by the last 10
+digits of the phone number. The CRM loads `crm/messages.js` if present and shows
+each client's real conversation + calls; re-run after each backup to refresh.
+Without it, the Messages view falls back to the sample data seeded in `data.js`.
 
 The top-bar search / lead-source / **Hot only** filters apply to Pipeline and
 Customers.

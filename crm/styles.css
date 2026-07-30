@@ -36,6 +36,14 @@ input[type=range] { accent-color: oklch(0.78 0.13 200); }
 .h-chip:hover { background: oklch(0.20 0.007 250) !important; }
 .clickable { cursor: pointer; }
 
+/* keyboard accessibility */
+[data-act][tabindex]:focus-visible,
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid oklch(0.80 0.13 200); outline-offset: 1px; border-radius: 3px;
+}
+.mobile-stage { display: none; }
+@media (max-width: 820px) { .mobile-stage { display: block; } }
+
 /* keep the app from ever scrolling the page itself */
 #app { height: 100vh; height: 100dvh; overflow: hidden; }
 

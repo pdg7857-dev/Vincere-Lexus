@@ -594,7 +594,21 @@ def build_conversations(deals, inv_by_stock):
         elif d["hot"]:
             add("them", "Still thinking it over — will let you know by the weekend.", 2, 18, 30)
 
-        out.append({"dealId": d["id"], "sample": True, "messages": msgs})
+        # a couple of sample call-log entries (replaced by CallHistory on import)
+        calls = []
+
+        def addcall(direction, day, hh, mm, dur, answered=True):
+            dt = datetime.datetime.combine(base + datetime.timedelta(days=day), datetime.time(hh, mm))
+            calls.append({"dir": direction, "ts": dt.isoformat(timespec="minutes"),
+                          "duration": dur, "answered": answered})
+
+        addcall("out", 0, 10, 0, 0, answered=False)          # first outreach, no answer
+        if d["stage"] >= 2:
+            addcall("in", 1, 9, 2, 372)                      # they called back
+        if str(d.get("level", "")).lower() == "purchased":
+            addcall("out", 3, 16, 45, 205)
+
+        out.append({"dealId": d["id"], "sample": True, "messages": msgs, "calls": calls})
     return out
 
 
