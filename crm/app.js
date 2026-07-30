@@ -40,14 +40,81 @@
     { k: "trim", label: "Trim", w: 96 }, { k: "budget", label: "Budget", w: 90, mono: true },
     { k: "notes", label: "Notes", w: 220 }
   ];
+  // ---- persistence: a per-device overlay on top of the committed seed -------
+  // Split of responsibilities (avoids the "localStorage hides a Claude push" trap):
+  //   * committed data.js / messages.js  = the shared seed (Claude / the build write it)
+  //   * localStorage                     = THIS device's edits (stage drags, notes,
+  //                                         logged messages, new/imported leads, ad + appt
+  //                                         toggles). Merged over the seed on load.
+  // Conversations are special: the committed messages.js is authoritative and merges IN,
+  // so anything Claude adds from a screenshot shows up even with local edits present.
+  var STORE_KEY = "vincere-crm-v1";
+  function loadStore() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+  var STORE = loadStore();
+
+  function seedDeals() { return D.deals.map(function (d) { return Object.assign({}, d, { notes: d.notes.slice(), matchedStocks: (d.matchedStocks || []).slice() }); }); }
+  function mergeDeals() {
+    var seed = seedDeals();
+    if (!STORE.deals || !STORE.deals.length) return seed;
+    var have = {}; STORE.deals.forEach(function (d) { have[d.id] = 1; });
+    var out = STORE.deals.slice();
+    seed.forEach(function (s) { if (!have[s.id]) out.push(s); });   // new Claude-added leads still appear
+    return out;
+  }
+  function hasRealThreads() {
+    var b = window.CRM_MESSAGES && window.CRM_MESSAGES.byDealId;
+    return !!(b && Object.keys(b).length);
+  }
+  function committedConvos() {
+    var map = {};
+    (D.conversations || []).forEach(function (c) { map[c.dealId] = { sample: c.sample !== false, messages: c.messages.slice() }; });
+    var real = window.CRM_MESSAGES && window.CRM_MESSAGES.byDealId;
+    if (real) Object.keys(real).forEach(function (k) { map[+k] = { sample: false, messages: (real[k].messages || []).slice() }; });
+    return map;
+  }
+  function mergeConvos() {
+    var committed = committedConvos(), local = STORE.localMsgs || {}, map = {}, ids = {};
+    Object.keys(committed).forEach(function (k) { ids[k] = 1; });
+    Object.keys(local).forEach(function (k) { ids[k] = 1; });
+    Object.keys(ids).forEach(function (k) {
+      var c = committed[k] || { sample: false, messages: [] };
+      var lm = (local[k] || []).map(function (m) { return { from: m.from, text: m.text, ts: m.ts, origin: "local" }; });
+      var all = c.messages.concat(lm), seen = {}, uniq = [];
+      all.forEach(function (m) { var key = m.from + "|" + m.text + "|" + (m.ts || ""); if (!seen[key]) { seen[key] = 1; uniq.push(m); } });
+      uniq.sort(function (a, b) { return String(a.ts || "").localeCompare(String(b.ts || "")); });
+      map[k] = { sample: c.sample && !lm.length, messages: uniq };
+    });
+    return map;
+  }
+  function extractLocalMsgs(convos) {
+    var out = {};
+    Object.keys(convos).forEach(function (k) {
+      var lm = (convos[k].messages || []).filter(function (m) { return m.origin === "local"; })
+        .map(function (m) { return { from: m.from, text: m.text, ts: m.ts }; });
+      if (lm.length) out[k] = lm;
+    });
+    return out;
+  }
+  function saveStore() {
+    var now = Date.now();
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        v: 1, deals: S.deals, appts: S.appts, ads: S.ads, done: S.done,
+        localMsgs: extractLocalMsgs(S.convos), savedAt: now
+      }));
+      STORE.savedAt = now;   // so the "Saved …" label stays current within the session
+    } catch (e) { /* quota / private mode — run without persistence */ }
+  }
+
+  var initialDeals = mergeDeals();
   var S = {
     view: "board",
-    deals: D.deals.map(function (d) { return Object.assign({}, d, { notes: d.notes.slice() }); }),
-    appts: D.appointments.map(function (a) { return Object.assign({}, a); }),
-    ads: D.ads.map(function (a) { return Object.assign({}, a); }),
-    selected: (D.deals.find(function (d) { return d.hot; }) || D.deals[0]).id,
+    deals: initialDeals,
+    appts: STORE.appts ? STORE.appts.map(function (a) { return Object.assign({}, a); }) : D.appointments.map(function (a) { return Object.assign({}, a); }),
+    ads: STORE.ads ? STORE.ads.map(function (a) { return Object.assign({}, a); }) : D.ads.map(function (a) { return Object.assign({}, a); }),
+    selected: (initialDeals.find(function (d) { return d.hot; }) || initialDeals[0]).id,
     query: "", sourceFilter: "All sources", hotOnly: false,
-    dragId: null, hoverStage: null, noteDraft: "", done: {},
+    dragId: null, hoverStage: null, noteDraft: "", done: STORE.done || {},
     apptDay: 0,
     invFilter: "All", importFeed: IMPORT_FEEDS[0], importStep: 0,
     matchFor: (D.repeatBuyers[0] || {}).name || "",
@@ -61,25 +128,9 @@
     invAdv: blankInvAdv(),
     importRows: blankImportRows(6), importMsg: "",
     navOpen: false,                             // mobile slide-in nav
-    convos: initConvos(),                       // dealId -> {sample, messages:[]}
+    convos: mergeConvos(),                      // dealId -> {sample, messages:[]}
     msgThread: null, msgDraft: ""               // Messages view + composer
   };
-
-  // real threads from an imported iPhone backup win; otherwise the sample seed
-  function initConvos() {
-    var real = window.CRM_MESSAGES && window.CRM_MESSAGES.byDealId;
-    var map = {};
-    (D.conversations || []).forEach(function (c) {
-      map[c.dealId] = { sample: c.sample !== false, messages: c.messages.slice() };
-    });
-    if (real) {
-      Object.keys(real).forEach(function (k) {
-        map[+k] = { sample: false, messages: (real[k].messages || []).slice() };
-      });
-    }
-    return map;
-  }
-  function convosAreReal() { return !!(window.CRM_MESSAGES && window.CRM_MESSAGES.byDealId); }
 
   function blankInvAdv() {
     return { q: "", make: "All", fuel: "All", minPrice: "", maxPrice: "",
@@ -124,6 +175,15 @@
   function dueLabel(s) { return !s ? "delivered" : "→ " + fmtISO(s); }
   function ageDays(deal) { return deal.lastContact ? daysBetween(parseISO(deal.lastContact), NOW) : 0; }
   function isMobile() { return window.innerWidth <= 820; }
+  function savedLabel() {
+    var t = STORE.savedAt;
+    if (!t) return "Not saved yet";
+    var mins = Math.round((Date.now() - t) / 60000);
+    if (mins < 1) return "Saved just now";
+    if (mins < 60) return "Saved " + mins + "m ago";
+    var hrs = Math.round(mins / 60);
+    return hrs < 24 ? "Saved " + hrs + "h ago" : "Saved " + Math.round(hrs / 24) + "d ago";
+  }
 
   // ---- contact / messaging helpers -----------------------------------------
   function e164(phone) {
@@ -196,6 +256,7 @@
     var focus = captureFocus();
     app.innerHTML = shell(viewHtml());
     restoreFocus(focus);
+    saveStore();   // persist this device's overlay after every change
   }
 
   function shell(inner) {
@@ -235,6 +296,15 @@
           '<div class="mono" style="font-size:12px;color:oklch(0.80 0.13 155);margin-top:2px">' + money(mtdGross) + ' gross</div>' +
           '<div style="margin-top:10px;height:3px;border-radius:3px;background:oklch(0.24 0.008 250);overflow:hidden"><div style="height:100%;width:' + pct + '%;background:oklch(0.78 0.13 200)"></div></div>' +
           '<div style="font-size:10.5px;color:oklch(0.55 0.008 250);margin-top:5px">' + pct + '% of ' + target + '-unit target</div>' +
+        '</div>' +
+        '<div style="padding:10px 12px;border-top:1px solid oklch(0.24 0.008 250)">' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px"><div style="width:6px;height:6px;border-radius:6px;background:oklch(0.80 0.13 155)"></div>' +
+            '<div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.60 0.008 250)">Saved on this device</div></div>' +
+          '<div class="mono" style="font-size:9.5px;color:oklch(0.50 0.008 250);margin-bottom:8px">' + esc(savedLabel()) + (hasRealThreads() ? " · msgs synced" : "") + '</div>' +
+          '<div style="display:flex;gap:6px">' +
+            '<div class="clickable h-btn-raised" data-act="pullLatest" style="flex:1;text-align:center;padding:6px 8px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:11px;color:oklch(0.82 0.008 250);white-space:nowrap">⟳ Pull latest</div>' +
+            '<div class="clickable" data-act="resetDevice" title="Clear this device\'s saved edits" style="padding:6px 8px;border-radius:4px;border:1px solid oklch(0.30 0.04 40);font-size:11px;color:oklch(0.72 0.06 40);white-space:nowrap">Reset</div>' +
+          '</div>' +
         '</div>' +
       '</div>';
 
@@ -1076,7 +1146,7 @@
       '<div style="padding:11px 13px;border-bottom:1px solid oklch(0.24 0.008 250)">' +
         (opts.back ? '<div class="clickable" data-act="msgBack" style="font-size:12px;color:oklch(0.80 0.13 200);margin-bottom:8px">‹ All conversations</div>' : '') +
         '<div style="display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:13.5px;font-weight:600">' + esc(deal.name) + '</div>' + contactLine + '</div>' +
-          (c.sample ? '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:oklch(0.24 0.03 95);color:oklch(0.85 0.08 95)">SAMPLE</span>' : '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:oklch(0.22 0.03 155);color:oklch(0.84 0.11 155)">FROM iPhone</span>') + '</div>' +
+          (c.sample ? '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:oklch(0.24 0.03 95);color:oklch(0.85 0.08 95)">SAMPLE</span>' : '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:oklch(0.22 0.03 155);color:oklch(0.84 0.11 155)">SYNCED</span>') + '</div>' +
         '<div style="margin-top:9px">' + quickActions(deal, true) + '</div>' +
       '</div>' +
       '<div style="flex:1;min-height:' + (opts.fill ? "0" : "160px") + ';overflow-y:auto;padding:12px 13px">' + banner + bubbles + '</div>' +
@@ -1106,7 +1176,7 @@
 
     var inbox = '<div class="msg-list" style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);overflow:auto;min-height:0">' +
       '<div style="padding:10px 13px;border-bottom:1px solid oklch(0.24 0.008 250);position:sticky;top:0;background:oklch(0.15 0.005 250)"><div style="font-size:11.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">Conversations</div>' +
-        '<div style="font-size:10.5px;color:oklch(0.60 0.008 250);margin-top:3px">' + (convosAreReal() ? "Synced from your iPhone backup" : "Sample threads — import your backup to load real messages") + '</div></div>' + list + '</div>';
+        '<div style="font-size:10.5px;color:oklch(0.60 0.008 250);margin-top:3px">' + (hasRealThreads() ? "Synced — Claude keeps these updated from your screenshots" : "Sample threads — drop a screenshot to Claude to load real ones") + '</div></div>' + list + '</div>';
 
     var thread = S.msgThread ? conversationPane(dealById(S.msgThread), { fill: true, back: isMobile() }) :
       '<div class="msg-empty" style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);display:flex;align-items:center;justify-content:center;color:oklch(0.55 0.008 250);font-size:13px">Pick a conversation to open the thread</div>';
@@ -1136,6 +1206,14 @@
       case "nav": setS({ view: id.view, noteDraft: "", vehicleStock: null, navOpen: false }); break;
       case "toggleNav": setS({ navOpen: !S.navOpen }); break;
       case "closeNav": setS({ navOpen: false }); break;
+      case "pullLatest": saveStore(); location.reload(); break;
+      case "resetDevice": {
+        if (window.confirm("Clear this device's saved edits and reload from the latest committed data? Messages Claude has synced are kept.")) {
+          try { localStorage.removeItem(STORE_KEY); } catch (x) {}
+          location.reload();
+        }
+        break;
+      }
       case "toggleHot": setS({ hotOnly: !S.hotOnly }); break;
       case "openDeal": setS({ view: "deal", selected: +id.id, noteDraft: "", vehicleStock: null, navOpen: false }); break;
       case "openVeh": setS({ vehicleStock: id.stock }); break;
@@ -1147,7 +1225,7 @@
         if (!mt) return;
         var md = dealById(+id.id);
         var conv = S.convos[md.id] || (S.convos[md.id] = { sample: false, messages: [] });
-        conv.messages = conv.messages.concat([{ from: "me", text: mt, ts: nowISO() }]);
+        conv.messages = conv.messages.concat([{ from: "me", text: mt, ts: nowISO(), origin: "local" }]);
         md.lastContact = D.today;
         setS({ msgDraft: "" });
         break;

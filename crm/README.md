@@ -75,6 +75,39 @@ e.g. `https://raw.githack.com/pdg7857-dev/vincere-lexus/<sha>/crm/index.html`.
     sample threads until then. The same thread + quick-actions appear on each
     Opportunity.
 
+## Saving your work (localStorage) + Claude-managed messages
+
+The app persists everything you do — stage drags, logged notes, new/imported
+leads, ad and appointment toggles, logged messages — to the browser's
+**localStorage**, as a per-device overlay on top of the committed seed. Your
+edits survive refreshes and closing the tab. The rail footer shows *"Saved on
+this device"* with two controls:
+
+- **⟳ Pull latest** — reload and pick up the newest committed data (including any
+  conversations Claude has synced), keeping your local edits.
+- **Reset** — clear this device's saved edits and start clean from the committed
+  data.
+
+Because it's per-device, your phone and laptop keep separate copies. When you
+want them to share one synced, backed-up copy (and higher-accuracy screenshot
+reading), that's the Supabase step — the code is structured so conversations
+already come from a single authoritative file (`messages.js`), which is the
+natural thing to move server-side first.
+
+### Letting Claude keep the conversations updated
+
+`crm/messages.js` is the **authoritative** conversation store (it wins over the
+sample threads and merges with anything you log in-app). Two ways to fill it:
+
+1. **iPhone backup** — `scripts/import_iphone_backup.py` writes it (below).
+2. **Claude** — drop a Facebook Marketplace or iMessage **screenshot** into a
+   Claude session on this repo and say which client it's with. Claude reads it,
+   appends the messages to `messages.js`, and pushes; tap **Pull latest** in the
+   CRM and the thread updates. Claude can't touch your phone's localStorage
+   (iOS/browser sandbox), but it can write this file — so it acts as the write
+   path while githack serves the reads. No backend or API key required for that
+   loop.
+
 ## Contacts & iMessage threads from your iPhone
 
 A web app can't read an iPhone's Messages or Contacts directly — iOS sandboxes
