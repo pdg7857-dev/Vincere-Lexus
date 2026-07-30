@@ -29,7 +29,16 @@
   INV.forEach(function (v) { invByStock[v.stock] = v; });
   var STOCKED = INV.filter(function (v) { return v.type !== "Incoming"; });
 
-  function vehOf(deal) { return invByStock[deal.invStock] || INV[0]; }
+  // Fail safe: a persisted deal can reference a stock that a later inventory
+  // rebuild removed. Return a clearly-empty placeholder rather than a random
+  // real car (INV[0]), which would mislead.
+  var MISSING_VEH = {
+    stock: "—", vin: "", year: "", make: "", model: "", trim: "", body: "—",
+    price: 0, atValue: 0, days: 0, km: "—", kmNum: 0, colour: "", interior: "",
+    fuel: "", type: "", condition: "", eta: "", from: "", link: "", sold: false,
+    car: "Vehicle no longer in inventory", detail: {}, _missing: true
+  };
+  function vehOf(deal) { return invByStock[deal.invStock] || MISSING_VEH; }
 
   // ---- state ----------------------------------------------------------------
   var IMPORT_COLS = [
@@ -53,12 +62,21 @@
   var STORE = loadStore();
 
   function seedDeals() { return D.deals.map(function (d) { return Object.assign({}, d, { notes: d.notes.slice(), matchedStocks: (d.matchedStocks || []).slice() }); }); }
+  // Only deals the user has actually edited (tracked in STORE.dirty) override the
+  // committed seed; untouched deals are always taken fresh from data.js, so an
+  // edit Claude/the build pushes to an existing deal shows up on Pull latest.
+  // User-added leads (ids beyond the seed) are always kept.
   function mergeDeals() {
     var seed = seedDeals();
-    if (!STORE.deals || !STORE.deals.length) return seed;
-    var have = {}; STORE.deals.forEach(function (d) { have[d.id] = 1; });
-    var out = STORE.deals.slice();
-    seed.forEach(function (s) { if (!have[s.id]) out.push(s); });   // new Claude-added leads still appear
+    var stored = Array.isArray(STORE.deals) ? STORE.deals : [];
+    var dirty = STORE.dirty || {};
+    var byId = {}; stored.forEach(function (d) { byId[d.id] = d; });
+    var seedIds = {};
+    var out = seed.map(function (s) {
+      seedIds[s.id] = 1;
+      return (dirty[s.id] && byId[s.id]) ? byId[s.id] : s;
+    });
+    stored.forEach(function (d) { if (!seedIds[d.id]) out.push(d); });
     return out;
   }
   function hasRealThreads() {
@@ -99,19 +117,20 @@
     var now = Date.now();
     try {
       localStorage.setItem(STORE_KEY, JSON.stringify({
-        v: 1, deals: S.deals, appts: S.appts, ads: S.ads, done: S.done,
+        v: 1, deals: S.deals, dirty: S.dirtyDeals, appts: S.appts, ads: S.ads, done: S.done,
         localMsgs: extractLocalMsgs(S.convos), savedAt: now
       }));
       STORE.savedAt = now;   // so the "Saved …" label stays current within the session
     } catch (e) { /* quota / private mode — run without persistence */ }
   }
+  function markDirty(id) { if (id != null) S.dirtyDeals[id] = 1; }
 
   var initialDeals = mergeDeals();
   var S = {
     view: "board",
     deals: initialDeals,
-    appts: STORE.appts ? STORE.appts.map(function (a) { return Object.assign({}, a); }) : D.appointments.map(function (a) { return Object.assign({}, a); }),
-    ads: STORE.ads ? STORE.ads.map(function (a) { return Object.assign({}, a); }) : D.ads.map(function (a) { return Object.assign({}, a); }),
+    appts: (Array.isArray(STORE.appts) ? STORE.appts : D.appointments).map(function (a) { return Object.assign({}, a); }),
+    ads: (Array.isArray(STORE.ads) ? STORE.ads : D.ads).map(function (a) { return Object.assign({}, a); }),
     selected: (initialDeals.find(function (d) { return d.hot; }) || initialDeals[0]).id,
     query: "", sourceFilter: "All sources", hotOnly: false,
     dragId: null, hoverStage: null, noteDraft: "", done: STORE.done || {},
@@ -129,7 +148,8 @@
     importRows: blankImportRows(6), importMsg: "",
     navOpen: false,                             // mobile slide-in nav
     convos: mergeConvos(),                      // dealId -> {sample, messages:[]}
-    msgThread: null, msgDraft: ""               // Messages view + composer
+    msgThread: null, msgDraft: "",              // Messages view + composer
+    dirtyDeals: (STORE.dirty && typeof STORE.dirty === "object") ? Object.assign({}, STORE.dirty) : {}
   };
 
   function blankInvAdv() {
@@ -348,7 +368,8 @@
     var v = invByStock[S.vehicleStock];
     if (!v) return "";
     var typeFg = v.type === "Incoming" ? "oklch(0.80 0.14 95)" : v.type === "New" ? "oklch(0.85 0.13 200)" : "oklch(0.72 0.008 250)";
-    var typeLabel = v.type === "New" && v.condition === "Demo" ? "Demo" : v.type;
+    var typeLabel = v.sold ? "Sold" : v.type === "New" && v.condition === "Demo" ? "Demo" : v.type;
+    if (v.sold) typeFg = "oklch(0.82 0.14 40)";
 
     var spec = [
       ["Stock #", v.stock], ["VIN", v.vin || "—"], ["Year", v.year], ["Body", v.body],
@@ -472,10 +493,10 @@
     var dv = vehOf(deal);
 
     // "other cars they may like"
-    var pool = INV.filter(function (v) { return v.stock !== dv.stock && v.body === deal.wantBody && v.price <= deal.wantMax * 1.08; });
+    var pool = INV.filter(function (v) { return !v.sold && v.stock !== dv.stock && v.body === deal.wantBody && v.price <= deal.wantMax * 1.08; });
     var matchNote = "Wants a " + deal.wantBody.toLowerCase() + " under " + money(deal.wantMax);
     if (!pool.length) {
-      pool = INV.filter(function (v) { return v.stock !== dv.stock; }).slice().sort(function (x, y) { return Math.abs(x.price - deal.wantMax) - Math.abs(y.price - deal.wantMax); });
+      pool = INV.filter(function (v) { return !v.sold && v.stock !== dv.stock; }).slice().sort(function (x, y) { return Math.abs(x.price - deal.wantMax) - Math.abs(y.price - deal.wantMax); });
       matchNote = "No other " + deal.wantBody.toLowerCase() + " in stock — closest by price";
     }
     var matches = pool.slice(0, 4).map(function (v) {
@@ -533,7 +554,8 @@
 
     var right =
       '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);padding:12px 13px">' +
-        '<div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250)">Vehicle of interest</div>' +
+        '<div style="display:flex;align-items:center;gap:8px"><div style="flex:1;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250)">Vehicle of interest</div>' +
+          (dv.sold ? '<span style="font-size:9px;padding:2px 7px;border-radius:3px;background:oklch(0.24 0.05 40);color:oklch(0.82 0.14 40)">SOLD — no longer available</span>' : '') + '</div>' +
         '<div style="font-size:15px;font-weight:600;margin-top:6px">' + esc(dv.car) + (dv.trim ? ' <span style="font-size:12px;color:oklch(0.66 0.008 250)">' + esc(dv.trim) + '</span>' : '') + '</div>' +
         '<div class="mono" style="font-size:11px;color:oklch(0.68 0.008 250);margin-top:4px">' + esc(dv.vin || "VIN on file at desk") + '</div>' +
         '<div style="display:flex;gap:16px;margin-top:10px">' +
@@ -562,8 +584,8 @@
   function todayView() {
     var todayAppts = S.appts.filter(function (a) { return a.day === 0; });
     var overdue = S.deals.filter(function (d) { return isToday(d.nextFollowUp); });
-    var t1 = fmtMD(addDays(NOW, 1)), t2 = fmtMD(addDays(NOW, 2));
-    var soon = S.deals.filter(function (d) { var n = d.nextFollowUp ? fmtISO(d.nextFollowUp) : ""; return n === t1 || n === t2; });
+    var t1 = fmtISOraw(addDays(NOW, 1)), t2 = fmtISOraw(addDays(NOW, 2));
+    var soon = S.deals.filter(function (d) { return d.nextFollowUp === t1 || d.nextFollowUp === t2; });
     var stale = S.deals.filter(function (d) { return d.stage !== 6 && d.nextFollowUp && ageDays(d) >= 3; });
 
     var span = HOURS.length;
@@ -705,7 +727,7 @@
       { key: "price", label: "Price", test: function (v) { return v.price <= q.priceMax; } }
     ];
     var totalW = crits.reduce(function (a, c) { return a + W[c.key]; }, 0) || 1;
-    var scored = INV.map(function (v) {
+    var scored = INV.filter(function (v) { return !v.sold; }).map(function (v) {
       var misses = crits.filter(function (c) { return W[c.key] > 0 && !c.test(v); });
       var got = crits.reduce(function (a, c) { return a + (W[c.key] > 0 && c.test(v) ? W[c.key] : 0); }, 0);
       return { v: v, misses: misses, score: got / totalW, mustMiss: misses.some(function (c) { return W[c.key] === 3; }) };
@@ -824,10 +846,10 @@
 
     var list = INV.filter(function (v) { return S.invFilter === "All" || v.type === S.invFilter; }).filter(passAdv);
     var rows = list.map(function (v) {
-      var leads = S.deals.filter(function (d) { return d.invStock === v.stock; });
       var typeFg = v.type === "Incoming" ? "oklch(0.80 0.14 95)" : v.type === "New" ? "oklch(0.85 0.13 200)" : "oklch(0.70 0.008 250)";
       var daysFg = v.days > 60 ? "oklch(0.78 0.15 40)" : v.days > 40 ? "oklch(0.80 0.14 95)" : "oklch(0.82 0.004 250)";
       var typeLabel = v.type === "New" && v.condition === "Demo" ? "Demo" : v.type;
+      if (v.sold) { typeLabel = "Sold"; typeFg = "oklch(0.78 0.14 40)"; }
       var interested = customersFor(v.stock);
       return '<div class="clickable h-row" data-act="openVeh" data-stock="' + esc(v.stock) + '" style="display:grid;grid-template-columns:' + cols + ';min-width:1420px;gap:10px;padding:9px 14px;border-bottom:1px solid oklch(0.20 0.008 250);align-items:center;font-size:12.5px">' +
         '<div class="mono" style="font-size:11.5px;color:oklch(0.72 0.008 250)">' + esc(v.stock) + '</div>' +
@@ -1132,7 +1154,7 @@
   function conversationPane(deal, opts) {
     opts = opts || {};
     var c = convoOf(deal);
-    var banner = c.sample ? '<div style="padding:8px 12px;background:oklch(0.20 0.03 95);border:1px solid oklch(0.38 0.05 95);border-radius:6px;font-size:11px;color:oklch(0.88 0.08 95);margin-bottom:10px">Sample thread — run <span class="mono">scripts/import_iphone_backup.py</span> on your Mac to load the real iMessages for ' + esc(deal.name.split(" ")[0]) + '.</div>' : "";
+    var banner = (c.sample && c.messages.length) ? '<div style="padding:8px 12px;background:oklch(0.20 0.03 95);border:1px solid oklch(0.38 0.05 95);border-radius:6px;font-size:11px;color:oklch(0.88 0.08 95);margin-bottom:10px">Sample thread — drop a screenshot to Claude (or run <span class="mono">import_iphone_backup.py</span>) to load ' + esc(deal.name.split(" ")[0]) + '\'s real messages.</div>' : "";
     var bubbles = c.messages.length ? c.messages.map(function (m) {
       var me = m.from === "me";
       return '<div style="display:flex;justify-content:' + (me ? "flex-end" : "flex-start") + ';margin-bottom:8px">' +
@@ -1227,6 +1249,7 @@
         var conv = S.convos[md.id] || (S.convos[md.id] = { sample: false, messages: [] });
         conv.messages = conv.messages.concat([{ from: "me", text: mt, ts: nowISO(), origin: "local" }]);
         md.lastContact = D.today;
+        markDirty(md.id);
         setS({ msgDraft: "" });
         break;
       }
@@ -1245,7 +1268,7 @@
       case "setStage": updateDeal(S.selected, { stage: +id.stage }); break;
       case "swap": {
         var v = invByStock[id.stock];
-        if (v) updateDeal(S.selected, { invStock: v.stock, value: v.price });
+        if (v) updateDeal(S.selected, { invStock: v.stock, value: v.price, gross: Math.round(v.price * 0.06) });
         break;
       }
       case "addNote": {
@@ -1254,6 +1277,7 @@
         var d = dealById(S.selected);
         d.notes = [{ date: D.today, text: txt }].concat(d.notes);
         d.lastContact = D.today;
+        markDirty(d.id);
         setS({ noteDraft: "" });
         break;
       }
@@ -1394,7 +1418,7 @@
   });
 
   function keyVal(k, v) { var o = {}; o[k] = v; return o; }
-  function updateDeal(id, patch) { var d = dealById(id); if (d) Object.assign(d, patch); render(); }
+  function updateDeal(id, patch) { var d = dealById(id); if (d) { Object.assign(d, patch); markDirty(id); } render(); }
   function blankForm() { return { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" }; }
   function nextId() { return Math.max.apply(null, S.deals.map(function (d) { return d.id; })) + 1; }
 
@@ -1417,8 +1441,10 @@
   function saveLead() {
     var f = S.form;
     if (!f.name.trim()) { setS({ vinMsg: "Enter a customer name to save the lead." }); return; }
-    var v = S.vinResult || INV[0];
-    S.deals = [makeDeal(nextId(), { name: f.name.trim(), phone: f.phone, email: f.email, address: f.address, source: f.source, pay: f.pay, veh: v })].concat(S.deals);
+    if (!S.vinResult) { setS({ vinMsg: "Decode a VIN or pick a car from the list so the lead has a vehicle of interest." }); return; }
+    var id = nextId();
+    markDirty(id);
+    S.deals = [makeDeal(id, { name: f.name.trim(), phone: f.phone, email: f.email, address: f.address, source: f.source, pay: f.pay, veh: S.vinResult })].concat(S.deals);
     setS({ view: "board", form: blankForm(), vinResult: undefined, vinMsg: "" });
   }
 
@@ -1430,16 +1456,19 @@
       var veh = matchVehicle(r);
       var budget = parseInt(String(r.budget).replace(/[^0-9]/g, ""), 10) || 0;
       var note = (r.notes || "").trim() || ("Imported lead" + (r.buying ? " — wants " + r.buying.toLowerCase() : "") + (r.make ? " " + r.make : "") + ". Matched to " + veh.car + " (" + veh.stock + ").");
-      return makeDeal(id++, {
+      var d = makeDeal(id++, {
         name: r.name.trim(), phone: r.phone, email: r.email, source: r.source || "Walk-in",
         pay: r.pay || "Finance", veh: veh, wantBody: r.body || veh.body, wantMax: budget || veh.price,
         wantMake: r.make, wantTrim: r.trim, note: note
       });
+      markDirty(d.id);
+      return d;
     });
     S.deals = made.concat(S.deals);
     setS({ view: "board", importRows: blankImportRows(6), importMsg: "" });
   }
-  function fmtISOraw(d) { return d.toISOString().slice(0, 10); }
+  // local calendar date (NOT toISOString, which shifts the day in +UTC zones)
+  function fmtISOraw(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
 
   // ---- focus preservation ---------------------------------------------------
   function captureFocus() {

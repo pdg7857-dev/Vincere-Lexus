@@ -119,23 +119,13 @@ def read_contacts(ab_path, tmpdir):
     con = open_sqlite_copy(ab_path, tmpdir)
     con.row_factory = sqlite3.Row
     out = {}
-    try:
-        rows = con.execute("""
-            SELECT p.ROWID as pid, p.First as first, p.Last as last,
-                   p.Organization as org, v.value as value, mv.label_kind as kind
-            FROM ABPerson p
-            LEFT JOIN ABMultiValue v ON v.record_id = p.ROWID
-            LEFT JOIN ABMultiValueLabel mv ON mv.value = v.label
-        """).fetchall()
-    except sqlite3.Error:
-        # schema differences across iOS versions — fall back to a simpler query
-        rows = con.execute("""
-            SELECT p.ROWID as pid, p.First as first, p.Last as last,
-                   p.Organization as org, v.value as value, NULL as kind
-            FROM ABPerson p LEFT JOIN ABMultiValue v ON v.record_id = p.ROWID
-        """).fetchall()
-    finally:
-        pass
+    # ABMultiValue.value holds each phone/email; we classify by content (has '@'),
+    # so the label tables aren't needed.
+    rows = con.execute("""
+        SELECT p.ROWID as pid, p.First as first, p.Last as last,
+               p.Organization as org, v.value as value
+        FROM ABPerson p LEFT JOIN ABMultiValue v ON v.record_id = p.ROWID
+    """).fetchall()
     people = {}
     for r in rows:
         nm = (" ".join(x for x in [r["first"], r["last"]] if x)).strip() or (r["org"] or "")
@@ -162,34 +152,61 @@ def read_contacts(ab_path, tmpdir):
 
 
 def read_messages(sms_path, tmpdir):
-    """phone-key -> [ {from:'me'|'them', text, ts(iso)} ] from sms.db."""
+    """thread-key -> [ {from:'me'|'them', text, ts(iso)} ] from sms.db.
+
+    Keys off the CHAT (chat_message_join -> chat.chat_identifier) rather than the
+    message's handle_id. Outgoing messages (is_from_me=1) and group messages often
+    have handle_id=0, so an inner join on `handle` silently drops them and you get
+    one-sided threads — keying on the chat captures both directions.
+
+    Note: on modern iOS many messages store their body in `attributedBody` (a
+    binary blob) with `text` NULL; those are skipped here (decoding the
+    NSAttributedString stream is out of scope). Screenshot import via Claude is the
+    higher-fidelity path.
+    """
+    import datetime as _dt
     con = open_sqlite_copy(sms_path, tmpdir)
     con.row_factory = sqlite3.Row
-    threads = {}
-    q = """
-        SELECT h.id AS handle, m.is_from_me AS mine, m.text AS text,
-               m.date AS mdate
+
+    def to_ts(raw):
+        raw = raw or 0
+        secs = raw / 1e9 if raw > 1e11 else raw  # ns (modern) vs s (legacy)
+        try:                                     # local time of the machine importing
+            return _dt.datetime.fromtimestamp(secs + APPLE_EPOCH_OFFSET).isoformat(timespec="minutes")
+        except (OverflowError, OSError, ValueError):
+            return None
+
+    chat_q = """
+        SELECT c.chat_identifier AS ident, m.is_from_me AS mine, m.text AS text, m.date AS mdate
         FROM message m
-        JOIN handle h ON m.handle_id = h.ROWID
+        JOIN chat_message_join cmj ON cmj.message_id = m.ROWID
+        JOIN chat c ON c.ROWID = cmj.chat_id
         WHERE m.text IS NOT NULL AND m.text <> ''
         ORDER BY m.date ASC
     """
-    for r in con.execute(q):
-        key = norm_phone(r["handle"]) if re.search(r"\d", str(r["handle"] or "")) else str(r["handle"]).lower()
+    fallback_q = """
+        SELECT h.id AS ident, m.is_from_me AS mine, m.text AS text, m.date AS mdate
+        FROM message m LEFT JOIN handle h ON m.handle_id = h.ROWID
+        WHERE m.text IS NOT NULL AND m.text <> ''
+        ORDER BY m.date ASC
+    """
+    try:
+        cur = con.execute(chat_q)
+    except sqlite3.Error:
+        cur = con.execute(fallback_q)
+
+    threads = {}
+    for r in cur:
+        ident = str(r["ident"] or "")
+        if not ident or ident.startswith("chat"):   # skip group chats (no single client)
+            continue
+        key = norm_phone(ident) if re.search(r"\d", ident) else ident.lower()
         if not key:
             continue
-        # message.date is nanoseconds since 2001 on modern iOS, seconds on old
-        raw = r["mdate"] or 0
-        secs = raw / 1e9 if raw > 1e11 else raw
-        import datetime as _dt
-        try:
-            ts = _dt.datetime.utcfromtimestamp(secs + APPLE_EPOCH_OFFSET).isoformat(timespec="minutes")
-        except (OverflowError, OSError, ValueError):
-            ts = None
         threads.setdefault(key, []).append({
             "from": "me" if r["mine"] else "them",
             "text": r["text"],
-            "ts": ts,
+            "ts": to_ts(r["mdate"]),
         })
     con.close()
     return threads

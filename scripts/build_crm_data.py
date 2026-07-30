@@ -45,12 +45,14 @@ SUV = {"NX", "RX", "RZ", "GX", "LX", "TX", "UX", "RAV4", "HIGHLANDER", "4RUNNER"
        "ESCAPE", "EXPLORER", "GRAND CHEROKEE", "WRANGLER", "MACAN", "CAYENNE",
        "QX", "GLC", "GLE", "Q5", "X3", "X5", "RDX", "MDX", "CX-5", "CX5",
        "SANTA FE", "PALISADE", "TELLURIDE", "ENVISION", "NAUTILUS", "F-PACE"}
-SEDAN = {"ES", "IS", "LS", "RC", "ILX", "TLX", "TL", "TSX", "CIVIC", "ACCORD",
-         "COROLLA", "CAMRY", "JETTA", "PASSAT", "3", "5", "A4", "A6", "C300",
+SEDAN = {"ES", "IS", "LS", "ILX", "TLX", "TL", "TSX", "CIVIC", "ACCORD",
+         "COROLLA", "CAMRY", "CROWN", "JETTA", "PASSAT", "3", "5", "A4", "A6", "C300",
          "C-CLASS", "E-CLASS", "CHARGER", "300", "MODEL 3", "MODEL S", "G70",
          "Q50", "ALTIMA", "MAXIMA", "SENTRA", "ELANTRA", "SONATA", "OPTIMA",
-         "MALIBU", "CRUZE", "FUSION", "TAURUS", "LEGACY", "MAZDA3", "MAZDA6"}
+         "MALIBU", "CRUZE", "FUSION", "TAURUS", "LEGACY", "MAZDA3", "MAZDA6",
+         "GHIBLI", "QUATTROPORTE", "STINGER"}
 COUPE = {"LC", "M240I", "M2", "M4", "SUPRA", "GR86", "BRZ"}
+COUPE_PREFIX = {"RC", "LC"}   # Lexus coupes — matched on the model's series prefix
 TRUCK = {"F-150", "F150", "SILVERADO", "SIERRA", "TACOMA", "TUNDRA", "RAM",
          "RIDGELINE", "FRONTIER", "COLORADO"}
 VAN = {"SIENNA", "ODYSSEY", "PACIFICA", "CARNIVAL", "SEDONA"}
@@ -81,6 +83,8 @@ def body_for(model, series=""):
         m = re.match(r"([A-Z]{2,})", t)
         if m:
             prefixes.add(m.group(1))
+    if prefixes & COUPE_PREFIX:          # RC 350 / LC 500 -> Coupe (before sedan/SUV)
+        return "Coupe"
     for kw in SEDAN:
         if kw in prefixes:
             return "Sedan"
@@ -208,9 +212,17 @@ def price_lookup(pricing, series, trim, model=""):
     return vals[len(vals) // 2]  # median fallback
 
 
-# --------------------------------------------------------------------------- #
+# The Used sheet's trailing columns (delivery board / tires / website link) are
+# NOT consistently aligned row-to-row, so we detect those values by CONTENT
+# rather than by a fixed column index.
+UNAVAIL_RE = re.compile(r"sold|pend|deposit|hold|wholesale|deliver|apprais|service", re.I)
+TIRES_RE = re.compile(r"summer|winter|all[\s-]?season|all[\s-]?weather", re.I)
+
+
 def build_used(wb, referenced):
-    """Pre-owned inventory. Keep available units + anything a deal references."""
+    """Pre-owned inventory. Keep available units + anything a deal references.
+    Sold/pending units are dropped unless a client references them, in which case
+    they're kept but flagged sold so the UI can show the car is gone."""
     ws = wb["Used"]
     out = []
     for _, v in rows(ws):
@@ -221,16 +233,21 @@ def build_used(wb, referenced):
         price = num(v[8])
         if not price:
             continue
-        status = (str(v[10] or "").strip())
-        board = (str(v[14] or "").strip().upper())
-        sold = board == "SOLD" or status.upper() == "WHOLESALE"
+        strcells = [c for c in v if isinstance(c, str)]
+        unavail_hits = [c.strip() for c in strcells if UNAVAIL_RE.search(c)]
+        sold = bool(unavail_hits)
         if sold and stock not in referenced:
             continue
+        status = (str(v[10] or "").strip())
+        board = unavail_hits[0].title() if unavail_hits else ""
+        # sold rows carry a garbage placeholder link (wrong car) — drop it
+        link = "" if sold else next((c.strip() for c in strcells if "http" in c.lower()), "")
+        tires = next((c.strip() for c in strcells if TIRES_RE.search(c)), "")
         colour = str(v[6] or "")
         ext, _, interior = colour.partition("/")
         model = str(v[4] or "")
         make = title_make(v[3])
-        year = int(v[2]) if num(v[2]) else None
+        year = int(num(v[2])) if num(v[2]) else None
         trim = str(v[5] or "").title()
         km = int(num(v[7])) if num(v[7]) else 0
         out.append({
@@ -246,17 +263,17 @@ def build_used(wb, referenced):
             "colour": ext.strip().title(), "interior": interior.strip().title(),
             "fuel": fuel_for(model, trim),
             "type": "Used",
-            "condition": status or "Used",
+            "condition": (board or status or "Used") if sold else (status or "Used"),
+            "sold": sold,
             "eta": "", "from": "",
-            "link": str(v[17]) if v[17] else "",
+            "link": link,
             "car": f"{year} {make} {model}".strip(),
             "detail": {
                 "In-stock date": iso(v[0]),
                 "Condition": status or "Used",
-                "Delivery board": str(v[14] or "").strip() or "—",
+                "Availability": (board or "Sold") if sold else "Available",
                 "Keys": (str(int(num(v[11]))) if num(v[11]) else "—"),
-                "Recon sent": str(v[12] or "—").strip(),
-                "Tires": str(v[15] or "—").strip(),
+                "Tires": tires or "—",
                 "Carfax / owners": str(v[9] or "—").strip(),
             },
         })
@@ -490,7 +507,7 @@ def build_deals(wb, inv_by_stock, inv_by_vin, inventory):
 
         deals.append({
             "id": did, "name": name, "phone": fmt_phone(v[1]),
-            "email": email or (re.sub(r"[^a-z ]", "", name.lower()).strip().replace(" ", ".") + "@gmail.com"),
+            "email": email or (re.sub(r"\s+", ".", re.sub(r"[^a-z ]", " ", name.lower()).strip()) + "@gmail.com"),
             "address": "", "stage": stage, "invStock": veh["stock"],
             "matchedStocks": matched_stocks,
             "trade": "None", "allowance": 0, "appraisal": 0,
@@ -632,8 +649,8 @@ def build_ads(wb, inventory, inv_by_stock):
     have = {a["stock"] for a in ads}
     # seed ads for the used units most in need of exposure (aged stock),
     # with deterministic engagement derived from days-in-stock.
-    aged = sorted([v for v in inventory if v["type"] == "Used" and v["stock"] not in have],
-                  key=lambda v: -v["days"])[:8]
+    aged = sorted([v for v in inventory if v["type"] == "Used" and not v.get("sold")
+                   and v["stock"] not in have], key=lambda v: -v["days"])[:8]
     for i, v in enumerate(aged):
         d = v["days"]
         status = "Expired" if d > 75 else "Needs renewal" if d > 45 else "Live"
