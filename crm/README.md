@@ -9,8 +9,10 @@ opportunity record, runs the day from an appointment calendar and task list,
 manages used / new / incoming inventory, matches customers to stock with a
 weighted requirements questionnaire, and tracks Facebook Marketplace ads.
 
-Primary user: the salesperson (single user, no roles). Desktop, dense
-information design (built for ~1280–1600px).
+Primary user: the salesperson (single user, no roles). **Works on desktop and
+phone** — the layout switches to a mobile app (slide-in nav, swipeable pipeline,
+stacked records, full-screen message threads) below ~820px. Add it to the iPhone
+home screen for a one-tap app.
 
 ## Run it
 
@@ -66,6 +68,34 @@ e.g. `https://raw.githack.com/pdg7857-dev/vincere-lexus/<sha>/crm/index.html`.
     paste rows straight from Excel/Sheets — Tab or comma separated) and hit
     *Import*. Each row becomes a New-lead opportunity with its vehicle of
     interest auto-matched from make / body / budget.
+12. **Messages** — a conversation inbox plus an iMessage-style thread per client,
+    with **tap-to-Call / Text / Email** (native `tel:` / `sms:` / `mailto:`
+    deep links that launch the iPhone's own apps). Threads are the client's real
+    iMessage/SMS history once you import a backup (see below), or clearly-labelled
+    sample threads until then. The same thread + quick-actions appear on each
+    Opportunity.
+
+## Contacts & iMessage threads from your iPhone
+
+A web app can't read an iPhone's Messages or Contacts directly — iOS sandboxes
+them away from every browser and third-party app. The supported path is a local
+**Finder / iTunes backup**, which a companion script reads and links to clients:
+
+```
+# 1. On the Mac: Finder → your iPhone → "Back up all the data to this Mac"
+#    (leave "Encrypt local backup" off for the simplest path), Back Up Now.
+# 2. Point the importer at that backup:
+python3 scripts/import_iphone_backup.py            # newest backup, auto-detected
+python3 scripts/import_iphone_backup.py /path/to/Backup/<UDID>
+#    encrypted backup:  add  --password 'YOUR_BACKUP_PASSWORD'
+# -> writes crm/messages.js (real threads, matched to clients by phone number)
+```
+
+The CRM loads `crm/messages.js` if present and shows each client's real
+conversation; re-run after each backup to refresh. Without it, the Messages view
+falls back to the sample threads seeded in `data.js`. Matching is on the last 10
+digits of the phone number, so a client's CRM phone must match their number in
+Messages.
 
 The top-bar search / lead-source / **Hot only** filters apply to Pipeline and
 Customers.
@@ -81,6 +111,7 @@ Customers.
 | **repeat buyers**| the Purchased/Repeat client + `Leads - With Vehicle` (upsell targets) |
 | **ads**          | `FB_Log` (+ seeded ads for aged used stock)                |
 | **matches**      | `_UsedMatches` — the workbook's own customer↔vehicle matches (72) |
+| **conversations**| sample threads seeded from client notes (replaced by an iPhone-backup import) |
 | new-vehicle price| joined to the `Pricing` (MSRP) sheet by series + trim      |
 
 Each inventory record also carries a `detail` object with the raw sheet fields

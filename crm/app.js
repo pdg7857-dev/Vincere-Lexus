@@ -59,8 +59,27 @@
     vehicleStock: null,                         // open vehicle detail drawer
     showInvAdv: false,                          // advanced inventory filter panel
     invAdv: blankInvAdv(),
-    importRows: blankImportRows(6), importMsg: ""
+    importRows: blankImportRows(6), importMsg: "",
+    navOpen: false,                             // mobile slide-in nav
+    convos: initConvos(),                       // dealId -> {sample, messages:[]}
+    msgThread: null, msgDraft: ""               // Messages view + composer
   };
+
+  // real threads from an imported iPhone backup win; otherwise the sample seed
+  function initConvos() {
+    var real = window.CRM_MESSAGES && window.CRM_MESSAGES.byDealId;
+    var map = {};
+    (D.conversations || []).forEach(function (c) {
+      map[c.dealId] = { sample: c.sample !== false, messages: c.messages.slice() };
+    });
+    if (real) {
+      Object.keys(real).forEach(function (k) {
+        map[+k] = { sample: false, messages: (real[k].messages || []).slice() };
+      });
+    }
+    return map;
+  }
+  function convosAreReal() { return !!(window.CRM_MESSAGES && window.CRM_MESSAGES.byDealId); }
 
   function blankInvAdv() {
     return { q: "", make: "All", fuel: "All", minPrice: "", maxPrice: "",
@@ -104,6 +123,32 @@
   }
   function dueLabel(s) { return !s ? "delivered" : "→ " + fmtISO(s); }
   function ageDays(deal) { return deal.lastContact ? daysBetween(parseISO(deal.lastContact), NOW) : 0; }
+  function isMobile() { return window.innerWidth <= 820; }
+
+  // ---- contact / messaging helpers -----------------------------------------
+  function e164(phone) {
+    var d = String(phone || "").replace(/[^0-9]/g, "");
+    if (d.length === 10) d = "1" + d;
+    return d ? "+" + d : "";
+  }
+  function telHref(p) { var n = e164(p); return n ? "tel:" + n : ""; }
+  function smsHref(p) { var n = e164(p); return n ? "sms:" + n : ""; }
+  function mailHref(e) { return e ? "mailto:" + e : ""; }
+  function convoOf(deal) { return S.convos[deal.id] || { sample: true, messages: [] }; }
+  function lastMsg(deal) { var m = convoOf(deal).messages; return m.length ? m[m.length - 1] : null; }
+  function fmtMsgTs(ts) {
+    if (!ts) return "";
+    var d = new Date(ts);
+    if (isNaN(d)) return "";
+    var day = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    var t = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    return day + " · " + t;
+  }
+  function nowISO() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0") +
+      "T" + String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+  }
 
   // ---- derived collections --------------------------------------------------
   function visible() {
@@ -160,9 +205,11 @@
     var target = D.dealership.target;
     var pct = Math.round(delivered.length / target * 100);
 
+    var convoCount = S.deals.filter(function (d) { return convoOf(d).messages.length; }).length;
     var nav = [
-      ["board", "Pipeline", vis.length], ["today", "Today", ""], ["calendar", "Calendar", S.appts.length],
-      ["customers", "Customers", S.deals.length], ["match", "Matchmaker", ""], ["inventory", "Inventory", INV.length],
+      ["board", "Pipeline", vis.length], ["today", "Today", ""], ["messages", "Messages", convoCount],
+      ["calendar", "Calendar", S.appts.length], ["customers", "Customers", S.deals.length],
+      ["match", "Matchmaker", ""], ["inventory", "Inventory", INV.length],
       ["ads", "Marketplace ads", S.ads.length], ["deal", "Opportunity", ""], ["reports", "Reports", ""],
       ["new", "New lead", ""], ["import", "Import leads", ""]
     ].map(function (n) {
@@ -173,10 +220,10 @@
         '<div class="mono" style="font-size:10.5px;color:oklch(0.58 0.008 250)">' + n[2] + '</div></div>';
     }).join("");
 
-    var titles = { board: "Pipeline", deal: "Opportunity", today: "Today", inventory: "Inventory", reports: "Reports", "new": "New lead", customers: "Customers", calendar: "Appointment calendar", match: "Matchmaker", ads: "Marketplace ads", "import": "Import leads" };
+    var titles = { board: "Pipeline", deal: "Opportunity", today: "Today", inventory: "Inventory", reports: "Reports", "new": "New lead", customers: "Customers", calendar: "Appointment calendar", match: "Matchmaker", ads: "Marketplace ads", "import": "Import leads", messages: "Messages" };
 
     var rail =
-      '<div style="width:194px;flex:none;border-right:1px solid oklch(0.26 0.008 250);background:oklch(0.14 0.005 250);display:flex;flex-direction:column">' +
+      '<div class="crm-rail" style="width:194px;flex:none;border-right:1px solid oklch(0.26 0.008 250);background:oklch(0.14 0.005 250);display:flex;flex-direction:column">' +
         '<div style="padding:14px 14px 12px 14px;border-bottom:1px solid oklch(0.24 0.008 250)">' +
           '<div style="font-size:13px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase">' + esc(D.dealership.name) + '</div>' +
           '<div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:oklch(0.60 0.008 250);margin-top:3px">' + esc(D.dealership.brand) + '</div>' +
@@ -192,26 +239,37 @@
       '</div>';
 
     var hotOn = S.hotOnly;
+    var mobtop =
+      '<div class="crm-mobtop">' +
+        '<div class="clickable" data-act="toggleNav" style="width:30px;height:30px;flex:none;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 4px">' +
+          '<div style="height:2px;background:oklch(0.85 0.004 250);border-radius:2px"></div><div style="height:2px;background:oklch(0.85 0.004 250);border-radius:2px"></div><div style="height:2px;background:oklch(0.85 0.004 250);border-radius:2px"></div></div>' +
+        '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + titles[S.view] + '</div></div>' +
+        '<div class="clickable h-btn-cyan" data-act="nav" data-view="new" style="padding:6px 11px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600;white-space:nowrap">+ Lead</div>' +
+      '</div>';
+
     var topbar =
-      '<div style="height:50px;flex:none;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.13 0.005 250);display:flex;align-items:center;gap:10px;padding:0 14px">' +
-        '<div style="font-size:14px;font-weight:600;min-width:150px;white-space:nowrap">' + titles[S.view] + '</div>' +
-        '<div style="display:flex;align-items:center;gap:6px;background:oklch(0.18 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:5px 8px;width:250px">' +
+      '<div class="crm-top" style="height:50px;flex:none;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.13 0.005 250);display:flex;align-items:center;gap:10px;padding:0 14px">' +
+        '<div class="crm-vtitle" style="font-size:14px;font-weight:600;min-width:150px;white-space:nowrap">' + titles[S.view] + '</div>' +
+        '<div class="crm-search" style="display:flex;align-items:center;gap:6px;background:oklch(0.18 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:5px 8px;width:250px">' +
           '<div style="width:5px;height:5px;border-radius:5px;background:oklch(0.55 0.008 250)"></div>' +
-          '<input data-act="query" data-focus="query" value="' + esc(S.query) + '" placeholder="Search name, stock #, VIN…" style="flex:1;background:transparent;border:none;outline:none;color:oklch(0.95 0.004 250);font-size:12px" />' +
+          '<input data-act="query" data-focus="query" value="' + esc(S.query) + '" placeholder="Search name, stock #, VIN…" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:oklch(0.95 0.004 250);font-size:12px" />' +
         '</div>' +
-        '<select data-act="source" style="background:oklch(0.18 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:5px 7px;font-size:12px;outline:none">' +
+        '<select class="crm-src" data-act="source" style="background:oklch(0.18 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:5px 7px;font-size:12px;outline:none">' +
           ["All sources"].concat(SOURCES).map(function (s) { return '<option' + (S.sourceFilter === s ? " selected" : "") + '>' + s + '</option>'; }).join("") +
         '</select>' +
         '<div class="clickable" data-act="toggleHot" style="display:flex;align-items:center;gap:6px;padding:5px 9px;border-radius:4px;border:1px solid ' + (hotOn ? "oklch(0.45 0.10 35)" : "oklch(0.28 0.008 250)") + ';background:' + (hotOn ? "oklch(0.26 0.06 35)" : "oklch(0.18 0.006 250)") + ';font-size:12px;color:' + (hotOn ? "oklch(0.92 0.06 35)" : "oklch(0.74 0.008 250)") + '">' +
           '<div style="width:6px;height:6px;border-radius:6px;background:oklch(0.72 0.17 35)"></div>Hot only</div>' +
         '<div style="margin-left:auto;display:flex;gap:6px;align-items:center">' +
-          '<div class="mono" style="font-size:11px;color:oklch(0.60 0.008 250);margin-right:4px">' + vis.length + ' shown</div>' +
-          '<div class="clickable h-btn-cyan" data-act="nav" data-view="new" style="padding:6px 11px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600">+ New lead</div>' +
+          '<div class="mono crm-shown" style="font-size:11px;color:oklch(0.60 0.008 250);margin-right:4px">' + vis.length + ' shown</div>' +
+          '<div class="clickable h-btn-cyan crm-newlead" data-act="nav" data-view="new" style="padding:6px 11px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600">+ New lead</div>' +
         '</div>' +
       '</div>';
 
-    return '<div style="display:flex;height:100vh;width:100%;background:#0a0b0d;overflow:hidden">' + rail +
-      '<div style="flex:1;min-width:0;display:flex;flex-direction:column">' + topbar + inner + '</div>' + vehicleDrawer() + '</div>';
+    var scrim = S.navOpen ? '<div class="crm-scrim" data-act="closeNav"></div>' : "";
+
+    return '<div style="display:flex;height:100vh;height:100dvh;width:100%;background:#0a0b0d;overflow:hidden">' +
+      (S.navOpen ? rail.replace('class="crm-rail"', 'class="crm-rail open"') : rail) + scrim +
+      '<div style="flex:1;min-width:0;display:flex;flex-direction:column">' + mobtop + topbar + inner + '</div>' + vehicleDrawer() + '</div>';
   }
 
   // ---- vehicle detail drawer -----------------------------------------------
@@ -273,7 +331,7 @@
       '</div>';
 
     return '<div data-act="closeVeh" style="position:absolute;inset:0;background:rgba(0,0,0,0.55);z-index:40"></div>' +
-      '<div style="position:absolute;top:0;right:0;bottom:0;width:440px;max-width:92vw;z-index:41;background:oklch(0.135 0.005 250);border-left:1px solid oklch(0.30 0.008 250);display:flex;flex-direction:column;box-shadow:-20px 0 40px rgba(0,0,0,0.4)">' +
+      '<div class="crm-drawer" style="position:absolute;top:0;right:0;bottom:0;width:440px;max-width:92vw;z-index:41;background:oklch(0.135 0.005 250);border-left:1px solid oklch(0.30 0.008 250);display:flex;flex-direction:column;box-shadow:-20px 0 40px rgba(0,0,0,0.4)">' +
         '<div style="padding:14px;border-bottom:1px solid oklch(0.26 0.008 250);display:flex;align-items:flex-start;gap:10px">' +
           '<div style="flex:1"><div style="display:flex;align-items:center;gap:8px"><div style="font-size:17px;font-weight:600">' + esc(v.car) + '</div><span style="font-size:10px;padding:2px 7px;border-radius:3px;background:oklch(0.22 0.01 250);color:' + typeFg + '">' + typeLabel + '</span></div>' +
             '<div style="font-size:12px;color:oklch(0.70 0.008 250);margin-top:3px">' + esc(v.trim || "") + (v.trim ? " · " : "") + esc(v.fuel) + ' · ' + esc(v.body) + '</div></div>' +
@@ -295,6 +353,7 @@
       case "reports": return reportsView();
       case "new": return newLeadView();
       case "import": return importView();
+      case "messages": return messagesView();
       default: return boardView();
     }
   }
@@ -325,7 +384,7 @@
             '<div style="font-size:10.5px;color:' + dueFg(d.nextFollowUp) + '">' + dueLabel(d.nextFollowUp) + '</div>' +
           '</div></div>';
       }).join("");
-      return '<div class="dropcol" data-stage="' + i + '" style="width:236px;flex:none;display:flex;flex-direction:column;border-radius:6px;border:1px solid ' + (hovering ? "oklch(0.50 0.10 200)" : "oklch(0.24 0.008 250)") + ';background:' + (hovering ? "oklch(0.19 0.02 200)" : "oklch(0.135 0.005 250)") + '">' +
+      return '<div class="dropcol kanban-col" data-stage="' + i + '" style="width:236px;flex:none;display:flex;flex-direction:column;border-radius:6px;border:1px solid ' + (hovering ? "oklch(0.50 0.10 200)" : "oklch(0.24 0.008 250)") + ';background:' + (hovering ? "oklch(0.19 0.02 200)" : "oklch(0.135 0.005 250)") + '">' +
         '<div style="padding:9px 10px;border-bottom:1px solid oklch(0.24 0.008 250);display:flex;align-items:center;gap:7px">' +
           '<div style="width:6px;height:6px;border-radius:6px;background:' + STAGE_DOT[i] + '"></div>' +
           '<div style="flex:1;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:oklch(0.88 0.004 250)">' + name + '</div>' +
@@ -424,8 +483,8 @@
           '<div style="font-size:11px;color:oklch(0.62 0.008 250);margin-top:4px">' + esc(matchNote) + ' · ' + esc(deal.pay) + '</div></div>' + matches +
       '</div>';
 
-    return '<div style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:grid;grid-template-columns:1.25fr 1fr;gap:12px;align-items:start">' +
-      '<div style="display:flex;flex-direction:column;gap:12px">' + left + '</div>' +
+    return '<div class="crm-view crm-2col" style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:grid;grid-template-columns:1.25fr 1fr;gap:12px;align-items:start">' +
+      '<div style="display:flex;flex-direction:column;gap:12px">' + left + conversationPane(deal, {}) + '</div>' +
       '<div style="display:flex;flex-direction:column;gap:12px">' + right + '</div></div>';
   }
 
@@ -486,7 +545,7 @@
     }).join("");
 
     return '<div style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px">' + timeline +
-      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start">' + groups + '</div></div>';
+      '<div class="today-tasks" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start">' + groups + '</div></div>';
   }
 
   // ---- 4. Calendar ----------------------------------------------------------
@@ -536,8 +595,8 @@
         '<div style="display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:4px;border:1px solid oklch(0.42 0.08 155);background:oklch(0.21 0.04 155);font-size:11.5px;color:oklch(0.88 0.11 155);white-space:nowrap"><div style="width:6px;height:6px;border-radius:6px;background:oklch(0.80 0.13 155)"></div>' + gcalStatus + '</div>' +
         '<div style="display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:4px;border:1px solid oklch(0.40 0.08 200);background:oklch(0.20 0.04 200);font-size:11.5px;color:oklch(0.88 0.11 200);white-space:nowrap">✉ ' + mailStatus + '</div>' +
         '<div class="mono" style="margin-left:auto;font-size:10.5px;color:oklch(0.58 0.008 250)">two-way sync · last run 9:04am</div></div>' +
-      '<div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 336px">' +
-        '<div style="min-width:0;overflow:auto;padding:12px"><div style="display:grid;grid-template-columns:56px repeat(5, minmax(158px,1fr));gap:6px;min-width:940px">' + gutter + days + '</div></div>' +
+      '<div class="cal-grid" style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 336px">' +
+        '<div class="cal-week" style="min-width:0;overflow:auto;padding:12px"><div style="display:grid;grid-template-columns:56px repeat(5, minmax(158px,1fr));gap:6px;min-width:940px">' + gutter + days + '</div></div>' +
         '<div style="border-left:1px solid oklch(0.26 0.008 250);background:oklch(0.135 0.005 250);overflow:auto">' +
           '<div style="padding:10px 12px;border-bottom:1px solid oklch(0.24 0.008 250);display:flex;gap:5px;flex-wrap:wrap">' + tabs + '</div>' +
           '<div style="padding:10px 12px 4px 12px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.56 0.008 250)">' + WEEK[S.apptDay].day + ' ' + WEEK[S.apptDay].label + ' — reminders</div>' + list +
@@ -651,7 +710,7 @@
         '<div style="padding:11px 13px;border-bottom:1px solid oklch(0.24 0.008 250);display:flex;align-items:center;gap:9px"><div style="flex:1;font-size:11.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">Worth showing them anyway</div><div class="mono" style="font-size:11px;color:oklch(0.62 0.008 250)">' + similar.length + '</div></div>' +
         (similar.map(toRow).join("") || '<div style="padding:12px 13px;font-size:11.5px;color:oklch(0.60 0.008 250)">Nothing close enough yet.</div>') + '</div></div>';
 
-    return '<div style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:grid;grid-template-columns:312px 1fr;gap:12px;align-items:start">' + left + right + '</div>';
+    return '<div class="crm-view crm-2col match-grid" style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:grid;grid-template-columns:312px 1fr;gap:12px;align-items:start">' + left + right + '</div>';
   }
 
   // ---- 7. Inventory ---------------------------------------------------------
@@ -833,7 +892,7 @@
     var moreNote = unlisted.length > 12 ? '<div style="padding:9px 13px;font-size:11px;color:oklch(0.60 0.008 250)">+ ' + (unlisted.length - 12) + ' more in stock with no ad</div>' : "";
 
     return '<div style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px">' +
-      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">' + kpis + '</div>' + tracker +
+      '<div class="kpi-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">' + kpis + '</div>' + tracker +
       '<div style="flex:none;border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);overflow:auto">' + header + rows + '</div>' +
       '<div style="flex:none;border:1px solid oklch(0.30 0.04 40);border-radius:6px;background:oklch(0.16 0.012 40)">' +
         '<div style="padding:11px 13px;border-bottom:1px solid oklch(0.26 0.02 40);font-size:11.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:oklch(0.90 0.05 40)">In stock with no Marketplace ad</div>' + unRows + moreNote + '</div></div>';
@@ -876,8 +935,8 @@
     }).join("");
 
     return '<div style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px">' +
-      '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">' + kpis + '</div>' +
-      '<div style="display:grid;grid-template-columns:1.1fr 1fr;gap:12px;align-items:start">' +
+      '<div class="kpi-row" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">' + kpis + '</div>' +
+      '<div class="crm-2col" style="display:grid;grid-template-columns:1.1fr 1fr;gap:12px;align-items:start">' +
         '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);padding:13px"><div style="font-size:11.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">Funnel by stage</div>' + funnel + '</div>' +
         '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);padding:13px"><div style="font-size:11.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">Where deals come from</div>' + bySource + '</div></div></div>';
   }
@@ -918,7 +977,7 @@
     }).join("");
     var right = '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250)"><div style="padding:12px 13px;border-bottom:1px solid oklch(0.24 0.008 250)"><div style="font-size:11.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">VINs in stock</div><div style="font-size:11px;color:oklch(0.62 0.008 250);margin-top:4px">Click one to autofill the decoder</div></div>' + vinList + '</div>';
 
-    return '<div style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start">' + left + right + '</div>';
+    return '<div class="crm-view crm-2col" style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start">' + left + right + '</div>';
   }
 
   // ---- 11. Import leads (spreadsheet-style entry) ---------------------------
@@ -987,6 +1046,83 @@
     return best;
   }
 
+  // ---- 12. Messages (contacts + iMessage/SMS threads) ----------------------
+  function quickActions(deal, small) {
+    var pad = small ? "5px 9px" : "7px 11px", fs = small ? "11.5px" : "12px";
+    function btn(href, label, color) {
+      if (!href) return "";
+      return '<a href="' + esc(href) + '" style="flex:1;text-align:center;padding:' + pad + ';border-radius:6px;border:1px solid ' + color + ';background:oklch(0.18 0.02 250);color:' + color + ';font-size:' + fs + ';font-weight:600;white-space:nowrap">' + label + '</a>';
+    }
+    return '<div style="display:flex;gap:7px">' +
+      btn(telHref(deal.phone), "Call", "oklch(0.80 0.13 155)") +
+      btn(smsHref(deal.phone), "Text", "oklch(0.80 0.13 200)") +
+      btn(mailHref(deal.email), "Email", "oklch(0.80 0.10 290)") + '</div>';
+  }
+
+  function conversationPane(deal, opts) {
+    opts = opts || {};
+    var c = convoOf(deal);
+    var banner = c.sample ? '<div style="padding:8px 12px;background:oklch(0.20 0.03 95);border:1px solid oklch(0.38 0.05 95);border-radius:6px;font-size:11px;color:oklch(0.88 0.08 95);margin-bottom:10px">Sample thread — run <span class="mono">scripts/import_iphone_backup.py</span> on your Mac to load the real iMessages for ' + esc(deal.name.split(" ")[0]) + '.</div>' : "";
+    var bubbles = c.messages.length ? c.messages.map(function (m) {
+      var me = m.from === "me";
+      return '<div style="display:flex;justify-content:' + (me ? "flex-end" : "flex-start") + ';margin-bottom:8px">' +
+        '<div style="max-width:76%"><div class="' + (me ? "bubble-me" : "bubble-them") + '" style="padding:8px 11px;font-size:13px;line-height:1.35;word-wrap:break-word">' + esc(m.text) + '</div>' +
+        '<div class="mono" style="font-size:9px;color:oklch(0.52 0.008 250);margin-top:2px;text-align:' + (me ? "right" : "left") + '">' + esc(fmtMsgTs(m.ts)) + '</div></div></div>';
+    }).join("") : '<div style="padding:20px;text-align:center;font-size:12px;color:oklch(0.55 0.008 250)">No messages yet. Text ' + esc(deal.name.split(" ")[0]) + ' to start the thread.</div>';
+
+    var contactLine = '<div class="mono" style="font-size:11.5px;color:oklch(0.72 0.008 250)">' + esc(deal.phone) + (deal.email ? '  ·  ' + esc(deal.email) : '') + '</div>';
+
+    return '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);display:flex;flex-direction:column;min-height:0' + (opts.fill ? ";flex:1" : "") + '">' +
+      '<div style="padding:11px 13px;border-bottom:1px solid oklch(0.24 0.008 250)">' +
+        (opts.back ? '<div class="clickable" data-act="msgBack" style="font-size:12px;color:oklch(0.80 0.13 200);margin-bottom:8px">‹ All conversations</div>' : '') +
+        '<div style="display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:13.5px;font-weight:600">' + esc(deal.name) + '</div>' + contactLine + '</div>' +
+          (c.sample ? '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:oklch(0.24 0.03 95);color:oklch(0.85 0.08 95)">SAMPLE</span>' : '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:oklch(0.22 0.03 155);color:oklch(0.84 0.11 155)">FROM iPhone</span>') + '</div>' +
+        '<div style="margin-top:9px">' + quickActions(deal, true) + '</div>' +
+      '</div>' +
+      '<div style="flex:1;min-height:' + (opts.fill ? "0" : "160px") + ';overflow-y:auto;padding:12px 13px">' + banner + bubbles + '</div>' +
+      '<div style="padding:9px 11px;border-top:1px solid oklch(0.24 0.008 250);display:flex;gap:7px;align-items:center">' +
+        '<input data-act="msgDraft" data-focus="msgDraft" value="' + esc(S.msgDraft) + '" placeholder="Log a message you sent…" style="flex:1;min-width:0;background:oklch(0.19 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:16px;padding:8px 13px;color:oklch(0.95 0.004 250);font-size:12.5px;outline:none" />' +
+        '<div class="clickable h-btn-cyan" data-act="msgSend" data-id="' + deal.id + '" style="padding:8px 12px;border-radius:16px;background:oklch(0.62 0.14 250);color:#fff;font-size:12.5px;font-weight:600;white-space:nowrap">Log</div>' +
+        (smsHref(deal.phone) ? '<a href="' + esc(smsHref(deal.phone)) + '" class="clickable" style="padding:8px 12px;border-radius:16px;background:oklch(0.80 0.13 200);color:oklch(0.16 0.03 200);font-size:12.5px;font-weight:600;white-space:nowrap">iMessage ↗</a>' : '') +
+      '</div>' +
+    '</div>';
+  }
+
+  function messagesView() {
+    var withMsgs = S.deals.slice().sort(function (a, b) {
+      var la = lastMsg(a), lb = lastMsg(b);
+      return (lb ? lb.ts : "").localeCompare(la ? la.ts : "");
+    });
+    var list = withMsgs.map(function (d) {
+      var lm = lastMsg(d), on = S.msgThread === d.id;
+      var preview = lm ? (lm.from === "me" ? "You: " : "") + lm.text : "No messages yet";
+      return '<div class="clickable h-row2" data-act="openThread" data-id="' + d.id + '" style="padding:11px 13px;border-bottom:1px solid oklch(0.20 0.008 250);border-left:2px solid ' + (on ? "oklch(0.44 0.08 200)" : "transparent") + ';background:' + (on ? "oklch(0.20 0.02 200)" : "transparent") + '">' +
+        '<div style="display:flex;align-items:center;gap:8px"><div style="width:34px;height:34px;flex:none;border-radius:50%;background:oklch(0.28 0.03 250);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:oklch(0.88 0.02 250)">' + esc(initials(d.name)) + '</div>' +
+          '<div style="flex:1;min-width:0"><div style="display:flex;gap:6px;align-items:baseline"><div style="flex:1;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(d.name) + '</div>' +
+            '<div class="mono" style="font-size:9.5px;color:oklch(0.55 0.008 250);white-space:nowrap">' + (lm ? esc(fmtMsgTs(lm.ts).split(" · ")[0]) : "") + '</div></div>' +
+            '<div style="font-size:11.5px;color:oklch(0.66 0.008 250);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px">' + esc(preview) + '</div></div>' +
+          (convoOf(d).sample ? '' : '<div style="width:7px;height:7px;border-radius:7px;background:oklch(0.80 0.13 155);flex:none"></div>') + '</div></div>';
+    }).join("");
+
+    var inbox = '<div class="msg-list" style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);overflow:auto;min-height:0">' +
+      '<div style="padding:10px 13px;border-bottom:1px solid oklch(0.24 0.008 250);position:sticky;top:0;background:oklch(0.15 0.005 250)"><div style="font-size:11.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">Conversations</div>' +
+        '<div style="font-size:10.5px;color:oklch(0.60 0.008 250);margin-top:3px">' + (convosAreReal() ? "Synced from your iPhone backup" : "Sample threads — import your backup to load real messages") + '</div></div>' + list + '</div>';
+
+    var thread = S.msgThread ? conversationPane(dealById(S.msgThread), { fill: true, back: isMobile() }) :
+      '<div class="msg-empty" style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);display:flex;align-items:center;justify-content:center;color:oklch(0.55 0.008 250);font-size:13px">Pick a conversation to open the thread</div>';
+
+    // mobile: show either the list or the open thread (full width)
+    var mobileThreadOnly = isMobile() && S.msgThread;
+    var grid = mobileThreadOnly ? thread : (isMobile() ? inbox :
+      '<div class="msg-grid" style="display:grid;grid-template-columns:320px 1fr;gap:12px;flex:1;min-height:0">' + inbox + thread + '</div>');
+
+    return '<div style="flex:1;min-height:0;display:flex;flex-direction:column;padding:14px">' + grid + '</div>';
+  }
+  function initials(name) {
+    var p = String(name).trim().split(/\s+/);
+    return (p[0] ? p[0][0] : "") + (p[1] ? p[1][0] : "");
+  }
+
   // ==========================================================================
   // EVENTS
   // ==========================================================================
@@ -997,11 +1133,25 @@
     if (!t) return;
     var act = t.dataset.act, id = t.dataset;
     switch (act) {
-      case "nav": setS({ view: id.view, noteDraft: "", vehicleStock: null }); break;
+      case "nav": setS({ view: id.view, noteDraft: "", vehicleStock: null, navOpen: false }); break;
+      case "toggleNav": setS({ navOpen: !S.navOpen }); break;
+      case "closeNav": setS({ navOpen: false }); break;
       case "toggleHot": setS({ hotOnly: !S.hotOnly }); break;
-      case "openDeal": setS({ view: "deal", selected: +id.id, noteDraft: "", vehicleStock: null }); break;
+      case "openDeal": setS({ view: "deal", selected: +id.id, noteDraft: "", vehicleStock: null, navOpen: false }); break;
       case "openVeh": setS({ vehicleStock: id.stock }); break;
       case "closeVeh": setS({ vehicleStock: null }); break;
+      case "openThread": setS({ msgThread: +id.id, msgDraft: "" }); break;
+      case "msgBack": setS({ msgThread: null }); break;
+      case "msgSend": {
+        var mt = S.msgDraft.trim();
+        if (!mt) return;
+        var md = dealById(+id.id);
+        var conv = S.convos[md.id] || (S.convos[md.id] = { sample: false, messages: [] });
+        conv.messages = conv.messages.concat([{ from: "me", text: mt, ts: nowISO() }]);
+        md.lastContact = D.today;
+        setS({ msgDraft: "" });
+        break;
+      }
       case "leadOnVeh": {
         var lv = INV.find(function (x) { return x.vin && x.vin.toUpperCase() === id.vin.toUpperCase(); });
         setS({ view: "new", vehicleStock: null, form: Object.assign(blankForm(), { vin: id.vin }), vinResult: lv, vinMsg: lv ? "Matched stock " + lv.stock + " — pulled from inventory." : "" });
@@ -1101,6 +1251,7 @@
       case "questPrice": S.quest = Object.assign({}, S.quest, { priceMax: parseInt(val, 10) }); render(); break;
       case "invAdv": S.invAdv = Object.assign({}, S.invAdv, keyVal(key, val)); render(); break;
       case "imp": S.importRows[+t.dataset.row][key] = val; break;   // no re-render (keeps caret)
+      case "msgDraft": S.msgDraft = val; break;                     // no re-render (keeps caret)
     }
   });
 
@@ -1225,6 +1376,16 @@
     var el = document.querySelector('[data-focus="' + f.id + '"]');
     if (el) { el.focus(); try { if (f.start != null) el.setSelectionRange(f.start, f.end); } catch (x) {} }
   }
+
+  // re-render across the mobile/desktop breakpoint so layouts swap cleanly
+  var wasMobile = isMobile();
+  var rzTimer = null;
+  window.addEventListener("resize", function () {
+    clearTimeout(rzTimer);
+    rzTimer = setTimeout(function () {
+      if (isMobile() !== wasMobile) { wasMobile = isMobile(); render(); }
+    }, 150);
+  });
 
   render();
 })();

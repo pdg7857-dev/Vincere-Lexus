@@ -535,6 +535,8 @@ def build_matches(wb, names):
 def fmt_phone(p):
     if p is None:
         return "—"
+    if isinstance(p, float):
+        p = int(p)                      # 4168906390.0 -> 4168906390 (drop the .0)
     s = re.sub(r"[^0-9]", "", str(p))
     if len(s) == 11 and s[0] == "1":
         s = s[1:]
@@ -544,6 +546,41 @@ def fmt_phone(p):
 
 
 # --------------------------------------------------------------------------- #
+def build_conversations(deals, inv_by_stock):
+    """Seed a short, clearly-labelled SAMPLE text thread per client so the
+    Messages view is usable before a real backup is imported. Replaced wholesale
+    by scripts/import_iphone_backup.py (which writes crm/messages.js)."""
+    out = []
+    for d in deals:
+        veh = inv_by_stock.get(d["invStock"])
+        model = (veh["model"] if veh else "the vehicle")
+        first = d["name"].split()[0]
+        base = datetime.date.fromisoformat(d["lastContact"]) if d.get("lastContact") else TODAY
+        msgs = []
+
+        def add(fr, text, day, hh, mm):
+            dt = datetime.datetime.combine(base + datetime.timedelta(days=day),
+                                           datetime.time(hh, mm))
+            msgs.append({"from": fr, "text": text, "ts": dt.isoformat(timespec="minutes")})
+
+        add("me", "Hi %s, thanks for coming into Vincere Lexus today — it's your sales rep here. "
+            "I'll text you the details on the %s. Feel free to reach me anytime on this number."
+            % (first, model), 0, 10, 12)
+        add("them", "Thanks! Yes please send them over.", 0, 11, 40)
+        add("me", "Sent — specs and a few photos are on the way. Want to line up a test drive this week?", 0, 11, 47)
+        if d["stage"] >= 2:
+            add("them", "Sounds good, what times do you have?", 1, 9, 5)
+            add("me", "I've got a couple of openings — I'll confirm a slot and put it on the calendar.", 1, 9, 18)
+        if str(d.get("level", "")).lower() == "purchased":
+            add("them", "Picked it up on the weekend — we love it. Thank you!", 3, 17, 2)
+            add("me", "So glad to hear it! Enjoy, and send anyone my way. 🙏", 3, 17, 20)
+        elif d["hot"]:
+            add("them", "Still thinking it over — will let you know by the weekend.", 2, 18, 30)
+
+        out.append({"dealId": d["id"], "sample": True, "messages": msgs})
+    return out
+
+
 def build_appointments(deals):
     """No appointment feed exists in the export; generate a realistic week for the
     active opportunities so the Calendar / Today views are populated."""
@@ -696,6 +733,7 @@ def main():
     ads = build_ads(wb, inventory, inv_by_stock)
     buyers = build_repeat_buyers(wb, deals, inventory)
     matches = build_matches(wb, names)
+    conversations = build_conversations(deals, inv_by_stock)
 
     data = {
         "today": TODAY.isoformat(),
@@ -707,6 +745,7 @@ def main():
         "ads": ads,
         "repeatBuyers": buyers,
         "matches": matches,
+        "conversations": conversations,
     }
 
     out = ROOT / "crm" / "data.js"
@@ -725,6 +764,7 @@ def main():
     print(f"  ads       : {len(ads)}")
     print(f"  buyers    : {len(buyers)}")
     print(f"  matches   : {len(matches)}")
+    print(f"  convos    : {len(conversations)} (sample — replace via import_iphone_backup.py)")
 
 
 if __name__ == "__main__":
