@@ -19,6 +19,10 @@
 <!-- Optional: real iMessage/SMS threads written by scripts/import_iphone_backup.py.
      Absent until you run the importer; the app falls back to sample threads. -->
 <script src="messages.js" onerror="window.__noMessages=true"></script>
+<!-- Cross-device sync (optional). The CDN client + your keys enable Supabase;
+     if either is missing the app runs offline on localStorage. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="window.__noSupabase=true"></script>
+<script src="supabase.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

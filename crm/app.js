@@ -146,47 +146,65 @@
     });
     return out;
   }
+  var WRITER = "w" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
+  // the persisted snapshot (localStorage + Supabase share this shape)
+  function buildStoreObject() {
+    return {
+      v: 1, deals: S.deals, dirty: S.dirtyDeals, appts: S.appts, ads: S.ads, done: S.done,
+      invAdd: S.invAdd, localMsgs: extractLocalMsgs(S.convos), savedAt: Date.now(), _writer: WRITER
+    };
+  }
   function saveStore() {
-    var now = Date.now();
-    try {
-      localStorage.setItem(STORE_KEY, JSON.stringify({
-        v: 1, deals: S.deals, dirty: S.dirtyDeals, appts: S.appts, ads: S.ads, done: S.done,
-        invAdd: S.invAdd, localMsgs: extractLocalMsgs(S.convos), savedAt: now
-      }));
-      STORE.savedAt = now;   // so the "Saved …" label stays current within the session
-    } catch (e) { /* quota / private mode — run without persistence */ }
+    var obj = buildStoreObject();
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(obj)); STORE.savedAt = obj.savedAt; }
+    catch (e) { /* quota / private mode — run without persistence */ }
+    if (cloud.enabled && cloud.uid) cloud.push();   // debounced push to Supabase
   }
   function markDirty(id) { if (id != null) S.dirtyDeals[id] = 1; }
 
-  var initialDeals = mergeDeals();
-  var S = {
-    view: "board",
-    deals: initialDeals,
-    appts: (Array.isArray(STORE.appts) ? STORE.appts : D.appointments).map(function (a) { return Object.assign({}, a); }),
-    ads: (Array.isArray(STORE.ads) ? STORE.ads : D.ads).map(function (a) { return Object.assign({}, a); }),
-    selected: (initialDeals.find(function (d) { return d.hot; }) || initialDeals[0]).id,
-    query: "", sourceFilter: "All sources", hotOnly: false,
-    dragId: null, hoverStage: null, noteDraft: "", done: STORE.done || {},
-    apptDay: 0,
-    invFilter: "All", importFeed: IMPORT_FEEDS[0], importStep: 0,
-    matchFor: (D.repeatBuyers[0] || {}).name || "",
-    quest: initQuest(D.repeatBuyers[0]),
-    weights: { body: 3, color: 1, interior: 3, trim: 1, km: 3, price: 3 },
-    form: { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" },
-    vinResult: undefined, vinMsg: "",
-    adUrl: "", adImport: undefined, adMsg: "",
-    vehicleStock: null,                         // open vehicle detail drawer
-    showInvAdv: false,                          // advanced inventory filter panel
-    invAdv: blankInvAdv(),
-    importRows: blankImportRows(6), importMsg: "",
-    navOpen: false,                             // mobile slide-in nav
-    convos: mergeConvos(),                      // dealId -> {sample, messages:[]}
-    msgThread: null, msgDraft: "",              // Messages view + composer
-    dirtyDeals: (STORE.dirty && typeof STORE.dirty === "object") ? Object.assign({}, STORE.dirty) : {},
-    invAdd: Array.isArray(STORE.invAdd) ? STORE.invAdd.slice() : [],   // CSV-imported inventory
-    csvOpen: false, csvType: "Auto", csvText: "", csvPreview: null, csvMsg: ""
-  };
+  // rebuilt whenever the overlay (STORE) changes — at boot and on a cloud pull
+  function buildState() {
+    var initialDeals = mergeDeals();
+    return {
+      view: "board",
+      deals: initialDeals,
+      appts: (Array.isArray(STORE.appts) ? STORE.appts : D.appointments).map(function (a) { return Object.assign({}, a); }),
+      ads: (Array.isArray(STORE.ads) ? STORE.ads : D.ads).map(function (a) { return Object.assign({}, a); }),
+      selected: (initialDeals.find(function (d) { return d.hot; }) || initialDeals[0]).id,
+      query: "", sourceFilter: "All sources", hotOnly: false,
+      dragId: null, hoverStage: null, noteDraft: "", done: STORE.done || {},
+      apptDay: 0,
+      invFilter: "All", importFeed: IMPORT_FEEDS[0], importStep: 0,
+      matchFor: (D.repeatBuyers[0] || {}).name || "",
+      quest: initQuest(D.repeatBuyers[0]),
+      weights: { body: 3, color: 1, interior: 3, trim: 1, km: 3, price: 3 },
+      form: { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" },
+      vinResult: undefined, vinMsg: "",
+      adUrl: "", adImport: undefined, adMsg: "",
+      vehicleStock: null, showInvAdv: false, invAdv: blankInvAdv(),
+      importRows: blankImportRows(6), importMsg: "",
+      navOpen: false,
+      convos: mergeConvos(),
+      msgThread: null, msgDraft: "",
+      dirtyDeals: (STORE.dirty && typeof STORE.dirty === "object") ? Object.assign({}, STORE.dirty) : {},
+      invAdd: Array.isArray(STORE.invAdd) ? STORE.invAdd.slice() : [],
+      csvOpen: false, csvType: "Auto", csvText: "", csvPreview: null, csvMsg: ""
+    };
+  }
+  var S = buildState();
   refreshInv();   // fold persisted CSV imports into INV now that S exists
+
+  // apply an overlay pulled from the cloud (or a remote device), preserving the
+  // current view so a background sync doesn't yank you around
+  function applyStore(newStore) {
+    if (!newStore || typeof newStore !== "object") return;
+    var ui = { view: S.view, selected: S.selected, msgThread: S.msgThread, query: S.query, navOpen: false };
+    STORE = newStore;
+    S = buildState();
+    refreshInv();
+    Object.assign(S, ui);
+    render();
+  }
 
   function blankInvAdv() {
     return { q: "", make: "All", fuel: "All", minPrice: "", maxPrice: "",
@@ -231,6 +249,25 @@
   function dueLabel(s) { return !s ? "delivered" : "→ " + fmtISO(s); }
   function ageDays(deal) { return deal.lastContact ? daysBetween(parseISO(deal.lastContact), NOW) : 0; }
   function isMobile() { return window.innerWidth <= 820; }
+  function syncFooter() {
+    if (cloud.uid) {
+      var dot = cloud.status === "error" ? "oklch(0.72 0.14 40)" : cloud.status === "syncing" ? "oklch(0.80 0.14 95)" : "oklch(0.80 0.13 155)";
+      var label = cloud.status === "error" ? "Sync error — retrying" : cloud.status === "syncing" ? "Syncing…" : "Synced across your devices";
+      return '<div style="padding:10px 12px;border-top:1px solid oklch(0.24 0.008 250)">' +
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:6px;height:6px;border-radius:6px;background:' + dot + '"></div>' +
+          '<div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.60 0.008 250)">☁ ' + esc(label) + '</div></div>' +
+        '<div class="mono" style="font-size:9.5px;color:oklch(0.50 0.008 250);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(AUTH.email || "") + '</div>' +
+        '<div class="clickable h-btn-raised" data-act="signOut" tabindex="0" role="button" style="text-align:center;padding:6px 8px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:11px;color:oklch(0.80 0.008 250)">Sign out</div></div>';
+    }
+    return '<div style="padding:10px 12px;border-top:1px solid oklch(0.24 0.008 250)">' +
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px"><div style="width:6px;height:6px;border-radius:6px;background:oklch(0.80 0.13 155)"></div>' +
+        '<div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.60 0.008 250)">Saved on this device</div></div>' +
+      '<div class="mono" style="font-size:9.5px;color:oklch(0.50 0.008 250);margin-bottom:8px">' + esc(savedLabel()) + (hasRealThreads() ? " · msgs synced" : "") + '</div>' +
+      '<div style="display:flex;gap:6px">' +
+        '<div class="clickable h-btn-raised" data-act="pullLatest" style="flex:1;text-align:center;padding:6px 8px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:11px;color:oklch(0.82 0.008 250);white-space:nowrap">⟳ Pull latest</div>' +
+        '<div class="clickable" data-act="resetDevice" title="Clear this device\'s saved edits" style="padding:6px 8px;border-radius:4px;border:1px solid oklch(0.30 0.04 40);font-size:11px;color:oklch(0.72 0.06 40);white-space:nowrap">Reset</div>' +
+      '</div></div>';
+  }
   function savedLabel() {
     var t = STORE.savedAt;
     if (!t) return "Not saved yet";
@@ -315,6 +352,7 @@
   var app = document.getElementById("app");
 
   function render() {
+    if (authGate) { app.innerHTML = authGateHtml(); restoreFocus(captureFocus()); return; }
     var focus = captureFocus();
     app.innerHTML = shell(viewHtml());
     restoreFocus(focus);
@@ -359,15 +397,7 @@
           '<div style="margin-top:10px;height:3px;border-radius:3px;background:oklch(0.24 0.008 250);overflow:hidden"><div style="height:100%;width:' + pct + '%;background:oklch(0.78 0.13 200)"></div></div>' +
           '<div style="font-size:10.5px;color:oklch(0.55 0.008 250);margin-top:5px">' + pct + '% of ' + target + '-unit target</div>' +
         '</div>' +
-        '<div style="padding:10px 12px;border-top:1px solid oklch(0.24 0.008 250)">' +
-          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px"><div style="width:6px;height:6px;border-radius:6px;background:oklch(0.80 0.13 155)"></div>' +
-            '<div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.60 0.008 250)">Saved on this device</div></div>' +
-          '<div class="mono" style="font-size:9.5px;color:oklch(0.50 0.008 250);margin-bottom:8px">' + esc(savedLabel()) + (hasRealThreads() ? " · msgs synced" : "") + '</div>' +
-          '<div style="display:flex;gap:6px">' +
-            '<div class="clickable h-btn-raised" data-act="pullLatest" style="flex:1;text-align:center;padding:6px 8px;border-radius:4px;border:1px solid oklch(0.30 0.008 250);font-size:11px;color:oklch(0.82 0.008 250);white-space:nowrap">⟳ Pull latest</div>' +
-            '<div class="clickable" data-act="resetDevice" title="Clear this device\'s saved edits" style="padding:6px 8px;border-radius:4px;border:1px solid oklch(0.30 0.04 40);font-size:11px;color:oklch(0.72 0.06 40);white-space:nowrap">Reset</div>' +
-          '</div>' +
-        '</div>' +
+        syncFooter() +
       '</div>';
 
     var hotOn = S.hotOnly;
@@ -1440,6 +1470,13 @@
     var t = e.target.closest("[data-act]");
     if (!t) return;
     var act = t.dataset.act, id = t.dataset;
+    // auth-gate actions work before the CRM is booted
+    if (act === "authSend") { authSend(); return; }
+    if (act === "authVerify") { authVerify(); return; }
+    if (act === "authBack") { AUTH.step = "email"; AUTH.msg = ""; render(); return; }
+    if (act === "authOffline") { cloud.enabled = false; authGate = false; render(); return; }
+    if (act === "signOut") { cloud.signOut(); return; }
+    if (authGate) return;
     switch (act) {
       case "nav": setS({ view: id.view, noteDraft: "", vehicleStock: null, navOpen: false }); break;
       case "toggleNav": setS({ navOpen: !S.navOpen }); break;
@@ -1604,6 +1641,8 @@
       case "imp": S.importRows[+t.dataset.row][key] = val; break;   // no re-render (keeps caret)
       case "msgDraft": S.msgDraft = val; break;                     // no re-render (keeps caret)
       case "csvText": S.csvText = val; break;                       // no re-render (keeps caret)
+      case "authEmail": AUTH.email = val; break;
+      case "authCode": AUTH.code = val; break;
     }
   });
 
@@ -1766,5 +1805,112 @@
     }, 150);
   });
 
-  render();
+  // ==========================================================================
+  // CLOUD SYNC (Supabase) — optional; the app runs fully offline without it
+  // ==========================================================================
+  var SB = null;
+  var AUTH = { step: "email", email: "", code: "", msg: "", busy: false };
+  var authGate = false;
+  var cloud = {
+    enabled: !!(window.CRM_SUPABASE && window.CRM_SUPABASE.url && window.CRM_SUPABASE.anonKey &&
+                window.supabase && !window.__noSupabase),
+    uid: null, channel: null, pushTimer: null, status: "off",
+    init: function () { if (!SB) SB = window.supabase.createClient(window.CRM_SUPABASE.url, window.CRM_SUPABASE.anonKey); },
+    onSignedIn: function (session) {
+      cloud.uid = session.user.id;
+      AUTH.email = session.user.email || AUTH.email;
+      cloud.status = "syncing";
+      SB.from("crm_state").select("data").eq("user_id", cloud.uid).maybeSingle().then(function (res) {
+        authGate = false; cloud.status = "synced";
+        var row = res && res.data;
+        if (row && row.data && Object.keys(row.data).length) applyStore(row.data);  // cloud wins on sign-in
+        else { cloud.push(true); render(); }                                         // seed cloud from this device
+        cloud.subscribe();
+      }, function () { authGate = false; cloud.status = "error"; render(); });
+    },
+    subscribe: function () {
+      if (cloud.channel || !SB) return;
+      cloud.channel = SB.channel("crm_" + cloud.uid)
+        .on("postgres_changes", { event: "*", schema: "public", table: "crm_state", filter: "user_id=eq." + cloud.uid },
+          function (payload) {
+            var d = payload["new"] && payload["new"].data;
+            if (d && d._writer !== WRITER) applyStore(d);   // a change from your other device
+          }).subscribe();
+    },
+    push: function (immediate) {
+      if (!cloud.uid || !SB) return;
+      clearTimeout(cloud.pushTimer);
+      var doPush = function () {
+        cloud.status = "syncing";
+        SB.from("crm_state").upsert({ user_id: cloud.uid, data: buildStoreObject(), updated_at: new Date().toISOString() })
+          .then(function (r) { cloud.status = (r && r.error) ? "error" : "synced"; });
+      };
+      if (immediate) doPush(); else cloud.pushTimer = setTimeout(doPush, 800);
+    },
+    signOut: function () {
+      if (SB) { try { SB.auth.signOut(); } catch (e) {} if (cloud.channel) { SB.removeChannel(cloud.channel); cloud.channel = null; } }
+      cloud.uid = null; cloud.status = "off"; AUTH = { step: "email", email: "", code: "", msg: "", busy: false };
+      authGate = true; render();
+    }
+  };
+  function authSend() {
+    var email = (AUTH.email || "").trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { AUTH.msg = "Enter a valid email."; render(); return; }
+    AUTH.busy = true; AUTH.msg = ""; render();
+    SB.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } }).then(function (r) {
+      AUTH.busy = false;
+      if (r.error) AUTH.msg = r.error.message;
+      else { AUTH.step = "code"; AUTH.msg = ""; }
+      render();
+    });
+  }
+  function authVerify() {
+    var token = (AUTH.code || "").trim();
+    if (!token) { AUTH.msg = "Enter the 6-digit code from your email."; render(); return; }
+    AUTH.busy = true; AUTH.msg = ""; render();
+    SB.auth.verifyOtp({ email: AUTH.email.trim(), token: token, type: "email" }).then(function (r) {
+      AUTH.busy = false;
+      if (r.error) { AUTH.msg = r.error.message; render(); }
+      else cloud.onSignedIn(r.data.session);
+    });
+  }
+  function authGateHtml() {
+    var onCode = AUTH.step === "code";
+    var field = onCode
+      ? '<input data-act="authCode" data-focus="authCode" value="' + esc(AUTH.code) + '" inputmode="numeric" placeholder="6-digit code" class="mono" style="width:100%;text-align:center;letter-spacing:0.3em;background:oklch(0.19 0.006 250);border:1px solid oklch(0.30 0.008 250);border-radius:6px;padding:12px;color:oklch(0.95 0.004 250);font-size:18px;outline:none" />'
+      : '<input data-act="authEmail" data-focus="authEmail" value="' + esc(AUTH.email) + '" inputmode="email" placeholder="you@email.com" style="width:100%;background:oklch(0.19 0.006 250);border:1px solid oklch(0.30 0.008 250);border-radius:6px;padding:12px;color:oklch(0.95 0.004 250);font-size:14px;outline:none" />';
+    var btn = onCode
+      ? '<div class="clickable h-btn-cyan" data-act="authVerify" tabindex="0" role="button" style="margin-top:10px;text-align:center;padding:12px;border-radius:6px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:14px;font-weight:600">' + (AUTH.busy ? "Verifying…" : "Verify &amp; sync") + '</div>' +
+        '<div class="clickable" data-act="authBack" tabindex="0" role="button" style="margin-top:8px;text-align:center;font-size:12px;color:oklch(0.66 0.008 250)">← Use a different email</div>'
+      : '<div class="clickable h-btn-cyan" data-act="authSend" tabindex="0" role="button" style="margin-top:10px;text-align:center;padding:12px;border-radius:6px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:14px;font-weight:600">' + (AUTH.busy ? "Sending…" : "Email me a sign-in code") + '</div>';
+    return '<div style="height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;background:#0a0b0d;padding:20px">' +
+      '<div style="width:100%;max-width:360px">' +
+        '<div style="text-align:center;margin-bottom:6px"><div style="font-size:16px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase">' + esc(D.dealership.name) + '</div>' +
+          '<div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:oklch(0.60 0.008 250);margin-top:3px">' + esc(D.dealership.brand) + '</div></div>' +
+        '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:10px;background:oklch(0.15 0.005 250);padding:20px;margin-top:16px">' +
+          '<div style="font-size:14px;font-weight:600">Sign in to sync your CRM</div>' +
+          '<div style="font-size:12px;color:oklch(0.64 0.008 250);margin-top:5px;margin-bottom:14px">' + (onCode ? "We emailed a 6-digit code to " + esc(AUTH.email) + "." : "Same data on your phone and computer. We'll email you a one-time code — no password.") + '</div>' +
+          field + btn +
+          (AUTH.msg ? '<div style="font-size:12px;color:oklch(0.80 0.14 40);margin-top:10px;text-align:center">' + esc(AUTH.msg) + '</div>' : "") +
+        '</div>' +
+        '<div class="clickable" data-act="authOffline" tabindex="0" role="button" style="text-align:center;margin-top:14px;font-size:12px;color:oklch(0.60 0.008 250)">Use offline on this device instead</div>' +
+      '</div></div>';
+  }
+
+  // ---- boot -----------------------------------------------------------------
+  if (cloud.enabled) {
+    try {
+      cloud.init();
+      authGate = true; render();
+      SB.auth.getSession().then(function (r) {
+        var session = r && r.data && r.data.session;
+        if (session) cloud.onSignedIn(session);
+        else render();               // stay on the sign-in gate
+      }, function () { render(); });
+    } catch (e) {
+      cloud.enabled = false; authGate = false; render();
+    }
+  } else {
+    authGate = false; render();
+  }
 })();

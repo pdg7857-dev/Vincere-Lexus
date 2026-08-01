@@ -117,6 +117,32 @@ sample threads and merges with anything you log in-app). Two ways to fill it:
    path while githack serves the reads. No backend or API key required for that
    loop.
 
+## Cross-device sync (Supabase)
+
+By default the app saves to the browser on each device (localStorage). To share
+**one synced, backed-up dataset across your phone and computer**, connect a free
+Supabase project — then everything (deals, notes, logged messages, new/imported
+leads, CSV inventory) lives in the cloud and updates live between devices.
+
+**One-time setup (~5 min):**
+
+1. Create a free project at [supabase.com](https://supabase.com).
+2. In the project: **SQL Editor → New query**, paste `supabase/schema.sql`, **Run**.
+   (Creates the `crm_state` table with row-level security + realtime.)
+3. **Project Settings → API**, copy the **Project URL** and the **anon public**
+   key. Put them in `crm/supabase.js`:
+   ```js
+   window.CRM_SUPABASE = { url: "https://YOURPROJECT.supabase.co", anonKey: "eyJ…" };
+   ```
+   The anon key is safe to commit — it's public by design and gated by row-level
+   security (never use the `service_role` key here).
+
+That's it. Open the app on any device, sign in with your email (a one-time code
+is emailed — no password), and your CRM syncs. Sign out from the rail footer.
+The footer shows sync status; "Use offline on this device" skips sign-in and
+keeps that device local-only. With `supabase.js` left blank, the app runs exactly
+as before on localStorage.
+
 ## Contacts & iMessage threads from your iPhone
 
 A web app can't read an iPhone's Messages or Contacts directly — iOS sandboxes
