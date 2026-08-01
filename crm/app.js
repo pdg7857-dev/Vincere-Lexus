@@ -403,11 +403,27 @@
     var hotOn = S.hotOnly;
     var mobtop =
       '<div class="crm-mobtop">' +
-        '<div class="clickable" data-act="toggleNav" tabindex="0" role="button" aria-label="Open menu" style="width:30px;height:30px;flex:none;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 4px">' +
-          '<div style="height:2px;background:oklch(0.85 0.004 250);border-radius:2px"></div><div style="height:2px;background:oklch(0.85 0.004 250);border-radius:2px"></div><div style="height:2px;background:oklch(0.85 0.004 250);border-radius:2px"></div></div>' +
-        '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + titles[S.view] + '</div></div>' +
-        '<div class="clickable h-btn-cyan" data-act="nav" data-view="new" style="padding:6px 11px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12px;font-weight:600;white-space:nowrap">+ Lead</div>' +
+        '<div style="flex:1;min-width:0;display:flex;align-items:center;gap:7px"><div style="font-size:14px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase">' + esc(D.dealership.name) + '</div>' +
+          '<div style="font-size:13px;font-weight:600;color:oklch(0.72 0.008 250);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + titles[S.view] + '</div></div>' +
+        '<div class="clickable h-btn-cyan" data-act="nav" data-view="new" style="padding:8px 13px;border-radius:6px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12.5px;font-weight:600;white-space:nowrap">+ Lead</div>' +
       '</div>';
+
+    var dueToday = S.deals.filter(function (d) { return isToday(d.nextFollowUp); }).length;
+    var awaitingReply = S.deals.filter(function (d) { var m = convoOf(d).messages; return m.length && m[m.length - 1].from === "them"; }).length;
+    var tabBadge = { today: dueToday, messages: awaitingReply };
+    var tabs2 = [
+      ["board", "Pipeline", "▚"], ["today", "Today", "◷"], ["messages", "Messages", "✉"],
+      ["inventory", "Inventory", "❐"], ["__more", "More", "≡"]
+    ].map(function (tb) {
+      var active = tb[0] === "__more" ? S.navOpen : (S.view === tb[0] && !S.navOpen);
+      var col = active ? "oklch(0.85 0.13 200)" : "oklch(0.62 0.008 250)";
+      var act = tb[0] === "__more" ? 'data-act="toggleNav"' : 'data-act="nav" data-view="' + tb[0] + '"';
+      var badge = tabBadge[tb[0]] || 0;
+      return '<div class="crm-tab clickable" ' + act + ' tabindex="0" role="button" aria-label="' + tb[1] + '" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:' + col + '">' +
+        '<div style="position:relative;font-size:17px;line-height:1">' + tb[2] + (badge ? '<span style="position:absolute;top:-4px;left:12px;background:oklch(0.72 0.14 40);color:#fff;font-size:8px;font-weight:700;min-width:13px;height:13px;line-height:13px;border-radius:7px;padding:0 3px" class="mono">' + (badge > 99 ? "99+" : badge) + '</span>' : '') + '</div>' +
+        '<div style="font-size:9.5px;font-weight:500;letter-spacing:0.02em">' + tb[1] + '</div></div>';
+    }).join("");
+    var bottombar = '<div class="crm-bottombar">' + tabs2 + '</div>';
 
     var topbar =
       '<div class="crm-top" style="height:50px;flex:none;border-bottom:1px solid oklch(0.26 0.008 250);background:oklch(0.13 0.005 250);display:flex;align-items:center;gap:10px;padding:0 14px">' +
@@ -431,7 +447,7 @@
 
     return '<div style="display:flex;height:100vh;height:100dvh;width:100%;background:#0a0b0d;overflow:hidden">' +
       (S.navOpen ? rail.replace('class="crm-rail"', 'class="crm-rail open"') : rail) + scrim +
-      '<div style="flex:1;min-width:0;display:flex;flex-direction:column">' + mobtop + topbar + inner + '</div>' + vehicleDrawer() + '</div>';
+      '<div style="flex:1;min-width:0;display:flex;flex-direction:column">' + mobtop + topbar + inner + bottombar + '</div>' + vehicleDrawer() + '</div>';
   }
 
   // ---- vehicle detail drawer -----------------------------------------------

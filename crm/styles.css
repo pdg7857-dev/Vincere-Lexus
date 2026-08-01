@@ -42,10 +42,34 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   outline: 2px solid oklch(0.80 0.13 200); outline-offset: 1px; border-radius: 3px;
 }
 .mobile-stage { display: none; }
-@media (max-width: 820px) { .mobile-stage { display: block; } }
+@media (max-width: 820px) { .mobile-stage { display: block; padding: 9px 8px; } }
+
+/* ---- native bottom tab bar (mobile only) ---- */
+.crm-bottombar { display: none; }
+@media (max-width: 820px) {
+  .crm-bottombar {
+    display: flex; flex: none; align-items: stretch;
+    background: oklch(0.13 0.005 250);
+    border-top: 1px solid oklch(0.26 0.008 250);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .crm-tab { min-height: 48px; }
+  /* comfortable touch targets on phones */
+  .h-nav { padding: 12px 10px !important; }
+  .crm-mobtop { padding-top: max(env(safe-area-inset-top), 8px); min-height: 52px; }
+  .crm-mobtop [data-act] { min-height: 40px; }
+  .crm-rail { padding-top: env(safe-area-inset-top); }
+  .crm-rail > div:last-child { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+  /* keep the last bit of any scroll clear of the tab bar / home indicator */
+  .crm-view, .msg-list, .msg-grid { padding-bottom: env(safe-area-inset-bottom); }
+}
 
 /* keep the app from ever scrolling the page itself */
-#app { height: 100vh; height: 100dvh; overflow: hidden; }
+#app { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior: none; }
+* { -webkit-tap-highlight-color: transparent; }
+.clickable, [data-act], input, select, textarea, button, a { touch-action: manipulation; }
+/* momentum scrolling on iOS */
+[style*="overflow"] { -webkit-overflow-scrolling: touch; }
 
 /* iMessage-style bubbles */
 .bubble-them { background: oklch(0.26 0.008 250); color: oklch(0.95 0.004 250); border-radius: 14px 14px 14px 4px; }
