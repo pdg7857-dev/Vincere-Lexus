@@ -147,6 +147,43 @@ same data, live. Sign out from the rail footer. The footer shows sync status;
 "Use offline on this device" skips sign-in and keeps that device local-only. With
 `supabase.js` left blank, the app runs exactly as before on localStorage.
 
+## Website leads → CRM (live)
+
+Leads submitted on the website (phildavemotors) land in a Supabase `leads` table
+and show up in the CRM's **Web leads** inbox in real time (with a badge on the
+nav / mobile "More" tab). Each shows the customer, what they want, and buttons to
+**Call**, **Add to pipeline** (creates a New-lead opportunity with the vehicle
+auto-matched), or **Dismiss**. Reading leads is locked to the owner account by
+Row Level Security; the public form can only insert.
+
+Setup: run the `leads` section of `supabase/schema.sql`, then add this to the
+website's form-submit handler so each submission is mirrored into Supabase (it
+keeps posting to your Google Sheet too):
+
+```js
+fetch("https://xgvawsupcfasksvvxyyi.supabase.co/rest/v1/leads", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "apikey": "<anon public key>",
+    "Authorization": "Bearer <anon public key>",
+    "Prefer": "return=minimal"
+  },
+  body: JSON.stringify({ source: data.source || "Website", name: data.name,
+                         phone: data.phone, email: data.email, payload: data })
+}).catch(function () {});
+```
+
+## Working hands-free with Claude + Google Calendar + Todoist
+
+Claude (in the Claude mobile app, by voice) can act on the CRM for you while
+you drive: it has connectors to your **Google Calendar** (`pdg7857@gmail.com`)
+and **Todoist** (`🚗 Lexus / Sourcing` project). Say things like *"book a test
+drive with Nava tomorrow at 2pm and remind me to call Keith about financing,"*
+and Claude creates the calendar event + the Todoist task, and can log the
+activity in the CRM. This runs through a Claude session on this repo, not inside
+the static app — the app is where you see the results.
+
 ## Contacts & iMessage threads from your iPhone
 
 A web app can't read an iPhone's Messages or Contacts directly — iOS sandboxes

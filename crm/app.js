@@ -188,7 +188,8 @@
       msgThread: null, msgDraft: "",
       dirtyDeals: (STORE.dirty && typeof STORE.dirty === "object") ? Object.assign({}, STORE.dirty) : {},
       invAdd: Array.isArray(STORE.invAdd) ? STORE.invAdd.slice() : [],
-      csvOpen: false, csvType: "Auto", csvText: "", csvPreview: null, csvMsg: ""
+      csvOpen: false, csvType: "Auto", csvText: "", csvPreview: null, csvMsg: "",
+      leads: []                                   // website leads from Supabase (not persisted here)
     };
   }
   var S = buildState();
@@ -198,7 +199,7 @@
   // current view so a background sync doesn't yank you around
   function applyStore(newStore) {
     if (!newStore || typeof newStore !== "object") return;
-    var ui = { view: S.view, selected: S.selected, msgThread: S.msgThread, query: S.query, navOpen: false };
+    var ui = { view: S.view, selected: S.selected, msgThread: S.msgThread, query: S.query, navOpen: false, leads: S.leads || [] };
     STORE = newStore;
     S = buildState();
     refreshInv();
@@ -367,8 +368,10 @@
     var pct = Math.round(delivered.length / target * 100);
 
     var convoCount = S.deals.filter(function (d) { return convoOf(d).messages.length; }).length;
+    var leadCount = (S.leads || []).length;
     var nav = [
-      ["board", "Pipeline", vis.length], ["today", "Today", ""], ["messages", "Messages", convoCount],
+      ["board", "Pipeline", vis.length], ["today", "Today", ""], ["webleads", "Web leads", leadCount || ""],
+      ["messages", "Messages", convoCount],
       ["calendar", "Calendar", S.appts.length], ["customers", "Customers", S.deals.length],
       ["match", "Matchmaker", ""], ["inventory", "Inventory", INV.length],
       ["ads", "Marketplace ads", S.ads.length], ["deal", "Opportunity", ""], ["reports", "Reports", ""],
@@ -381,7 +384,7 @@
         '<div class="mono" style="font-size:10.5px;color:oklch(0.58 0.008 250)">' + n[2] + '</div></div>';
     }).join("");
 
-    var titles = { board: "Pipeline", deal: "Opportunity", today: "Today", inventory: "Inventory", reports: "Reports", "new": "New lead", customers: "Customers", calendar: "Appointment calendar", match: "Matchmaker", ads: "Marketplace ads", "import": "Import leads", messages: "Messages" };
+    var titles = { board: "Pipeline", deal: "Opportunity", today: "Today", inventory: "Inventory", reports: "Reports", "new": "New lead", customers: "Customers", calendar: "Appointment calendar", match: "Matchmaker", ads: "Marketplace ads", "import": "Import leads", messages: "Messages", webleads: "Web leads" };
 
     var rail =
       '<div class="crm-rail" style="width:194px;flex:none;border-right:1px solid oklch(0.26 0.008 250);background:oklch(0.14 0.005 250);display:flex;flex-direction:column">' +
@@ -410,7 +413,7 @@
 
     var dueToday = S.deals.filter(function (d) { return isToday(d.nextFollowUp); }).length;
     var awaitingReply = S.deals.filter(function (d) { var m = convoOf(d).messages; return m.length && m[m.length - 1].from === "them"; }).length;
-    var tabBadge = { today: dueToday, messages: awaitingReply };
+    var tabBadge = { today: dueToday, messages: awaitingReply, __more: leadCount };
     var tabs2 = [
       ["board", "Pipeline", "▚"], ["today", "Today", "◷"], ["messages", "Messages", "✉"],
       ["inventory", "Inventory", "❐"], ["__more", "More", "≡"]
@@ -533,6 +536,7 @@
       case "new": return newLeadView();
       case "import": return importView();
       case "messages": return messagesView();
+      case "webleads": return leadsView();
       default: return boardView();
     }
   }
@@ -1305,6 +1309,45 @@
     return (p[0] ? p[0][0] : "") + (p[1] ? p[1][0] : "");
   }
 
+  // ---- 13. Web leads (from the website, via Supabase) ----------------------
+  function leadField(p, keys) { for (var i = 0; i < keys.length; i++) { if (p[keys[i]]) return p[keys[i]]; } return ""; }
+  function leadsView() {
+    if (!cloud.uid) {
+      return '<div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center">' +
+        '<div style="max-width:360px"><div style="font-size:14px;font-weight:600">Sign in to collect website leads</div>' +
+        '<div style="font-size:12px;color:oklch(0.64 0.008 250);margin-top:6px">Leads submitted on phildavemotors flow in here live once you\'re signed in to sync (they\'re stored in your Supabase). You\'re currently offline on this device.</div></div></div>';
+    }
+    var leads = S.leads || [];
+    var rows = leads.map(function (l) {
+      var p = l.payload || {};
+      var name = l.name || leadField(p, ["name"]) || "Unnamed";
+      var wants = [leadField(p, ["make"]), leadField(p, ["trim"]), leadField(p, ["gentype"]), leadField(p, ["fuel"])].filter(Boolean).join(" ");
+      var budget = leadField(p, ["budget"]);
+      var notes = leadField(p, ["notes", "dreamcar"]);
+      var when = l.created_at ? new Date(l.created_at) : null;
+      var whenTxt = when && !isNaN(when) ? when.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " · " + when.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) : "";
+      return '<div style="border:1px solid oklch(0.30 0.04 200);border-radius:8px;background:oklch(0.16 0.012 200);padding:13px 14px;margin-bottom:10px">' +
+        '<div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">' +
+          '<div style="flex:1;min-width:180px"><div style="display:flex;align-items:center;gap:8px"><div style="font-size:15px;font-weight:600">' + esc(name) + '</div>' +
+            '<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:oklch(0.24 0.05 200);color:oklch(0.86 0.11 200)">NEW · ' + esc(l.source || "Website") + '</span></div>' +
+            '<div class="mono" style="font-size:11.5px;color:oklch(0.72 0.008 250);margin-top:4px">' + esc(l.phone || leadField(p, ["phone"]) || "—") + (l.email || leadField(p, ["email"]) ? "  ·  " + esc(l.email || leadField(p, ["email"])) : "") + '</div>' +
+            (wants ? '<div style="font-size:12.5px;color:oklch(0.86 0.004 250);margin-top:6px">Wants: ' + esc(wants) + (budget ? " · " + esc(budget) : "") + '</div>' : (budget ? '<div style="font-size:12.5px;margin-top:6px">Budget: ' + esc(budget) + '</div>' : '')) +
+            (notes ? '<div style="font-size:11.5px;color:oklch(0.66 0.008 250);margin-top:4px;text-wrap:pretty">' + esc(notes) + '</div>' : '') +
+            (whenTxt ? '<div class="mono" style="font-size:10px;color:oklch(0.52 0.008 250);margin-top:5px">' + esc(whenTxt) + '</div>' : '') +
+          '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px">' +
+            (l.phone || leadField(p, ["phone"]) ? '<a href="' + esc(telHref(l.phone || leadField(p, ["phone"]))) + '" style="text-align:center;padding:6px 11px;border-radius:6px;border:1px solid oklch(0.42 0.08 155);background:oklch(0.20 0.03 155);color:oklch(0.84 0.13 155);font-size:11.5px;font-weight:600;white-space:nowrap">Call</a>' : '') +
+            '<div class="clickable h-btn-cyan" data-act="convertLead" data-id="' + esc(l.id) + '" style="text-align:center;padding:6px 11px;border-radius:6px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:11.5px;font-weight:600;white-space:nowrap">Add to pipeline</div>' +
+            '<div class="clickable" data-act="dismissLead" data-id="' + esc(l.id) + '" style="text-align:center;padding:6px 11px;border-radius:6px;border:1px solid oklch(0.30 0.008 250);font-size:11.5px;color:oklch(0.66 0.008 250);white-space:nowrap">Dismiss</div>' +
+          '</div>' +
+        '</div></div>';
+    }).join("") || '<div style="padding:24px;text-align:center;font-size:12.5px;color:oklch(0.58 0.008 250)">No new website leads right now. New submissions from phildavemotors appear here instantly.</div>';
+
+    return '<div class="crm-view" style="flex:1;min-height:0;overflow-y:auto;padding:14px">' +
+      '<div style="font-size:11px;color:oklch(0.62 0.008 250);margin-bottom:12px">Live from your website — ' + leads.length + ' new. "Add to pipeline" creates a New-lead opportunity; the customer\'s vehicle interest is auto-matched.</div>' +
+      rows + '</div>';
+  }
+
   // ---- CSV inventory import -------------------------------------------------
   function parseDelimited(text) {
     text = text.replace(/^﻿/, "");
@@ -1511,6 +1554,26 @@
 
       case "openThread": setS({ msgThread: +id.id, msgDraft: "" }); break;
       case "msgBack": setS({ msgThread: null }); break;
+      case "dismissLead": cloud.setLeadStatus(id.id, "dismissed"); break;
+      case "convertLead": {
+        var lead = (S.leads || []).find(function (l) { return l.id === id.id; });
+        if (!lead) return;
+        var p = lead.payload || {};
+        var bud = parseMoneyish(p.budget || p["$ range"] || "");
+        var bodyWord = ["SUV", "Sedan", "Truck", "Van", "Coupe"].find(function (w) { return new RegExp(w, "i").test(p.gentype || ""); }) || "";
+        var veh = matchVehicle({ make: p.make || "", trim: p.trim || "", body: bodyWord, budget: bud ? String(bud) : "" });
+        var did = nextId(); markDirty(did);
+        var note = "Website lead" + (p.make ? " — wants " + p.make + (p.trim ? " " + p.trim : "") : "") + (p.timeline ? " · timeline " + p.timeline : "") + ". " + (p.notes || p.dreamcar || "");
+        var d = makeDeal(did, {
+          name: lead.name || p.name || "Website lead", phone: lead.phone || p.phone || "", email: lead.email || p.email || "",
+          source: "Website", veh: veh, wantBody: bodyWord || veh.body, wantMax: bud || veh.price,
+          wantMake: p.make || "", wantTrim: p.trim || "", note: note.trim()
+        });
+        S.deals = [d].concat(S.deals);
+        cloud.setLeadStatus(id.id, "converted");
+        setS({ view: "deal", selected: did });
+        break;
+      }
       case "msgSend": {
         var mt = S.msgDraft.trim();
         if (!mt) return;
@@ -1745,6 +1808,13 @@
     rd.readAsText(f);
   });
 
+  function parseMoneyish(s) {
+    s = String(s || "").replace(/,/g, "");
+    var m = s.match(/(\d+(?:\.\d+)?)\s*k/i);
+    if (m) return Math.round(parseFloat(m[1]) * 1000);
+    var n = parseInt(s.replace(/[^0-9]/g, ""), 10);
+    return n || 0;
+  }
   function keyVal(k, v) { var o = {}; o[k] = v; return o; }
   function updateDeal(id, patch) { var d = dealById(id); if (d) { Object.assign(d, patch); markDirty(id); } render(); }
   function blankForm() { return { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" }; }
@@ -1843,7 +1913,18 @@
         if (row && row.data && Object.keys(row.data).length) applyStore(row.data);  // cloud wins on sign-in
         else { cloud.push(true); render(); }                                         // seed cloud from this device
         cloud.subscribe();
+        cloud.loadLeads();
       }, function () { authGate = false; cloud.status = "error"; render(); });
+    },
+    loadLeads: function () {
+      if (!SB) return;
+      SB.from("leads").select("*").eq("status", "new").order("created_at", { ascending: false })
+        .then(function (res) { if (res && !res.error) { S.leads = res.data || []; render(); } });
+    },
+    setLeadStatus: function (id, status) {
+      S.leads = S.leads.filter(function (l) { return l.id !== id; });   // optimistic remove from inbox
+      render();
+      if (SB && cloud.uid) SB.from("leads").update({ status: status }).eq("id", id).then(function () {});
     },
     subscribe: function () {
       if (cloud.channel || !SB) return;
@@ -1852,6 +1933,13 @@
           function (payload) {
             var d = payload["new"] && payload["new"].data;
             if (d && d._writer !== WRITER) applyStore(d);   // a change from your other device
+          })
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "leads" },
+          function (payload) {
+            var lead = payload["new"];
+            if (lead && lead.status === "new" && !S.leads.some(function (x) { return x.id === lead.id; })) {
+              S.leads = [lead].concat(S.leads); render();     // a new website lead, live
+            }
           }).subscribe();
     },
     push: function (immediate) {
