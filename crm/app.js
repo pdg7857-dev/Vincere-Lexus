@@ -1471,9 +1471,7 @@
     if (!t) return;
     var act = t.dataset.act, id = t.dataset;
     // auth-gate actions work before the CRM is booted
-    if (act === "authSend") { authSend(); return; }
-    if (act === "authVerify") { authVerify(); return; }
-    if (act === "authBack") { AUTH.step = "email"; AUTH.msg = ""; render(); return; }
+    if (act === "authSubmit") { authSubmit(); return; }
     if (act === "authOffline") { cloud.enabled = false; authGate = false; render(); return; }
     if (act === "signOut") { cloud.signOut(); return; }
     if (authGate) return;
@@ -1617,8 +1615,11 @@
 
   // keyboard: Enter/Space activates a focused control (nav items, icon buttons)
   app.addEventListener("keydown", function (e) {
-    if (e.key !== "Enter" && e.key !== " ") return;
     var t = e.target;
+    if (e.key === "Enter" && authGate && t && t.dataset && (t.dataset.act === "authEmail" || t.dataset.act === "authPassword")) {
+      e.preventDefault(); authSubmit(); return;
+    }
+    if (e.key !== "Enter" && e.key !== " ") return;
     if (t && t.getAttribute && t.getAttribute("tabindex") === "0" && t.dataset && t.dataset.act) {
       e.preventDefault();
       t.click();
@@ -1642,7 +1643,7 @@
       case "msgDraft": S.msgDraft = val; break;                     // no re-render (keeps caret)
       case "csvText": S.csvText = val; break;                       // no re-render (keeps caret)
       case "authEmail": AUTH.email = val; break;
-      case "authCode": AUTH.code = val; break;
+      case "authPassword": AUTH.password = val; break;
     }
   });
 
@@ -1809,7 +1810,7 @@
   // CLOUD SYNC (Supabase) — optional; the app runs fully offline without it
   // ==========================================================================
   var SB = null;
-  var AUTH = { step: "email", email: "", code: "", msg: "", busy: false };
+  var AUTH = { email: "", password: "", msg: "", busy: false };
   var authGate = false;
   var cloud = {
     enabled: !!(window.CRM_SUPABASE && window.CRM_SUPABASE.url && window.CRM_SUPABASE.anonKey &&
@@ -1849,49 +1850,43 @@
     },
     signOut: function () {
       if (SB) { try { SB.auth.signOut(); } catch (e) {} if (cloud.channel) { SB.removeChannel(cloud.channel); cloud.channel = null; } }
-      cloud.uid = null; cloud.status = "off"; AUTH = { step: "email", email: "", code: "", msg: "", busy: false };
+      cloud.uid = null; cloud.status = "off"; AUTH = { email: "", password: "", msg: "", busy: false };
       authGate = true; render();
     }
   };
-  function authSend() {
-    var email = (AUTH.email || "").trim();
+  // Email + password sign-in (no email sending required). First time with an
+  // email creates the account; same email + password on any device = same data.
+  function authSubmit() {
+    var email = (AUTH.email || "").trim(), pw = AUTH.password || "";
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { AUTH.msg = "Enter a valid email."; render(); return; }
+    if (pw.length < 6) { AUTH.msg = "Password must be at least 6 characters."; render(); return; }
     AUTH.busy = true; AUTH.msg = ""; render();
-    SB.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } }).then(function (r) {
-      AUTH.busy = false;
-      if (r.error) AUTH.msg = r.error.message;
-      else { AUTH.step = "code"; AUTH.msg = ""; }
-      render();
-    });
-  }
-  function authVerify() {
-    var token = (AUTH.code || "").trim();
-    if (!token) { AUTH.msg = "Enter the 6-digit code from your email."; render(); return; }
-    AUTH.busy = true; AUTH.msg = ""; render();
-    SB.auth.verifyOtp({ email: AUTH.email.trim(), token: token, type: "email" }).then(function (r) {
-      AUTH.busy = false;
-      if (r.error) { AUTH.msg = r.error.message; render(); }
-      else cloud.onSignedIn(r.data.session);
+    SB.auth.signInWithPassword({ email: email, password: pw }).then(function (r) {
+      if (!r.error && r.data && r.data.session) { cloud.onSignedIn(r.data.session); return; }
+      // no account yet (or wrong password) — try to create it
+      SB.auth.signUp({ email: email, password: pw }).then(function (r2) {
+        AUTH.busy = false;
+        if (r2.error) {
+          AUTH.msg = /already registered/i.test(r2.error.message) ? "Wrong password for this email." : r2.error.message;
+          render(); return;
+        }
+        if (r2.data && r2.data.session) { cloud.onSignedIn(r2.data.session); }
+        else { AUTH.msg = "Account made, but email confirmation is on. In Supabase → Authentication → Providers → Email, turn OFF \"Confirm email\", then sign in."; render(); }
+      });
     });
   }
   function authGateHtml() {
-    var onCode = AUTH.step === "code";
-    var field = onCode
-      ? '<input data-act="authCode" data-focus="authCode" value="' + esc(AUTH.code) + '" inputmode="numeric" placeholder="6-digit code" class="mono" style="width:100%;text-align:center;letter-spacing:0.3em;background:oklch(0.19 0.006 250);border:1px solid oklch(0.30 0.008 250);border-radius:6px;padding:12px;color:oklch(0.95 0.004 250);font-size:18px;outline:none" />'
-      : '<input data-act="authEmail" data-focus="authEmail" value="' + esc(AUTH.email) + '" inputmode="email" placeholder="you@email.com" style="width:100%;background:oklch(0.19 0.006 250);border:1px solid oklch(0.30 0.008 250);border-radius:6px;padding:12px;color:oklch(0.95 0.004 250);font-size:14px;outline:none" />';
-    var btn = onCode
-      ? '<div class="clickable h-btn-cyan" data-act="authVerify" tabindex="0" role="button" style="margin-top:10px;text-align:center;padding:12px;border-radius:6px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:14px;font-weight:600">' + (AUTH.busy ? "Verifying…" : "Verify &amp; sync") + '</div>' +
-        '<div class="clickable" data-act="authBack" tabindex="0" role="button" style="margin-top:8px;text-align:center;font-size:12px;color:oklch(0.66 0.008 250)">← Use a different email</div>'
-      : '<div class="clickable h-btn-cyan" data-act="authSend" tabindex="0" role="button" style="margin-top:10px;text-align:center;padding:12px;border-radius:6px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:14px;font-weight:600">' + (AUTH.busy ? "Sending…" : "Email me a sign-in code") + '</div>';
     return '<div style="height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;background:#0a0b0d;padding:20px">' +
       '<div style="width:100%;max-width:360px">' +
         '<div style="text-align:center;margin-bottom:6px"><div style="font-size:16px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase">' + esc(D.dealership.name) + '</div>' +
           '<div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:oklch(0.60 0.008 250);margin-top:3px">' + esc(D.dealership.brand) + '</div></div>' +
         '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:10px;background:oklch(0.15 0.005 250);padding:20px;margin-top:16px">' +
           '<div style="font-size:14px;font-weight:600">Sign in to sync your CRM</div>' +
-          '<div style="font-size:12px;color:oklch(0.64 0.008 250);margin-top:5px;margin-bottom:14px">' + (onCode ? "We emailed a 6-digit code to " + esc(AUTH.email) + "." : "Same data on your phone and computer. We'll email you a one-time code — no password.") + '</div>' +
-          field + btn +
-          (AUTH.msg ? '<div style="font-size:12px;color:oklch(0.80 0.14 40);margin-top:10px;text-align:center">' + esc(AUTH.msg) + '</div>' : "") +
+          '<div style="font-size:12px;color:oklch(0.64 0.008 250);margin-top:5px;margin-bottom:14px">Same data on your phone and computer. First time here just sets your password.</div>' +
+          '<input data-act="authEmail" data-focus="authEmail" value="' + esc(AUTH.email) + '" inputmode="email" autocomplete="username" placeholder="you@email.com" style="width:100%;background:oklch(0.19 0.006 250);border:1px solid oklch(0.30 0.008 250);border-radius:6px;padding:12px;color:oklch(0.95 0.004 250);font-size:14px;outline:none" />' +
+          '<input data-act="authPassword" data-focus="authPassword" value="' + esc(AUTH.password) + '" type="password" autocomplete="current-password" placeholder="Password (6+ characters)" style="width:100%;margin-top:9px;background:oklch(0.19 0.006 250);border:1px solid oklch(0.30 0.008 250);border-radius:6px;padding:12px;color:oklch(0.95 0.004 250);font-size:14px;outline:none" />' +
+          '<div class="clickable h-btn-cyan" data-act="authSubmit" tabindex="0" role="button" style="margin-top:12px;text-align:center;padding:12px;border-radius:6px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:14px;font-weight:600">' + (AUTH.busy ? "…" : "Sign in / Create account") + '</div>' +
+          (AUTH.msg ? '<div style="font-size:12px;color:oklch(0.80 0.14 40);margin-top:10px;text-align:center;text-wrap:pretty">' + esc(AUTH.msg) + '</div>' : "") +
         '</div>' +
         '<div class="clickable" data-act="authOffline" tabindex="0" role="button" style="text-align:center;margin-top:14px;font-size:12px;color:oklch(0.60 0.008 250)">Use offline on this device instead</div>' +
       '</div></div>';

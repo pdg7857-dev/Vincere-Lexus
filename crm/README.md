@@ -137,11 +137,15 @@ leads, CSV inventory) lives in the cloud and updates live between devices.
    The anon key is safe to commit — it's public by design and gated by row-level
    security (never use the `service_role` key here).
 
-That's it. Open the app on any device, sign in with your email (a one-time code
-is emailed — no password), and your CRM syncs. Sign out from the rail footer.
-The footer shows sync status; "Use offline on this device" skips sign-in and
-keeps that device local-only. With `supabase.js` left blank, the app runs exactly
-as before on localStorage.
+4. **Authentication → Providers → Email**: make sure Email is **enabled** and
+   turn **OFF "Confirm email"** (so sign-up works without sending any email — the
+   free tier can't send custom emails without your own SMTP).
+
+That's it. Open the app on any device, enter your email + a password (first time
+sets it), and your CRM syncs — same email + password on your phone and laptop =
+same data, live. Sign out from the rail footer. The footer shows sync status;
+"Use offline on this device" skips sign-in and keeps that device local-only. With
+`supabase.js` left blank, the app runs exactly as before on localStorage.
 
 ## Contacts & iMessage threads from your iPhone
 
