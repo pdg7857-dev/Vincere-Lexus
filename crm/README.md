@@ -65,8 +65,13 @@ e.g. `https://raw.githack.com/pdg7857-dev/vincere-lexus/<sha>/crm/index.html`.
 8. **Marketplace ads** — KPIs, paste-a-link importer (matched to stock by VIN),
    the ad tracker with CRM price-drift flags, and an *in stock with no ad* list.
 9. **Reports** — five KPIs, a stage funnel, and a lead-source breakdown.
-10. **New lead** — capture a customer, decode a VIN against inventory, and save
-    into the pipeline.
+10. **New lead** — capture a customer and save into the pipeline. Add optional
+    preference tags — **condition** (New / Used / Certified Pre-Owned),
+    **approximate budget** (total price *or* bi-weekly payment), and the
+    **makes / models** they like. A VIN is optional: decode/pick one to lock a
+    specific car, or leave it blank and the vehicle of interest is auto-matched
+    from those preferences. The tags surface as a *Looking for* row on the
+    opportunity.
 11. **Import leads** — a spreadsheet-style grid: type a row per customer (or
     paste rows straight from Excel/Sheets — Tab or comma separated) and hit
     *Import*. Each row becomes a New-lead opportunity with its vehicle of

@@ -178,7 +178,7 @@
       matchFor: (D.repeatBuyers[0] || {}).name || "",
       quest: initQuest(D.repeatBuyers[0]),
       weights: { body: 3, color: 1, interior: 3, trim: 1, km: 3, price: 3 },
-      form: { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" },
+      form: blankForm(),
       vinResult: undefined, vinMsg: "",
       adUrl: "", adImport: undefined, adMsg: "",
       vehicleStock: null, showInvAdv: false, invAdv: blankInvAdv(),
@@ -606,6 +606,15 @@
       return '<div class="clickable" data-act="setStage" data-stage="' + i + '" style="padding:5px 8px;border-radius:4px;font-size:11px;white-space:nowrap;background:' + (on ? "oklch(0.30 0.05 200)" : "transparent") + ';color:' + (on ? "oklch(0.95 0.03 200)" : "oklch(0.70 0.008 250)") + ';border:1px solid ' + (on ? "oklch(0.48 0.08 200)" : "oklch(0.28 0.008 250)") + '">' + name + '</div>';
     }).join("");
 
+    var condLabels = (deal.wantCondition || []).map(function (c) { return c === "CPO" ? "Certified Pre-Owned" : c; });
+    var wantParts = [];
+    if (condLabels.length) wantParts.push(condLabels.join(" / "));
+    var wantMM = [deal.wantMakes || "", deal.wantModels || ""].filter(function (x) { return x && x.trim(); }).join(" · ");
+    if (wantMM) wantParts.push(wantMM);
+    var budgetLabel = deal.wantBudgetMode === "biweekly" && deal.wantBudgetAmt
+      ? "$" + parseMoneyish(deal.wantBudgetAmt) + " bi-weekly"
+      : "up to " + money(deal.wantMax);
+
     var facts = [
       ["Stage", STAGES[deal.stage], "oklch(0.92 0.004 250)"],
       ["Lead source", deal.source, "oklch(0.92 0.004 250)"],
@@ -613,10 +622,12 @@
       ["Test drive", deal.testDrive ? "Completed" : "Not yet", deal.testDrive ? "oklch(0.84 0.13 155)" : "oklch(0.78 0.15 60)"],
       ["Last contact", fmtISO(deal.lastContact), "oklch(0.92 0.004 250)"],
       ["Next follow-up", deal.nextFollowUp ? fmtISO(deal.nextFollowUp) : "—", dueFg(deal.nextFollowUp)],
-      ["Expected close", fmtISO(deal.expectedClose), "oklch(0.92 0.004 250)"],
-      ["Budget", "up to " + money(deal.wantMax), "oklch(0.92 0.004 250)"],
+      ["Expected close", fmtISO(deal.expectedClose), "oklch(0.92 0.004 250)"]
+    ].concat(wantParts.length ? [["Looking for", wantParts.join(" · "), "oklch(0.86 0.05 200)"]] : [])
+     .concat([
+      ["Budget", budgetLabel, "oklch(0.92 0.004 250)"],
       ["Stock #", dv.stock, "oklch(0.92 0.004 250)"]
-    ].map(function (f) {
+    ]).map(function (f) {
       return '<div style="padding:9px 14px;border-right:1px solid oklch(0.22 0.008 250);border-bottom:1px solid oklch(0.22 0.008 250)">' +
         '<div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250)">' + f[0] + '</div>' +
         '<div style="font-size:12.5px;margin-top:3px;color:' + f[2] + '">' + esc(f[1]) + '</div></div>';
@@ -1116,6 +1127,34 @@
   }
 
   // ---- 10. New lead ---------------------------------------------------------
+  function prefBlock(f) {
+    var conds = ["New", "Used", "CPO"];
+    var condChips = conds.map(function (c) {
+      var on = (f.condition || []).indexOf(c) >= 0;
+      return '<div class="clickable" data-act="formCond" data-c="' + c + '" style="padding:7px 13px;border-radius:6px;font-size:12px;white-space:nowrap;border:1px solid ' + (on ? "oklch(0.48 0.08 200)" : "oklch(0.30 0.008 250)") + ';background:' + (on ? "oklch(0.28 0.05 200)" : "oklch(0.18 0.006 250)") + ';color:' + (on ? "oklch(0.95 0.03 200)" : "oklch(0.72 0.008 250)") + '">' + (c === "CPO" ? "Certified Pre-Owned" : c) + '</div>';
+    }).join("");
+    function modeBtn(m, label) {
+      var on = (f.budgetMode || "total") === m;
+      return '<div class="clickable" data-act="formBudgetMode" data-m="' + m + '" style="padding:8px 10px;border-radius:5px;font-size:11.5px;white-space:nowrap;border:1px solid ' + (on ? "oklch(0.46 0.08 200)" : "oklch(0.28 0.008 250)") + ';background:' + (on ? "oklch(0.26 0.04 200)" : "transparent") + ';color:' + (on ? "oklch(0.94 0.02 200)" : "oklch(0.70 0.008 250)") + '">' + label + '</div>';
+    }
+    function txt(label, key, ph) {
+      return '<div><div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250);margin-bottom:5px">' + label + '</div>' +
+        '<input data-act="form" data-key="' + key + '" data-focus="f-' + key + '" value="' + esc(f[key]) + '" placeholder="' + ph + '" style="width:100%;background:oklch(0.19 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:8px 9px;color:oklch(0.95 0.004 250);font-size:12.5px;outline:none" /></div>';
+    }
+    return '<div style="margin-top:14px;padding-top:13px;border-top:1px solid oklch(0.24 0.008 250)">' +
+      '<div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250);margin-bottom:8px">What they\'re looking for <span style="color:oklch(0.48 0.008 250);text-transform:none;letter-spacing:0">· all optional</span></div>' +
+      '<div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.56 0.008 250);margin-bottom:5px">Condition</div>' +
+      '<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px">' + condChips + '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr auto;gap:9px;align-items:end">' +
+        '<div><div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.56 0.008 250);margin-bottom:5px">Approx. budget</div>' +
+          '<input data-act="form" data-key="budgetAmt" data-focus="f-budgetAmt" value="' + esc(f.budgetAmt) + '" inputmode="numeric" placeholder="' + ((f.budgetMode || "total") === "biweekly" ? "e.g. 250" : "e.g. 55000 or 55k") + '" class="mono" style="width:100%;background:oklch(0.19 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:8px 9px;color:oklch(0.95 0.004 250);font-size:12.5px;outline:none" /></div>' +
+        '<div style="display:flex;gap:5px">' + modeBtn("total", "Total $") + modeBtn("biweekly", "Bi-weekly") + '</div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px">' +
+        txt("Makes they like", "makes", "Lexus, Toyota…") + txt("Models", "models", "RX, NX, Highlander…") +
+      '</div></div>';
+  }
+
   function newLeadView() {
     var f = S.form, found = S.vinResult;
     function inp(label, key, ph, mono) {
@@ -1138,7 +1177,8 @@
           '<div><div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250);margin-bottom:5px">Lead source</div><select data-act="formSel" data-key="source" style="width:100%;background:oklch(0.19 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:8px 9px;font-size:12.5px;outline:none">' + SOURCES.map(function (s) { return '<option' + (f.source === s ? " selected" : "") + '>' + s + '</option>'; }).join("") + '</select></div>' +
           '<div><div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250);margin-bottom:5px">Paying with</div><select data-act="formSel" data-key="pay" style="width:100%;background:oklch(0.19 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:8px 9px;font-size:12.5px;outline:none">' + ["Finance", "Cash", "Lease"].map(function (s) { return '<option' + (f.pay === s ? " selected" : "") + '>' + s + '</option>'; }).join("") + '</select></div>' +
         '</div>' +
-        '<div style="margin-top:14px;padding-top:13px;border-top:1px solid oklch(0.24 0.008 250)"><div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250);margin-bottom:5px">VIN — pull the car from inventory</div>' +
+        prefBlock(f) +
+        '<div style="margin-top:14px;padding-top:13px;border-top:1px solid oklch(0.24 0.008 250)"><div style="font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.58 0.008 250);margin-bottom:5px">VIN — or pull a specific car from inventory</div>' +
           '<div style="display:flex;gap:7px"><input data-act="form" data-key="vin" data-focus="f-vin" value="' + esc(f.vin) + '" placeholder="17-character VIN" class="mono" style="flex:1;background:oklch(0.19 0.006 250);border:1px solid ' + vinBorder + ';border-radius:4px;padding:8px 9px;color:oklch(0.95 0.004 250);font-size:12.5px;letter-spacing:0.06em;outline:none" />' +
             '<div class="clickable h-btn-cyan" data-act="lookupVin" style="padding:8px 13px;border-radius:4px;background:oklch(0.78 0.13 200);color:oklch(0.16 0.03 200);font-size:12.5px;font-weight:600;white-space:nowrap">Decode VIN</div></div>' +
           '<div style="font-size:11.5px;color:' + (S.vinMsg ? (found ? "oklch(0.84 0.13 155)" : "oklch(0.78 0.15 40)") : "transparent") + ';margin-top:7px">' + esc(S.vinMsg || " ") + '</div>' + vinCard + '</div>' +
@@ -1688,6 +1728,14 @@
         setS({ form: Object.assign({}, S.form, { vin: id.vin }), vinResult: pv, vinMsg: pv ? "Matched stock " + pv.stock + " — pulled from inventory." : "" });
         break;
       }
+      case "formCond": {
+        var cur = (S.form.condition || []).slice();
+        var ix = cur.indexOf(id.c);
+        if (ix >= 0) cur.splice(ix, 1); else cur.push(id.c);
+        setS({ form: Object.assign({}, S.form, { condition: cur }) });
+        break;
+      }
+      case "formBudgetMode": setS({ form: Object.assign({}, S.form, { budgetMode: id.m }) }); break;
       case "saveLead": saveLead(); break;
     }
   });
@@ -1817,7 +1865,7 @@
   }
   function keyVal(k, v) { var o = {}; o[k] = v; return o; }
   function updateDeal(id, patch) { var d = dealById(id); if (d) { Object.assign(d, patch); markDirty(id); } render(); }
-  function blankForm() { return { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "" }; }
+  function blankForm() { return { name: "", phone: "", email: "", address: "", source: "Walk-in", pay: "Finance", vin: "", condition: [], budgetAmt: "", budgetMode: "total", makes: "", models: "" }; }
   function nextId() { return Math.max.apply(null, S.deals.map(function (d) { return d.id; })) + 1; }
 
   function makeDeal(id, o) {
@@ -1832,6 +1880,9 @@
       value: v.price, gross: Math.round(v.price * 0.06), hot: false,
       wantBody: o.wantBody || v.body, wantMax: o.wantMax || v.price,
       wantMake: o.wantMake || "", wantTrim: o.wantTrim || "", level: "New",
+      wantCondition: o.wantCondition || [], wantMakes: o.wantMakes || "",
+      wantModels: o.wantModels || "", wantBudgetMode: o.wantBudgetMode || "total",
+      wantBudgetAmt: o.wantBudgetAmt || "",
       notes: [{ date: TODAY, text: o.note || ("New lead from " + (o.source || "Walk-in") + ". Interested in " + v.car + " (" + v.stock + ").") }]
     };
   }
@@ -1839,10 +1890,27 @@
   function saveLead() {
     var f = S.form;
     if (!f.name.trim()) { setS({ vinMsg: "Enter a customer name to save the lead." }); return; }
-    if (!S.vinResult) { setS({ vinMsg: "Decode a VIN or pick a car from the list so the lead has a vehicle of interest." }); return; }
+    // total budget in dollars: a bi-weekly figure is roughly ×130 over a term
+    var amt = parseMoneyish(f.budgetAmt);
+    var totalBudget = amt ? (f.budgetMode === "biweekly" ? amt * 130 : amt) : 0;
+    var firstMake = (f.makes || "").split(/[,/]/)[0].trim();
+    // a decoded/picked VIN wins; otherwise match a car from the stated preferences
+    var veh = S.vinResult || matchVehicle({ make: firstMake, trim: f.models || "", body: "", budget: totalBudget ? String(totalBudget) : "" });
+    var wants = [];
+    if ((f.condition || []).length) wants.push(f.condition.map(function (c) { return c === "CPO" ? "certified pre-owned" : c.toLowerCase(); }).join("/"));
+    if (f.makes.trim() || f.models.trim()) wants.push([f.makes.trim(), f.models.trim()].filter(Boolean).join(" "));
+    if (amt) wants.push("~" + (f.budgetMode === "biweekly" ? "$" + amt + " bi-weekly" : money(totalBudget)));
+    var note = S.vinResult
+      ? "New lead from " + f.source + ". Interested in " + veh.car + " (" + veh.stock + ")."
+      : "New lead from " + f.source + "." + (wants.length ? " Wants " + wants.join(", ") + "." : "") + " Matched to " + veh.car + " (" + veh.stock + ").";
     var id = nextId();
     markDirty(id);
-    S.deals = [makeDeal(id, { name: f.name.trim(), phone: f.phone, email: f.email, address: f.address, source: f.source, pay: f.pay, veh: S.vinResult })].concat(S.deals);
+    S.deals = [makeDeal(id, {
+      name: f.name.trim(), phone: f.phone, email: f.email, address: f.address, source: f.source, pay: f.pay, veh: veh,
+      wantMake: firstMake, wantTrim: f.models, wantMax: totalBudget || veh.price,
+      wantCondition: f.condition, wantMakes: f.makes, wantModels: f.models,
+      wantBudgetMode: f.budgetMode, wantBudgetAmt: f.budgetAmt, note: note
+    })].concat(S.deals);
     setS({ view: "board", form: blankForm(), vinResult: undefined, vinMsg: "" });
   }
 
