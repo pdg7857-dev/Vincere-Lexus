@@ -19,6 +19,9 @@
 <!-- Optional: real iMessage/SMS threads written by scripts/import_iphone_backup.py.
      Absent until you run the importer; the app falls back to sample threads. -->
 <script src="messages.js" onerror="window.__noMessages=true"></script>
+<!-- Your real Google Calendar + Todoist, pulled through Claude (crm/agenda.js).
+     Absent until synced; the app just hides the agenda panels if missing. -->
+<script src="agenda.js" onerror="window.__noAgenda=true"></script>
 <!-- Cross-device sync (optional). The CDN client + your keys enable Supabase;
      if either is missing the app runs offline on localStorage. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="window.__noSupabase=true"></script>

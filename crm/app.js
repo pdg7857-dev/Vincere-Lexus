@@ -6,6 +6,7 @@
   "use strict";
 
   var D = window.CRM_DATA;
+  var AGENDA = (!window.__noAgenda && window.CRM_AGENDA) ? window.CRM_AGENDA : null;
   // "today" tracks the real local date (not the frozen data snapshot). The seeded
   // demo records are shifted by SHIFT_DAYS so their relative freshness (who's due
   // today, who's going cold) stays correct on whatever day you open the app; your
@@ -687,6 +688,79 @@
   }
 
   // ---- 3. Today -------------------------------------------------------------
+  // match a Todoist/Calendar phone to an existing deal (last-10-digits compare)
+  function dealByPhone(phone) {
+    if (!phone) return null;
+    var want = String(phone).replace(/\D/g, "").slice(-10);
+    if (want.length < 10) return null;
+    return S.deals.filter(function (d) { return String(d.phone).replace(/\D/g, "").slice(-10) === want; })[0] || null;
+  }
+  function dayLabel(dateStr) {
+    var d = parseISO(dateStr);
+    return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  }
+  // upcoming Google Calendar events (crm/agenda.js), grouped by day
+  function agendaCalRows(limit) {
+    if (!AGENDA) return "";
+    var events = (AGENDA.calendar || []).filter(function (e) { return e.date >= TODAY; })
+      .sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (a.time ? 1 : 0) - (b.time ? 1 : 0); }).slice(0, limit || 12);
+    var calRows = "", lastDay = "";
+    events.forEach(function (e) {
+      if (e.date !== lastDay) {
+        lastDay = e.date;
+        var isTod = e.date === TODAY;
+        calRows += '<div style="padding:7px 12px 3px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:' + (isTod ? "oklch(0.86 0.11 200)" : "oklch(0.56 0.008 250)") + '">' + (isTod ? "Today" : esc(dayLabel(e.date))) + '</div>';
+      }
+      var deal = dealByPhone(e.phone);
+      var when = e.allDay ? "All day" : esc(e.time || "") + (e.end ? "–" + esc(e.end) : "");
+      calRows += '<div' + (deal ? ' class="clickable h-row2" data-act="openDeal" data-id="' + deal.id + '"' : '') + ' style="padding:6px 12px;display:flex;gap:9px;align-items:baseline;border-top:1px solid oklch(0.20 0.008 250)">' +
+        '<div class="mono" style="font-size:10.5px;color:oklch(0.70 0.008 250);width:82px;flex:none">' + when + '</div>' +
+        '<div style="flex:1;min-width:0"><div style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(e.title) + '</div>' +
+        (deal ? '<div style="font-size:10.5px;color:oklch(0.84 0.11 200)">↳ ' + esc(firstLast(deal.name)) + ' · in pipeline</div>' : "") + '</div></div>';
+    });
+    return calRows || '<div style="padding:12px;font-size:11.5px;color:oklch(0.50 0.008 250)">Nothing upcoming.</div>';
+  }
+
+  // Your real Google Calendar + Todoist (crm/agenda.js), grouped for the Today view.
+  function agendaPanels() {
+    if (!AGENDA) return "";
+    var pDot = function (p) { return p === 1 ? "oklch(0.70 0.17 35)" : p === 2 ? "oklch(0.80 0.14 95)" : "oklch(0.42 0.01 250)"; };
+    var calRows = agendaCalRows(12);
+
+    // ---- tasks: overdue / today / upcoming
+    var tasks = (AGENDA.tasks || []).slice();
+    function bucket(name) { return tasks.filter(name); }
+    var overdue = tasks.filter(function (t) { return t.due && t.due < TODAY; });
+    var today = tasks.filter(function (t) { return t.due === TODAY; });
+    var upcoming = tasks.filter(function (t) { return !t.due || t.due > TODAY; })
+      .sort(function (a, b) { return (a.due || "9") < (b.due || "9") ? -1 : 1; });
+    function taskRow(t) {
+      var deal = dealByPhone(t.phone);
+      var dueTxt = t.due ? (t.due === TODAY ? (t.dueTime || "Today") : dayLabel(t.due) + (t.dueTime ? " · " + t.dueTime : "")) : "No date";
+      return '<div' + (deal ? ' class="clickable h-row2" data-act="openDeal" data-id="' + deal.id + '"' : '') + ' style="padding:7px 12px;display:flex;gap:8px;align-items:flex-start;border-top:1px solid oklch(0.20 0.008 250)">' +
+        '<div style="width:7px;height:7px;border-radius:7px;flex:none;margin-top:4px;background:' + pDot(t.p) + '"></div>' +
+        '<div style="flex:1;min-width:0"><div style="font-size:12px">' + esc(t.content) + '</div>' +
+        '<div class="mono" style="font-size:10px;color:oklch(0.60 0.008 250);margin-top:2px">' + esc(dueTxt) + ' · ' + esc(t.project || "Todoist") + (t.recurring ? " · ↻" : "") + (deal ? '  ↳ ' + esc(firstLast(deal.name)) : "") + '</div></div></div>';
+    }
+    var taskSections = [["Overdue", "oklch(0.72 0.15 35)", overdue], ["Today", "oklch(0.80 0.14 95)", today], ["Upcoming", "oklch(0.72 0.10 200)", upcoming]]
+      .map(function (g) {
+        if (!g[2].length) return "";
+        return '<div style="padding:7px 12px 3px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:' + g[1] + '">' + g[0] + ' <span class="mono" style="opacity:0.7">' + g[2].length + '</span></div>' + g[2].map(taskRow).join("");
+      }).join("") || '<div style="padding:12px;font-size:11.5px;color:oklch(0.50 0.008 250)">No open tasks.</div>';
+
+    function card(title, sub, inner) {
+      return '<div style="border:1px solid oklch(0.26 0.008 250);border-radius:6px;background:oklch(0.15 0.005 250);overflow:hidden">' +
+        '<div style="padding:10px 12px;border-bottom:1px solid oklch(0.24 0.008 250);display:flex;align-items:baseline;gap:8px">' +
+          '<div style="font-size:11.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">' + title + '</div>' +
+          '<div style="font-size:10.5px;color:oklch(0.60 0.008 250)">' + sub + '</div></div>' + inner + '</div>';
+    }
+    var stamp = '<div class="mono" style="font-size:10px;color:oklch(0.52 0.008 250)">synced ' + esc(AGENDA.syncedAt || "") + ' · ask Claude to refresh</div>';
+    return '<div class="crm-2col" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start">' +
+      card("Your calendar", "Google", calRows) +
+      card("Your tasks", "Todoist", taskSections) +
+      '</div>' + '<div style="display:flex;justify-content:flex-end;margin-top:-4px">' + stamp + '</div>';
+  }
+
   function todayView() {
     var todayAppts = S.appts.filter(function (a) { return a.day === 0; });
     var overdue = S.deals.filter(function (d) { return isToday(d.nextFollowUp); });
@@ -743,6 +817,7 @@
     }).join("");
 
     return '<div style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px">' + timeline +
+      agendaPanels() +
       '<div class="today-tasks" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start">' + groups + '</div></div>';
   }
 
@@ -798,6 +873,7 @@
         '<div style="border-left:1px solid oklch(0.26 0.008 250);background:oklch(0.135 0.005 250);overflow:auto">' +
           '<div style="padding:10px 12px;border-bottom:1px solid oklch(0.24 0.008 250);display:flex;gap:5px;flex-wrap:wrap">' + tabs + '</div>' +
           '<div style="padding:10px 12px 4px 12px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.56 0.008 250)">' + WEEK[S.apptDay].day + ' ' + WEEK[S.apptDay].label + ' — reminders</div>' + list +
+          (AGENDA ? '<div style="padding:12px 12px 4px 12px;margin-top:6px;border-top:1px solid oklch(0.24 0.008 250);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.56 0.008 250)">From your Google Calendar</div>' + agendaCalRows(14) : "") +
         '</div></div></div>';
   }
 

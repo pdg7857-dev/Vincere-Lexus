@@ -189,6 +189,15 @@ and Claude creates the calendar event + the Todoist task, and can log the
 activity in the CRM. This runs through a Claude session on this repo, not inside
 the static app — the app is where you see the results.
 
+**Seeing them inside the CRM.** The **Today** view now shows two live panels —
+*Your calendar* (Google) and *Your tasks* (Todoist, grouped Overdue / Today /
+Upcoming) — and the **Calendar** view lists your real events under *From your
+Google Calendar*. Any event or task with a phone number that matches a client
+in the pipeline links straight to that opportunity. Because the app is a static
+site, it can't call Google/Todoist itself — Claude pulls them through its
+connectors and writes `crm/agenda.js`. Just say **"refresh my agenda"** (or ask
+on a schedule) and Claude regenerates that file with your latest events + tasks.
+
 ## Contacts & iMessage threads from your iPhone
 
 A web app can't read an iPhone's Messages or Contacts directly — iOS sandboxes
