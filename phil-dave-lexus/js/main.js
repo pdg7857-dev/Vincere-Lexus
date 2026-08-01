@@ -20,6 +20,38 @@
   var esc = function (t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (m) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]; }); };
 
+  /* ---------- CRM lead inbox (Supabase) --------------------------------
+     Drop a form submission straight into the Vincere Lexus CRM's Web-leads
+     inbox, in parallel with the Google Sheet. Supabase's REST endpoint
+     answers CORS, so this is a normal fetch — fire-and-forget, never blocks
+     the visitor's "thank you". `data` is the same flat object the sheet
+     gets; name/phone/email are lifted to columns, everything else is kept
+     in `payload` so nothing is lost. Activity pings are skipped. */
+  function pushLead(data) {
+    var sb = S.supabase;
+    if (!sb || !sb.url || !sb.anonKey || !data) return;
+    if (data.kind === "activity") return;
+    try {
+      var row = {
+        source: data.source || "Website",
+        name: data.name || data.dreamcar || "",
+        phone: data.phone || "",
+        email: data.email || "",
+        payload: data
+      };
+      fetch(sb.url.replace(/\/+$/, "") + "/rest/v1/leads", {
+        method: "POST",
+        headers: {
+          "apikey": sb.anonKey,
+          "Authorization": "Bearer " + sb.anonKey,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(row)
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
   /* ===================== the garage (bays) ============================== */
   // Each bay = a hero scene + ONE section of the site. You enter a bay to
   // see that information; the other sections stay hidden.
@@ -570,6 +602,7 @@
           try {
             fetch(cfg.endpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {});
           } catch (err) {}
+          pushLead(data);
           ok();
         } else {
           console.log("[newsletter demo]", data);
@@ -1276,6 +1309,7 @@
     if (S.formEndpoint) {
       try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
     }
+    pushLead(data);
     logActivity("inquiry", name, car.price);
     if (msg) { msg.hidden = false; msg.className = "lotmodal__msg ok"; msg.textContent = "Sent. I'll be in touch about this " + car.make + " " + car.model + "."; }
     if (send) { send.textContent = "Inquiry sent ✓"; }
@@ -1674,6 +1708,7 @@
       // Live: POST to the Google Apps Script (or Formspree) endpoint. no-cors +
       // text/plain avoids a CORS preflight Apps Script can't answer; the row
       // still lands, we just can't read the reply, so we proceed optimistically.
+      if (!isBot) pushLead(data);
       if (S.formEndpoint && !isBot) {
         try {
           fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {});
@@ -1750,6 +1785,7 @@
         statusEl.className = "lead__status " + (success ? "ok" : "err");
         statusEl.textContent = msg; if (success) form.reset();
       }
+      if (!isBot) pushLead(data);
       if (S.formEndpoint && !isBot) {
         try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
         markMember(data.email, data.phone, data.name);

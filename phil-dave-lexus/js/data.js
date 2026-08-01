@@ -45,6 +45,17 @@ window.SITE = {
      payload to the console, and offers a mailto: fallback to your email).   */
   formEndpoint: "https://script.google.com/macros/s/AKfycbyNDlgwsTBHuUcnRWreNkLqr2S_y5-6CZ7Z_kz3Zwq34MmEvB3EsjHEuZ9WPiNlVFjPFg/exec",
 
+  /* --- CRM lead inbox (Supabase) ----------------------------------------
+     Every form submission is ALSO dropped straight into the Vincere Lexus
+     CRM's "Web leads" inbox (a Supabase `leads` table). The anon key is
+     public by design — Row Level Security only lets the website INSERT a
+     lead; nobody can read the table without signing into the CRM. Leave
+     `url` blank to turn this off and keep only the Google Sheet.          */
+  supabase: {
+    url: "https://xgvawsupcfasksvvxyyi.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhndmF3c3VwY2Zhc2tzdnZ4eXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1ODk4NzcsImV4cCI6MjEwMTE2NTg3N30.0EYDV_c78mCPm6yQXyeGb-cS-22PeyaDsl1hbNGYh6U",
+  },
+
   /* --- Newsletter (rendered at the bottom of every bay) -------------------
      Collects name, number, email and city. Until `endpoint` is set it runs
      in DEMO mode (success state + payload in the console).                 */
