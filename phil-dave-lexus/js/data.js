@@ -51,6 +51,13 @@ window.SITE = {
      public by design — Row Level Security only lets the website INSERT a
      lead; nobody can read the table without signing into the CRM. Leave
      `url` blank to turn this off and keep only the Google Sheet.          */
+  /* --- Bot protection (Cloudflare Turnstile) ----------------------------
+     Paste your Turnstile SITE key here to switch on the "I'm human" check on
+     the Request-a-Car form. Empty = off (form works exactly as before). The
+     matching SECRET key is set as an env var on the Cloudflare Pages project,
+     never here. Get keys free at Cloudflare dashboard → Turnstile.           */
+  turnstile: { siteKey: "" },
+
   supabase: {
     url: "https://xgvawsupcfasksvvxyyi.supabase.co",
     anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhndmF3c3VwY2Zhc2tzdnZ4eXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1ODk4NzcsImV4cCI6MjEwMTE2NTg3N30.0EYDV_c78mCPm6yQXyeGb-cS-22PeyaDsl1hbNGYh6U",

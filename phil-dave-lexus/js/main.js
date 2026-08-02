@@ -52,6 +52,42 @@
     } catch (e) {}
   }
 
+  // ---- Cloudflare Turnstile (bot protection on the lead form) ----------
+  // Off until SITE.turnstile.siteKey is set (js/data.js). When on, the request
+  // form shows a challenge and the lead is sent to the /api/lead Cloudflare
+  // Function, which verifies the token server-side before writing to Supabase.
+  var TS = (S.turnstile && S.turnstile.siteKey) ? S.turnstile : null;
+  function initTurnstile() {
+    if (!TS) return;
+    var s = document.createElement("script");
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    s.async = true; s.defer = true; s.onload = renderTurnstiles;
+    document.head.appendChild(s);
+  }
+  function renderTurnstiles() {
+    if (!window.turnstile) return;
+    $$("[data-turnstile]").forEach(function (el) {
+      if (el.getAttribute("data-ts-rendered")) return;
+      try { el._tsId = window.turnstile.render(el, { sitekey: TS.siteKey, theme: "dark" }); el.setAttribute("data-ts-rendered", "1"); } catch (e) {}
+    });
+  }
+  function turnstileToken(formEl) {
+    if (!TS || !window.turnstile || !formEl) return "";
+    var el = formEl.querySelector("[data-turnstile]");
+    if (!el || el._tsId == null) return "";
+    try { return window.turnstile.getResponse(el._tsId) || ""; } catch (e) { return ""; }
+  }
+  function turnstileReset(formEl) {
+    if (!TS || !window.turnstile || !formEl) return;
+    var el = formEl.querySelector("[data-turnstile]");
+    if (el && el._tsId != null) { try { window.turnstile.reset(el._tsId); } catch (e) {} }
+  }
+  // Send a verified lead to the Cloudflare Pages Function (verifies the token,
+  // then inserts into Supabase server-side). Used only when Turnstile is on.
+  function postLeadApi(data) {
+    try { fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
+  }
+
   /* ===================== the garage (bays) ============================== */
   // Each bay = a hero scene + ONE section of the site. You enter a bay to
   // see that information; the other sections stay hidden.
@@ -1749,6 +1785,18 @@
       data.source = "Request a Car";
       try { data.captured_at = new Date().toISOString(); } catch (e) {}
 
+      // Turnstile gate (only when enabled): require a valid human token.
+      var tsTok = "";
+      if (TS && !isBot) {
+        tsTok = turnstileToken(form);
+        if (!tsTok) {
+          statusEl.className = "lead__status err";
+          statusEl.textContent = "Please complete the “I’m human” check, then send again.";
+          return;
+        }
+        data["cf-turnstile-response"] = tsTok;
+      }
+
       submit.disabled = true;
       var prev = submit.textContent;
       submit.textContent = "Sending…";
@@ -1756,13 +1804,13 @@
         submit.disabled = false; submit.textContent = prev;
         statusEl.className = "lead__status " + (success ? "ok" : "err");
         statusEl.textContent = msg;
-        if (success) { form.reset(); syncOrder(); }
+        if (success) { form.reset(); syncOrder(); turnstileReset(form); }
       }
 
-      // Live: POST to the Google Apps Script (or Formspree) endpoint. no-cors +
-      // text/plain avoids a CORS preflight Apps Script can't answer; the row
-      // still lands, we just can't read the reply, so we proceed optimistically.
-      if (!isBot) pushLead(data);
+      // Lead sink: with Turnstile on, go through the verifying /api/lead
+      // Cloudflare Function (server-side token check → Supabase). Otherwise the
+      // direct Supabase insert. Either way, the Google Sheet still gets the row.
+      if (!isBot) { if (TS) postLeadApi(data); else pushLead(data); }
       if (S.formEndpoint && !isBot) {
         try {
           fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {});
@@ -1914,6 +1962,7 @@
     initLotModal();
     initForm();
     initLexusForm();
+    initTurnstile();
     initLenis();
     initReveals();
     initMagnetic();
