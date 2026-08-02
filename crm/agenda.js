@@ -3,17 +3,17 @@
 // The CRM is a static site, so it can't call the Google / Todoist APIs itself
 // (that needs OAuth + secret keys that can't live in a public page). Instead,
 // Claude reads your Calendar and Todoist through its connectors and writes them
-// here. Ask Claude to "refresh my agenda" any time and this file is regenerated.
+// here. This file is auto-refreshed 6am / noon / 6pm (America/Toronto), and you
+// can also just ask Claude to "refresh my agenda" any time.
 //
 // Dates are real (America/Toronto) and are NOT demo-shifted like the seed data.
 window.CRM_AGENDA = {
-  syncedAt: "2026-08-01",
+  syncedAt: "2026-08-02",
   tz: "America/Toronto",
   source: "Google Calendar (pdg7857@gmail.com) + Todoist",
 
   // ---- Google Calendar -----------------------------------------------------
   calendar: [
-    { title: "Natural Canada Pro Qualifier (CPA)", date: "2026-08-01", allDay: true },
     { title: "Natural Canada IFBB Pro Show", date: "2026-08-02", allDay: true },
     { title: "Zoe's birthday 🎂", date: "2026-08-03", allDay: true },
     { title: "Appointment: Mercedes C-Class", date: "2026-08-04", time: "9:00 AM", end: "10:00 AM", phone: "647-323-4845" },
@@ -28,6 +28,7 @@ window.CRM_AGENDA = {
     { title: "Hockey Night in Brampton (charity)", date: "2026-08-19", allDay: true },
     { title: "Cedrik DJ set — Ottawa", date: "2026-08-22", time: "10:00 PM" },
     { title: "GTApreneurs Vaughan Networking (last Tue)", date: "2026-08-25", time: "5:00 PM", end: "8:00 PM" },
+    { title: "Legends Super Cup (CPA physique)", date: "2026-08-29", allDay: true },
     { title: "GTApreneurs Toronto Networking (1st Wed)", date: "2026-09-02", time: "6:00 PM", end: "8:00 PM" },
     { title: "Canadian Computer Charity Golf Classic", date: "2026-09-03", allDay: true },
     { title: "Pay Lucky Mobile", date: "2026-09-08", allDay: true },
@@ -36,7 +37,9 @@ window.CRM_AGENDA = {
     { title: "Da Silva Memorial Golf Tournament", date: "2026-09-11", allDay: true },
     { title: "Niagara Falls Classic Open (CPA physique)", date: "2026-09-12", allDay: true },
     { title: "Golden Prairie Cup Open Championships (CPA)", date: "2026-09-12", allDay: true },
-    { title: "Golden Prairie Cup Natural Championships (CPA)", date: "2026-09-12", allDay: true }
+    { title: "Golden Prairie Cup Natural Championships (CPA)", date: "2026-09-12", allDay: true },
+    { title: "Digital Leadership Day Ontario (Gov Innovation Week)", date: "2026-09-15", allDay: true },
+    { title: "Pinball Classic Invitational Golf Tournament", date: "2026-09-15", allDay: true }
   ],
 
   // ---- Todoist -------------------------------------------------------------
