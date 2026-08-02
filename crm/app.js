@@ -312,13 +312,19 @@
   }
 
   // ---- derived collections --------------------------------------------------
+  // phone is the dedicated key to find a customer: compare by digits only, so any
+  // format (416-890-5137, (416) 890 5137, 4168905137) finds the same person.
+  function digitsOf(s) { return String(s == null ? "" : s).replace(/\D/g, ""); }
   function visible() {
     var q = S.query.trim().toLowerCase();
+    var qd = digitsOf(q);
     return S.deals.filter(function (d) {
       var v = vehOf(d);
       if (S.hotOnly && !d.hot) return false;
       if (S.sourceFilter !== "All sources" && d.source !== S.sourceFilter) return false;
       if (!q) return true;
+      // phone-first: 3+ typed digits match the customer's number in any format
+      if (qd.length >= 3 && digitsOf(d.phone).indexOf(qd) >= 0) return true;
       return (d.name + " " + v.stock + " " + v.vin + " " + v.car + " " + d.phone).toLowerCase().indexOf(q) >= 0;
     });
   }
@@ -434,7 +440,7 @@
         '<div class="crm-vtitle" style="font-size:14px;font-weight:600;min-width:150px;white-space:nowrap">' + titles[S.view] + '</div>' +
         '<div class="crm-search" style="display:flex;align-items:center;gap:6px;background:oklch(0.18 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:5px 8px;width:250px">' +
           '<div style="width:5px;height:5px;border-radius:5px;background:oklch(0.55 0.008 250)"></div>' +
-          '<input data-act="query" data-focus="query" value="' + esc(S.query) + '" placeholder="Search name, stock #, VIN…" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:oklch(0.95 0.004 250);font-size:12px" />' +
+          '<input data-act="query" data-focus="query" inputmode="tel" value="' + esc(S.query) + '" placeholder="Search phone #, name, stock, VIN…" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:oklch(0.95 0.004 250);font-size:12px" />' +
         '</div>' +
         '<select class="crm-src" data-act="source" style="background:oklch(0.18 0.006 250);border:1px solid oklch(0.28 0.008 250);border-radius:4px;padding:5px 7px;font-size:12px;outline:none">' +
           ["All sources"].concat(SOURCES).map(function (s) { return '<option' + (S.sourceFilter === s ? " selected" : "") + '>' + s + '</option>'; }).join("") +
@@ -691,9 +697,9 @@
   // match a Todoist/Calendar phone to an existing deal (last-10-digits compare)
   function dealByPhone(phone) {
     if (!phone) return null;
-    var want = String(phone).replace(/\D/g, "").slice(-10);
+    var want = digitsOf(phone).slice(-10);
     if (want.length < 10) return null;
-    return S.deals.filter(function (d) { return String(d.phone).replace(/\D/g, "").slice(-10) === want; })[0] || null;
+    return S.deals.filter(function (d) { return digitsOf(d.phone).slice(-10) === want; })[0] || null;
   }
   function dayLabel(dateStr) {
     var d = parseISO(dateStr);
