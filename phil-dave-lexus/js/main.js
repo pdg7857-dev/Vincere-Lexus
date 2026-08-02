@@ -663,7 +663,6 @@
     /* ---------------- in-page chat funnel ---------------- */
     var log = $("#waChatLog"), quickEl = $("#waChatQuick"), form = $("#waChatForm"), input = $("#waChatText"), closeBtn = $("#waChatClose");
     var started = false, state = "start", lead = {};
-    var CLOSING = "Perfect — I'm dropping this into WhatsApp so I've got the full picture. Tap send and I'll get right back to you 👇";
     var OPT_LEXUS = "I'm looking to get a Lexus", OPT_OTHER = "I'm looking for another make", OPT_QUESTION = "I just have a question";
     var LEXUS_MODELS = ["ES", "IS", "LS", "NX", "RX", "GX", "LX", "RZ", "LC", "RC", "Not sure yet"];
 
@@ -684,7 +683,7 @@
       quickEl.hidden = !labels || !labels.length;
     }
     function bot(text, after) { setTimeout(function () { addMsg("bot", text); if (after) after(); }, 480); }
-    function greet() { bot(cfg.popup || "Hey 👋 how can I help?", function () { state = "start"; setQuick([OPT_LEXUS, OPT_OTHER, OPT_QUESTION]); }); }
+    function greet() { state = "start"; bot(cfg.popup || "Hey 👋 how can I help?", function () { setQuick([OPT_LEXUS, OPT_OTHER, OPT_QUESTION]); }); }
     function askCondition() { state = "condition"; bot("New or used?", function () { setQuick(["New", "Used"]); }); }
     function askModel() { state = "model"; bot("Which model?", function () { setQuick(LEXUS_MODELS); }); }
     function askTrade() { state = "tradeask"; bot("Do you have a trade-in?", function () { setQuick(["Yes", "No"]); }); }
@@ -708,16 +707,44 @@
       try { window.open(url, "_blank"); } catch (e) {}
       return url;
     }
-    // called synchronously inside the click/submit handler so the WhatsApp
-    // tab opens as a user gesture (not blocked by pop-up policies)
-    function finish() {
+    // once the enquiry is understood, collect name + number and send the whole
+    // conversation straight to the sheet — no WhatsApp / app hop required.
+    function askName() { state = "name"; bot("Awesome — and your name?"); }
+    function askPhone() { state = "phone"; bot("What's the best number to reach you on?"); }
+    function askEmail() { state = "email"; bot("Want to add an email too? (optional)", function () { setQuick(["Skip"]); }); }
+    function leadSummary() {
+      var parts = [];
+      if (lead.interest) parts.push(lead.interest);
+      if (lead.condition) parts.push("New/used: " + lead.condition);
+      if (lead.model) parts.push("Model: " + lead.model);
+      if (lead.make) parts.push("After: " + lead.make);
+      if (lead.question) parts.push("Question: " + lead.question);
+      if (lead.custom) parts.push("Message: " + lead.custom);
+      if (lead.tradein) parts.push("Trade-in: " + lead.tradein + (lead.tradeDetails ? " (" + lead.tradeDetails + ")" : ""));
+      return parts.join(" · ");
+    }
+    var CLOSING = "Perfect — I've got everything I need. I'll reach out to you personally, shortly. Feel free to keep typing here if anything else comes up 👇";
+    function submitLead() {
       state = "done";
-      var url = openWA();
-      try { logActivity("chat", "handoff to WhatsApp", composeWA().replace(/\n+/g, " | ")); } catch (e) {}
+      var data = {
+        name: lead.name || "", phone: lead.phone || "", email: lead.email || "",
+        make: lead.make || (/lexus/i.test(lead.interest || "") ? "Lexus" : ""),
+        dreamcar: lead.model || lead.make || "",
+        newused: lead.condition || "",
+        notes: leadSummary(),
+        source: "Website chat", consent: "Yes", captured_at: new Date().toISOString()
+      };
+      if (S.formEndpoint) {
+        try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
+      }
+      pushLead(data);   // also drop into the CRM (Supabase), like the other forms
+      try { markMember(data.email, data.phone, data.name); } catch (e) {}
+      try { logActivity("chat", "lead captured", leadSummary()); } catch (e) {}
       bot(CLOSING, function () {
-        if (url && quickEl) {
+        // keep WhatsApp as an option for anyone who'd rather message there
+        if (num && quickEl) {
           quickEl.innerHTML = "";
-          var b = document.createElement("button"); b.type = "button"; b.className = "wachat__chip"; b.textContent = "Open WhatsApp";
+          var b = document.createElement("button"); b.type = "button"; b.className = "wachat__chip"; b.textContent = "Prefer WhatsApp? Message me there";
           b.addEventListener("click", openWA);
           quickEl.appendChild(b); quickEl.hidden = false;
         }
@@ -734,14 +761,21 @@
           if (text === OPT_LEXUS) { lead.interest = "Looking to buy a Lexus"; askCondition(); }
           else if (text === OPT_OTHER) { lead.interest = "Looking for another make"; state = "othermake"; bot("Which make and model are you after?"); }
           else if (text === OPT_QUESTION) { lead.interest = "Has a question"; state = "question"; bot("Sure — what's your question?"); }
-          else { lead.custom = text; finish(); }        // a custom opening message
+          else { lead.custom = text; askName(); }        // a custom opening message
           break;
         case "condition": lead.condition = text; askModel(); break;
         case "model": lead.model = text; askTrade(); break;        // ask trade-in when buying
         case "othermake": lead.make = text; askTrade(); break;      // ask trade-in when buying
-        case "tradeask": lead.tradein = text; if (/^y/i.test(text)) askTradeDetails(); else finish(); break;
-        case "tradedetails": lead.tradeDetails = text; finish(); break;
-        case "question": lead.question = text; finish(); break;
+        case "tradeask": lead.tradein = text; if (/^y/i.test(text)) askTradeDetails(); else askName(); break;
+        case "tradedetails": lead.tradeDetails = text; askName(); break;
+        case "question": lead.question = text; askName(); break;
+        case "name": lead.name = text; askPhone(); break;
+        case "phone":
+          if (text.replace(/\D/g, "").length < 7) { bot("Just a phone number so I can reach you 🙂"); break; }  // stay on this step
+          lead.phone = text; askEmail(); break;
+        case "email":
+          if (text && text.toLowerCase() !== "skip" && text.indexOf("@") > 0) lead.email = text;
+          submitLead(); break;
         // state "done": extra messages are just logged
       }
     }
