@@ -1312,10 +1312,20 @@
     $("#lotModalName").textContent = name;
     $("#lotModalMeta").textContent = [car.km ? car.km.toLocaleString("en-US") + " km" : null, car.ext, car.drive].filter(Boolean).join(" · ");
     var id = identity();
-    $("#lotModalWho").textContent = (id.email || id.phone) ? ("I'll reach out to " + (id.email || id.phone) + ".") : "";
+    var known = !!(id.email || id.phone);
+    // first inquiry → collect details inline; after that we just auto-send
+    var fields = $("#lotModalFields"), who = $("#lotModalWho");
+    if (fields) {
+      fields.hidden = known;
+      if (!known) {
+        var fn = $("#lotFieldName"), fp = $("#lotFieldPhone"), fe = $("#lotFieldEmail");
+        if (fn) fn.value = id.name || ""; if (fp) fp.value = id.phone || ""; if (fe) fe.value = id.email || "";
+      }
+    }
+    if (who) { who.hidden = !known; who.textContent = known ? ("I'll reach out to " + (id.name ? id.name + " · " : "") + (id.email || id.phone) + ".") : ""; }
     var note = $("#lotModalNote"); if (note) note.value = "";
     var msg = $("#lotModalMsg"); if (msg) { msg.hidden = true; msg.textContent = ""; }
-    var send = $("#lotModalSend"); if (send) { send.disabled = false; send.textContent = "Inquire about this car"; }
+    var send = $("#lotModalSend"); if (send) { send.disabled = false; send.textContent = known ? "Send my inquiry" : "Save & send inquiry"; }
     m.hidden = false; document.body.classList.add("no-scroll");
     logActivity("view", name, car.price);
   }
@@ -1323,28 +1333,38 @@
   function sendLotInquiry() {
     var car = lotModalCar; if (!car) return;
     var id = identity();
-    var name = car.year + " " + car.make + " " + (car.trim || car.model);
-    // no identity on file (shouldn't happen behind the gate) → fall back to the form
+    var carName = car.year + " " + car.make + " " + (car.trim || car.model);
+    var msg = $("#lotModalMsg");
+    var pName, pEmail, pPhone;
+    // first inquiry: read the inline details, validate, and remember them
     if (!id.email && !id.phone) {
-      var makeSel = document.getElementById("leadMake");
-      if (makeSel) { var inList = Array.prototype.some.call(makeSel.options, function (o) { return o.value === car.make; }); makeSel.value = inList ? car.make : "Other"; makeSel.dispatchEvent(new Event("change", { bubbles: true })); }
-      var model = document.getElementById("leadModel"); if (model) model.value = name;
-      closeLotModal(); warpTo("contact"); return;
+      pName = (($("#lotFieldName") || {}).value || "").trim();
+      pPhone = (($("#lotFieldPhone") || {}).value || "").trim();
+      pEmail = (($("#lotFieldEmail") || {}).value || "").trim();
+      var emailOk = !pEmail || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(pEmail);
+      if (!pName || (!pPhone && !pEmail) || !emailOk) {
+        if (msg) { msg.hidden = false; msg.className = "lotmodal__msg err"; msg.textContent = !emailOk ? "That email doesn't look right." : "Add your name and a phone or email so I can reach you."; }
+        return;
+      }
+      markMember(pEmail, pPhone, pName);   // stored → every future inquiry auto-sends
+    } else {
+      pName = id.name; pEmail = id.email; pPhone = id.phone;
     }
     var note = ($("#lotModalNote") || {}).value || "";
     var data = {
-      name: id.name || "", email: id.email || "", phone: id.phone || "",
-      make: car.make, dreamcar: name, budget: money(car.price),
+      name: pName || "", email: pEmail || "", phone: pPhone || "",
+      make: car.make, dreamcar: carName, budget: money(car.price),
       notes: (note ? note + " — " : "") + "Inquiry from The Lot" + (car.url ? " (" + car.url + ")" : ""),
       source: "The Lot inquiry", consent: "Yes", captured_at: new Date().toISOString()
     };
-    var send = $("#lotModalSend"), msg = $("#lotModalMsg");
+    var send = $("#lotModalSend");
     if (send) { send.disabled = true; send.textContent = "Sending…"; }
+    var fields = $("#lotModalFields"); if (fields) fields.hidden = true;
     if (S.formEndpoint) {
       try { fetch(S.formEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(function () {}); } catch (e) {}
     }
     pushLead(data);
-    logActivity("inquiry", name, car.price);
+    logActivity("inquiry", carName, car.price);
     if (msg) { msg.hidden = false; msg.className = "lotmodal__msg ok"; msg.textContent = "Sent. I'll be in touch about this " + car.make + " " + car.model + "."; }
     if (send) { send.textContent = "Inquiry sent ✓"; }
     setTimeout(closeLotModal, 2400);

@@ -883,8 +883,13 @@ body.is-loading .nextbay{ opacity:0; }
 .lotmodal__body textarea:focus{ outline:none; border-color:var(--silver); }
 .lotmodal__actions{ display:flex; gap:.7rem; margin-top:1rem; }
 .lotmodal__actions .btn{ flex:1; padding:.85rem 1rem; font-size:.68rem; }
+.lotmodal__fields{ display:flex; flex-direction:column; gap:.5rem; margin-top:.6rem; }
+.lotmodal__hint{ font-size:.78rem; color:var(--silver-dim); margin:0 0 .2rem; }
+.lotmodal__fields input{ width:100%; font-family:var(--sans); font-size:.9rem; color:var(--silver); background:var(--black); border:1px solid var(--line); border-radius:10px; padding:.7rem .8rem; }
+.lotmodal__fields input:focus{ outline:none; border-color:var(--silver); }
 .lotmodal__msg{ margin-top:.8rem; font-size:.85rem; color:var(--silver-dim); }
 .lotmodal__msg.ok{ color:var(--platinum); }
+.lotmodal__msg.err{ color:#e88; }
 @media (max-width:520px){ .lotbar{ top:56px; } .lot__controls{ width:100%; } .lot__controls input{ flex:1; } }
 
 /* ---------- Bay 05 · Find your Lexus (inlined tool, no visible frame) ----- */
