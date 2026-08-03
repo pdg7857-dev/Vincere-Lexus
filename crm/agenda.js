@@ -54,9 +54,10 @@ window.CRM_AGENDA = {
     { content: "416-731-7155 — Decola — Call re: TX + RX lease quotes", due: "2026-07-31", dueTime: "3:00 PM", p: 2, project: "CRM notes", phone: "416-731-7155" },
     { content: "Take Test E", due: "2026-08-01", dueTime: "8:00 AM", p: 2, project: "Personal", recurring: true },
     { content: "416-873-0258 — Follow up", due: "2026-08-02", dueTime: "10:00 AM", p: 2, project: "CRM notes", phone: "416-873-0258" },
+    { content: "Desmond (Facebook Marketplace) — Follow up (confirm tax issue with mgmt first)", due: "2026-08-04", dueTime: "9:00 AM", p: 2, project: "CRM notes" },
     { content: "705-795-3098 — Mazda CX-9, send full price", due: "2026-08-04", dueTime: "10:00 AM", p: 2, project: "CRM notes", phone: "705-795-3098" },
     { content: "647-703-5612 — Used GX, follow up", due: "2026-08-04", dueTime: "10:00 AM", p: 2, project: "CRM notes", phone: "647-703-5612" },
-    { content: "Desmond (Facebook Marketplace) — Follow up (confirm tax issue with mgmt first)", due: "2026-08-04", dueTime: "9:00 AM", p: 2, project: "CRM notes" },
+    { content: "647-862-3556 — Follow up + have management call him", due: "2026-08-04", dueTime: "10:00 AM", p: 2, project: "CRM notes", phone: "647-862-3556" },
     { content: "Download DCC construction payments report (active contractors)", due: "2026-08-29", p: 2, project: "Inbox", recurring: true },
     { content: "Prospect — RX 350 Hybrid, Dark Blue/Beige, 2023+, 50–60k", p: 4, project: "CRM notes", phone: "416-894-5137" },
     { content: "Prospect — New RX 350 Hybrid Executive, White/Black, $400 biweekly", p: 4, project: "CRM notes", phone: "647-970-6134" }
