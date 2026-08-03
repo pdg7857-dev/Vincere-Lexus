@@ -1,0 +1,9 @@
+{
+  // Cloudflare Workers — serve the Vincere Lexus CRM as a static site.
+  // The CRM lives in ./crm; this deploys it as an assets-only Worker (no code),
+  // so vincere-lexus.<subdomain>.workers.dev serves crm/index.html at the root.
+  // Security headers come from crm/_headers.
+  "name": "vincere-lexus",
+  "compatibility_date": "2025-08-01",
+  "assets": { "directory": "./crm" }
+}
