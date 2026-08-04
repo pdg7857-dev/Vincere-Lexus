@@ -8,13 +8,12 @@
 //
 // Dates are real (America/Toronto) and are NOT demo-shifted like the seed data.
 window.CRM_AGENDA = {
-  syncedAt: "2026-08-03",
+  syncedAt: "2026-08-04",
   tz: "America/Toronto",
   source: "Google Calendar (pdg7857@gmail.com) + Todoist",
 
   // ---- Google Calendar -----------------------------------------------------
   calendar: [
-    { title: "Zoe's birthday 🎂", date: "2026-08-03", allDay: true },
     { title: "Appointment: Mercedes C-Class", date: "2026-08-04", time: "9:00 AM", end: "10:00 AM", phone: "647-323-4845" },
     { title: "GTApreneurs Toronto Networking (1st Wed)", date: "2026-08-05", time: "6:00 PM", end: "8:00 PM" },
     { title: "Toronto Entrepreneur Networking Event", date: "2026-08-05", time: "7:00 PM", end: "10:00 PM" },
@@ -40,7 +39,9 @@ window.CRM_AGENDA = {
     { title: "Digital Leadership Day Ontario (Gov Innovation Week)", date: "2026-09-15", allDay: true },
     { title: "Pinball Classic Invitational Golf Tournament", date: "2026-09-15", allDay: true },
     { title: "RealREIT 2026", date: "2026-09-16", allDay: true },
-    { title: "Government Innovation Showcase Ontario", date: "2026-09-16", allDay: true }
+    { title: "Government Innovation Showcase Ontario", date: "2026-09-16", allDay: true },
+    { title: "SHN Foundation Golf Classic", date: "2026-09-17", allDay: true },
+    { title: "Real Estate Canada Forum (invite-only)", date: "2026-09-17", allDay: true }
   ],
 
   // ---- Todoist -------------------------------------------------------------
