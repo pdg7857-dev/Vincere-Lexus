@@ -8,12 +8,26 @@ inventory, without you having to scrape anyone. This is the source a real
 sourcing business should run on: it's reliable, it's in their Terms, and it
 won't break when a site changes its HTML or turns up its bot protection.
 
-  * Sign up:      https://www.marketcheck.com/apis
-  * Set the key:  export MARKETCHECK_API_KEY=...    (never commit it)
+Canada coverage is real: ~200k used + ~290k new Canadian listings via the API.
 
-Other drop-in alternatives that fit this same adapter shape: Auto.dev, CarsXE,
-or an official Auto Trader dealer/partner feed if you qualify for one. Copy this
-file, change the endpoint + field mapping, and register it in __init__.py.
+FREE TIER: MarketCheck offers a no-approval free tier (instant key). Published
+quotas vary by source — plan on roughly ~500 calls/month unless your dashboard
+says otherwise — so this adapter is deliberately QUOTA-FRUGAL: by default it
+makes ONE call per want (50 rows). Bump `max_results` only if you need deeper
+paging and can spend the quota. Confirm your exact limit at signup:
+
+  * Sign up:      https://www.marketcheck.com/apis   (dashboard: developers.marketcheck.com)
+  * Set the key:  export MARKETCHECK_API_KEY=...      (never commit it)
+  * Override host if docs move it: export MARKETCHECK_API_BASE=https://api.marketcheck.com/v2/search/car/active
+
+Endpoint used: /v2/search/car/active (DEALER inventory). For private / for-sale-
+by-owner cars, MarketCheck has a separate private-party endpoint — point
+MARKETCHECK_API_BASE at it (verify the path in your dashboard docs) to source
+those too.
+
+Other drop-in alternatives that fit this same adapter shape: Auto.dev (US-heavy),
+or an official Auto Trader dealer/partner feed if you qualify. Copy this file,
+change the endpoint + field mapping, and register it in __init__.py.
 
 This adapter is written against MarketCheck's documented field names; if your
 plan returns slightly different keys, adjust `_to_listing`. It degrades
@@ -30,13 +44,18 @@ from ..models import Listing, Want, to_int
 from ..util import http_json
 from .base import SearchAdapter
 
-API_BASE = "https://mc-api.marketcheck.com/v2/search/car/active"
+# Current documented host. Overridable via env in case the docs move it.
+API_BASE = os.environ.get(
+    "MARKETCHECK_API_BASE", "https://api.marketcheck.com/v2/search/car/active"
+)
 
 
 class MarketCheckAdapter(SearchAdapter):
     name = "marketcheck"
 
-    def __init__(self):
+    def __init__(self, max_results: int = 50):
+        # Free-tier friendly: 50 results = one API call per want. Raise to page deeper.
+        self.max_results = max_results
         self.api_key = os.environ.get("MARKETCHECK_API_KEY", "").strip()
 
     def available(self) -> bool:
@@ -72,8 +91,9 @@ class MarketCheckAdapter(SearchAdapter):
     def search(self, want: Want) -> Iterable[Listing]:
         if not self.available():
             return
-        rows, start = 50, 0
-        while True:
+        rows = min(50, self.max_results)   # MarketCheck caps rows at 50/call
+        start = 0
+        while start < self.max_results:
             data = http_json(f"{API_BASE}?{self._params(want, start, rows)}")
             if not data:
                 return
@@ -83,7 +103,8 @@ class MarketCheckAdapter(SearchAdapter):
                 if out:
                     yield out
             start += rows
-            if start >= min(int(data.get("num_found", 0)), 500):  # cap paging
+            # stop once we've drained the result set (frugal on the free quota)
+            if start >= int(data.get("num_found", 0)):
                 return
 
     def _to_listing(self, raw: dict) -> Listing | None:
