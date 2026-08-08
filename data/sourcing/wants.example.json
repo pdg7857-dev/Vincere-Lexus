@@ -1,0 +1,35 @@
+{
+  "_comment": "Customer sourcing briefs. Copy to wants.json and edit. make/model/condition/province are 'any-of' lists (empty = no restriction). 'must' keywords must ALL appear in the listing; 'nice' keywords boost the score. Set active:false to pause a want without deleting it.",
+  "wants": [
+    {
+      "id": "w-jones-rx",
+      "customer": "A. Jones",
+      "make": ["Lexus"],
+      "model": ["RX 350"],
+      "year_min": 2022,
+      "price_max": 62000,
+      "km_max": 60000,
+      "condition": ["Used", "Certified Pre-Owned"],
+      "province": ["ON"],
+      "must": ["AWD"],
+      "nice": ["panoramic", "mark levinson", "heated steering"],
+      "notes": "Wants low-km CPO ideally; flexible on colour.",
+      "active": true
+    },
+    {
+      "id": "w-patel-x3",
+      "customer": "R. Patel",
+      "make": ["BMW"],
+      "model": ["X3"],
+      "year_min": 2022,
+      "price_max": 55000,
+      "km_max": 45000,
+      "condition": ["Certified Pre-Owned"],
+      "province": ["ON"],
+      "must": [],
+      "nice": ["panoramic", "premium"],
+      "notes": "Prefers white or grey.",
+      "active": true
+    }
+  ]
+}
