@@ -38,13 +38,21 @@ class AutoTraderCaAdapter(SearchAdapter):
 
     def _search_url(self, want: Want, page: int) -> str:
         # autotrader.ca's public search takes make/model/price/km as query params.
+        # A city + radius (e.g. "Toronto, ON" + 50 km) targets a metro like the GTA;
+        # otherwise fall back to a province-wide / nationwide search.
+        if want.city:
+            loc, prx = want.city, (want.radius_km or 50)
+        elif want.province:
+            loc, prx = want.province[0], -1
+        else:
+            loc, prx = "", -1
         q = {
             "rcp": 100,                       # results per page
             "rcs": page * 100,                # offset
             "srt": 35,                        # sort: newest listed
-            "prx": -1,                        # nationwide
+            "prx": prx,                       # proximity radius in km (-1 = anywhere)
+            "loc": loc,
             "hprc": want.price_max or "",
-            "loc": (want.province[0] if want.province else ""),
             "yRng": f"{want.year_min or ''},{want.year_max or ''}",
             "kmRng": f",{want.km_max or ''}",
         }

@@ -111,6 +111,8 @@ class Want:
 
     condition: list[str] = field(default_factory=list)   # e.g. ["Used","Certified Pre-Owned"]
     province: list[str] = field(default_factory=list)     # any-of; empty = anywhere
+    city: str = ""                   # anchor city for a radius search, e.g. "Toronto, ON"
+    radius_km: Optional[int] = None  # search this many km around `city` (e.g. 50 ≈ the GTA)
 
     must: list[str] = field(default_factory=list)   # keywords that MUST all appear
     nice: list[str] = field(default_factory=list)   # keywords that boost the score

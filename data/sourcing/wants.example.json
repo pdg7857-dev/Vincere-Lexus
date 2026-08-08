@@ -30,6 +30,21 @@
       "nice": ["panoramic", "premium"],
       "notes": "Prefers white or grey.",
       "active": true
+    },
+    {
+      "id": "w-crv-gta",
+      "customer": "CR-V search (GTA)",
+      "make": ["Honda"],
+      "model": ["CR-V"],
+      "year_min": 2018,
+      "province": ["ON"],
+      "city": "Toronto, ON",
+      "radius_km": 50,
+      "condition": ["Used", "Certified Pre-Owned"],
+      "must": [],
+      "nice": ["AWD", "EX-L", "Touring", "sunroof", "leather"],
+      "notes": "2018+ CR-V within ~50km of Toronto (the GTA).",
+      "active": true
     }
   ]
 }
