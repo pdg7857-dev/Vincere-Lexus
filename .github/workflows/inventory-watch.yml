@@ -1,0 +1,84 @@
+name: Northwest Lexus inventory watch
+
+# Runs at 11:00 UTC ≈ 7:00 AM America/Toronto during EDT (summer).
+# GitHub cron has no timezone; in EST (winter) this fires at 6:00 AM local.
+# Add a second '0 12 * * *' line if you want a true 7 AM year-round (the diff
+# makes the extra run a harmless near-noop).
+on:
+  schedule:
+    - cron: "0 11 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (scan + copy only, no uploads/notify/state write)"
+        type: boolean
+        default: false
+      limit:
+        description: "Max VDP pages to scan (0 = all)"
+        type: string
+        default: "0"
+
+permissions:
+  contents: write   # to commit the updated known-stock state
+
+concurrency:
+  group: inventory-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install -r automation/inventory_watch/requirements.txt
+
+      - name: Run inventory watch
+        env:
+          # --- Drive photo upload (optional) ---
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+          GDRIVE_ROOT_FOLDER_ID: ${{ vars.GDRIVE_ROOT_FOLDER_ID }}
+          GDRIVE_SUBDIR: ${{ vars.GDRIVE_SUBDIR }}
+          # --- Marketplace copy via Claude (optional) ---
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+          FB_PRICE_DISCLOSURE: ${{ vars.FB_PRICE_DISCLOSURE }}
+          FB_CONTACT_LINE: ${{ vars.FB_CONTACT_LINE }}
+          # --- Notifications (optional) ---
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ vars.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          NOTIFY_EMAIL_TO: ${{ vars.NOTIFY_EMAIL_TO }}
+          NOTIFY_EMAIL_FROM: ${{ vars.NOTIFY_EMAIL_FROM }}
+        run: |
+          python3 automation/inventory_watch/watch.py \
+            ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }} \
+            --limit "${{ github.event_name == 'workflow_dispatch' && inputs.limit || '0' }}"
+
+      - name: Commit updated state
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        run: |
+          git config user.name  "inventory-watch[bot]"
+          git config user.email "inventory-watch@users.noreply.github.com"
+          git add automation/inventory_watch/state/known_stock.json automation/inventory_watch/out || true
+          if git diff --cached --quiet; then
+            echo "No state change to commit."
+          else
+            git commit -m "inventory-watch: update known stock + new-arrival copy"
+            git push
+          fi
+
+      - name: Upload new-arrival copy as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: new-arrivals
+          path: automation/inventory_watch/out/
+          if-no-files-found: ignore
